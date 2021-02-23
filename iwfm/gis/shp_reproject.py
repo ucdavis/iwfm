@@ -1,0 +1,69 @@
+# shp_reproject.py
+# Reproject a shapefile
+# Copyright (C) 2020-2021 Hydrolytics LLC
+# -----------------------------------------------------------------------------
+# This information is free; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This work is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# For a copy of the GNU General Public License, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# -----------------------------------------------------------------------------
+
+
+def shp_reproject(srcName, tgtName, spatRef):
+    """shp_reproject() takes a shapefile and projects to another
+    shapefile in <spatRef> coordinate system. <spatRef> is an integer EPSG code"""
+    import os
+    import osr
+    import ogr
+
+    # Set target spatial reference
+    tgt_spatRef = osr.SpatialReference()
+    tgt_spatRef.ImportFromEPSG(spatRef)
+
+    # Source shapefile
+    driver = ogr.GetDriverByName("ESRI Shapefile")
+    src = driver.Open(srcName, 0)
+    srcLyr = src.GetLayer()
+    src_spatRef = srcLyr.GetSpatialRef()  # Source spatial reference
+
+    # Target shapefile - delete if it's already there.
+    if os.path.exists(tgtName):
+        driver.DeleteDataSource(tgtName)
+    tgt = driver.CreateDataSource(tgtName)
+    lyrName = os.path.splitext(tgtName)[0]
+    tgtLyr = tgt.CreateLayer(lyrName, geom_type=ogr.wkbPoint)
+    # Layer definition
+    featDef = srcLyr.GetLayerDefn()
+    # Spatial Transform
+    trans = osr.CoordinateTransformation(src_spatRef, tgt_spatRef)
+    # Reproject and copy features
+    srcFeat = srcLyr.GetNextFeature()
+    while srcFeat:
+        geom = srcFeat.GetGeometryRef()
+        geom.Transform(trans)
+        feature = ogr.Feature(featDef)
+        feature.SetGeometry(geom)
+        tgtLyr.CreateFeature(feature)
+        feature.Destroy()
+        srcFeat.Destroy()
+        srcFeat = srcLyr.GetNextFeature()
+    src.Destroy()
+    tgt.Destroy()
+    # Create the prj file
+    tgt_spatRef.MorphToESRI()  # Convert geometry to ESRI WKT format
+    prj = open(lyrName + ".prj", "w")
+    prj.write(tgt_spatRef.ExportToWkt())
+    prj.close()
+    # Just copy dbf contents over rather than rebuild the dbf using the
+    # ogr API since we're not changing anything.
+    srcDbf = os.path.splitext(srcName)[0] + ".dbf"
+    tgtDbf = lyrName + ".dbf"
+    shutil.copyfile(srcDbf, tgtDbf)

@@ -1,0 +1,21 @@
+# IWFM Text Output files
+*.out
+*.OUT
+*.bud
+*.BUD
+
+
+# HDF Output Files
+*.hdf
+*.HDF
+
+# Binary Output Files
+*.bin
+
+# OS Files
+.DS_store
+*.ini
+
+# local python files
+__pycache__
+iwfm.egg-info
