@@ -18,15 +18,25 @@
 
 
 def las2dem(source, target, cell=1.0, NODATA=0):
-    """las2dem() Converts a LIDAR LAS file to an ASCII DEM.
-    Interpolation is used to account for data loss"""
+    """las2dem() - Convert a LIDAR LAS file to an ASCII DEM.
+    Interpolation is used to account for data loss
+
+    Parameters:
+      source          (str):   Name of input LIDAR LAS file
+      target          (str):   Name of output ASCII DEM file
+      cell            (float): Interpolation distance
+      NODATA          (int):   Value to use for blank areas
+    
+    Return:
+      nothing
+    """
     import numpy as np
 
-    if source[-4:] != ".las":
-        source += ".las"
-    if target[-4:] != ".asc":
-        target += ".asc"
-    las = File(source, mode="r")  # Open LIDAR LAS file
+    if source[-4:] != '.las':
+        source += '.las'
+    if target[-4:] != '.asc':
+        target += '.asc'
+    las = File(source, mode='r')  # Open LIDAR LAS file
     min = las.header.min  # xyz min and max
     max = las.header.max
 
@@ -71,16 +81,17 @@ def las2dem(source, target, cell=1.0, NODATA=0):
     fill = np.where(zavg > 0, zavg, interpolate)
 
     # Create our ASCII DEM header
-    header = "ncols        {}\n".format(fill.shape[1])
-    header += "nrows        {}\n".format(fill.shape[0])
-    header += "xllcorner    {}\n".format(min[0])
-    header += "yllcorner    {}\n".format(min[1])
-    header += "cellsize     {}\n".format(cell)
-    header += "NODATA_value      {}\n".format(NODATA)
+    header = 'ncols        {}\n'.format(fill.shape[1])
+    header += 'nrows        {}\n'.format(fill.shape[0])
+    header += 'xllcorner    {}\n'.format(min[0])
+    header += 'yllcorner    {}\n'.format(min[1])
+    header += 'cellsize     {}\n'.format(cell)
+    header += 'NODATA_value      {}\n'.format(NODATA)
 
     # Open the output file, add the header, save the array
-    with open(target, "wb") as f:
-        f.write(bytes(header, "UTF-8"))
+    with open(target, 'wb') as f:
+        f.write(bytes(header, 'UTF-8'))
         # The fmt string ensures we output floats that have at least one number but only
         # two decimal places
-        np.savetxt(f, fill, fmt="%1.2f")
+        np.savetxt(f, fill, fmt='%1.2f')
+    return

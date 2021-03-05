@@ -24,25 +24,25 @@ def iwfm_read_strat(strat_file, node_coords):
     import iwfm as iwfm
     import re
 
-    strat_lines = open(strat_file).read().splitlines()  # open and read input file
-    line_index = 0  # start at the top
-    line_index = iwfm.skip_ahead(line_index, strat_lines, 0)  # skip comments
-    import re
+    iwfm.file_test(strat_file)
 
-    layers = int(re.findall('\d+', strat_lines[line_index])[0])  # read no. layers
+    strat_lines = open(strat_file).read().splitlines()  
+    line_index = iwfm.skip_ahead(0, strat_lines, 0) 
 
-    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
-    factor = float(re.findall('\d+', strat_lines[line_index])[0])  # read no. layers
+    layers = int(re.findall('\d+', strat_lines[line_index])[0])  
 
-    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0) 
+    factor = float(re.findall('\d+', strat_lines[line_index])[0])
+
+    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0) 
 
     strat = []
     for i in range(0, len(node_coords)):
         l = strat_lines[line_index + i].split()
         s = []
-        s.append(int(l.pop(0)))  # node no
+        s.append(int(l.pop(0))) 
         for j in range(0, len(l)):
-            s.append(factor * float(l.pop(0)))  # lse, etc as floats
+            s.append(factor * float(l.pop(0)))  
         strat.append(s)
     nlayers = int((len(strat[0]) - 1) / 2)
     return strat, nlayers

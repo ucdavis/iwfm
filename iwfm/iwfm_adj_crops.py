@@ -53,11 +53,9 @@ def iwfm_adj_crops(
     elem_zones = iwfm.read_lu_change_zones(in_zone_file)
 
     # -- read land use input files
-    npag_table = iwfm.read_lu_file(in_area_npag, skip)  # open and read ag land use file
-    nvrv_table = iwfm.read_lu_file(in_area_nvrv, skip)  # open and read nv land use file
-    urban_table = iwfm.read_lu_file(
-        in_area_urban, skip
-    )  # open and read ur land use file
+    npag_table, dates, elems = iwfm.read_lu_file(in_area_npag, skip) # read ag
+    nvrv_table, _, _ = iwfm.read_lu_file(in_area_nvrv, skip)     # read nv
+    urban_table, _, _ = iwfm.read_lu_file(in_area_urban, skip)   # read urban
 
     # -- get change factors
     changes_NV = iwfm.read_lu_change_factors(in_chg_file_NV)
@@ -70,29 +68,32 @@ def iwfm_adj_crops(
     # -- process changes for each element
     lu_rows = len(npag_table[0])  # number of rows in land use files
 
-    for i in range(0, len(elem_zones) - 1):  # cycle through elements in zone list
-        elem, zone = elem_zones[i][0], elem_zones[i][1]
-        ag2nv, ag2ur = (
-            1.0 - changes_NV[zone][chg_col_nv],
-            1.0 - changes_UR[zone][chg_col_ur],
-        )  # factors for this zone
+    for i in range(0, len(npag_table)):
 
-        area_ag = round(sum(npag_table[elem]), 2)
-        # reduce ag area and add to NV area
-        if ag2nv < 1 and area_ag > 0:
-            ag_start = sum(npag_table[elem])
-            temp = [round(j * ag2nv, 2) for j in npag_table[elem]]
-            npag_table[elem] = temp
-            ag_change = ag_start - sum(npag_table[elem])
-            nvrv_table[elem][0] = round(nvrv_table[elem][0] + ag_change, 2)
+        for j in range(0, len(elem_zones) - 1):  # cycle through elements in zone list
+            elem, zone = elem_zones[j][0], elem_zones[j][1]
+            ag2nv, ag2ur = (
+                1.0 - changes_NV[zone][chg_col_nv],
+                1.0 - changes_UR[zone][chg_col_ur],
+            )  # factors for this zone
 
-        # reduce ag area and add to Urban area
-        if ag2ur < 1 and area_ag > 0:
-            ag_start = sum(npag_table[elem])
-            temp = [round(j * ag2ur, 2) for j in npag_table[elem]]
-            npag_table[elem] = temp
-            ag_change = ag_start - sum(npag_table[elem])
-            urban_table[elem][0] = round(urban_table[elem][0] + ag_change, 2)
+            #print(f'  ++> {"npag_table"}:\t{npag_table}')
+            area_ag = round(sum(npag_table[i][elem]), 2)
+            # reduce ag area and add to NV area
+            if ag2nv < 1 and area_ag > 0:
+                ag_start = sum(npag_table[i][elem])
+                temp = [round(j * ag2nv, 2) for k in npag_table[i][elem]]
+                npag_table[i][elem] = temp
+                ag_change = ag_start - sum(npag_table[i][elem])
+                nvrv_table[i][elem][0] = round(nvrv_table[i][elem][0] + ag_change, 2)
+
+            # reduce ag area and add to Urban area
+            if ag2ur < 1 and area_ag > 0:
+                ag_start = sum(npag_table[i][elem])
+                temp = [round(j * ag2ur, 2) for k in npag_table[i][elem]]
+                npag_table[i][elem] = temp
+                ag_change = ag_start - sum(npag_table[i][elem])
+                urban_table[i][elem][0] = round(urban_table[i][elem][0] + ag_change, 2)
 
     # -- create the output file names
     out_file_ag = out_basename + '_AG_' + in_year + '.dat'
@@ -104,16 +105,13 @@ def iwfm_adj_crops(
     iwfm.file_delete(out_file_nv)
     iwfm.file_delete(out_file_ur)
 
+    years = []
+    years.append(in_year)
+
     # -- write out new data 
-    iwfm.write_lu2file(
-        npag_table, out_file_ag, in_year, npag_table, 'Ag', date_head_tail
-    )
-    iwfm.write_lu2file(
-        nvrv_table, out_file_nv, in_year, nvrv_table, 'Native', date_head_tail
-    )
-    iwfm.write_lu2file(
-        urban_table, out_file_ur, in_year, urban_table, 'Urban', date_head_tail
-    )
+    iwfm.write_lu2file(npag_table, out_file_ag, years, lu_type = 'Ag', verbose=True)
+    iwfm.write_lu2file(nvrv_table, out_file_nv, years, lu_type = 'Native', verbose=True)
+    iwfm.write_lu2file(urban_table, out_file_ur, years, lu_type = 'Urban', verbose=True)
 
     return 
 
@@ -160,6 +158,6 @@ if __name__ == '__main__':
         in_area_nvrv,
         in_area_urban,
         out_basename,
-    )  # set debug=1 for debugging
+    )  
 
     idb.exe_time()  # print elapsed time

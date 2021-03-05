@@ -20,7 +20,7 @@
 def write_lu2file(
     out_table,
     out_file,
-    in_year,
+    in_years,
     date_head_tail=['09/30/', '_24:00'],
     verbose=False,
     lu_type = '',
@@ -30,7 +30,7 @@ def write_lu2file(
     Parameters:
       out_table       (list): IWFM land use information
       out_file        (str):  Name of output file
-      in_year         (str):  Calendar year 
+      in_years        (list): Calendar years 
       date_head_tail  (list): Strings to convert in_year to DSS format
       verbose         (bool): Turn command-line output on or off
       lu_type         (str):  Land use type for verbose output
@@ -38,16 +38,19 @@ def write_lu2file(
     Returns:
       nothing
     """
-    date = date_head_tail[0] + str(in_year) + date_head_tail[1]  # date in DSS format
     with open(out_file, 'w') as f:
-        for j in range(0, len(out_table)):
-            if j == 0:  # start line with date in DSS format
-                f.write(date)
-            f.write('\t')
-            f.write(str(j + 1) + '\t')  # elem number
-            for word in out_table[j]:
-                f.write(str(round(word, 2)) + '\t')
-            f.write('\n')
+        for i in range(0,len(in_years)):
+            date = date_head_tail[0] + str(in_years[i]) + date_head_tail[1]  # date in DSS format
+            for j in range(0, len(out_table[i])):
+                if j == 0:  # start line with date in DSS format
+                    f.write(date)
+                f.write('\t' + str(j + 1) + '\t')  # elem number
+                for word in out_table[i][j]:
+                    f.write(str(round(word, 2)) + '\t')
+                f.write('\n')
     if verbose:
-        print(f'  Wrote {lu_type} land use for {in_year} to {out_file}')
+        if len(in_years)==1:
+            print(f'  Wrote {lu_type} land use for {in_years[0]} to {out_file}')
+        else:
+            print(f'  Wrote {lu_type} land use for {len(in_years)} years to {out_file}')
     return 

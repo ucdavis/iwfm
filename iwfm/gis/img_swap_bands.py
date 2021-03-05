@@ -18,7 +18,16 @@
 
 
 def img_swap_bands(infile, outfile, band1=1, band2=2):
-    """img_swap_bands() reads a TIFF file, swaps two bands, and saves it"""
+    """ img_swap_bands() - Reads a TIFF file, swaps two bands, and saves it
+    
+    Parameters:
+      infile          (str):   Name of input image file
+      outfile         (str):   Name of output image file
+      band1, band2    (int):   Bands to be swapped
+    
+    Return:
+      Nothing
+    """
     from osgeo import gdal_array as gdal_array
 
     arr = gdal_array.LoadFile(infile)
@@ -27,3 +36,4 @@ def img_swap_bands(infile, outfile, band1=1, band2=2):
     )
     # prototype copies the georeferencing information to output file
     output = None  # force release from memory
+    return

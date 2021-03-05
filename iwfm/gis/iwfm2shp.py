@@ -38,112 +38,52 @@ def iwfm2shp(main_file, shape_name, verbose=False):
 
     topdir = os.getcwd()
 
-    # -- read main IWFM preprocessor input file for other file names
-    main_lines = open(main_file).read().splitlines()  # open and read input file
-    line_index = 0  # start at the top
-    line_index = iwfm.skip_ahead(line_index, main_lines, 4)  # skip comments
-    elem_file = main_lines[line_index].split()[0]
-    line_index += 1
-    node_file = main_lines[line_index].split()[0]
-    line_index += 1
-    strat_file = main_lines[line_index].split()[0]
-    line_index += 1
-    stream_file = main_lines[line_index].split()[0]
-    line_index += 1
-    lake_file = main_lines[line_index].split()[0]
-
-    # == test that the input files exist
-    iwfm.file_test(elem_file)
-    iwfm.file_test(node_file)
-    iwfm.file_test(strat_file)
-    iwfm.file_test(stream_file)
-    if len(lake_file) > 1:
-        iwfm.file_test(lake_file)
-
-    # read files
-    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(
-        elem_file
-    )  # read element info
+    pre_dict, have_lake = iwfm.iwfm_read_preproc(main_file)
     if verbose:
-        print(
-            '  Read nodes of {:,} elements from {}'.format(len(elem_nodes), elem_file)
-        )
+        print(f'  Read preprocessor file {main_file}')
 
-    node_coords, node_list = iwfm.iwfm_read_nodes(
-        node_file
-    )  # read node info
+    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(pre_dict['elem_file']) 
     if verbose:
-        print(
-            '  Read coordinates of {:,} nodes from {}'.format(
-                len(node_coords), node_file
-            )
-        )
+        print(f'  Read nodes of {len(elem_nodes):,} elements from {pre_dict["elem_file"]}')
 
-    node_strat, nlayers = iwfm.iwfm_read_strat(
-        strat_file, node_coords
-    )  # read nodal stratigraphy
+    node_coords, node_list = iwfm.iwfm_read_nodes(pre_dict['node_file'])
     if verbose:
-        print(
-            '  Read stratigraphy for {:,} nodes from {}'.format(
-                len(node_strat), strat_file
-            )
-        )
+        print(f'  Read coordinates of {len(node_coords):,} nodes from {pre_dict["node_file"]}')
 
-    if len(lake_file) > 1:
-        lake_elems, lakes = iwfm.iwfm_read_lake(
-            lake_file
-        )  # read lake elements
+    node_strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
+    if verbose:
+        print(f'  Read stratigraphy for {len(node_strat):,} nodes from {pre_dict["strat_file"]}')
+
+    if have_lake:
+        lake_elems, lakes = iwfm.iwfm_read_lake(pre_dict['lake_file'])  
         if verbose:
             if len(lakes) > 1:
-                print(
-                    '  Read info for {:,} lakes from {}'.format(len(lakes), lake_file)
-                )
+                print(f'  Read info for {len(lakes):,} lakes from {pre_dict["lake_file"]}')
             elif len(lakes) == 1:
-                print('  Read info for {:,} lake from {}'.format(len(lakes), lake_file))
+                print(f'  Read info for {len(lakes):,} lake from {pre_dict["lake_file"]}')
     else:
         lake_elems, lakes = 0, [0]
         if verbose:
             print('  No lakes file')
 
-    reach_list, stnodes_dict, nsnodes, rating_dict = iwfm.iwfm_read_streams(
-        stream_file
-    )  # read streams
+    reach_list, stnodes_dict, nsnodes, rating_dict = iwfm.iwfm_read_streams(pre_dict['stream_file'])
     if verbose:
-        print(
-            '  Read info for {:,} stream reaches and {:,} stream nodes from {}'.format(
-                len(reach_list), nsnodes, stream_file
-            )
-        )
+        print(f'  Read info for {len(reach_list):,} stream reaches and {nsnodes:,} stream nodes from {pre_dict["stream_file"]}')
 
     if verbose:
         print(' ')
 
-    # == Create element shapefile in UTM 10N (EPSG 26910)  =================================
-    gis.elem2shp(
-        elem_nodes,
-        node_coords,
-        elem_sub,
-        lake_elems,
-        shape_name,
-        verbose=verbose,
-    )
-    if debug:
-        print('\n')
+    # == Create element shapefile in default UTM 10N (EPSG 26910)
+    gis.elem2shp(elem_nodes,node_coords,elem_sub,lake_elems,shape_name,verbose=verbose)
 
-    # == Create node shapefile in UTM 10N (EPSG 26910)  ====================================
-    gis.nodes2shp(
-        node_coords, node_strat, nlayers, shape_name, verbose=verbose
-    )
+    # == Create node shapefile in default UTM 10N (EPSG 26910)
+    gis.nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=verbose)
 
-    # == Create stream node shapefile in UTM 10N (EPSG 26910) =============================
-    gis.snodes2shp(
-        nsnodes, stnodes_dict, node_coords, shape_name, verbose=verbose
-    )
+    # == Create stream node shapefile in default UTM 10N (EPSG 26910)
+    gis.snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, verbose=verbose)
 
-    # == Create stream reach shapefile in UTM 10N (EPSG 26910) =============================
-    gis.reach2shp(
-        reach_list, stnodes_dict, node_coords, shape_name, verbose=verbose
-    )
+    # == Create stream reach shapefile in default UTM 10N (EPSG 26910)
+    gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name, verbose=verbose)
 
     return 
 

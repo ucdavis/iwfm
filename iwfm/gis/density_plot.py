@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def density_plot(infile,fieldname="POPULAT11",iwidth=600,iheight=400,
+def density_plot(infile,fieldname='POPULAT11',iwidth=600,iheight=400,
     denrat=100,savename=None):
     """density_plot() reads a shapefile and writes it as an image
 
@@ -77,4 +77,3 @@ def density_plot(infile,fieldname="POPULAT11",iwidth=600,iheight=400,
         with open(savename, 'wb') as img:
             img.write(canvas.dump())
     return
-    

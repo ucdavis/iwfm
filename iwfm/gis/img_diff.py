@@ -18,7 +18,17 @@
 
 
 def img_diff(img1, img2, outfile):
-    """img_diff() Perform a simple difference image change detection on matched 'before' and 'after' images"""
+    """img_diff() - Perform a simple difference image change detection 
+       on matched 'before' and 'after' images
+
+    Parameters:
+      img1            (str):   Name of input image file
+      img2            (str):   Name of input image file
+      outfile         (str):   Name of output image file
+    
+    Return:
+      nothing
+    """
     from osgeo import gdal_array as gdal_array
     import numpy as np
 
@@ -45,7 +55,6 @@ def img_diff(img1, img2, outfile):
         for j in range(len(lut[i])):
             rgb[j] = np.choose(mask, (rgb[j], lut[i][j]))
         start = classes[i] + 1
-    output = gdal_array.SaveArray(
-        rgb, outfile, format="GTiff", prototype=img2
-    )  # Save the output image
-    output = None
+    output = gdal_array.SaveArray(rgb, outfile, format='GTiff', prototype=img2)
+    output = None    # explicitly release memory
+    return

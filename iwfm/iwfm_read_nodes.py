@@ -31,23 +31,23 @@ def iwfm_read_nodes(node_file):
     import iwfm as iwfm
     import re
 
-    # -- read the Node file into array file_lines
-    node_lines = open(node_file).read().splitlines()  # open and read input file
+    iwfm.file_test(node_file)
 
-    line_index = 0  # start at the top
-    line_index = iwfm.skip_ahead(line_index, node_lines, 0)  # skip comments
+    node_lines = open(node_file).read().splitlines()  
 
-    inodes = int(re.findall("\d+", node_lines[line_index])[0])  # read no. nodes
+    line_index = iwfm.skip_ahead(0, node_lines, 0)  
 
-    line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  # skip comments
+    inodes = int(re.findall("\d+", node_lines[line_index])[0])  
 
-    factor = float(node_lines[line_index].split()[0])  # read factor
+    line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0) 
 
-    line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  # skip comments
+    factor = float(node_lines[line_index].split()[0])  
+
+    line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  
 
     node_list = []
     node_coord = []
-    for i in range(0, inodes):  # read nodes information
+    for i in range(0, inodes):  
         l = node_lines[line_index + i].split()
         node_list.append(int(l.pop(0)))
         coords = [float(s) * factor for s in l]

@@ -33,6 +33,8 @@ def iwfm_read_elements(elem_file, verbose=False):
     import re
     import iwfm as iwfm
 
+    iwfm.file_test(elem_file)
+
     elem_lines = open(elem_file).read().splitlines()  
     line_index = iwfm.skip_ahead(0, elem_lines, 0) 
 
@@ -56,5 +58,5 @@ def iwfm_read_elements(elem_file, verbose=False):
             nodes.pop(3)  # remove empty node on triangles
         elem_nodes.append(nodes)
     if verbose:
-        print(f' --> Read {len(elem_nodes):,} elements from {elem_file}')
+        print(f'  Read {len(elem_nodes):,} elements from {elem_file}')
     return elem_ids, elem_nodes, elem_sub

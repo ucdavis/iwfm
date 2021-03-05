@@ -17,20 +17,28 @@
 # -----------------------------------------------------------------------------
 
 
-def kml_points(filename, debug=0):
-    """ get point coordinates from KML file"""
+def kml_points(filename, verbose=False):
+    """ kml+points() = Get point coordinates from a KML file
+
+    Parameters:
+      filename        (str):  File name to save info from url
+      verbose         (bool): Turn command-line output on or off
+
+    Returns:
+      points          (obj):  Points
+    """
     from xml.dom import minidom  # python -m pip install xml
 
     kml = minidom.parse(filename)
-    Placemarks = kml.getElementsByTagName("Placemark")
-    if debug:
-        print("=> Retrieved {} placemarks from '{}'".format(len(Placemarks), filename))
-        print("Point\tCoordinates")
+    Placemarks = kml.getElementsByTagName('Placemark')
+    if verbose:
+        print(f'  Retrieved {len(Placemarks):,} placemarks from \'{filename}\' ')
+        print(f'Point\tCoordinates')
     points = []
     for i in range(0, len(Placemarks)):
-        coordinates = Placemarks[i].getElementsByTagName("coordinates")
-        point = coordinates[0].firstChild.data.split(",")
+        coordinates = Placemarks[i].getElementsByTagName('coordinates')
+        point = coordinates[0].firstChild.data.split(',')
         points.append(point)
-        if debug > 0:
-            print(" {} \t{}".format(i, point))
+        if verbose > 0:
+            print(f' {i} \t{point}')
     return points

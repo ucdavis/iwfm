@@ -18,5 +18,12 @@
 
 
 def get_utm_zone(longitude):
-    """Get the UTM zone for latitude"""
+    """get_utm_zone() - Get the UTM zone for longitude
+    
+    Parameters:
+      longitude       (float): Latitude
+    
+    Return:
+      UTM zone
+    """
     return int(1 + (longitude + 180.0) / 6.0)

@@ -1,5 +1,5 @@
 # point_in_poly.py
-# Returns TRUE if point <x,y> is inside or on an edge
+# Is the point inside the polygon?
 # Copyright (C) 2020-2021 Hydrolytics LLC
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -18,7 +18,17 @@
 
 
 def point_in_poly(x, y, poly):
-    """Returns TRUE if point <x,y> is inside or on an edge"""
+    """ point_in_poly() - Is the point inside the polygon?
+
+    Parameters:
+      x               (float): Easting 
+      y               (float): Northing
+      ppoly           (obj):   A polygon object
+
+    Returns:
+      TRUE if point <x,y> is inside or on an edge
+      FALSE otherwise
+    """
     if (x, y) in poly:  # check if point is a vertex
         return True
     for i in range(len(poly)):  # check if point is on a boundary

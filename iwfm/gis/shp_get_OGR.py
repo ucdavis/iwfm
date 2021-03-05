@@ -17,11 +17,19 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_get_OGR(infile, debug=0):
-    """Open a shapefile with OGR"""
+def shp_get_OGR(infile, verbose=False):
+    """shp_get_OGR() - Opens a shapefile with OGR
+
+    Parameters:
+      infile          (str):  File name to save info from url
+      verbose         (bool): Turn command-line output on or off
+
+    Returns:
+      shape           (obj):  Shapefile object
+    """
     import ogr as ogr
 
     shape = ogr.Open(infile)
-    if debug:
-        print("=> Opened file {}".format(infile))
+    if verbose:
+        print(f'  Opened file \'{infile}\' ')
     return shape

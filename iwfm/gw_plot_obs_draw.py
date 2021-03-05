@@ -41,6 +41,7 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
     """
     import datetime
     import matplotlib
+    import iwfm as iwfm
 
     # Force matplotlib to not use any Xwindows backend.
     matplotlib.use('TkAgg')  # Set to TkAgg ...
@@ -55,17 +56,12 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
     # 'r-' = red line, 'bo' = blue dots, 'r--' = red dashes, 
     # 'r:' = red dotted line, 'bs' = blue squares, 'g^' = green triangles, etc
 
-    col = well_info[0]  # gather information
-
-    # each hydrograph in gwhyd_obs has dates in the first column
-    # convert the observed values and each set of simulated values to a pair of 
-    # lists, with date, meas format.
+    col = well_info[0] 
 
     ymin, ymax, sim_heads, sim_dates = 1e6, -1e6, [], []
     for j in range(0, no_hyds):
         date_temp, sim_temp = [], []
         for i in range(0, len(gwhyd_obs[j])):
-            #print(f'  ==> i: {i}\tcol: {col}')
             date_temp.append(datetime.datetime.strptime(gwhyd_obs[j][i][0], '%m/%d/%Y'))
             sim_temp.append(gwhyd_obs[j][i][col])
             ymin = min(ymin, gwhyd_obs[j][i][col])
@@ -86,7 +82,7 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
     yearsFmt = mdates.DateFormatter('%Y')
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
-    with PdfPages(well_name + '_' + pad_front(col, 4, '0') + '.pdf') as pdf:
+    with PdfPages(well_name + '_' + iwfm.pad_front(col, 4, '0') + '.pdf') as pdf:
         fig = plt.figure(figsize=(10, 7.5))
         ax = plt.subplot(111)
         ax.xaxis_date()
@@ -110,6 +106,6 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
             plt.plot(sim_dates[j], sim_heads[j], line_colors[j], label=gwhyd_name[j])
 
         leg = ax.legend(frameon=1, facecolor='white')
-        pdf.savefig()  # saves the current figure into a pdf page
+        pdf.savefig()  
         plt.close()
     return 

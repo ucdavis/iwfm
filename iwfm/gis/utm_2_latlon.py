@@ -19,7 +19,6 @@
 
 def utm_2_latlon(easting, northing, zone, band="U"):
     """utm_2_latlon() - Reproject from UTM to geographic coordinates
-    
 
     Parameters:
       easting        (float): Easting (X) value

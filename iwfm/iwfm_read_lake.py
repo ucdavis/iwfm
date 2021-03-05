@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm_read_lake(lake_file, debug=0):
+def iwfm_read_lake(lake_file):
     """ iwfm_read_lake() - Read an IWFM Lake file and returns 
         (a) a list of elements and (b) a list of properties for each lake
 
@@ -31,10 +31,10 @@ def iwfm_read_lake(lake_file, debug=0):
     """
     import iwfm as iwfm
 
+    iwfm.file_test(lake_file)
     lake_lines = open(lake_file).read().splitlines()  
 
-    lake_index = 0  
-    lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  
+    lake_index = iwfm.skip_ahead(0, lake_lines, 0)  
     nlakes = int(lake_lines[lake_index].split()[0])
 
     lakes, lake_elems = [], []

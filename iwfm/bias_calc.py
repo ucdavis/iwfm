@@ -20,6 +20,14 @@
 def bias_calc(predictions, targets):
     """ bias_calc() - Return the Bias between measured (targets) and simulated
         (predictions) values
+
+    Parameters:
+      predictions     (list): List of prediction values as floats
+      targets         (list): List of target values as floats
+
+    Returns:
+      mean            (float): Mean of differences between preditions and targets
+    
     """
     import numpy as np
 

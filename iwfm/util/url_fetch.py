@@ -31,8 +31,8 @@ def url_fetch(url, filename, verbose=False):
     import requests
 
     r = requests.get(url=url, verify=False)
-    with open(filename, "wb") as f:
+    with open(filename, 'wb') as f:
         f.write(r.content)
     if verbose:
-        print("=> Retrieved '{}'".format(filename))
+        print(f'  Retrieved \'{}\' ')
     return 

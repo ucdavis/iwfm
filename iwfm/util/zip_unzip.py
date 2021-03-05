@@ -29,12 +29,13 @@ def zip_unzip(filename, verbose=False):
     """
     import zipfile
 
-    zip = open(filename, "rb")
+    zip = open(filename, 'rb')
     zipList = zipfile.ZipFile(zip)
     for name in zipList.namelist()[1:]:
-        out = open(name, "wb")
+        out = open(name, 'wb')
         out.write(zipList.read(name))
         out.close()
     if verbose:
-        print("=> Unzipped '{}'".format(filename))
-    return 0
+        print(f'  Unzipped \'{filename}\' ')
+    return 
+

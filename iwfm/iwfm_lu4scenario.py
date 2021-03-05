@@ -214,3 +214,33 @@ def iwfm_lu4scenario(
     if verbose:
         print("   Wrote land use data for {} to {}".format(date, outFileName))
     return
+
+if __name__ == "__main__":
+    """ Run iwfm_lu4scenario() from command line    """
+    import sys
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    if len(sys.argv) > 1:  # arguments are listed on the command line
+        out_base_name = sys.argv[1]
+        in_npag_file = sys.argv[2]
+        in_ponded_file = sys.argv[3]
+        in_urban_file = sys.argv[4]
+        in_nvrv_file = sys.argv[5]
+    else:  # ask for file names from terminal
+        out_base_name  = input("Output file basename: ")
+        in_npag_file   = input("IWFM Non-Ponded Ag file name: ")
+        in_ponded_file = input("IWFM Pondes Ag file name: ")
+        in_urban_file  = input("IWFM Urban file name: ")
+        in_nvrv_file   = input("IWFM Native file name: ")
+
+    iwfm.file_test(in_nvrv_file)
+    iwfm.file_test(in_npag_file)
+    iwfm.file_test(in_ponded_file)
+    iwfm.file_test(in_urban_file)
+
+    idb.exe_time()  # initialize timer
+    iwfm.iwfm_lu4scenario(out_base_name,in_npag_file,in_ponded_file,
+        in_urban_file,in_nvrv_file,verbose=False) 
+
+    idb.exe_time()  # print elapsed time

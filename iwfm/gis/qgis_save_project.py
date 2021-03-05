@@ -18,9 +18,16 @@
 
 
 def qgis_save_project(project, name=""):  # save the project
-    """ project is a qcore.QgsProject.instance() """
+    """ qgis_save_project() - Save a project 
+    
+    Parameters:
+      project         (obj):   qcore.QgsProject.instance()
+    
+    Return:
+      Nothing
+    """
     if len(name) < 1:
         project.write()  # Save the project to the same
     else:
         project.write(name)  # Save the project to a new file
-    return 1
+    return 

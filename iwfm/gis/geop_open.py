@@ -18,7 +18,15 @@
 
 
 def geop_open(infile):
-    """ open a file with geopandas and return geopandas object"""
+    """ geop_open() - Open a file with geopandas and return geopandas object
+
+    Parameters:
+      infile          (str):  File name to save info from url
+
+    Returns:
+      gdf_file        (obj):  Geopandas object containing information from the infile
+
+    """
     import geopandas
 
     gdf = geopandas.GeoDataFrame

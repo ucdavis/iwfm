@@ -95,7 +95,7 @@ from iwfm.igsm_read_streams import igsm_read_streams
 from iwfm.write_results import write_results
 from iwfm.simhyd_obs import simhyd_obs
 from iwfm.wdl_meas_stats import wdl_meas_stats
-from iwfm.wds_ts_4_wells import wds_ts_4_wells
+from iwfm.wdl_ts_4_wells import wdl_ts_4_wells
 
 # --- plotting methods --for IWFM output ------------------
 from iwfm.read_obs_smp import read_obs_smp

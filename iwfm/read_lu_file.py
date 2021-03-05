@@ -36,27 +36,19 @@ def read_lu_file(filename, skip=4):
 
     # -- find the file line with the first element's data ------------------------------------
     index = 0
-    while any(
-        (c in comments) for c in data[index][0]
-    ):  # skip lines that begin with 'C', 'c', '#' or '*'
+    while any((c in comments) for c in data[index][0]):
         index += 1
     index += skip  # skip data spec rows
-    while any(
-        (c in comments) for c in data[index][0]
-    ):  # skip lines that begin with 'C', 'c', '#' or '*'
+    while any((c in comments) for c in data[index][0]): 
         index += 1
 
     # -- compile the data from the file ------------------------------------
-    table, temp_table, dates = [], [], []
+    table, elems, dates = [], [], []
 
-    # get the number of columns from the first data line
     line = data[index].split()
-    date = line.pop(0)  # remove the date
-    elem = line.pop(0)  # remove the element number
-    cols = len(line)    # what remains is the number of land use data columns
-    dates.append(date)
 
     # process the lines
+    temp_table = []
     while index < len(data):
         line = data[index].split()
         # if first item is a date, then clean up and start a new table
@@ -66,11 +58,12 @@ def read_lu_file(filename, skip=4):
             if len(temp_table) > 0:  # temp_table is empty for the first time period
                 table.append(temp_table)
             temp_table = []
-        elem = line.pop(0)
+        elem = int(line.pop(0))
+        elems.append(elem)
         for j in range(0, len(line)):
             line[j] = float(line[j])
         temp_table.append(line)
         index += 1
     table.append(temp_table)  # for the last time period
 
-    return table, dates
+    return table, dates, elems

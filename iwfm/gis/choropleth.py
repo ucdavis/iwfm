@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def choropleth(infile,fieldname1="POPULAT11",fieldname2="AREASQKM",iwidth=600,
+def choropleth(infile,fieldname1='POPULAT11',fieldname2='AREASQKM',iwidth=600,
     iheight=400,denrat=80.0,savename=None):
     """choropleth() reads a shapefile and writes a chloropleth image
 
@@ -40,7 +40,7 @@ def choropleth(infile,fieldname1="POPULAT11",fieldname2="AREASQKM",iwidth=600,
 
     inShp = shapefile.Reader(infile)
 
-    img = Image.new("RGB", (iwidth, iheight), (255, 255, 255))  
+    img = Image.new('RGB', (iwidth, iheight), (255, 255, 255))  
     draw = ImageDraw.Draw(img)  
 
     val_index1, val_index2 = None, None

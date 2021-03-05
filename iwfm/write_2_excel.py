@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-def write_2_excel(file_base_name, data, sheets, elements, time_steps, dates, data_type="Crop"):
+def write_2_excel(file_base_name, data, sheets, elements, time_steps, dates, data_type='Crop'):
     """ write_2_excel() - Write a 3D array as 2D tables (row=elements
     x col=time_steps) to an excel workbook with sheets # of worksheets
 
@@ -38,16 +38,16 @@ def write_2_excel(file_base_name, data, sheets, elements, time_steps, dates, dat
     import xlsxwriter
 
     # Create an Excel writer using XlsxWriter as the engine.
-    wkbkname = "".join([file_base_name, ".xlsx"])
+    wkbkname = ''.join([file_base_name, '.xlsx'])
     workbook = xlsxwriter.Workbook(wkbkname)
-    worksheets = ["" for x in range(sheets)]  # empty list
+    worksheets = ['' for x in range(sheets)]  # empty list
     # write to the workbook
     for i in range(sheets):
         worksheets[i] = workbook.add_worksheet(
-            "".join([data_type, str(i + 1)])
+            ''.join([data_type, str(i + 1)])
         )  # Create a worksheet and name it
-        worksheets[i].write(0, 0, "".join([data_type, str(i + 1)]))  # header label
-        worksheets[i].write(1, 0, "WYr")  #  write header row
+        worksheets[i].write(0, 0, ''.join([data_type, str(i + 1)]))  # header label
+        worksheets[i].write(1, 0, 'WYr')  #  write header row
         for k in range(time_steps):  # write dates in first column
             worksheets[i].write(1, k + 1, int(dates[k].year))
         for j in range(elements):  # write data

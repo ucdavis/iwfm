@@ -18,8 +18,18 @@
 
 
 def shp2png_empty(shape, outname, iwidth=400, iheight=600):
-    """shp2png2() converts a shapefile to a raster and saves as a
-    png file - just outline with no fill"""
+    """shp2png2() - Converts a shapefile to a raster and saves as a
+    png file - just the outline with no fills
+
+    Parameters:
+      shape           (obj):   Shapefile object
+      outname         (str):   Name of output file
+      iwidth          (int):   Image width
+      iheight         (int):   Image height
+    
+    Return:
+      Nothing
+    """
     import pngcanvas as pngcanvas
 
     xdist = shape.bbox[2] - shape.bbox[0]
@@ -33,6 +43,7 @@ def shp2png_empty(shape, outname, iwidth=400, iheight=600):
         pixels.append([px, py])
     c = pngcanvas.PNGCanvas(iwidth, iheight)
     c.polyline(pixels)
-    f = open(outname, "wb")
+    f = open(outname, 'wb')
     f.write(c.dump())
     f.close
+    return

@@ -18,21 +18,30 @@
 
 
 def wgs84_2_utm(lon, lat):
-    """wgs84_2_utm() reprojects a WGS84 shapefile to UTM"""
+    """ wgs84_2_utm() - Reprojects a WGS84 shapefile to UTM
+
+    Parameters:
+      lat             (float): Latitude
+      lon             (float): Longitude
+
+    Returns:
+      [easting, northing, altitude]
+    
+    """
     import osr as osr
 
     utm_coord_sys = osr.SpatialReference()
-    utm_coord_sys.SetWellKnownGeogCS(
-        "WGS84"
-    )  # Set geographic coordinate system to handle lat/lon
+    
+    # Set geographic coordinate system to handle lat/lon
+    utm_coord_sys.SetWellKnownGeogCS('WGS84') 
     utm_coord_sys.SetUTM(get_utm_zone(lon), is_northern(lat))
-    wgs84_coord_sys = (
-        utm_coord_sys.CloneGeogCS()
-    )  # Clone ONLY the geographic coordinate system
+    
+    # Clone ONLY the geographic coordinate system
+    wgs84_coord_sys = (utm_coord_sys.CloneGeogCS())  
+    
     # create transform component
     wgs84_to_utm_transform = osr.CoordinateTransformation(
-        wgs84_coord_sys, utm_coord_sys
-    )  # (<from>, <to>)
-    return wgs84_to_utm_transform.TransformPoint(
-        lon, lat, 0
-    )  # returns easting, northing, altitude
+        wgs84_coord_sys, utm_coord_sys)  # (<from>, <to>)
+
+    # returns easting, northing, altitude
+    return wgs84_to_utm_transform.TransformPoint(lon, lat, 0)  

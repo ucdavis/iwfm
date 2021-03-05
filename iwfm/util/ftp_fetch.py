@@ -17,15 +17,26 @@
 # -----------------------------------------------------------------------------
 
 
-def ftp_fetch(server, dir, filename, verbose=0):
-    """ftp_fetch() downloads file filename from server at path dir"""
+def ftp_fetch(server, dir, filename='download.txt', verbose=False):
+    """ ftp_fetch() - Downloads a file from a server and saves to
+        the specified directory and file name
+
+    Parameters:
+      server          (str):   URL ir INET address of FTP server
+      dir             (str):   Download directory name
+      filename        (str):   Download file name
+    
+    Return:
+      nothing
+        
+    """
     import ftp
 
     ftp = ftplib.FTP(server)
     ftp.login()  # anonymous login
     ftp.cwd(dir)
-    with open(filename, "wb") as out:
-        ftp.retrbinary("RETR " + filename, out.write)
+    with open(filename, 'wb') as out:
+        ftp.retrbinary('RETR ' + filename, out.write)
     if verbose:
-        print("=> Retrieved '{}'".format(filename))
-    return 0
+        print(f'  Downloaded \'{filename}\' ')
+    return 

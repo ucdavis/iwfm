@@ -19,7 +19,6 @@
 
 def xml_tracks(filename, verbose=False):
     """xml_tracks() - Reproject from UTM to geographic coordinates
-    
 
     Parameters:
       filename        (str):  Name of file continaing UTM coordinates

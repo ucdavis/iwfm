@@ -1,4 +1,4 @@
-# wds_ts_4_wells.py
+# wdl_ts_4_wells.py
 # Write well data as time series
 # Copyright (C) 2020-2021 Hydrolytics LLC
 # -----------------------------------------------------------------------------
@@ -17,8 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
-def wds_ts_4_wells(station_file, waterlevel_file, verbose=False):
-    """ wds_ts_4_wells() - Write well data as time series
+def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
+    """ wdl_ts_4_wells() - Write well data as time series
 
     Parameters:
       station_file    (str):  Name of well information file
@@ -68,3 +68,24 @@ def wds_ts_4_wells(station_file, waterlevel_file, verbose=False):
         print('Processed {:,} lines from {}'.format(lines_in, waterlevel_file))
         print('Wrote {:,} lines to {}'.format(lines_out, output_file))
     return
+
+if __name__ == "__main__":
+    """ Run wdl_ts_4_wells() from command line    """
+    import sys
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    if len(sys.argv) > 1:  # arguments are listed on the command line
+        station_file = sys.argv[1]
+        waterlevel_file = sys.argv[2]
+    else:  # ask for file names from terminal
+        station_file = input("Well station file name: ")
+        waterlevel_file   = input("Water level file name: ")
+
+    iwfm.file_test(station_file)  
+    iwfm.file_test(waterlevel_file)
+
+    idb.exe_time()  # initialize timer
+    iwfm.wdl_ts_4_wells(station_file, waterlevel_file, verbose=True)
+
+    idb.exe_time()  # print elapsed time

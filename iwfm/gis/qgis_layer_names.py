@@ -18,26 +18,17 @@
 
 
 def qgis_layer_names(project, debug=0):
-    """ project is a qcore.QgsProject.instance() """
+    """ qgis_layer_names() - Get a list of project layer names and paths
+    
+    Parameters:
+      project         (obj):   qcore.QgsProject.instance()
+    
+    Return:
+      layer_names     (list):  Project layer names
+      layer_paths     (list):  Paths to layer files
+    """
     root = project.layerTreeRoot()
     layers = project.mapLayers()
-    if debug:
-        print("=> Getting layer names")  # debugging
-        print("  => project: {}".format(project))
-        print("  => title: '{}'".format(project.title()))
-        print("  => root:  '{}'".format(project.layerTreeRoot()))
-        print("  => layers: {}".format(project.count()))
-        print("  => mapLayers: {}".format(project.mapLayers()))
-        print("  => values: {}".format(project.mapLayers().values()))
-
-    # layer_names = [layer.name() for layer in project.mapLayers().values()]
-    # layer_names = [layer.name() for layer in project.layerTreeRoot()]
-    # layer_names = project.layerTreeRoot().children()
     layer_names = [layer.name() for layer in project.layerTreeRoot().children()]
     layer_paths = [layer.source() for layer in project.mapLayers().values()]
-    if debug:
-        print("  => Layer names:")
-        print("      {}".format(layer_names))
-        print("  => Layer paths:")
-        print("      {}".format(layer_paths))
-    return layer_names
+    return layer_names, layer_paths

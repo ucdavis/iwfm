@@ -18,8 +18,18 @@
 
 
 def shp2png(shape, outname, iwidth=400, iheight=600):
-    """shp2png() converts a shapefile to a raster and saves as a
-    png file - including fill"""
+    """ shp2png() - Convert a shapefile to a raster and save as a
+    png file - including white fill
+    
+    Parameters:
+      shape           (str):   Name of shapefile
+      outname         (str):   Name of output PNG file
+      iwidth          (int):   Width of image in pixels
+      iheight         (int):   Height of image in pixels
+    
+    Return:
+      Nothing
+    """
     from PIL import Image, ImageDraw, ImageOps
 
     xdist = shape.bbox[2] - shape.bbox[0]
@@ -31,8 +41,8 @@ def shp2png(shape, outname, iwidth=400, iheight=600):
         px = int(iwidth - ((shape.bbox[2] - x) * xratio))
         py = int((shape.bbox[3] - y) * yratio)
         pixels.append((px, py))
-    img = Image.new("RGB", (iwidth, iheight), "white")
+    img = Image.new('RGB', (iwidth, iheight), 'white')
     draw = ImageDraw.Draw(img)
-    draw.polygon(pixels, outline="rgb(203, 196, 190)", fill="rgb(198, 204, 189)")
+    draw.polygon(pixels, outline='rgb(203, 196, 190)', fill='rgb(198, 204, 189)')
     img.save(outname)
-    return 0
+    return 

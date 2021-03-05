@@ -42,3 +42,32 @@ def nearest_node(point, node_set):
             dist = new_dist
             nearest = line[0]
     return nearest
+
+if __name__ == "__main__":
+    """ Run nearest_node() from command line     """
+    import sys
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    if len(sys.argv) > 1:  # arguments are listed on the command line
+        node_file = sys.argv[1]
+        well_file = sys.argv[2]
+    else:  # ask for file names from terminal
+        node_file = input("IWFM Node file name: ")
+        well_file = input("Well file name: ")
+
+    iwfm.file_test(node_file) 
+    iwfm.file_test(well_file)
+
+    idb.exe_time()  # initialize timer
+    node_coord, node_list = iwfm.iwfm_read_nodes(node_file)
+    # read list of points from well file
+    # ** NEED TO ADD THIS PART **
+    print(f'  ** NEED TO UPDATE nearest_node.py TO READ WELL FILE ')
+    print(f'  ** EXITING')
+    sys.exit()
+
+    # cycle through points for nearest node
+    nearest = iwfm.nearest_node(point, node_set)
+
+    idb.exe_time()  # print elapsed time

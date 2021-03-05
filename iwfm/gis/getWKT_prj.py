@@ -17,17 +17,22 @@
 # -----------------------------------------------------------------------------
 
 
-def getWKT_prj(epsg_code, debug=0):
-    """getWKT_prj() gets a WKT string containing PRJ info for <epsg_code>"""
+def getWKT_prj(epsg_code, verbose=False):
+    """ getWKT_prj() - Gets a WKT string containing PRJ info for <epsg_code>
+
+    Parameters:
+      epsg_code       (int):  EPSG code
+      verbose         (bool): Turn command-line output on or off
+
+    Returns:
+      output          (str):  File name to save info from url
+
+    """
     from urllib.request import urlopen
 
-    wkt = urlopen(
-        "http://spatialreference.org/ref/epsg/{0}/prettywkt/".format(epsg_code)
-    )
-    ans = "{}".format(wkt.read())  # convert bytecode to string
-    output = (
-        ans[1:].replace(" ", "").replace("\n", "").replace("\\", "").replace(",n", ",")
-    )
-    if debug:
-        print(" wkt:   {}".format(output))
+    wkt = urlopen(f'http://spatialreference.org/ref/epsg/{epsg_code:0}/prettywkt/')
+    ans = f'{wkt.read()}')  # convert bytecode to string
+    output = (ans[1:].replace(' ', '').replace('\n', '').replace('\\', '').replace(',n', ','))
+    if verbose:
+        print(f'  wkt:   {output}')
     return output

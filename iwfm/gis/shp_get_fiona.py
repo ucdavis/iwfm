@@ -17,11 +17,16 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_get_fiona(infile, debug=0):
-    """Open a shapefile using fiona"""
+def shp_get_fiona(infile):
+    """ shp_get_fiona() - Open a shapefile using fiona
+    
+    Parameters:
+      infile          (str):   Name of input file
+    
+    Return:
+       f              (obj):   Shapefile object
+    """
     import fiona
 
     f = fiona.open(infile)
-    if debug:
-        print("=> Opened file {}".format(infile))
     return f

@@ -36,6 +36,7 @@ def gw_plot_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,titlewords
       count           (int):  Number of files produced
     """
     import iwfm as iwfm
+
     # cycle through the list of wells in obs to print plots
     # initialize
     i, count, date, meas = 1, 0, [], []

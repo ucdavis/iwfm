@@ -45,9 +45,7 @@ def iwfm_lu2sub(
     iwfm.file_test(lu_file)
 
     # -- read element file
-    elem_ids, _ = iwfm.iwfm_read_elements(
-        elem_file
-    )  # read element info
+    elem_ids, _, _ = iwfm.iwfm_read_elements(elem_file) 
     elem_ids.sort()
 
     # -- read land use file
