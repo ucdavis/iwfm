@@ -24,5 +24,5 @@ def shp_fields_print(f):
     fields = shp_fields(f)
     print("  ['NAME', 'TYPE', LENGTH, PRECISION]")
     for s in fields:
-        print("  {}".format(s))
-    return 0
+        print(f'  {s}')
+    return

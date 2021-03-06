@@ -25,23 +25,21 @@ def img_clip(raster, clipshape, outfile):
     from PIL import Image, ImageDraw, ImageOps  # pillow
     import iwfm as iwfm
 
-    if clipshape[-4:] != ".shp":
-        clipshape += ".shp"
-    if outfile[-4:] != ".tif":
-        outfile += ".tif"
-    srcArray = gdal_array.LoadFile(raster)  # Load the source data as a gdal_array array
-    srcImage = gdal.Open(
-        raster
-    )  # Also load as a gdal image to get geotransform (world file) info
+    if clipshape[-4:] != '.shp':
+        clipshape += '.shp'
+    if outfile[-4:] != '.tif':
+        outfile += '.tif'
+    
+    # Load the source data as a gdal_array array
+    srcArray = gdal_array.LoadFile(raster)  
+
+    # Also load as a gdal image to get geotransform (world file) info
+    srcImage = gdal.Open(raster)  
     geoTrans = srcImage.GetGeoTransform()
     r = shapefile.Reader(clipshape)  # Use pyshp to open the shapefile
 
-    (
-        minX,
-        minY,
-        maxX,
-        maxY,
-    ) = r.bbox  # Convert the layer extent to image pixel coordinates
+    # Convert the layer extent to image pixel coordinates
+    minX,minY,maxX,maxY = r.bbox  
     ulX, ulY = iwfm.world2pixel(geoTrans, minX, maxY)
     lrX, lrY = iwfm.world2pixel(geoTrans, maxX, minY)
 
@@ -49,27 +47,27 @@ def img_clip(raster, clipshape, outfile):
     pxHeight = int(lrY - ulY)
     clip = srcArray[:, ulY:lrY, ulX:lrX]
 
-    geoTrans = list(
-        geoTrans
-    )  # Create a new geomatrix for the image to contain georeferencing data
+    # Create a new geomatrix for the image to contain georeferencing data
+    geoTrans = list(geoTrans)  
     geoTrans[0] = minX
     geoTrans[3] = maxY
 
-    pixels = (
-        []
-    )  # Map points to pixels for drawing the county boundary on a blank 8-bit, black and white, mask image.
+    # Map points to pixels for drawing the county boundary on a blank 8-bit, black and white, mask image.
+    pixels = ([])  
     for p in r.shape(0).points:
         pixels.append(iwfm.world2pixel(geoTrans, p[0], p[1]))
-    rasterPoly = Image.new("L", (pxWidth, pxHeight), 1)
-    rasterize = ImageDraw.Draw(
-        rasterPoly
-    )  # Create a blank image in PIL to draw the polygon.
+    rasterPoly = Image.new('L', (pxWidth, pxHeight), 1)
+
+    # Create a blank image in PIL to draw the polygon.
+    rasterize = ImageDraw.Draw(rasterPoly)  
     rasterize.polygon(pixels, 0)
     mask = iwfm.img_2_array(rasterPoly)  # Convert the PIL image to a NumPy array
-    clip = gdal_array.numpy.choose(mask, (clip, 0)).astype(
-        gdal_array.numpy.uint8
-    )  # Clip the image using the mask
-    output = gdal_array.SaveArray(
-        clip, outfile, format="GTiff", prototype=raster
-    )  # Save ndvi as tiff
-    output = None
+    
+    # Clip the image using the mask
+    clip = gdal_array.numpy.choose(mask, (clip, 0)).astype(gdal_array.numpy.uint8)  
+    
+    # Save ndvi as tiff
+    output = gdal_array.SaveArray(clip, outfile, format='GTiff', prototype=raster)  
+    
+    output = None  # explicitly release memory
+    return

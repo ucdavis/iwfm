@@ -17,11 +17,11 @@
 # -----------------------------------------------------------------------------
 
 
-def geocode_wkt(address, degub=0):
+def geocode_wkt(address, verbose=False):
     """Return the lat-lon of a street address"""
     import geocoder
 
     g = geocoder.google(address)
-    if debug:
-        print(" Geocode of {} in WKT: {}".format(address, g.wkt))
+    if verbose:
+        print(f'  Geocode of {address} in WKT: {g.wkt}')
     return g.wkt

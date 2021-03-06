@@ -23,16 +23,16 @@ def img_extract(source, target):
     import ogr as ogr
     import osr as osr
 
-    tgtLayer = "extract"  # OGR layer name
+    tgtLayer = 'extract'  # OGR layer name
     srcDS = gdal.Open(source)  # Open the input raster
     band = srcDS.GetRasterBand(1)  # Grab the first band
     mask = band  # Force gdal to use the band as a mask
-    driver = ogr.GetDriverByName("ESRI Shapefile")  # Set up the output shapefile
+    driver = ogr.GetDriverByName('ESRI Shapefile')  # Set up the output shapefile
     shp = driver.CreateDataSource(target)
     srs = osr.SpatialReference()  # Copy the spatial reference
     srs.ImportFromWkt(srcDS.GetProjectionRef())
     layer = shp.CreateLayer(tgtLayer, srs=srs)
-    fd = ogr.FieldDefn("DN", ogr.OFTInteger)  # Set up the dbf file
+    fd = ogr.FieldDefn('DN', ogr.OFTInteger)  # Set up the dbf file
     layer.CreateField(fd)
     dst_field = 0
     extract = gdal.Polygonize(band, mask, layer, dst_field, [], None)

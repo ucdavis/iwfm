@@ -17,12 +17,12 @@
 # -----------------------------------------------------------------------------
 
 
-def point2geojson(point, debug=0):
+def point2geojson(point, verbose=False):
     """ point2geojson(): point to geojson format """
     import geojson
 
     geojs = geojson.Point(point)
-    if debug:
-        print("=> GeoJSON Data: {}")
+    if verbose:
+        print(f'=> GeoJSON Data: ')
         print(geojson.dumps(geojs, indent=5))
     return geojs

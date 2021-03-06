@@ -24,24 +24,24 @@ def qgis_print_geometry(geom):
         # the geometry type can be of single or multi type
         if geom_SingleType:
             x = geom.asPoint()
-            print("Point: ", x)
+            print(f'Point: {x}')
         else:
             x = geom.asMultiPoint()
-            print("MultiPoint: ", x)
+            print(f'MultiPoint: {x}')
     elif geom.type() == QgsWkbTypes.LineGeometry:
         if geom_SingleType:
             x = geom.asPolyline()
-            print("Line: ", x, "length: ", geom.length())
+            print(f'Line: {x}, length: {geom.length()'})
         else:
             x = geom.asMultiPolyline()
-            print("MultiLine: ", x, "length: ", geom.length())
+            print(f'MultiLine: {x}, length: {geom.length()}')
     elif geom.type() == QgsWkbTypes.PolygonGeometry:
         if geom_SingleType:
             x = geom.asPolygon()
-            print("Polygon: ", x, "Area: ", geom.area())
+            print(f'Polygon: {x}, Area: {geom.area()}')
         else:
             x = geom.asMultiPolygon()
-            print("MultiPolygon: ", x, "Area: ", geom.area())
+            print(f'MultiPolygon: {x}, Area: {geom.area()}')
     else:
-        print("Unknown or invalid geometry")
-    return 1
+        print('Unknown or invalid geometry')
+    return

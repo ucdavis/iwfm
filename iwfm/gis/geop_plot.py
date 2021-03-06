@@ -21,4 +21,4 @@ def geop_plot(gdf_frame):
     """ Create and dislay a plot from a geopandas dataframe"""
     fig = gdf_frame.plot()
     plt.show()
-    return 0
+    return

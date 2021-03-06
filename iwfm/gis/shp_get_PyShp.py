@@ -17,11 +17,11 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_get_PyShp(infile, debug=0):
+def shp_get_PyShp(infile, verbose=False):
     """Read a shapefile"""
     import shapefile  # pyshp
 
     shp = shapefile.Reader(infile)
-    if debug:
-        print("=> Opened file {}".format(infile))
+    if verbose:
+        print(f'  Opened shapefile {infile}')
     return shp

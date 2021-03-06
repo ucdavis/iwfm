@@ -22,7 +22,7 @@ def mysql_new_table(cur, table_name, debug=0):
     # Add name and location fields.
     # The location field is spatially enabled to hold GIS data
     cur.execute(
-        "CREATE TABLE "
+        'CREATE TABLE '
         + table_name
-        + " (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(50) NOT NULL, locationGeometry NOT NULL)"
+        + ' (id int NOT NULL AUTO_INCREMENT PRIMARY KEY, Name varchar(50) NOT NULL, locationGeometry NOT NULL)'
     )

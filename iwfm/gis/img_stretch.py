@@ -24,5 +24,8 @@ def img_stretch(infile, outfile):
 
     arr = gdal_array.LoadFile(infile)
     stretched = stretch(arr)
-    output = gdal_array.SaveArray(arr, outfile, format="GTiff", prototype=infile)
+    output = gdal_array.SaveArray(arr, outfile, format='GTiff', prototype=infile)
     output = None
+
+    return
+    

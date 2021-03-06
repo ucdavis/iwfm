@@ -17,11 +17,11 @@
 # -----------------------------------------------------------------------------
 
 
-def geocode_json(address, degub=0):
+def geocode_json(address, verbose=False):
     """Return the lat-lon of a street address"""
     import geocoder
 
     g = geocoder.google(address)
-    if debug:
-        print(" Geocode of {} in geojson: {}".format(address, g.geojson))
+    if verbose:
+        print(f'  Geocode of {address} in geojson: {g.geojson}')
     return g.geojson

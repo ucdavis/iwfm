@@ -17,13 +17,13 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_bounds_fiona(filename, debug=0):
+def shp_bounds_fiona(filename, verbose=False):
     """ Return the shapefile bounds"""
     import fiona
 
     f = fiona.open(filename)
     b = f.bounds
-    f = None
-    if debug:
-        print(" Shapefile bounds: {}".format(b))
+    f = None   # release memory
+    if verbose:
+        print(f' Shapefile {filename} bounds: {b}')
     return b

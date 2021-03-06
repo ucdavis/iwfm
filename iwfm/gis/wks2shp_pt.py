@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def wks2shp_pt(inwksheet, outshp, sheet_index=0, debug=1):
+def wks2shp_pt(inwksheet, outshp, sheet_index=0):
     """wks2shp_pt() reads an Excel workbook and creates a POINT shapefile"""
     import xlrd
     import iwfm as iwfm
@@ -32,7 +32,7 @@ def wks2shp_pt(inwksheet, outshp, sheet_index=0, debug=1):
         for j in range(sheet.ncols):
             values.append(sheet.cell(i, j).value)
         w.record(*values)
-        w.point(
-            float(values[-2]), float(values[-1])
-        )  # get lat, lon from last two columns
+        # get lat, lon from last two columns
+        w.point(float(values[-2]), float(values[-1]))  
     w.close
+    return

@@ -17,15 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_get_writer(outfile, type, debug=0):
+def shp_get_writer(outfile, type):
     """Get a writer for a shapefile of the same type as the input shapefile"""
     import shapefile  # PyShp
 
-    if debug:
-        print("      shp_get_writer()")
     w = shapefile.Writer(outfile, shapeType=type)  # get Writer
-    if debug:
-        print("      - shp_type(in):  {}".format(type))
-        print("      - shp_type(out): {}".format(shp_type(w)))
-        print("      - leaving shp_get_writer()")
     return w

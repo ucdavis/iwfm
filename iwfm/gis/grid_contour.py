@@ -22,14 +22,14 @@ def grid_contour(source, target):
     import ogr as ogr
     import gdal as gdal
 
-    if target[-4:] != ".shp":
-        target += ".shp"
-    ogr_driver = ogr.GetDriverByName("ESRI Shapefile")
+    if target[-4:] != '.shp':
+        target += '.shp'
+    ogr_driver = ogr.GetDriverByName('ESRI Shapefile')
     ogr_ds = ogr_driver.CreateDataSource(target)
     ogr_lyr = ogr_ds.CreateLayer(target, geom_type=ogr.wkbLineString25D)
-    field_defn = ogr.FieldDefn("ID", ogr.OFTInteger)
+    field_defn = ogr.FieldDefn('ID', ogr.OFTInteger)
     ogr_lyr.CreateField(field_defn)
-    field_defn = ogr.FieldDefn("ELEV", ogr.OFTReal)
+    field_defn = ogr.FieldDefn('ELEV', ogr.OFTReal)
     ogr_lyr.CreateField(field_defn)
 
     # gdal.ContourGenerate() arguments:
@@ -45,3 +45,6 @@ def grid_contour(source, target):
 
     ds = gdal.Open(source)
     gdal.ContourGenerate(ds.GetRasterBand(1), 400, 10, [], 0, 0, ogr_lyr, 0, 1)
+
+    return
+    

@@ -17,23 +17,23 @@
 # -----------------------------------------------------------------------------
 
 
-def mysql_create(dbname, host, port=3306, user="root", passwd="", debug=0):
-    """ mysql_create() Create a mysql database """
+def mysql_create(dbname, host, port=3306, user='root', passwd='', verbose=False):
+    """ mysql_create() - Create a mysql database """
     import pymysql
 
     # establish a database connection on local machine as root database user
-    conn = pymysql.connect(host=host, port=port, user=user, passwd=passwd, db="mysql")
+    conn = pymysql.connect(host=host, port=port, user=user, passwd=passwd, db='mysql')
     # conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='', db='mysql')
 
-    if debug:
-        print(" PyMySQL connected to {}".format(dbname))
+    if verbose:
+        print(f'  PyMySQL connected to {dbname}')
 
     # get the database cursor needed to change the database
     cur = conn.cursor()
 
     # check if database exists, and drop it if it does
-    cur.execute("DROP DATABASE IF EXISTS " + dbname)
-    cur.execute("CREATE DATABASE " + dbname)
+    cur.execute('DROP DATABASE IF EXISTS ' + dbname)
+    cur.execute('CREATE DATABASE ' + dbname)
 
     # Close cursor and connection
     cur.close()

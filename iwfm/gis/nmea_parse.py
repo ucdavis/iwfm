@@ -29,5 +29,7 @@ def nmea_parse(infile):
         nmea_objects += next_data
         next_data = nmea_stream.get_objects()
     for nmea_obj in nmea_objects:
-        if hasattr(nmea_obj, "lat"):
-            print("    Lat/Lon: ({}, {})".format(nmea_obj.lat, nmea_obj.lon))
+        if hasattr(nmea_obj, 'lat'):
+            print(f'    Lat/Lon: ({nmea_obj.lat}, {nmea_obj.lon})')
+    return
+    

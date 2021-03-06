@@ -17,18 +17,17 @@
 # -----------------------------------------------------------------------------
 
 
-def qgis_init(debug=0):
+def qgis_init(verbose=False):
     import qgis.core as qcore
     import init_qgis_paths as init_qgis_paths
 
-    if debug:
-        print("  => QGIS initializing")  # debugging
+    if verbose:
+        print('  Initializing QGIS') 
     app_path = init_qgis_paths()
     qcore.QgsApplication.setPrefixPath(app_path, True)  # Path to QGIS binary
-    qgs = qcore.QgsApplication(
-        [], True
-    )  # Create a reference to the QgsApplication, True = enables GUI (for applications)
+    # Create a reference to the QgsApplication, True = enables GUI (for applications)
+    qgs = qcore.QgsApplication([], True)  
     qgs.initQgis()  # load providers
-    if debug:
-        print("  => QGIS initialized")  # debugging
-    return
+    if verbose:
+        print('  QGIS Initialized') 
+    return qgs

@@ -18,7 +18,7 @@
 
 
 def geocode_mp(cities):
-    """ geo_code() = Use multiprocessing to find multiple geocodes
+    """ geo_code() - Use multiprocessing to find multiple geocodes
 
     Parameters:
       cities          (list): List of city names to geocode

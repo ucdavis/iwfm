@@ -17,9 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def snodes2shp(
-    nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbose=0, debug=0
-):
+def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbose=False):
     """ snodes2shp() creates an IWFM stream nodes shapefile """
     import sys
 
@@ -27,29 +25,25 @@ def snodes2shp(
     import fiona.crs  # fiona module defining crs
     from shapely.geometry import Point, mapping
 
-    snode_shapename = f"{shape_name}_StreamNodes.shp"
-    if debug:
-        print(" --> Creating {}".format(snode_shapename))
+    snode_shapename = f'{shape_name}_StreamNodes.shp'
 
     # Define the Point feature geometry
     snode_schema = {
-        "geometry": "Point",
-        "properties": {
-            "snode_id": "int",
-            "gw_node": "int",
-            "reach": "int",
-            "bottom": "float:9.2",
+        'geometry': 'Point',
+        'properties': {
+            'snode_id': 'int',
+            'gw_node': 'int',
+            'reach': 'int',
+            'bottom': 'float:9.2',
         },
     }
-    if debug:
-        print(" --> Defined schema for {}".format(snode_shapename))
 
     # Write a new stream node shapefile - EPSG 26910 = NAD 83 UTM 10
     with fiona.open(
         snode_shapename,
-        "w",
+        'w',
         crs=fiona.crs.from_epsg(epsg),
-        driver="ESRI Shapefile",
+        driver='ESRI Shapefile',
         schema=snode_schema,
     ) as out:
         for i in range(0, nsnodes):
@@ -61,16 +55,14 @@ def snodes2shp(
                 )
                 out.write(
                     {
-                        "geometry": mapping(point),
-                        "properties": {
-                            "snode_id": i + 1,
-                            "gw_node": this_node[0],
-                            "reach": this_node[1],
-                            "bottom": float(this_node[2]),
+                        'geometry': mapping(point),
+                        'properties': {
+                            'snode_id': i + 1,
+                            'gw_node': this_node[0],
+                            'reach': this_node[1],
+                            'bottom': float(this_node[2]),
                         },
                     }
                 )
     if verbose:
-        print("  Wrote shapefile {}".format(snode_shapename))
-    if debug:
-        print("\n")
+        print(f'  Wrote shapefile {snode_shapename}')

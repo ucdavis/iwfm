@@ -17,13 +17,13 @@
 # -----------------------------------------------------------------------------
 
 
-def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=0, debug=0):
+def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=False):
     """ nodes2shp() creates an IWFM nodes shapefile """
     import sys
     import pandas as pd
     import geopandas as gpd
 
-    node_shapename = f"{shape_name}_Nodes.shp"
+    node_shapename = f'{shape_name}_Nodes.shp'
 
     # calculate base altitude for each node
     base = []
@@ -36,35 +36,33 @@ def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=0, debug=0):
     # Create field names for layer properties
     field_names = []
     for i in range(0, nlayers):
-        field_names.append("aqthick_" + str(i + 1))
-        field_names.append("laythick_" + str(i + 1))
+        field_names.append('aqthick_' + str(i + 1))
+        field_names.append('laythick_' + str(i + 1))
 
     # Create a pandas dataframe
     df = pd.DataFrame(
         {
-            "node_id": [row[0] for row in node_strat],
-            "gse": [row[1] for row in node_strat],
-            "base": base,
-            "easting": [row[0] for row in node_coords],
-            "northing": [row[1] for row in node_coords],
+            'node_id': [row[0] for row in node_strat],
+            'gse': [row[1] for row in node_strat],
+            'base': base,
+            'easting': [row[0] for row in node_coords],
+            'northing': [row[1] for row in node_coords],
         }
     )
     for i in range(
         0, nlayers * 2
     ):  # Add two fields for each layer (aquiclude thickness and aquifer thickness)
         df.insert(i + 2, field_names[i], [row[i + 2] for row in node_strat])
-    if debug:
-        print(" --> Created pandas dataframe for {}".format(node_shapename))
+    if verbose:
+        print(f'  Created pandas dataframe for {node_shapename}')
 
     # Convert pandas dataframe to geopandas geodataframe
     gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.easting, df.northing))
-    gdf.crs = "epsg:26910"
+    gdf.crs = 'epsg:26910'
 
     # Write a new node shapefile - EPSG 26910 = NAD 83 UTM 10
     gdf.to_file(node_shapename)
     if verbose:
-        print("  Wrote shapefile {}".format(node_shapename))
-    if debug:
-        print("\n")
+        print(f'  Wrote shapefile {node_shapename}')
 
-    return 1
+    return

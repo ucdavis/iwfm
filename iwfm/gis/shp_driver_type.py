@@ -17,13 +17,13 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_driver_type(filename, debug=0):
+def shp_driver_type(filename, verbose=False):
     """ Return the driver"""
     import fiona
 
     f = fiona.open(filename)
     d = f.driver
-    f = None
-    if debug:
-        print(d)
+    f = None # release memory
+    if verbose:
+        print(f'  Driver for {filename}: {d}')
     return d

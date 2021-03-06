@@ -23,4 +23,5 @@ def raster_band2jpeg(infile, band, outfile):
 
     srcArray = gdal_array.LoadFile(infile)
     band = srcArray[band - 1]
-    gdal_array.SaveArray(band, outfile, format="JPEG")
+    gdal_array.SaveArray(band, outfile, format='JPEG')
+    return

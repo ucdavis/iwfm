@@ -23,10 +23,10 @@ def shp_epsg(filename):
     from urllib.request import urlopen
     import json
 
-    if filename[-4:] != ".prj":
-        filename = filename + ".prj"
-    with open(filename, "r") as f:
-        q = urlencode({"exact": True, "error": True, "mode": "wkt", "terms": f.read()})
-        r = urlopen("http://prj2epsg.org/search.json", q.encode())
+    if filename[-4:] != '.prj':
+        filename = filename + '.prj'
+    with open(filename, 'r') as f:
+        q = urlencode({'exact': True, 'error': True, 'mode': 'wkt', 'terms': f.read()})
+        r = urlopen('http://prj2epsg.org/search.json', q.encode())
         j = json.loads(r.read().decode())
-    return int(j["codes"][0]["code"])
+    return int(j['codes'][0]['code'])

@@ -23,30 +23,30 @@ def shp_type_txt(f):
 
     type = iwfm.shp_type(f)
     if type == 1:
-        return "POINT"
+        return 'POINT'
     elif type == 3:
-        return "LINE"
+        return 'LINE'
     elif type == 5:
-        return "POLYGON"
+        return 'POLYGON'
     elif type == 8:
-        return "MULTIPOINT"
+        return 'MULTIPOINT'
     elif type == 11:
-        return "POINTZ"
+        return 'POINTZ'
     elif type == 13:
-        return "POLYLINEZ"
+        return 'POLYLINEZ'
     elif type == 15:
-        return "POLYGONZ"
+        return 'POLYGONZ'
     elif type == 18:
-        return "MULTIPOINTZ"
+        return 'MULTIPOINTZ'
     elif type == 21:
-        return "POINTM"
+        return 'POINTM'
     elif type == 23:
-        return "POLYLINEM"
+        return 'POLYLINEM'
     elif type == 25:
-        return "POLYGONM"
+        return 'POLYGONM'
     elif type == 28:
-        return "MULTIPOINTM"
+        return 'MULTIPOINTM'
     elif type == 31:
-        return "MULTIPATCH"
+        return 'MULTIPATCH'
     else:
-        return "NULL"
+        return 'NULL'

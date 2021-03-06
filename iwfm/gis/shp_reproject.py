@@ -29,7 +29,7 @@ def shp_reproject(srcName, tgtName, spatRef):
     tgt_spatRef.ImportFromEPSG(spatRef)
 
     # Source shapefile
-    driver = ogr.GetDriverByName("ESRI Shapefile")
+    driver = ogr.GetDriverByName('ESRI Shapefile')
     src = driver.Open(srcName, 0)
     srcLyr = src.GetLayer()
     src_spatRef = srcLyr.GetSpatialRef()  # Source spatial reference
@@ -59,11 +59,11 @@ def shp_reproject(srcName, tgtName, spatRef):
     tgt.Destroy()
     # Create the prj file
     tgt_spatRef.MorphToESRI()  # Convert geometry to ESRI WKT format
-    prj = open(lyrName + ".prj", "w")
+    prj = open(lyrName + '.prj', 'w')
     prj.write(tgt_spatRef.ExportToWkt())
     prj.close()
     # Just copy dbf contents over rather than rebuild the dbf using the
     # ogr API since we're not changing anything.
-    srcDbf = os.path.splitext(srcName)[0] + ".dbf"
-    tgtDbf = lyrName + ".dbf"
+    srcDbf = os.path.splitext(srcName)[0] + '.dbf'
+    tgtDbf = lyrName + '.dbf'
     shutil.copyfile(srcDbf, tgtDbf)

@@ -26,7 +26,6 @@ def hillshade(array, azimuth, angle_altitude):
     aspect = np.arctan2(-x, y)
     azimuthrad = azimuth * np.pi / 180.0
     altituderad = angle_altitude * np.pi / 180.0
-    shaded = np.sin(altituderad) * np.sin(slope) + np.cos(altituderad) * np.cos(
-        slope
-    ) * np.cos(azimuthrad - aspect)
+    shaded = np.sin(altituderad) * np.sin(slope) + np.cos(altituderad) * 
+        np.cos(slope) * np.cos(azimuthrad - aspect)
     return 255 * (shaded + 1) / 2

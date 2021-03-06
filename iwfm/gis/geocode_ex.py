@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-def geocode_ex(address):
+def geocode_ex(address, verbose-False):
     """Example - finds the lat-lon of a street address and then
     reverses to use the lat-lon to get the address information"""
     from geopy.geocoders import Nominatim
@@ -26,5 +26,7 @@ def geocode_ex(address):
     g = Nominatim()
     location = g.geocode(address)
     rev = g.reverse("{},{}".format(location.latitude, location.longitude))
-    print("    Reversed address:  {}".format(rev))
-    print("    Geocode: {}".format(location.raw))
+    if verbose: 
+        print(f'    Reversed address:  {rev}')
+        print(f'    Geocode: {location.raw}')
+    return rev, location.raw

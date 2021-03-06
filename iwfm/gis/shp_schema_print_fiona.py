@@ -18,7 +18,10 @@
 
 
 def shp_schema_print_fiona(f):
-    """Print the shapefile schema"""
+    """ shp_schema_print_fiona() - Print the shapefile schema"""
     import pprint
 
     pprint(f.schema)
+
+    return
+

@@ -24,5 +24,5 @@ def geocode(address, debug=0):
     g = Nominatim()
     location = g.geocode(address)
     if debug:
-        print("Geocoding: '{}' to '{}'".format(address, location))
+        print(f'  Geocoding: \'{address}\' to \'{location}\'')
     return location

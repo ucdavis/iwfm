@@ -22,6 +22,6 @@ def image2Array(i):
     import numpy
     from osgeo import gdal_array as gdal_array
 
-    a = gdal_array.numpy.fromstring(i.tobytes(), "b")
+    a = gdal_array.numpy.fromstring(i.tobytes(), 'b')
     a.shape = i.im.size[1], i.im.size[0]
     return a

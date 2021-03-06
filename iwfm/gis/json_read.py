@@ -17,12 +17,12 @@
 # -----------------------------------------------------------------------------
 
 
-def json_read(jdata, debug=0):
+def json_read(jdata, verbose=False):
     """ read json file"""
     import json
 
     j = json.loads(jdata)
-    if debug:
-        print("=> JSON Data: {}")
-        print(json.dumps(j, indent=5))
+    if verbose:
+        print('  JSON Data:')
+        print(f'    {json.dumps(j, indent=5)}')
     return j

@@ -20,7 +20,7 @@
 def histogram_draw(hist, scale=True):
     """histogram_draw() creates an image from a histogram array"""
 
-    t.color("black")
+    t.color('black')
     # Draw the axes
     axes = ((-355, -200), (355, -200), (-355, -200), (-355, 250))
     t.up()
@@ -30,10 +30,10 @@ def histogram_draw(hist, scale=True):
     # Labels
     t.up()
     t.goto(0, -250)
-    t.write("VALUE", font=("Arial, ", 12, "bold"))
+    t.write('VALUE', font=('Arial, ', 12, 'bold'))
     t.up()
     t.goto(-400, 280)
-    t.write("FREQUENCY", font=("Arial, ", 12, "bold"))
+    t.write('FREQUENCY', font=('Arial, ', 12, 'bold'))
     # Tick marks
     # x axis
     x = -355
@@ -46,7 +46,7 @@ def histogram_draw(hist, scale=True):
         t.goto(x, y - 10)
         t.up()
         t.goto(x, y - 25)
-        t.write("{}".format((i * 25)), align="center")
+        t.write('{}'.format((i * 25)), align='center')
     # y axis
     x = -355
     y = -200
@@ -67,13 +67,13 @@ def histogram_draw(hist, scale=True):
         t.goto(x - 10, y)
         t.up()
         t.goto(x - 15, y - 6)
-        t.write("{}".format((i * label)), align="right")
+        t.write('{}'.format((i * label)), align='right')
     # Plot each histogram as a colored line
     x_ratio = 709.0 / 256
     y_ratio = 450.0 / pixels
     # Add more colors to this list if comparing
     # more than 3 bands or 1 image
-    colors = ["red", "green", "blue"]
+    colors = ['red', 'green', 'blue']
     for j in range(len(hist)):
         h = hist[j]
         x = -354

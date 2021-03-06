@@ -30,3 +30,4 @@ def histogram(infile, scl=True):
     t = iwfm.gis.histogram_draw(histograms, scale=scl)
     t.pen(shown=False)
     t.done()
+    return

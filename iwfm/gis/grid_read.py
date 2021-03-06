@@ -22,8 +22,8 @@ def grid_read(infile):
     import numpy as np
 
     skiprows = 6
-    header = ""
-    with open(infile, "r") as f:
+    header = ''
+    with open(infile, 'r') as f:
         for i in range(0, skiprows):
             header += f.readline()
     myArray = np.loadtxt(infile, skiprows=skiprows)
