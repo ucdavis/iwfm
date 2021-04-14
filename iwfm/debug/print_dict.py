@@ -18,15 +18,20 @@
 
 
 def print_dict(d):
-    """ print_dict() - Print contents of a dictionary, for debugging
+    ''' print_dict() - Print contents of a dictionary, for debugging
 
-    Parameters:
-      d          (dict): Dictionary
+    Parameters
+    ----------
+    d : dict
+        Dictionary
     
-    Return:
-      nothing
-    """
-    print("   key\t\tvalue\n")
+    Return
+    ------
+    nothing
+
+    '''
+
+    print('   key\t\tvalue\n')
     for k, v in d.items():
         print(k, v)
     return

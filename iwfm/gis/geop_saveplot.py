@@ -18,15 +18,20 @@
 
 
 def geop_saveplot(gdf_frame, outname):
-    """ geop_saveplot() - Create and save plot of geopandas dataframe
+    ''' geop_saveplot() - Create and save plot from geopandas dataframe
 
-    Parameters:
-      gdf_frame       (obj):  Geopandas dataframe object
-      outname         (str):  Output file name
+    Parameters
+    ----------
+    gdf_frame : geopandas dataframe object
+    
+    outname : str
+        output file name
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
     gdf_frame.plot()
     plt.savefig(outname)
     return

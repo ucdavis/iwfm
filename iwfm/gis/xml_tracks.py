@@ -18,21 +18,29 @@
 
 
 def xml_tracks(filename, verbose=False):
-    """xml_tracks() - Reproject from UTM to geographic coordinates
+    '''xml_tracks() - Reproject from UTM to geographic coordinates
 
-    Parameters:
-      filename        (str):  Name of file continaing UTM coordinates
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    filename : str
+        name of file continaing UTM coordinates
+    
+    verbose : bool, default=False
+        True = command-line output on
 
-    Returns:
-      tracks         (list)   Tracking points
+    Returns
+    -------
+    tracks : list
+        tracking points
 
-    """
+    '''
     from bs4 import BeautifulSoup
 
     gpx = open(filename)
     soup = BeautifulSoup(gpx.read(), features='xml')
     tracks = soup.findAll('trkpt')  # get all the tracking points from the file
+
     if verbose:
-        print(f'=> Found {tracks} tracking points in {filename}')
+        print(f'  Found {tracks:,} tracking points in {filename}')
+
     return tracks

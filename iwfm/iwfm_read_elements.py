@@ -18,18 +18,26 @@
 
 
 def iwfm_read_elements(elem_file, verbose=False):
-    """ iwfm_read_elements() - Reads an IWFM Element file, and returns a list
+    ''' iwfm_read_elements() - Read an IWFM Element file, and return a list
         of the nodes making up each element
 
-    Parameters:
-      elem_file      (str):   Name of IWFM Preprocessor Elements file
+    Parameters
+    ----------
+    elem_file : str
+        IWFM Preprocessor Elements file name
 
-    Returns:
-      elem_ids       (list):  Element numbers
-      elem_nodes     (list):  Nodes for each element
-      elem_sub       (list):  Subregion for each element
+    Returns
+    -------
+    elem_ids : list
+        element numbers
+    
+    elem_nodes : list
+        nodes for each element
+    
+    elem_sub : list
+        subregion for each element
 
-    """
+    '''
     import re
     import iwfm as iwfm
 

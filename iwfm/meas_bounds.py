@@ -20,21 +20,23 @@
 
 
 def meas_bounds(gwhyd_obs):
-    """ meas_bounds() - Determine the earliest and latest measurement dates 
+    ''' meas_bounds() - Determine the earliest and latest measurement dates 
         for a group of head observations in a linear list gwhyd_obs
 
+    TODO: incomplete - finish this
 
-    Parameters:
-      gwhyd_obs       (str):   Name of observation file
-      example lines: ' 11N19W05Q001S          01/28/1987   00:00:00   108.530'
-                    ' well_name              MM/DD/YYYY   HH:MM:SS   head_obs'
+    Parameters
+    ----------
+    gwhyd_obs : str
+        observation file name
+        format:       ' well_name              MM/DD/YYYY   HH:MM:SS   head_obs'
+        example line: ' 11N19W05Q001S          01/28/1987   00:00:00   108.530'
 
-    Returns:
-      nothing (yet)
+    Returns
+    -------
+    nothing (yet)
 
-    To do:
-      incomplete - finish this
-    """
+    '''
 
     well_names, earliest, latest = [], [], []
 

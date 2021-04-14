@@ -18,7 +18,21 @@
 
 
 def geocode_json(address, verbose=False):
-    """Return the lat-lon of a street address"""
+    ''' geocode_json() - Return the lat-lon of a street address
+    
+    Parameters
+    ----------
+    address : str
+        street and city address
+
+    verbose : bool, default=False
+        True = command line output on
+    
+    Returns
+    -------
+    geocode of address : geojson format
+    
+    '''
     import geocoder
 
     g = geocoder.google(address)

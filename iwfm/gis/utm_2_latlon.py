@@ -17,19 +17,29 @@
 # -----------------------------------------------------------------------------
 
 
-def utm_2_latlon(easting, northing, zone, band="U"):
-    """utm_2_latlon() - Reproject from UTM to geographic coordinates
+def utm_2_latlon(easting, northing, zone, band='U'):
+    ''' utm_2_latlon() - Reproject from UTM to geographic coordinates
 
-    Parameters:
-      easting        (float): Easting (X) value
-      notthing       (float): Northing (Y) value
-      zone           (int):   UTM zone
-      band           (str):   Band
+    Parameters
+    ----------
+    easting : float
+        Easting (X) value
+    
+    notthing : float
+        Northing (Y) value
+    
+    zone : int
+        UTM zone
+    
+    band : str, default='U'
+        Band
 
-    Returns:
-      (lat, lon)     (str)    Latitude and Longitude as strings
+    Returns
+    -------
+    (lat, lon) : str
+        Latitude and Longitude
 
-    """
+    '''
     import utm
 
     return utm.to_latlon(northing, easting, zone, band)

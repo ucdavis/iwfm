@@ -18,7 +18,18 @@
 
 
 def nmea_parse(infile):
-    """nmea_parse() reads a GIS waypoint file and writes lat-lon values"""
+    ''' nmea_parse() - Read a GIS waypoint file and write lat-lon values
+
+    Parameters
+    ----------
+    infile : str
+        waypoint file name
+
+    Returns
+    -------
+    nothing
+
+    '''
     from pynmea.streamer import NMEAStream
 
     nmea_file = open(infile)

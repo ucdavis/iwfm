@@ -18,20 +18,29 @@
 
 
 def logtrans(q, zero_offset=-2.0, neg_val=1e-9, roundoff=4):
-    """ logtrans() - Log-transforms a number, accounting for non-zero and 
+    ''' logtrans() - Log-transforms a number, accounting for non-zero and 
         negative values
 
-    Parameters:
-      q               (float):  Value to be log-transformed
-      zero_offset     (float):  Value to return if q == 0
-      neg_val         (float):  Value to return if q < 0
-      roundoff        (int):    Decimal places to round result
+    Parameters
+    ----------
+    q : float
+        value to be log-transformed
+
+    zero_offset : float, default=-2.0
+        value to return if q == 0
+
+    neg_val : float, default=1e-9
+        value to return if q < 0
+
+    roundoff : int, default=4
+        decimal places to round result
 
     Returns:
       - the log-transformed value for positive q
       - neg_val for negative q, or
       - zero_offset for q == 0
-    """
+
+    '''
     import math
 
     q = float(q)
@@ -45,8 +54,8 @@ def logtrans(q, zero_offset=-2.0, neg_val=1e-9, roundoff=4):
     return outval
 
 
-if __name__ == "__main__":
-    " Run logtrans() from command line "
+if __name__ == '__main__':
+    ' Run logtrans() from command line '
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm
@@ -56,4 +65,4 @@ if __name__ == "__main__":
     else:  # ask for file names from terminal
         q = float(input('Value to log-transform: '))
 
-    print('  Log-transform of {} is {}'.format(q, logtrans(q)))  # update cli
+    print(f'  Log-transform of {q} is {logtrans(q)}')

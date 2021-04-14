@@ -18,7 +18,22 @@
 
 
 def dd2dms(lat, lon):
-    """converts from decimal degrees to degree-minute-second"""
+    ''' dd2dms() - Convert lat-lon point from decimal degrees to degree-minute-second
+    
+    Parameters
+    ----------
+    lat : float
+        latitude in decimal degreed
+
+    lon : float
+        longitude in decimal degrees
+
+    Returns
+    -------
+    lat-lon : str
+        latitude and longitude in degree-minute-second format
+
+    '''
     import math
 
     latf, latn = math.modf(lat)
@@ -34,5 +49,4 @@ def dd2dms(lat, lon):
     lat_compass = compass['lat'][0 if latd >= 0 else 1]
     lon_compass = compass['lon'][0 if lond >= 0 else 1]
 
-    return f'{abs(latd)}º {abs(latm)}\' {abs(lats):.2f}\" {lat_compass}, '+
-           f'{abs(lond)}º {abs(lonm)}\' {abs(lons):.2f}\" {lon_compass}')
+    return f'{abs(latd)}º {abs(latm)}\' {abs(lats):.2f}\" {lat_compass}, {abs(lond)}º {abs(lonm)}\' {abs(lons):.2f}\" {lon_compass}'

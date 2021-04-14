@@ -19,10 +19,27 @@
 
 
 def get_change_col(changes_table, in_year, in_chg_file):
-    """ get_change_col() - When changing IWFM land use for a scenario, 
+    ''' get_change_col() - When changing IWFM land use for a scenario, 
         determine which column of the change factors table corresponds 
         to a specific year
-    """
+
+    Parameters
+    ----------
+    changes_table : list
+        table of change factors, col = years, row = zone
+    
+    in_year : int or str
+        year
+    
+    in_chg_file : str
+        change table file name, for error output if necessary
+
+    Returns
+    -------
+    chg_col : int
+        number of column corresponding to in_year
+
+    '''
     import sys
 
     year = int(in_year)

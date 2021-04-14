@@ -18,18 +18,28 @@
 
 
 def las2dem(source, target, cell=1.0, NODATA=0):
-    """las2dem() - Convert a LIDAR LAS file to an ASCII DEM.
-    Interpolation is used to account for data loss
+    ''' las2dem() - Convert a LIDAR LAS file to an ASCII DEM.
+        Interpolation is used to account for data loss
 
-    Parameters:
-      source          (str):   Name of input LIDAR LAS file
-      target          (str):   Name of output ASCII DEM file
-      cell            (float): Interpolation distance
-      NODATA          (int):   Value to use for blank areas
+    Parameters
+    ----------
+    source : str
+        input LIDAR LAS file name
     
-    Return:
-      nothing
-    """
+    target : str
+        output ASCII DEM file name
+    
+    cell : float, default=1.0
+        interpolation distance
+    
+    NODATA : int, default=0
+        value to use for blank areas
+    
+    Return
+    ------
+    nothing
+    
+    '''
     import numpy as np
 
     if source[-4:] != '.las':
@@ -47,9 +57,8 @@ def las2dem(source, target, cell=1.0, NODATA=0):
     cols = int(cols + 1)
     rows = int(rows + 1)
 
-    count = np.zeros(
-        (rows, cols), dtype=float
-    )  # Track how many elevation values we aggregate
+    # Track how many elevation values we aggregate
+    count = np.zeros((rows, cols), dtype=float)
 
     zsum = np.zeros((rows, cols), dtype=float)  # Aggregate elevation values
     ycell = -1 * cell  # Y resolution is negative

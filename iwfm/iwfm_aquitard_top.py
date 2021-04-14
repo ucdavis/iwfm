@@ -18,16 +18,19 @@
 
 
 def iwfm_aquitard_top(strat):
-    """ iwfm_aquitard_top() - Extract aquitard top altitude from 
+    ''' iwfm_aquitard_top() - Extract aquitard top altitude from 
         IWFM stratigraphy information
 
-    Parameters:
-      strat           (list): IWFM stratigraphy for each model node
+    Parameters
+    ----------
+    strat : list
+        stratigraphy for each model node
 
-    Returns:
-      aquitard_top    (list): Aquitard top altitude for each model layer
-                                and node
-    """
+    Returns
+    -------
+    aquitard_top : list
+        aquitard top altitude for each model layer and node
+    '''
     import iwfm as iwfm
 
     (

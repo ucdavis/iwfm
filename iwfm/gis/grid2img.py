@@ -18,12 +18,27 @@
 
 
 def grid2img(source, target):
-    """grid2img() Convert an ASCII DEM to an image"""
+    ''' grid2img() - Convert an ASCII DEM to an image
+    
+    Parameters
+    ----------
+    source : str
+        ASCII DEM file name
+
+    target : str
+        output image file name
+
+    Returns
+    -------
+    nothing
+
+    '''
     import numpy as np
     from PIL import Image, ImageOps  # pip install pillow
 
-    arr = np.loadtxt(source, skiprows=6)  # Load the ASCII DEM into a numpy array
-    im = Image.fromarray(arr).convert("RGB")  # Convert array to numpy image
+    arr = np.loadtxt(source, skiprows=6)  
+    im = Image.fromarray(arr).convert('RGB')
     im = ImageOps.equalize(im)  # Enhance the image: equalize and increase contrast
     im = ImageOps.autocontrast(im)
     im.save(target)
+    return

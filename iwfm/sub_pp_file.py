@@ -19,57 +19,65 @@
 
 
 def sub_pp_file(in_pp_file, pre_dict, pre_dict_new, has_lake=False):
-    """sub_pp_file() copies the old preprocessor input file,
-        replaces the file names with those of the new model,
-        and writes out the new file
+    ''' sub_pp_file() - Copy the old preprocessor input file,
+        replacing the file names with those of the new model,
+        and write out the new file
 
-    Parameters:
-      in_pp_file     (str):   Name of existing preprocessor main input file
-      pre_dict       (dict):  Dictionary of existing model preprocessor file names
-      pre_dict_new   (dict):  Dictionary of submodel preprocessor file names
-      has_lake       (bool):  Does the submodel have a lake file?
+    Parameters
+    ----------
+    in_pp_file : str
+        name of existing preprocessor main input file
+    
+    pre_dict : dict
+        dictionary of existing model preprocessor file names
+    
+    pre_dict_new : dict
+        dictionary of submodel preprocessor file names
+    
+    has_lake : bool, default=False
+        does the submodel have a lake file?
 
     Returns:
-      nothing
+    nothing
 
-    """
+    '''
     import iwfm as iwfm
 
     # -- read the preprocessor file into array pre_lines
     pre_lines = open(in_pp_file).read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments
     # -- preproc output file
+    line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments
     pre_lines[line_index] = iwfm.pad_both(pre_dict_new['preout'], f=4, b=53) + ' '.join(
         pre_lines[line_index].split()[1:]
     )
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
     # -- element file
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0) 
     pre_lines[line_index] = iwfm.pad_both(
         pre_dict_new['elem_file'], f=4, b=53
     ) + ' '.join(pre_lines[line_index].split()[1:])
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
     # -- node file
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0) 
     pre_lines[line_index] = iwfm.pad_both(
         pre_dict_new['node_file'], f=4, b=53
     ) + ' '.join(pre_lines[line_index].split()[1:])
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
     # -- stratigraphy file
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0) 
     pre_lines[line_index] = iwfm.pad_both(
         pre_dict_new['strat_file'], f=4, b=53
     ) + ' '.join(pre_lines[line_index].split()[1:])
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
     # -- stream file
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0) 
     pre_lines[line_index] = iwfm.pad_both(
         pre_dict_new['stream_file'], f=4, b=53
     ) + ' '.join(pre_lines[line_index].split()[1:])
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
     # -- lake file
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0) 
     if len(pre_dict['lake_file']) > 1 and has_lake:
         pre_lines[line_index] = iwfm.pad_both(
             pre_dict_new['lake_file'], f=4, b=53

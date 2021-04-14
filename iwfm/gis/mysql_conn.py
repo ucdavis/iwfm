@@ -17,12 +17,40 @@
 # -----------------------------------------------------------------------------
 
 
-def mysql_conn(dbname, port=3306, user="root", passwd="", debug=0):
-    """ Connect to a mysql database"""
+def mysql_conn(dbname, port=3306, host='localhost', user='root', passwd=''):
+    ''' mysql_conn() - Connect to a mysql database
+
+    Parameters
+    ----------
+    dbname : str
+        database name
+    
+    port : int, default=3306
+        post
+    
+    host : str, default='localhost'
+        database host
+
+    user : str, default='root'
+        username
+    
+    passwd : str, default=''
+        password
+
+    Returns
+    -------
+    cur : database object
+        pointer to current record
+    
+    conn : database object
+        connection to open database
+    
+    '''
     import pymysql
 
+
     conn = pymysql.connect(
-        host="localhost", port=port, user=user, passwd=passwd, db=dbname
+        host=host, port=port, user=user, passwd=passwd, db=dbname
     )
     cur = conn.cursor()
     return cur, conn

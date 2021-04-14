@@ -18,8 +18,21 @@
 
 
 def latlon_2_utm(lat, lon):
-    """Reprojects from geographic coordinates to UTM
-    Returns 4-character string Lat, Lon, Zone, Band"""
+    ''' latlon_2_utm() - Reproject from geographic coordinates to UTM
+        
+    
+    Parameters
+    ----------
+    lat : float
+        latitude in decimal degrees
+
+    lon : float
+        longitude in decimal degrees
+
+    Returns
+    -------
+    UTM coordinates 
+    '''
     import utm
 
     return utm.from_latlon(lat, lon)

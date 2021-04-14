@@ -18,23 +18,28 @@
 
 
 def gw_well_lay_elev(self, d_wellinfo, debug=0):
-    """ gw_well_lay_elev() - Find layer elevations at each well using node 
+    ''' gw_well_lay_elev() - Find layer elevations at each well using node 
         elevation data. Inverse Distance Weighting is used to determine the 
         elevations.
 
-    Parameters:
-      d_wellinfo     (dict): Dictionary with info for each well
-      debug          (int):  Turn debugging to CLI on if >0 
-
-    Returns:
-      new_d_wellinfo (dict): Dictionary with layer info for each well
+    ** INCOMPLETE **
+    TODO:
+      - Find layer elevations at each well using node elevation data.
 
 
-    To do:
-        Find layer elevations at each well using node elevation data.
+    Parameters
+    ----------
+    d_wellinfo     (dict): Dictionary with info for each well
+    
+    debug          (int):  Turn debugging to CLI on if >0 
+
+    Returns
+    -------
+    new_d_wellinfo : dictionary
+        dictionary, key = well name, values = layer info for each well
 
 
-    """
+    '''
 
     if debug:
         print('      => gw_well_lay_elev()')
@@ -52,9 +57,8 @@ def gw_well_lay_elev(self, d_wellinfo, debug=0):
         if debug:
             print('      =>  {}: \t{}'.format('old_value', old_value))
 
-        e_nodes = self.e_nodes[
-            self.e_nos.index(elem)
-        ]  # nodes of element containing well
+        # nodes of element containing well
+        e_nodes = self.e_nodes[self.e_nos.index(elem)]  
         old_value.append(e_nodes)
 
         nodexy = []

@@ -18,30 +18,36 @@
 
 
 def headall2table(heads_file, output_file, out_date):
-    """ headall2table() - Reads headall.out file and writes results
+    ''' headall2table() - Read IWFM headall.out file and write results
         for one date to a table
 
-    Parameters:
-      heads_file     (str):  IWFM headall.out file name
-      output_file    (str):  Name of output file
-      out_date       (str):  Date to process, mm/dd/yyyy format
+    Parameters
+    ----------
+    heads_file : str
+        IWFM headall.out file name
+    
+    output_file : str
+        name of output file
+    
+    out_date : str
+        date to process, mm/dd/yyyy format
 
-    Returns:
-      nothing
+    Returns
+    -------
+    nothing
 
-    """
+    '''
     import numpy as np
     import pandas as pd
     import iwfm as iwfm
 
-    start = 5  # skip the first 5 lines
     out_mon = iwfm.month(out_date)
     out_day = iwfm.day(out_date)
     out_year = iwfm.year(out_date)
 
-    # == read the file into list file_lines
     file_lines = open(heads_file).read().splitlines()  # open and read input file
 
+    start = 5  # skip the first 5 lines
     line = start
     nodes = file_lines[line].split()  # read line w/node nos
     nodes.pop(0)  # remove text
@@ -54,7 +60,7 @@ def headall2table(heads_file, output_file, out_date):
     item = file_lines[line].split()  # read line w/date
     data.append(item)
     end_date = item.pop(0)  # remove the date
-    # end_date = end_date[:9]                                            # HEC-DSS format to MM/DD/YYYY
+    
     while line < len(file_lines) - 1:
         line += 1
         layer = 1
@@ -82,7 +88,7 @@ def headall2table(heads_file, output_file, out_date):
             item = file_lines[line].split()  # read line w/date
             data.append(item)
             end_date = item.pop(0)  # remove the date
-            # end_date = end_date[:9]                                        # HEC-DSS format to MM/DD/YYYY
+
     return
 
 

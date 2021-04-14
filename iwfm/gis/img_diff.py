@@ -18,17 +18,26 @@
 
 
 def img_diff(img1, img2, outfile):
-    """img_diff() - Perform a simple difference image change detection 
-       on matched 'before' and 'after' images
+    ''' img_diff() - Perform a simple difference image change detection 
+        on matched 'before' and 'after' images
 
-    Parameters:
-      img1            (str):   Name of input image file
-      img2            (str):   Name of input image file
-      outfile         (str):   Name of output image file
+    Parameters
+    ----------
+    img1 : str
+        input image file name
     
-    Return:
-      nothing
-    """
+    img2 : str
+        input image file name
+    
+    outfile : str
+        output image file name
+    
+    Return
+    ------
+    nothing
+    
+    '''
+    
     from osgeo import gdal_array as gdal_array
     import numpy as np
 
@@ -36,25 +45,25 @@ def img_diff(img1, img2, outfile):
     ar1 = gdal_array.LoadFile(img1).astype(np.int8)
     ar2 = gdal_array.LoadFile(img2)[1].astype(np.int8)
     diff = ar2 - ar1  # Perform a simple array difference on the images
-    classes = np.histogram(diff, bins=5)[
-        1
-    ]  # Set up our classification scheme to try and isolate significant changes
+    
+    # Set up our classification scheme to try and isolate significant changes
+    classes = np.histogram(diff, bins=5)[1]
+
     # The color black is repeated to mask insignificant changes
     lut = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 255, 0], [255, 0, 0]]
+
     start = 1  # Starting value for classification
-    rgb = np.zeros(
-        (
-            3,
-            diff.shape[0],
-            diff.shape[1],
-        ),
-        np.int8,
-    )  # Set up the output image
+    
+    # Set up the output image
+    rgb = np.zeros((3,diff.shape[0],diff.shape[1],),np.int8)
+
     for i in range(len(classes)):  # Process all classes and assign colors
         mask = np.logical_and(start <= diff, diff <= classes[i])
         for j in range(len(lut[i])):
             rgb[j] = np.choose(mask, (rgb[j], lut[i][j]))
         start = classes[i] + 1
+
     output = gdal_array.SaveArray(rgb, outfile, format='GTiff', prototype=img2)
     output = None    # explicitly release memory
+
     return

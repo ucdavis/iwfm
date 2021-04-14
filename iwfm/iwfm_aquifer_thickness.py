@@ -18,16 +18,19 @@
 
 
 def iwfm_aquifer_thickness(strat):
-    """ iwfm_aquifer_thickness() - Extract aquifer thicknesses from 
+    ''' iwfm_aquifer_thickness() - Extract aquifer thicknesses from 
         IWFM stratigraphy information
 
-    Parameters:
-      strat           (list): IWFM stratigraphy for each model node
+    Parameters
+    ----------
+    strat : list
+        stratigraphy for each model node
 
-    Returns:
-      aquifer_thick   (list): Aquifer thickness for each model layer
-                                and node
-    """
+    Returns
+    -------
+    aquifer_thick : list
+        aquifer thickness for each model layer and node
+    '''
     import iwfm as iwfm
 
     _, aquifer_thick, _ = iwfm.iwfm_strat_arrays(strat)

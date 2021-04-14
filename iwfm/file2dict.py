@@ -17,17 +17,36 @@
 # -----------------------------------------------------------------------------
 
 
-def file2dict(infile, key_field=0, val_field=1, skip=0, debug=0):
-    """ read file with paired items, return dictionary """
+def file2dict(infile, key_field=0, val_field=1, skip=0):
+    ''' file2dict() - Read file with paired items, return dictionary 
+
+    Parameters
+    ----------
+    infile : str
+        Name of file with tabular data
+    
+    key_field : int, default=0 (first column)
+        Field that is the key
+    
+    val_field : int, default=1 (second column)
+        Field that is the value
+    
+    skip : int, default=0 (no header)
+        Number of non-comment lines to skip (header)
+
+    Returns
+    -------
+    d : dict
+        Dictionary from file contents
+
+    '''
     import re
 
     d = {}
     info = open(infile).read().splitlines()  # open and read input file
     for i in range(0, len(info)):
         if i > skip - 1:  # because of zero indexing
-            items = re.split(";|,|\*|\n|\t", info[i])
+            items = re.split(';|,|\*|\n|\t', info[i])
             key, values = items[key_field], items[val_field]
-            if debug:
-                print("  ==> key: {}\tvalues: {}".format(key, values))
             d[key] = values
     return d

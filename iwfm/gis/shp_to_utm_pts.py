@@ -17,32 +17,46 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_to_utm_pts(infile, outfile, verbose=False):
-    """Reproject a point shapefile to UTM"""
+def shp_to_utm_pts(shape, outfile, verbose=False):
+    ''' shp_to_utm_pts() - Reproject a point shapefile to UTM
+
+    Parameters
+    ----------
+    shape : PyShp point shapefile
+    
+    outfile : str
+        output point shapefile name
+    
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    tracks : list
+        tracking points
+
+    '''
     import shapefile  # PyShp
+    import utm as utm
 
     zone = 0
-    shp = shapefile.Reader(infile)  # open shapefile Reader
-    if verbose:
-        print(f'  {infile} has {shp_recno(shp)} records')
 
     with shapefile.Writer(outfile, shapeType=shp.shapeType) as w:
-        # w.shapeType = shp.shapeType
         w.fields = shp.fields[1:]  # skip Deletion field
         for s in shp.iterShapeRecords():
             w.record(*s.record)
-            # w.shape(s.shape)                 # this would make a copy
         for s in shp.iterShapes():  # this reprojects
             lon, lat = s.points[0]
             x, y, zone, band = utm.from_latlon(lat, lon)
             w.point(x, y)
-    # the zone variable will tell which UTM zone this shapefile is in
-    if verbose:
-        print(f'  UTM Zone: {zone}')
     
     # for UTM 1N-29N
+    # the zone variable will tell which UTM zone this shapefile is in
     prj = urlopen('http://spatialreference.org/ref/epsg/269' + str(zone) + '/esriwkt/')  
     
     with open(outfile + '.prj', 'w') as f:
         f.write(str(prj.read()))
+
+    if verbose:
+        print(f'  Wrote {outfile}, UTM Zone: {zone}')
     return

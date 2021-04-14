@@ -18,25 +18,35 @@
 
 
 def igsm_read_strat(strat_file, node_coords):
-    """ igsm_read_strat() - Read an IGSM Stratigraphy file and return a list
+    ''' igsm_read_strat() - Read an IGSM Stratigraphy file and return a list
         of stratigraphy for each node
 
-    Parameters:
-      strat_file      (str):  Name of IGSM nodal stratigraphy file
-      node_coords     (list): Nodes and coordinates
+    Parameters
+    ----------
+    strat_file : str
+        IGSM nodal stratigraphy file name
+    
+    node_coords: list
+        nodes and coordinates
 
-    Returns:
-      strat           (list):  Stratigraphy information
-      nlayers         (int):   Number of aquifer layers
-    """
+    Returns
+    -------
+    strat : list
+        stratigraphy information
+    
+    nlayers : int
+        number of aquifer layers
+    
+    '''
     import iwfm as iwfm
 
-    strat_lines = open(strat_file).read().splitlines()  # open and read input file
-    strat_index = 0  # start at the top
-    strat_index = iwfm.skip_ahead(strat_index, strat_lines, 0)  # skip comments
+    strat_lines = open(strat_file).read().splitlines() 
+
+    strat_index = iwfm.skip_ahead(0, strat_lines, 0)  # skip comments
     layers = strat_lines[strat_index].split()[0]
-    strat_index = iwfm.skip_ahead(strat_index + 1, strat_lines, 0)  # skip comments
+
     strat = []
+    strat_index = iwfm.skip_ahead(strat_index + 1, strat_lines, 0)
     for i in range(0, len(node_coords)):
         s = []
         l = strat_lines[strat_index + i].split()

@@ -18,16 +18,24 @@
 
 
 def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
-    """ wdl_ts_4_wells() - Write well data as time series
+    ''' wdl_ts_4_wells() - Write well data as time series
 
-    Parameters:
-      station_file    (str):  Name of well information file
-      waterlevel_file (str):  Name of water levels file
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    station_file : str
+        well information file name
+    
+    waterlevel_file : str
+        water levels file name
+    
+    verbose : bool, default=True
+        True = command-line output on 
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
     import csv
 
     station_file_base = station_file[0 : station_file.find('.')]  # basename
@@ -37,21 +45,16 @@ def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
     output_file = station_file_base + '_TS.out'
 
     # -- read stations into a dictionary
-    file_lines = open(station_file).read().splitlines()  # open and read input file
+    file_lines = open(station_file).read().splitlines() 
     if verbose:
-        print(
-            'Read {:,} stations from {}'.format(len(file_lines), station_file)
-        )  # update cli
+        print(f'Read {len(file_lines):,} stations from {station_file}')
 
-    # -- build a dictionary
     mydict = {
         entry['STN_ID']: [entry['SITE_CODE'], entry['SWN']]
         for entry in csv.DictReader(file_lines, delimiter='\t')
     }
 
-    # -- read and process each line of waterlevel_file
-    lines_in = 0
-    lines_out = 0
+    lines_in, lines_out = 0, 0
     with open(waterlevel_file, 'r') as infile, open(output_file, 'w') as outfile:
         outfile.write(
             'STN_ID,SITE_CODE,WLM_ID,MSMT_DATE,WLM_RPE,WLM_GSE,RDNG_WS,RDNG_RP,WSE,RPE_GSE,GSE_WSE,WLM_QA_DESC,WLM_DESC,WLM_ACC_DESC,WLM_ORG_ID,WLM_ORG_NAME,MSMT_CMT,COOP_AGENCY_ORG_ID,COOP_ORG_NAME\n'
@@ -65,12 +68,12 @@ def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
                     outfile.write(line)
                     lines_out = lines_out + 1
     if verbose:
-        print('Processed {:,} lines from {}'.format(lines_in, waterlevel_file))
-        print('Wrote {:,} lines to {}'.format(lines_out, output_file))
+        print(f'Processed {lines_in:,} lines from {waterlevel_file}')
+        print(f'Wrote {lines_out:,} lines to {output_file}')
     return
 
-if __name__ == "__main__":
-    """ Run wdl_ts_4_wells() from command line    """
+if __name__ == '__main__':
+    ' Run wdl_ts_4_wells() from command line'
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm
@@ -79,8 +82,8 @@ if __name__ == "__main__":
         station_file = sys.argv[1]
         waterlevel_file = sys.argv[2]
     else:  # ask for file names from terminal
-        station_file = input("Well station file name: ")
-        waterlevel_file   = input("Water level file name: ")
+        station_file = input('Well station file name: ')
+        waterlevel_file   = input('Water level file name: ')
 
     iwfm.file_test(station_file)  
     iwfm.file_test(waterlevel_file)

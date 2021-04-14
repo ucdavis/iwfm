@@ -17,7 +17,22 @@
 # -----------------------------------------------------------------------------
 
 
-def xl_save(wb, excel_file_name):  # -- save excel workbook
-    """xl_save() Saves the excel workbook """
+def xl_save(wb, excel_file_name):  
+    ''' xl_save() - Save the excel workbook
+
+    Parameters
+    ----------
+    wb : obj
+        Excel workbook object
+
+    excel_file_name : str
+        Name of output excel file
+
+    Returns
+    -------
+    nothing
+
+    '''
+    import os
     wb.SaveAs(os.path.join(os.getcwd(), excel_file_name))
     return

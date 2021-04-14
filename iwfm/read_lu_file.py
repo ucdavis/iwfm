@@ -18,23 +18,32 @@
 
 
 def read_lu_file(filename, skip=4):
-    """ read_lu_file() - Open and read an IWFM land use file, returning a list
+    ''' read_lu_file() - Open and read an IWFM land use file, returning a list
         of acrage data. The list dimensions are (no. elements)x(no. land use 
         types or crops)x(no. time steps)
 
-    Parameters:
-      filename        (str):  Name of IWFM Budget output file
-      skip            (int):  Top row of data in file
+    Parameters
+    ----------
+    filename : str
+        IWFM lane use file name
+    
+    skip : int, default=4
+        number of header rows to skip
 
-    Returns:
-      table           (list): Land use data
-      dates           (list): DSS dates for each time step
-    """
+    Returns
+    -------
+    table : list
+        land use data
+    
+    dates : list
+        DSS dates for each time step
+    
+    '''
     comments = 'Cc*#'
-    # open, read and close the file
+
     data = open(filename).read().splitlines()
 
-    # -- find the file line with the first element's data ------------------------------------
+    # -- find the file line with the first element's data
     index = 0
     while any((c in comments) for c in data[index][0]):
         index += 1
@@ -42,12 +51,10 @@ def read_lu_file(filename, skip=4):
     while any((c in comments) for c in data[index][0]): 
         index += 1
 
-    # -- compile the data from the file ------------------------------------
+    # -- compile the data from the file
     table, elems, dates = [], [], []
-
     line = data[index].split()
 
-    # process the lines
     temp_table = []
     while index < len(data):
         line = data[index].split()

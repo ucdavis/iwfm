@@ -18,5 +18,17 @@
 
 
 def geopdf_draw_rect_ex(canvas):
-    """geopdf_draw_rect_ex() example - draw a rectangle on the geopdf canvas"""
+    '''geopdf_draw_rect_ex() - Example - draw a rectangle on the geopdf canvas
+    
+    ** EXAMPLE **
+    
+    Parameters
+    ----------
+    canvas : geopdf canvas
+
+    Returns
+    -------
+    nothing
+
+    '''
     canvas.rect(100, 400, 400, 250, stroke=1)

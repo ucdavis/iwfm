@@ -19,32 +19,34 @@
 
 
 def read_wells(infile):
-    """ read_wells() - Read IWFM Groundwater.dat file and build a dictionary
+    ''' read_wells() - Read IWFM Groundwater.dat file and build a dictionary
         of groundwater hydrograph info and gwhyd_sim columns
 
-    Parameters:
-      infile          (str):  Name of IWFM Groundwaer.dat file
+    Parameters
+    ----------
+    infile : str
+        IWFM Groundwaer.dat file name
 
-    Returns:
-      well_dict       (dict):  Dictionary of well info, key = state ID
+    Returns
+    -------
+    well_dict : dictionary
+        key = well name (i.e. state ID), values = simulated heads
 
-    """
+    '''
     import iwfm as iwfm
 
-    well_dict = {}
-    gwhyd_info = open(infile).read().splitlines()  # open and read input file
-    line_index = 1  # skip first line
-    line_index = iwfm.skip_ahead(
-        line_index, gwhyd_info, 20
-    )  # skip to NOUTH, number of hydrographs
-    line = gwhyd_info[line_index].split()
-    nouth = int(line[0])
+    gwhyd_info = open(infile).read().splitlines() 
 
+    # skip to NOUTH, number of hydrographs
+    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  
+    nouth = int(gwhyd_info[line_index].split()[0])
+
+    well_dict = {}
     line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph
-    for i in range(0, nouth):  # open(gwhyd_list_file, 'r') as f:
+    for i in range(0, nouth): 
         items = []
         line = gwhyd_info[line_index].split()
-        items.append(line[5].upper())  # state well number = key
+        items.append(line[5].upper())  # well name = key
         items.append(int(line[0]))     # column number in hydrograph file
         items.append(float(line[3]))   # x
         items.append(float(line[4]))   # y

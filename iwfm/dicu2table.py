@@ -18,25 +18,32 @@
 
 
 def dicu2table(data_file, verbose=False):
-    """ dicu2table() - Read Delta Island Consumptive Use model file and write
+    ''' dicu2table() - Read Delta Island Consumptive Use model file and write
         out to text file
 
-    Parameters:
-      data_file       (str):  Name of DICU model file
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    data_file : str
+        name of DICU model file
+    
+    verbose : bool, default=False
+        True = command-line output on
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
+    import iwfm as iwfm
 
     # find the base name and extension
     data_file_base = data_file[0 : data_file.find('.')]
     data_file_ext = data_file[data_file.find('.') + 1 : len(data_file) + 1]
 
     if verbose:
-        print(f'  Creating data table from {data_file}')  # update cli
+        print(f'  Creating data table from {data_file}') 
 
-    file_lines = open(data_file).read().splitlines()  # open input file
+    file_lines = open(data_file).read().splitlines() 
 
     # how many lines per data set?
     set_lines = 1
@@ -48,20 +55,10 @@ def dicu2table(data_file, verbose=False):
     sets = (len(file_lines) - 1) / set_lines
 
     # get the dates from the first data set
-    months = {
-        'JAN': '01',
-        'FEB': '02',
-        'MAR': '03',
-        'APR': '04',
-        'MAY': '05',
-        'JUN': '06',
-        'JUL': '07',
-        'AUG': '08',
-        'SEP': '09',
-        'OCT': '10',
-        'NOV': '11',
-        'DEC': '12',
-    }
+    months = {'JAN': '01','FEB': '02','MAR': '03','APR': '04',
+        'MAY': '05','JUN': '06','JUL': '07','AUG': '08',
+        'SEP': '09','OCT': '10','NOV': '11','DEC': '12'}
+
     dates = []
     for i in range(4, set_lines - 1):
         dates.append(
@@ -110,13 +107,11 @@ def dicu2table(data_file, verbose=False):
             print(f' \n** Flow data type {kind} not recognized **')
             print(' ** Quitting.')
             import sys
-
             sys.exit()
             return 0
 
         line += 1  # skip 'END DATA' line
 
-    import iwfm as iwfm
 
     iwfm.write_flows(
         data_file_base,

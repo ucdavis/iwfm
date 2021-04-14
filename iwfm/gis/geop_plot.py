@@ -18,7 +18,17 @@
 
 
 def geop_plot(gdf_frame):
-    """ Create and dislay a plot from a geopandas dataframe"""
+    ''' geop_plot() - Create and dislay a plot from a geopandas dataframe
+    
+    Parameters
+    ----------
+    gdf_frame : geopandas dataframe object
+
+    Returns
+    -------
+    nothing
+
+    '''
     fig = gdf_frame.plot()
     plt.show()
     return

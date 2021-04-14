@@ -18,17 +18,25 @@
 
 
 def write_smp(output_filename, lines):
-    """ write_smp() - Write observations to a PEST smp file
+    ''' write_smp() - Write observations to a PEST smp file
+        smp format:'   OBSLOCATIONID          MM/DD/YYYY   HH:MM:SS   123.456'
 
+    Parameters
+    ----------
+    output_filename : str
+        name of smp output file
+    
+    lines : list
+        data as [obslicationid, date, time, value]
 
-    smp format:'   OBSLOCATIONID          MM/DD/YYYY   HH:MM:SS   123.456'
-    """
+    Returns
+    -------
+    len(lines) : int
+        number of items written to the smp file
+
+    '''
     output_filename = filename_ext(output_filename, 'smp')
     with open(output_filename, 'w') as output_file:
         for i in range(0, len(lines)):
-            output_file.write(
-                '{}\t{}\t{}\t{}\n'.format(
-                    lines[i][0], lines[i][1], lines[i][2], lines[i][3]
-                )
-            )
+            output_file.write(f'{lines[i][0]}\t{lines[i][1]}\t{lines[i][2]}\t{lines[i][3]}\n')
     return len(lines)

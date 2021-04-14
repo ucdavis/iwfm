@@ -18,16 +18,20 @@
 
 
 def new_pp_dict(out_base_name):
-    """ new_pp_dict() - Create and return a dictionary of preprocessor file
+    ''' new_pp_dict() - Create and return a dictionary of preprocessor file
         names from a basename
 
-    Parameters:
-      out_base_name   (str):  Root of submodel output file names
+    Parameters
+    ----------
+    out_base_name : str
+        root of submodel output file names
 
-    Returns:
-      pre_dict_new   (dict):  Dictionary of submodel preprocessor file names
+    Returns
+    -------
+    pre_dict_new : dict
+        dictionary of submodel preprocessor file names
 
-    """
+    '''
     pre_dict_new = {}
     pre_dict_new['prename'] = out_base_name + '_Preprocessor.in'
     pre_dict_new['preout'] = out_base_name + '_Preprocessor.bin'

@@ -18,10 +18,24 @@
 
 
 def file_type_error(filename, filetype):
-    """Function file_type_error(filename,filetype) exits with a message that the
-    program doesn't work with this input file"""
+    ''' file_type_error() - Exits with a message that the program doesn't 
+        work with this input file
+    
+    Parameters
+    ----------
+    filename : str
+        file name for message
+    
+    filetype : str
+        file type for message
+
+    Returns
+    -------
+    nothing (exits program)    
+    
+    '''
     import sys
 
-    print("  {} must be a {} file.\n  Exiting...".format(filename, filetype))
+    print(f'  {filename} must be a {filetype} file.\n  Exiting...')
     sys.exit()
     return

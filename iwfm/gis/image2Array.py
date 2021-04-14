@@ -1,5 +1,5 @@
 # image2Array.py
-# Converts a Python Imaging Library array to a gdal_array image
+# Converts a Python Imaging Library array to a gdal_array
 # Copyright (C) 2020-2021 Hydrolytics LLC
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -18,7 +18,17 @@
 
 
 def image2Array(i):
-    """image2Array() Converts a Python Imaging Library array to a gdal_array image"""
+    ''' image2Array() - Convert a Python Imaging Library array to a gdal_array
+    
+    Parameters
+    ----------
+    i : Python Imaging Library array
+
+    Returns
+    -------
+    a : GDAL array
+
+    '''
     import numpy
     from osgeo import gdal_array as gdal_array
 

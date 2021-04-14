@@ -18,16 +18,21 @@
 
 
 def date_index(inval, start_date):
-    """ date_index() - Calculate a date inval months from start_date
+    ''' date_index() - Calculate a date inval months from start_date
 
-    Parameters:
-      inval           (int):  Number of months from start_date
-      start_date      (str):  Date in MM/DD/YYYY format
-
-    Returns:
-      nothing
+    Parameters
+    ----------
+    inval : int
+        number of months from start_date
     
-    """
+    start_date : str
+        date in MM/DD/YYYY format
+
+    Returns
+    -------
+    nothing
+    
+    '''
     import iwfm as iwfm
 
     y = iwfm.year(start_date)

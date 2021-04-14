@@ -17,38 +17,59 @@
 # -----------------------------------------------------------------------------
 
 
-def qgis_open_proj(project_filename, debug=0):  # Open a project
+def qgis_open_proj(filename, verbose=False, debug=0):  
+    ''' qgis_open_proj() - Open a QGIS project
+
+    ** INCOMPLETE **
+    
+    Parameters
+    ----------
+    filename : str
+        input shapefile name
+
+    verbose : bool, default=False
+        turn command-line output on or off
+
+    debug : int, default=0
+        0 no CLI debug logging 
+        1 debug logging via print statements
+        debug statements and parameter should be removed after completion
+
+    Returns
+    -------
+    project : qgis object
+        QGIS project
+
+    '''
     import os
     import qgis.core as qcore
 
     if debug:
-        print("=> Opening QGIS project {}".format(project_filename))  # debugging
+        print(f'  Opening QGIS project {filename}')  
 
     # check for the project file
-    if not os.path.isfile(
-        os.path.join(os.getcwd(), project_filename)
-    ):  # test for input file
-        print(
-            "=> Could not find {}".format(os.path.join(os.getcwd(), project_filename))
-        )
+    if not os.path.isfile(os.path.join(os.getcwd(), filename)):  
+        print(f'  Could not find {os.path.join(os.getcwd(), filename)}')
+        import sys
+        sys.exit()
 
     #  # for QGIS standalone app, bridge to sync loaded project with canvas
     #  bridge = QgsLayerTreeMapCanvasBridge(project.layerTreeRoot(), canvas)
     #  # NameError: name 'QgsLayerTreeMapCanvasBridge' is not defined
 
     #  apparently python 2 / QGIS2 way:
-    #  project = qutil.QFile(project_filename)
+    #  project = qutil.QFile(filename)
 
     project = qcore.QgsProject.instance()  # instantiate
 
-    project.read(
-        project_filename
-    )  # fill instantiated project (file name, not full path)
+    # fill instantiated project (file name, not full path)
+    project.read(filename)
+    if verbose:
+        print(f'  Opened QGIS project {filename}')  
     if debug:
-        print("=> Opened QGIS project {}".format(project_filename))  # debugging
-        print("  => project: {}".format(project))
-        print("  => project.filename(): '{}'".format(project.fileName()))
-        print("  => title: '{}'".format(project.title()))
-        print("  => layers: {}".format(project.count()))
-        print("  ----------------------------")
+        print(f'  => project:    {project}')
+        print(f'  => filename(): \'{project.fileName()}\'')
+        print(f'  => title:      \'{project.title()}\'')
+        print(f'  => layers:     {project.count()}')
+        print(f'  ----------------------------')
     return project

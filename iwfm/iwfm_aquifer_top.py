@@ -18,16 +18,19 @@
 
 
 def iwfm_aquifer_top(strat):
-    """ iwfm_aquifer_top() - Extract aquitard top altitude from 
+    ''' iwfm_aquifer_top() - Extract aquitard top altitude from 
         IWFM stratigraphy information
 
-    Parameters:
-      strat           (list): IWFM stratigraphy for each model node
+    Parameters
+    ----------
+    strat : list
+        stratigraphy for each model node
 
-    Returns:
-      aquifer_top     (list): Aquifer top for each model layer
-                                and node
-    """
+    Returns
+    -------
+    aquifer_top : list
+        aquifer top for each model layer and node
+    '''
     import iwfm as iwfm
 
     (

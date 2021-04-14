@@ -19,33 +19,44 @@
 
 
 def in_element(e_nodes, e_nos, d_nodexy, x, y):
-    """ in_element() - Returns the element containing the point (x,y), 
+    ''' in_element() - Returns the element containing the point (x,y), 
         or 0 if not in any element
 
-    Parameters:
-      e_nodes         (list):   Element numbers and corresponding nodes
-      e_nos           (list):   Element numbers
-      d_nodexy        (dict):   Dictionary, key=nodes, values=coordinates
-      x               (float):  X coordinate
-      y               (float):  Y coordinate
+    Parameters
+    ----------
+    e_nodes : list
+        element numbers and corresponding nodes
+    
+    e_nos : list
+        element numbers
+    
+    d_nodexy : dictionary
+        key=nodes, values=coordinates
+    
+    x : float
+        X coordinate
+    
+    y : float
+        Y coordinate
 
-    Returns:
-      Integer element number of element containing point, or 0 if none
-    """
-    from shapely.geometry import Polygon
+    Returns
+    -------
+    Integer element number of element containing point, or 0 if none
+    
+    '''
+    from shapely.geometry import Polygon, Points
 
     point = Point(x, y)
 
-    for i in range(
-        0, len(e_nodes)
-    ):  # brute force - cycle through all elements until contains() is true
+    # brute force - cycle through all elements until contains() is true
+    for i in range(0, len(e_nodes)):  
         points = []
         points.append(d_nodexy[e_nodes[i][0]])
         points.append(d_nodexy[e_nodes[i][1]])
         points.append(d_nodexy[e_nodes[i][2]])
         if len(e_nodes[i]) > 3:
             points.append(d_nodexy[e_nodes[i][3]])
-        # if debug: print('      => {}: \t{}'.format('points',points))
+
         polygon = Polygon(points)
 
         if polygon.contains(point):

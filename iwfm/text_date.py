@@ -18,14 +18,17 @@
 
 
 def text_date(text):
-    """ text_date() - Convert M/D/YY to MM/DD/YYYY
+    ''' text_date() - Convert M/D/YY to MM/DD/YYYY
 
-    Parameters:
-      text            (str):  Date in some format like M/D/YY
+    Parameters
+    ----------
+    text : str
+        date in some format like M/D/YY
 
-    Returns:
-      date string in MM/DD/YYYY format
-    """
+    Returns
+    -------
+    date string in MM/DD/YYYY format
+    '''
     import iwfm as iwfm
 
     m = iwfm.month(text)
@@ -33,11 +36,11 @@ def text_date(text):
     y = iwfm.year(text)
 
     if m < 10:
-        mo = "0" + str(m)
+        mo = '0' + str(m)
     else:
         mo = str(m)
     if d < 10:
-        dy = "0" + str(d)
+        dy = '0' + str(d)
     else:
         dy = str(d)
-    return mo + "/" + dy + "/" + str(y)
+    return mo + '/' + dy + '/' + str(y)

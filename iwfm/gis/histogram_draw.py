@@ -18,8 +18,23 @@
 
 
 def histogram_draw(hist, scale=True):
-    """histogram_draw() creates an image from a histogram array"""
+    '''histogram_draw() - Create an image from a histogram array
+    
+    Parameters
+    ----------
+    hist : numpy array or list
+        Histogram array
 
+    scale : bool, default=True
+        Whether or not to scale the histogram
+    
+    Return
+    ------
+    t : image object
+    
+    '''
+    import turtle as t
+    
     t.color('black')
     # Draw the axes
     axes = ((-355, -200), (355, -200), (-355, -200), (-355, 250))

@@ -17,9 +17,20 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_get(infile, debug=0):  # default = open shapefile with PyShp
-    """Read a shapefile"""
+def shp_get(infile):
+    ''' shp_get() - Read a shapefile with PyShp
+
+    Parameters
+    ----------
+    infile : str
+        shapefile name
+
+    Returns
+    -------
+    shp : Shapefile object
+
+    '''
     import iwfm as iwfm
 
-    shp = iwfm.gis.shp_get_PyShp(infile, debug)
+    shp = iwfm.gis.shp_get_PyShp(infile)
     return shp

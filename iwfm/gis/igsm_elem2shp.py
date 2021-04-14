@@ -19,36 +19,50 @@
 
 def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
     epsg=26910,verbose=False):
-    """ igsm_elem2shp() - Create an elements shapefile for an IGSM model
+    ''' igsm_elem2shp() - Create an elements shapefile for an IGSM model
 
-    Parameters:
-      elem_nodes      (list): List of elements and associated nodes
-      node_coords     (list): List of nodes and associated X and Y coordinates
-      elem_sub        (list): List of elements and associated subregions
-      lake_elems      (list): List of lakes and associated elements
-      shape_name      (str):  Base name for output shapefiles
-      epsg            (int):  EPSG projection (EPSG 26910 = NAD 83 UTM 10, CA)
-      verbose         (bool): Turn command-line output on or off
-
-    Returns:
-      nothing
-
-    To do:
+    TODO:
       - change from fiona to pyshp and wkt format
-    """
+
+    Parameters
+    ----------
+    elem_nodes : list
+        list of elements and associated nodes
+    
+    node_coords : list
+        list of nodes and associated X and Y coordinates
+    
+    elem_sub : list
+        list of elements and associated subregions
+    
+    lake_elems : list
+        list of lakes and associated elements
+    
+    shape_name : str
+        output shapefiles base name
+    
+    epsg : int, default=26910 (NAD 83 UTM 10, CA)
+        EPSG projection
+    
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    nothing
+
+    '''
     import sys
 
-    import fiona  # read and write shapefiles
-    import fiona.crs  # fiona module defining crs
+    import fiona 
+    import fiona.crs 
     from shapely.geometry import mapping, Polygon
 
     import iwfm as iwfm
 
     elem_shapename = f'{shape_name}_Elements.shp'
 
-    polygons = iwfm.elem_poly_coords(
-        elem_nodes, node_coords
-    )  # Create list of element polygons
+    polygons = iwfm.elem_poly_coords(elem_nodes, node_coords)
 
     # Define the polygon feature geometry
     elem_schema = {
@@ -63,7 +77,8 @@ def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
             'lake_no': 'int',
         },
     }
-    # Write a new element shapefile - EPSG 26910 = NAD 83 UTM 10
+
+    # Write a new element shapefile 
     with fiona.open(
         elem_shapename,
         'w',

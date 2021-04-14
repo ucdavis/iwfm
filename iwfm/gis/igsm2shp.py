@@ -18,17 +18,23 @@
 
 
 def igsm2shp(main_file, shape_name, verbose=False):
-    """ igsm2shp() - Read the names of the preprocessor component input files, 
+    ''' igsm2shp() - Read the names of the preprocessor component input files, 
         read the contents of these files, and create node, element, stream 
         node and stream reach shapefiles
 
-    Parameters:
-      main_file       (str):  Name of IGSM Preprocessor input file
-      shape_name      (str):  Base name for output shapefiles
+    Parameters
+    ----------
+    main_file : str
+        IGSM Preprocessor input file name
+    
+    shape_name : str
+        output shapefiles base name
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+
+    '''
 
     import iwfm as iwfm
     import iwfm.gis as gis
@@ -100,11 +106,14 @@ def igsm2shp(main_file, shape_name, verbose=False):
 
     gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name, verbose=verbose)
 
+    if verbose:
+        print(f'  Wrote node, element, stream node and stream reache shapefiles\n')
+
     return
 
 
 if __name__ == "__main__":
-    """ Run igsm2shp() from command line """
+    ''' Run igsm2shp() from command line '''
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm

@@ -18,22 +18,36 @@
 
 
 def file_2_bak(filename, force=1):
-    """Function file_2_bak() renames a file to contain .bak extension"""
+    ''' file_2_bak() - Rename a file to contain .bak extension
+
+    Parameters
+    ----------
+    filename : str
+        Name of existing file
+    
+    force : int, default=1
+        Force overwrite? 1=yes, 0=no
+
+    Returns
+    -------
+    nothing
+
+    '''
     import os
     import iwfm as iwfm
 
     if os.path.isfile(filename):  # if the file exists...
-        newfile = os.path.splitext(filename)[0] + ".bak"
+        newfile = os.path.splitext(filename)[0] + '.bak'
         iwfm.file_rename(filename, newfile, force)
+    return
 
-
-if __name__ == "__main__":
-    " Run file_2_bak() from command line "
+if __name__ == '__main__':
+    ''' Run file_2_bak() from command line '''
     import sys
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file = sys.argv[1]
     else:  # ask for file names from terminal
-        input_file = input("Input file name: ")
+        input_file = input('Input file name: ')
 
     file_2_bak(input_file)

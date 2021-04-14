@@ -18,29 +18,39 @@
 
 
 def utm_2_wgs84(zone, easting, northing):
-    """ utm_2_wgs84() - Reproject from UTM to geographic coordinates
+    ''' utm_2_wgs84() - Reproject from UTM to geographic coordinates
 
-    Parameters:
-      zone            (str):   UTM Zone
-      easting         (float): Easting in UTM
-      northing        (float): Notrhing in UTM
+    Parameters
+    ----------
+    zone : str
+        UTM Zone
     
-    Return:
-      (lon, lat, altitude)
-    """
+    easting : float
+        Easting in UTM
+    
+    northing : float
+        Notrhing in UTM
+    
+    Return
+    ------
+    (lon, lat, altitude)
+    
+    '''
     import osr as osr
 
     utm_coordinate_system = osr.SpatialReference()
+
     # Set geographic coordinate system to handle lat/lon
     utm_coordinate_system.SetWellKnownGeogCS('WGS84') 
     is_northern = northing > 0
     utm_coordinate_system.SetUTM(zone, is_northern)
+
     # Clone ONLY the geographic coordinate system
     wgs84_coordinate_system=(utm_coordinate_system.CloneGeogCS())
+
     # create transform component
     utm_to_wgs84_transform = osr.CoordinateTransformation(
         utm_coordinate_system, wgs84_coordinate_system
     )  # (<from>, <to>)
-    return utm_to_wgs84_transform.TransformPoint(
-        easting, northing, 0
-    )  # returns lon, lat, altitude
+
+    return utm_to_wgs84_transform.TransformPoint(easting, northing, 0)

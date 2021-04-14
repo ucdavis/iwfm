@@ -18,14 +18,19 @@
 
 
 def osmnx_getData(place):
-    """osmnx_getData() - Returns streen network data for city <place>
+    '''osmnx_getData() - Return streen network data for city <place>
     
-    Parameters:
-      place           (str):   Place name
+    Parameters
+    ----------
+    place : str
+      Place name
     
-    Return:
-      ox              (obj):   Stream newtork date
-    """
+    Return
+    ------
+    ox : obj
+      Stream newtork data
+
+    '''
     import osmnx
 
     ox = osmnx.core.graph_from_place(place, network_type='drive')

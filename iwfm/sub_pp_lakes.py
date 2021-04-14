@@ -18,40 +18,42 @@
 
 
 def sub_pp_lakes(lake_file, elem_list):
-    """sub_pp_lakes() reads the lake file and returns information for
+    ''' sub_pp_lakes() - Read the lake file and return information for
         lakes in the submodel
 
-    Parameters:
-      lake_file      (str):  Name of existing preprocessor lake file
-      elem_list      (ints): List of existing model elements in submodel
+    Parameters
+    ----------
+    lake_file : str
+        name of existing preprocessor lake file
+    
+    elem_list : list of ints
+        list of existing model elements in submodel
 
-    Returns:
-      lake_info      (list): Description of each lake in the submodel
-      have_lake      (bool): Does the submodel include any lakes?
+    Returns
+    -------
+    lake_info : list
+        description of each lake in the submodel
+    
+    have_lake : bool
+        True if the submodel includes any lakes
 
-    """
+    '''
     import iwfm as iwfm
 
     have_lake = False
 
-    elems = []
-    for e in elem_list:
-        elems.append(int(e[0]))
+    elems = [int(e) for e in elem_list]
 
-    # -- read the lake file into array elem_lines
     lake_lines = open(lake_file).read().splitlines()  # open and read input file
 
-    # -- determine lake file version
     lake_type = lake_lines[0][1:]
 
-    # -- skip to number of lakes
     line_index = iwfm.skip_ahead(0, lake_lines, 0)  # skip comments
     nlakes = int(lake_lines[line_index].split()[0])
 
-    # -- read in model lake info
     lake_info = []
     for lake in range(0, nlakes):
-        line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)  # skip comments
+        line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
         temp = lake_lines[line_index].split()
         nelake = int(temp[3])
 
@@ -59,8 +61,8 @@ def sub_pp_lakes(lake_file, elem_list):
         if int(temp[4]) in elems:
             lake_elems.append(int(temp[4]))
         for elem in range(0, nelake - 1):
-            line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)  # skip comments
-            e = int(lake_lines[line_index].split()[0])  # element number
+            line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
+            e = int(lake_lines[line_index].split()[0])
             if e in elems:
                 lake_elems.append(e)
         if len(lake_elems) > 0:  # at least one lake element in submodel

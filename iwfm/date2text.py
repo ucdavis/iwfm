@@ -18,17 +18,24 @@
 
 
 def date2text(d, m, y):
-    """ date2text() - Return text MM/DD/YYYY
+    ''' date2text() - Return text MM/DD/YYYY
 
-    Parameters:
-      d               (int):  Day of month
-      m               (int):  Month
-      y               (int):  Year
-
-    Returns:
-      Date in MM/DD/YYYY format
+    Parameters
+    ----------
+    d : int
+        day of month
     
-    """
+    m : int
+        month
+    
+    y : int
+        year
+
+    Returns
+    -------
+    Date in MM/DD/YYYY format
+    
+    '''
     if m < 10:
         mo = '0' + str(m)
     else:

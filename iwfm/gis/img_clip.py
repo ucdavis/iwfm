@@ -18,7 +18,24 @@
 
 
 def img_clip(raster, clipshape, outfile):
-    """img_clip() clips a raster file to a shapefile clipping mask"""
+    ''' img_clip() - Clip a raster file to a shapefile clipping mask
+    
+    Parameters
+    ----------
+    raster : str
+        raster image file name
+    
+    clipshape : str
+        shapefile name
+    
+    outfile : str
+        image output file name
+
+    Returns
+    -------
+    nothing
+
+    '''
     from osgeo import gdal_array as gdal_array
     import gdal as gdal
     import shapefile  # pyshp

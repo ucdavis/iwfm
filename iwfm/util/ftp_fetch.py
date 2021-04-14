@@ -18,18 +18,28 @@
 
 
 def ftp_fetch(server, dir, filename='download.txt', verbose=False):
-    """ ftp_fetch() - Downloads a file from a server and saves to
+    ''' ftp_fetch() - Download a file from a server and save to
         the specified directory and file name
 
-    Parameters:
-      server          (str):   URL ir INET address of FTP server
-      dir             (str):   Download directory name
-      filename        (str):   Download file name
+    Parameters
+    ----------
+    server : str
+        URL or INET address of FTP server
+
+    dir : str
+        Download directory name
+
+    filename : str, default='download.txt'
+        Download file name
+      
+    verbose : bool, default=False
+        True = command-line output on
     
-    Return:
-      nothing
+    Return
+    ------
+    nothing
         
-    """
+    '''
     import ftp
 
     ftp = ftplib.FTP(server)

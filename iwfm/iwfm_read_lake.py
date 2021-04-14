@@ -18,17 +18,31 @@
 
 
 def iwfm_read_lake(lake_file):
-    """ iwfm_read_lake() - Read an IWFM Lake file and returns 
+    ''' iwfm_read_lake() - Read an IWFM Lake file and returns 
         (a) a list of elements and (b) a list of properties for each lake
 
-    Parameters:
-      lake_file      (str):   Name of IWFM Preprocessor Lake file
+    Parameters
+    ----------
+    lake_file : str
+        IWFM Preprocessor Lake file name
 
-    Returns:
-      lake_elems     (list):  Element numbers comprising each lake
-      lakes          (list):  Configuration info for each lake
+    Returns
+    -------
+    lake_elems : list
+        element numbers for each lake
+    
+    lakes : list
+        configuration info for each lake
+          lake_id : int
+              lake number
+          max_elev : int
+              column number in maximum elevation time series file
+          dest : int
+              destination stream node or lake id
+          nelem : int
+              number of elements in lake
 
-    """
+    '''
     import iwfm as iwfm
 
     iwfm.file_test(lake_file)

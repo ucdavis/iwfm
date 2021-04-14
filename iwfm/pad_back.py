@@ -19,18 +19,26 @@
 
 
 def pad_back(item, n=1, t=' '):
-    """ pad_back() - Converts item to a string and then adds multiple copies
+    ''' pad_back() - Convert item to a string and then adds multiple copies
         of text character t after item until the string is at least n 
         characters long
 
-    Parameters:
-      item            (*):    Item to be converted to string
-      n               (int):  Minimum character length
-      t               (str):  Character to add to pad string to length
+    Parameters
+    ----------
+    item : any single item
+        item to be converted to string
+    
+    n : int, default=1
+        minimum string character length
+    
+    t : str
+        character to add to pad string to desired length
 
-    Returns:
-      Padded string
-    """
+    Returns
+    -------
+    Padded string
+    
+    '''
     s = str(item)
     while len(s) < n:
         s = s + t

@@ -19,17 +19,25 @@
 
 
 def pad_front(item, n=1, t=' '):
-    """ pad_front() - Convert item to a string and then add multiple copies
+    ''' pad_front() - Convert item to a string and then add multiple copies
         of text character t before item until the string is n characters long
 
-    Parameters:
-      item            (*):    Item to be converted to string
-      n               (int):  Minimum character length
-      t               (str):  Character to add to pad string to length
+    Parameters
+    ----------
+    item : any single item (int, float, string)
+        item to be converted to string
+    
+    n : int
+        minimum character length
+    
+    t : str, default=' '
+        character to add to pad string to length
 
-    Returns:
-      Padded string
-    """
+    Returns
+    -------
+    padded string
+
+    '''
     s = str(item)
     while len(s) < n:
         s = t + s

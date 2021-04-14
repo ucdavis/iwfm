@@ -18,14 +18,18 @@
 
 
 def filename_base(path_to_file):
-    """ filename_base() - Return the file basename
+    ''' filename_base() - Return the file basename
 
-    Parameters:
-      path_to_file    (str):  Path to file
+    Parameters
+    ----------
+    path_to_file : str
+        path to file
 
-    Returns:
-      file basename
-    """
+    Returns
+    -------
+    file basename as string
+
+    '''
     import os
 
     return os.path.splitext(path_to_file)[0]

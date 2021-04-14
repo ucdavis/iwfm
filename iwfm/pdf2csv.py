@@ -19,16 +19,24 @@
 
 
 def pdf2csv(input_file, output_file, verbose=False):
-    """ pdf2csv() - Beads a PDF file and writes tables to a csv file
+    ''' pdf2csv() - Read a PDF file and write tables to a csv file
 
-    Parameters:
-      input_file      (str):  Name of input PDF file
-      output_file     (str):  Name of output csv file
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    input_file : str
+        name of input PDF file
 
-    Returns:
-      nothing
-    """
+    output_file : str
+        name of output csv file
+
+    verbose : bool, default=False
+        turn command-line output on or off
+
+    Returns
+    -------
+    nothing
+
+    '''
     import tabula
 
     tabula.convert_into(input_file, output_file, output_format='csv', pages='all')
@@ -37,8 +45,8 @@ def pdf2csv(input_file, output_file, verbose=False):
     return
 
 
-if __name__ == "__main__":
-    " Run pdf2csv() from command line "
+if __name__ == '__main__':
+    ' Run pdf2csv() from command line '
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm

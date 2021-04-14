@@ -17,11 +17,22 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_type_txt(f):
-    """Return a standard text string of the shape type for PyShp shapefile"""
+def shp_type_txt(shp):
+    ''' shp_type_txt() - Return a standard text string of the shape type
+        for a PyShp shapefile
+
+    Parameters
+    ----------
+    sho : PyShp shapefile object
+
+    Returns
+    -------
+    shape type : str
+
+    '''
     import iwfm as iwfm
 
-    type = iwfm.shp_type(f)
+    type = iwfm.shp_type(shp)
     if type == 1:
         return 'POINT'
     elif type == 3:

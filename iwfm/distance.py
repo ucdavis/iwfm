@@ -18,7 +18,23 @@
 
 
 def distance(a, b):
-    """Function distance() calculate the distance between two (x,y) points"""
+    ''' distance() - Return the distance between two (x,y) points
+
+    Parameters
+    ----------
+    a : list [float, float]
+        (x,y) values for location)
+      
+    b : list [float, float]
+        (x,y) values for location
+
+    Returns
+    -------
+    dist : float
+        Distance between the two points
+
+    '''
     import math
 
-    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+    dist = math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+    return dist

@@ -18,16 +18,23 @@
 
 
 def iwfm_read_nodes(node_file):
-    """ iwfm_read_nodes() - Read an IWFM Node file and return a list of the
+    ''' iwfm_read_nodes() - Read an IWFM Node file and return a list of the
         nodes and their coordinates
 
-    Parameters:
-      node_file       (str):  IWFM preprocessor node file
+    Parameters
+    ----------
+    node_file : str
+        IWFM preprocessor node file
 
-    Returns:
-      node_coord      (list): Nodes and coordinates
-      node_list       (list): Nodes
-    """
+    Returns
+    -------
+    node_coord : list
+        Nodes and coordinates
+
+    node_list : list
+        Node numbers
+
+    '''
     import iwfm as iwfm
     import re
 
@@ -37,7 +44,7 @@ def iwfm_read_nodes(node_file):
 
     line_index = iwfm.skip_ahead(0, node_lines, 0)  
 
-    inodes = int(re.findall("\d+", node_lines[line_index])[0])  
+    inodes = int(re.findall('\d+', node_lines[line_index])[0])  
 
     line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0) 
 

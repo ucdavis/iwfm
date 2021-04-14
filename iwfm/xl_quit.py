@@ -17,9 +17,18 @@
 # -----------------------------------------------------------------------------
 
 
-def xl_quit(excel, excel_file_name=''):
-    """ xl_quit() - Close the excel application 
-    """
+def xl_quit(excel):
+    ''' xl_quit() - Gracefully close the excel application 
+
+    Parameters
+    ----------
+    excel : excel object
+    
+    Returns
+    -------
+    nothing
+
+    '''
     excel.DisplayAlerts = False  # return to defaults
     excel.Visible = False
     excel.Application.Quit()

@@ -18,29 +18,38 @@
 
 
 def write_results(name, date, meas, sim, start_date):
-    """ write_results() - Write simulated and observed values for one 
+    ''' write_results() - Write simulated and observed values for one 
         observation well to a text file
 
-    Parameters:
-      name            (str):  Name of output file
-      date            (list): Dates corresponding to measured values
-      meas            (list): Measured values
-      sim             (list): Simulated equivalents to measured values
-      start_date      (str):  Date in MM/DD/YYYY format
-
-    Returns:
-      nothing
+    Parameters
+    ----------
+    name : str
+        name of output file
     
-    """
+    date : list
+        dates corresponding to measured values
+    
+    meas : list of floats
+        measured values
+    
+    sim : list of floats
+        simulated equivalents to measured values
+    
+    start_date : str
+        date in MM/DD/YYYY format
+
+    Returns
+    -------
+    nothing
+    
+    '''
     import iwfm as iwfm
+
     output_filename = name + '_obs.out'
     with open(output_filename, 'w') as output_file:
-        output_file.write('# Observations for well {}\n'.format(name))
+        output_file.write(f'# Observations for well {name}\n')
         output_file.write('# Date\tObserved\tModeled\n')
         for i in range(0, len(date)):
-            output_file.write(
-                '{}\t{}\t{}\n'.format(
-                    iwfm.date_index(int(date[i]), start_date), meas[i], sim[i]
-                )
-            )
+            output_file.write(f'{iwfm.date_index(int(date[i]),start_date)}'+
+                f'\t{meas[i]}\t{sim[i]}\n')
     return

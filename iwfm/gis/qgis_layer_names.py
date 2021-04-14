@@ -17,16 +17,22 @@
 # -----------------------------------------------------------------------------
 
 
-def qgis_layer_names(project, debug=0):
-    """ qgis_layer_names() - Get a list of project layer names and paths
+def qgis_layer_names(project):
+    ''' qgis_layer_names() - Get a list of QGIS project layer names and paths
     
-    Parameters:
-      project         (obj):   qcore.QgsProject.instance()
+    Parameters
+    ----------
+    project : qcore.QgsProject.instance() object
     
-    Return:
-      layer_names     (list):  Project layer names
-      layer_paths     (list):  Paths to layer files
-    """
+    Return
+    ------
+    layer_names : list
+        project layer names
+    
+    layer_paths : list
+        paths to layer files
+    
+    '''
     root = project.layerTreeRoot()
     layers = project.mapLayers()
     layer_names = [layer.name() for layer in project.layerTreeRoot().children()]

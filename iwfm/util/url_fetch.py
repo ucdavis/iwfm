@@ -18,21 +18,29 @@
 
 
 def url_fetch(url, filename, verbose=False):
-    """ url_fetch() - Download file at url to filename
+    ''' url_fetch() - Download file at url to filename
 
-    Parameters:
-      url             (str):  Web address
-      filename        (str):  File name to save info from url
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    url : str
+        web address
 
-    Returns:
-      nothing
-    """
+    filename : str
+        file name to save info from url
+
+    verbose : bool, default=False
+        True = command-line output on
+
+    Return
+    ------
+    nothing
+
+    '''
     import requests
 
     r = requests.get(url=url, verify=False)
     with open(filename, 'wb') as f:
         f.write(r.content)
     if verbose:
-        print(f'  Retrieved \'{}\' ')
+        print(f'  Retrieved \'{filename}\' ')
     return 

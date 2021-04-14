@@ -18,27 +18,26 @@
 
 
 def print_env():  # print some paths
-    """ print_env() - Prints some environment variables to the console, for debugging
+    ''' print_env() - Prints some environment variables to the console, for debugging
 
-    Parameters:
-      nothing
+    Parameters
+    ----------
+    nothing
     
-    Return:
-      nothing
-    """
+    Return
+    ------
+    nothing
+
+    '''
     import os, platform
 
-    print("Environment:")
-    print(
-        "  System:            {} version {}".format(
-            platform.system(), platform.release()
-        )
-    )
-    print("  pwd:               {}".format(os.getcwd()))
-    print("  PATH:              {}".format(os.environ["PATH"]))
-    # print("  LD_LIBRARY_PATH:   {}".format(os.environ['LD_LIBRARY_PATH']))
-    # print("  DYLD_LIBRARY_PATH: {}".format(os.environ['DYLD_LIBRARY_PATH']))
-    print("  PYTHONPATH:        {}".format(os.environ["PYTHONPATH"]))
-    print(" ")
+    print('Environment:')
+    print(f'  System:            {platform.system()} version {platform.release()}')
+    print(f'  pwd:               {os.getcwd()}')
+    print(f'  PATH:              {os.environ["PATH"]}')
+    # print(f'  LD_LIBRARY_PATH:   {os.environ['LD_LIBRARY_PATH']}')
+    # print(f'  DYLD_LIBRARY_PATH: {os.environ['DYLD_LIBRARY_PATH']}')
+    print(f'  PYTHONPATH:        {os.environ["PYTHONPATH"]}')
+    print(' ')
     return
     

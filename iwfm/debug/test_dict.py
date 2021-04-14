@@ -18,16 +18,25 @@
 
 
 def test_dict(name, d, key):  # test dictionary
-    """ test_dict() - Prints dictionary value for key. Normal usage is to set
+    ''' test_dict() - Prints dictionary value for key. Normal usage is to set
         name to the dictionary name so the printed output has meaning
 
-    Parameters:
-      name       (str):  Name of dictionary
-      d          (dict): Dictionary
-      key        (*):    Dictionary key value
+    Parameters
+    ----------
+    name : str
+        Name of dictionary
+
+    d : dict
+        Dictionary
+
+    key : (any type)  
+        Dictionary key value
     
-    Return:
-      nothing
-    """
-    print("   dictionary {}, key: {} returns: {}".format(name, key, d.get(key)))
+    Return
+    ------
+    nothing
+    
+    '''
+    
+    print(f'   dictionary {name}, key: {key} returns: {d.get(key)}')
     return

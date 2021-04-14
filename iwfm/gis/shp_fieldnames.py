@@ -18,7 +18,19 @@
 
 
 def shp_fieldnames(f):
-    """Returns the field names for PyShp shapefile"""
+    ''' shp_fieldnames() - Return the field names for PyShp shapefile
+    
+    Parameters
+    ----------
+    f: PyShp shapefile object
+        shapefile
+
+    Returns
+    -------
+    field_names : list of strings
+        field names
+        
+    '''
     from shp_fields import shp_fields
 
     fields = shp_fields(f)

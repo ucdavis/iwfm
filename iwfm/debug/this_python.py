@@ -18,14 +18,18 @@
 
 
 def this_python():
-    """ this_python() - Returns the Python version as a string, for debugging
+    ''' this_python() - Returns the Python version as a string, for debugging
 
-    Parameters:
-      nothing
+    Parameters
+    ----------
+    nothing
     
-    Return:
-      version         (str):  Python version
-    """
+    Return
+    ------
+    version : str
+        Python version
+
+    '''
     import platform
 
     return platform.python_version()

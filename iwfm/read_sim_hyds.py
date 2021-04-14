@@ -18,31 +18,34 @@
 
 
 def read_sim_hyds(nhyds, gwhyd_files):
-    """ read_sim_hyds() - Reads simulated values from multiple IWFM output 
+    ''' read_sim_hyds() - Read simulated values from multiple IWFM output 
         hydrograph files
 
-    Parameters:
-      nhyds           (int):   Number of simulated hydrograph files
-      gwhyd_files     (list):  List of input file names
+    Parameters
+    ----------
+    nhyds : int
+        number of simulated hydrograph files
+    
+    gwhyd_files : list
+        list of input file names
 
-    Returns:
-      gwhyd_sim       (list):  List with one item of hydrograph values for
-                                 each input hydrograph file
+    Returns
+    -------
+    gwhyd_sim : list
+        list with one item of hydrograph values for each input hydrograph file
 
-    """
+    '''
     gwhyd_sim = []
 
     for k in range(0, nhyds):
-        gwhyd_lines = (
-            open(gwhyd_files[k]).read().splitlines()
-        )  # open and read input file
+        gwhyd_lines = (open(gwhyd_files[k]).read().splitlines())
         gwhyd_lines = [word.replace('_24:00', ' ') for word in gwhyd_lines]
 
-        temp = []
         for j in range(9, len(gwhyd_lines)):
-            line = gwhyd_lines[j].split()
-            for i in range(1, len(line)):
-                line[i] = float(line[i])
-            temp.append(line)
+            items= gwhyd_lines[j].split()
+            temp = [items.pop(0)]
+            alist = [float(x) for x in items]
+            temp.extend(alist)
         gwhyd_sim.append(temp)
+
     return gwhyd_sim

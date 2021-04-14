@@ -19,17 +19,33 @@
 
 
 def pdf_combine(start_dir, save_dir, save_name):
-    """PDF_combine() combines all of the PDF files in a folder into one PDF file
+    ''' PDF_combine() - Combine all of the PDF files in a folder into one PDF file
     modified from https://geektechstuff.com/2018/02/17/python-3-merge-multiple-pdfs-into-one-pdf/
-    """
-    import os
-    import PyPDF2
+
+    Parameters
+    ----------
+    start_dir : str
+        Name directory with PDF files to combine
+
+    save_dir : str
+        Name of output directory
+
+    save_name : str
+        Name of output file
+
+    Returns
+    -------
+    count : int
+        Number of PDFs combined
+
+    '''
+    import os, PyPDF2
 
     os.chdir(save_dir)  # change to PDFs folder
     count = 0
     mergelist = []
-    for filename in os.listdir("."):
-        if filename.endswith(".pdf"):
+    for filename in os.listdir('.'):
+        if filename.endswith('.pdf'):
             mergelist.append(filename)
 
     pdfWriter = PyPDF2.PdfFileWriter()
@@ -37,14 +53,14 @@ def pdf_combine(start_dir, save_dir, save_name):
     # loop through all PDFs
     for filename in mergelist:
         count += 1
-        pdfFileObj = open(filename, "rb")
+        pdfFileObj = open(filename, 'rb')
         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-        for pageNum in range(pdfReader.numPages):  # Open each page of the PDF
+        for pageNum in range(pdfReader.numPages):  
             pageObj = pdfReader.getPage(pageNum)
             pdfWriter.addPage(pageObj)
 
-    os.chdir(start_dir)  # change back to original folder
-    pdfOutput = open(save_name, "wb")  # Open new PDF in binary format
-    pdfWriter.write(pdfOutput)  # Output the PDF
-    pdfOutput.close()  # Close the PDF writer
+    os.chdir(start_dir) 
+    pdfOutput = open(save_name, 'wb') 
+    pdfWriter.write(pdfOutput) 
+    pdfOutput.close()  
     return count

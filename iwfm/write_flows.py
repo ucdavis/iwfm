@@ -1,5 +1,5 @@
 # write_flows.py
-# Write flow data frm table to text file
+# Write flow data frm table to csv file
 # Copyright (C) 2020-2021 Hydrolytics LLC
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -17,13 +17,36 @@
 # -----------------------------------------------------------------------------
 
 
-def write_flows(data_file_base, file_type, table, site_info, verbose=0, debug=0):
-    """write_flows() Write flow data frm table to text file"""
+def write_flows(data_file_base, file_type, table, site_info, verbose=False):
+    ''' write_flows() - Write flow data from a table to a csv file
+
+    Parameters
+    ----------
+    data_file_base : str
+        Output file base name
+
+    file_type : str
+        Flow data description for file name
+
+    table : list
+        Data
+
+    site_info : list
+        Column headers
+
+    verbose : bool
+        Turn command-line output on or off
+
+    Returns
+    -------
+    nothing
+
+    '''
     import os, csv
     import numpy as np
 
-    outFileName = os.path.splitext(data_file_base)[0] + file_type + ".csv"
-    outFile = open(outFileName, "w", newline="")
+    outFileName = os.path.splitext(data_file_base)[0] + file_type + '.csv'
+    outFile = open(outFileName, 'w', newline='')
     outWriter = csv.writer(outFile)
 
     # write header info
@@ -38,9 +61,6 @@ def write_flows(data_file_base, file_type, table, site_info, verbose=0, debug=0)
     outFile.close()
 
     if verbose:
-        print(
-            "  Wrote {} cols x {} rows to {}".format(
-                len(table), len(table[0]), outFileName
-            )
-        )
-    return 1
+        print(f'  Wrote {len(table)} cols x {len(table[0])} rows to {outFileName}')
+
+    return

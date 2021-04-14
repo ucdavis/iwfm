@@ -18,10 +18,23 @@
 
 
 def wkt2poly(intxt):
-    """ wkt2poly(): turn WKT text description into object"""
+    ''' wkt2poly() - Turn WKT text description into object
+
+    Parameters
+    ----------
+    intxt : str
+        Polygon description in text in WKT format, for example:
+          'POLYGON((0 0,4 0,4 4,0 4,0 0))'
+
+    Returns
+    -------
+    poly : obj
+        Polygon
+
+    '''
     import wkt
 
-    wktPoly = intxt  # intxt example: "POLYGON((0 0,4 0,4 4,0 4,0 0))"
+    wktPoly = intxt  
     poly = wkt.loads(wktPoly)
 
     return poly

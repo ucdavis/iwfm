@@ -18,20 +18,32 @@
 
 
 def xl_write_2d(output, wb, row=1, col=1, sheet=0):
-    """xl_write() - Write a 2D array to an existing excel workbook
+    '''xl_write() - Write a 2D array to an existing excel workbook
 
-    Parameters:
-      output          (list): 2D array of data
-      wb              (obj):  Excel workbook object
-      row             (int):  Top column of write area
-      col             (int):  Left column of write area
-      sheet           (int):  Worksheet number to write to
+    Parameters
+    ----------
+    output : list
+        2D array of data
+    
+    wb : obj
+        Excel workbook object
+    
+    row : int
+        top column of write area
+    
+    col : int
+        left column of write area
+    
+    sheet : int
+        worksheet number to write to
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
     ss = wb.Worksheets(sheet)  # select the worksheet for this table
-    ss.Range(
-        ss.Cells(row, 1), ss.Cells(row + len(output) - 1, len(output[0]))
-    ).Value = output  # paste in
+    # paste in
+    ss.Range(ss.Cells(row, 1), ss.Cells(row + len(output) - 1, len(output[0]))
+        ).Value = output  
     return

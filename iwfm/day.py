@@ -18,14 +18,19 @@
 
 
 def day(text):
-    """ day() - Extract day from MM/DD/YY or MM/DD/YYYY
+    ''' day() - Extract day from MM/DD/YY or MM/DD/YYYY
         to an integer
 
-    Parameters:
-      text            (str):  Date as string
+    Parameters
+    ----------
+    text : str
+        date as string
 
-    Returns:
-      date as integer
-    """
+    Returns
+    -------
+    day : int
+        day of month 
+
+    '''
     new_text = text[text.find("/") + 1 : len(text)]
     return int(new_text[0 : new_text.find("/")])

@@ -17,6 +17,18 @@
 # -----------------------------------------------------------------------------
 
 
-def mysql_read(cur, debug=0):
-    """ Read mysql database"""
-    cur.execute("SELECT AsText(location) FROM")
+def mysql_read(cur):
+    ''' mysql_read() - Read a mysql database
+
+    Parameters
+    ----------
+    cur : obj
+        current record
+
+    Returns
+    -------
+    nothing
+
+    '''
+    cur.execute('SELECT AsText(location) FROM')
+    return

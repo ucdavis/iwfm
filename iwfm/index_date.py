@@ -17,16 +17,22 @@
 # -----------------------------------------------------------------------------
 
 
-def index_date(in_date, start_date="10/01/1984"):
-    """ index_date() - Returns the number of days from start_date to in_date
+def index_date(in_date, start_date='10/01/1984'):
+    ''' index_date() - Return the number of days from start_date to in_date
 
-    Parameters:
-      in_date         (str):  Contents of stream specification file
-      start_date      (str):  Current item in stream_lines
+    Parameters
+    ----------
+    in_date : str
+        date after start_date
+    
+    start_date : str, default='10/01/1984'
+        date to count from
 
-    Returns:
-      days            (int):   Number of days between two dates
-    """
+    Returns
+    -------
+    days            (int):   Number of days between two dates
+    
+    '''
     import iwfm as iwfm
 
     ys, ms, ds = iwfm.year(start_date), iwfm.month(start_date), iwfm.day(start_date)

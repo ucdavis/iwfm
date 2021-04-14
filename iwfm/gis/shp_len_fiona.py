@@ -17,15 +17,21 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_len_fiona(filename, debug=0):
-    """  shp_len_fiona() - Returns the number of records in shapefile
+def shp_len_fiona(filename):
+    '''  shp_len_fiona() - Return the number of records in a shapefile
+         opened with Fiona
 
-    Parameters:
-      filename        (str):  Shapefile name
+    Parameters
+    ----------
+    filename : str
+        shapefile name
 
-    Returns:
-      l               (int):  Number of records
-    """
+    Returns
+    -------
+    l : int
+        number of records
+    
+    '''
     import fiona
 
     f = fiona.open(filename)

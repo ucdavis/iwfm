@@ -18,18 +18,28 @@
 
 
 def shp2png(shape, outname, iwidth=400, iheight=600):
-    """ shp2png() - Convert a shapefile to a raster and save as a
-    png file - including white fill
+    ''' shp2png() - Convert a shapefile to a raster and save as a
+        png file - including white fill
     
-    Parameters:
-      shape           (str):   Name of shapefile
-      outname         (str):   Name of output PNG file
-      iwidth          (int):   Width of image in pixels
-      iheight         (int):   Height of image in pixels
+    Parameters
+    ----------
+    shape : str
+        shapefile name
     
-    Return:
-      Nothing
-    """
+    outname : str
+        output PNG file name
+    
+    iwidth : int, default=400
+        width of image in pixels
+    
+    iheight : int, default=600
+        height of image in pixels
+    
+    Return
+    ------
+    nothing
+    
+    '''
     from PIL import Image, ImageDraw, ImageOps
 
     xdist = shape.bbox[2] - shape.bbox[0]

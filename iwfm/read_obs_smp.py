@@ -18,20 +18,26 @@
 
 
 def read_obs_smp(smp_file):
-    """ read_obs_smp() - Read the contents of the observed values smp file
-    into array obs
+    ''' read_obs_smp() - Read the contents of the observed values smp file
+    and return as array
 
-    Parameters:
-      smp_file        (str):  Name of PEST-style data file
+    Parameters
+    ----------
+    smp_file : str
+        PEST-style data file name (smp format)
 
-    Returns:
-      obs             (list)  Data file contents
-    """
-    file_lines = open(smp_file).read().splitlines()  # open and read input file
+    Returns
+    -------
+    obs : list
+        data file contents
+    
+    '''
+    file_lines = open(smp_file).read().splitlines() 
     file_lines = [word.replace("_", " ") for word in file_lines]
-    # convert pest results file to array
+
     obs = []
     for j in range(0, len(file_lines)):
         temp = file_lines[j].split()
         obs.append([temp[0], temp[1], temp[2], float(temp[3])])
+
     return obs

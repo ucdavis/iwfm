@@ -18,8 +18,20 @@
 
 
 def osmnx_street_len(city):
-    """osmnx() uses OSMNX to calculate average street length for city"""
+    ''' osmnx_street_len() - Uses OSMNX to calculate average street length 
+        for a city 
+
+    Parameters
+    ----------
+    city : str
+      City name
+
+    Return
+    ------
+    float:  Average street length
+
+    '''
     import osmnx
 
     stats = osmnx.basic_stats(city)
-    return stats["street_length_avg"]
+    return stats['street_length_avg']

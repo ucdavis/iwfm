@@ -17,13 +17,28 @@
 # -----------------------------------------------------------------------------
 
 
-def distance_ellipse(p1, p2, units="m"):
-    """distance_ellipse() uses the Vincenty formula to calculate the
-    distance between two (lat,lon) points on an ellipsoid Earth.
-    p1 = [lat1,lon1], p2 = [lat2,lon2] in degrees
-    units = "m", "km","mi" or "ft"
-    Vincenty formula at https://en.wikipedia.org/wiki/Vincenty%27s_formulae
-    """
+def distance_ellipse(p1, p2, units='m'):
+    ''' distance_ellipse() - Uses the Vincenty formula to calculate the
+        distance between two (lat,lon) points on an ellipsoid Earth.
+        Vincenty formula at https://en.wikipedia.org/wiki/Vincenty%27s_formulae
+    
+    Parameters
+    ----------
+    p1 : list
+        point coordinates as floats [latitude,longitude]
+
+    p2 : list
+        point coordinates as floats [latitude,longitude]
+
+    units : str, default='m'
+        units, from 'm', 'km','mi' or 'ft'
+
+    Returns
+    -------
+    distance : float
+        distance between p1 and p2
+    
+    '''
     import math
 
     lat1, lon1 = p1[0], p1[1]
@@ -90,12 +105,12 @@ def distance_ellipse(p1, p2, units="m"):
         )
     )
     s = b * A * (sigma - deltaSigma)  # distance in meters
-    if units == "mi":
+    if units == 'mi':
         distance = s * 0.000621371  # miles
-    elif units == "ft":
+    elif units == 'ft':
         distance = s * 3.28084  # feet
-    elif units == "km":
+    elif units == 'km':
         distance = s / 1000  # kilometers
-    else:  # units == "m":
+    else:  # units == 'm':
         distance = s  # meters
     return distance

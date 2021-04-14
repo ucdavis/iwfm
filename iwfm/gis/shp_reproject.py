@@ -17,16 +17,34 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_reproject(srcName, tgtName, spatRef):
-    """shp_reproject() takes a shapefile and projects to another
-    shapefile in <spatRef> coordinate system. <spatRef> is an integer EPSG code"""
+def shp_reproject(srcName, tgtName, epsg=26910):
+    ''' shp_reproject() - Project a shapefile to another shapefile in 
+        <spatRef> coordinate system. 
+
+    Parameters
+    ----------
+    srcName : str
+        input shapefile name
+    
+    tgtName : str
+        output shapefile name
+    
+    epsg : int, default=26910 (NAD 83 UTM 10, CA)
+        EPSG projection
+
+    Returns
+    -------
+    nothing
+    
+    '''
+
     import os
     import osr
     import ogr
 
     # Set target spatial reference
     tgt_spatRef = osr.SpatialReference()
-    tgt_spatRef.ImportFromEPSG(spatRef)
+    tgt_spatRef.ImportFromEPSG(epsg)
 
     # Source shapefile
     driver = ogr.GetDriverByName('ESRI Shapefile')
@@ -67,3 +85,5 @@ def shp_reproject(srcName, tgtName, spatRef):
     srcDbf = os.path.splitext(srcName)[0] + '.dbf'
     tgtDbf = lyrName + '.dbf'
     shutil.copyfile(srcDbf, tgtDbf)
+
+    return

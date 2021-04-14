@@ -18,16 +18,23 @@
 
 
 def filename_ext(filename, ext):
-    """ filename_ext() - Add the specified extension to the filename
+    ''' filename_ext() - Add the specified extension to the filename
         or replace existing extention
 
-    Parameters:
-      filename        (str):  File name
-      ext             (str):  File name extension
+    Parameters
+    ----------
+    filename : str
+        file name
+    
+    ext : str
+        file name extension
 
-    Returns:
-      filename        (str):  File name with extension
-    """
+    Returns
+    -------
+    filename : str
+        file name with extension
+    
+    '''
     if filename.find('.') == len(filename) - 1:  # if last char is '.'
         filename = filename[0 : len(filename) - 1]  # remove it
     if '.' + ext not in filename:

@@ -18,15 +18,18 @@
 
 
 def round(item, decimals):
-    """ round() - Round a number
+    ''' round() - Round a number
 
-    Parameters:
-      item            (*):    Number ot round off
-      decimals        (*):    Number of decimal places
+    Parameters
+    ----------
+    item            (*):    Number ot round off
+    
+    decimals        (*):    Number of decimal places
 
     Returns:
-      pdf             (PDF):   PDF object
-    """
+    rounded number
+    
+    '''
     decimals = int(decimals)
     if decimals == 0:
         return int(item)
@@ -34,6 +37,6 @@ def round(item, decimals):
         factor = 10.0 ** int(decimals)
         return int(factor * item) / factor
     else:
-        print(f" * round({item},{decimals}) - Can't round to value less than 0 *")
+        print(f' * round({item},{decimals}) - Can\'t round to value less than 0 *')
         sys.exit()
     return

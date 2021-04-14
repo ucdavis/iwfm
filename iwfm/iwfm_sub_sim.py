@@ -18,21 +18,30 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm_sub_sim(
-    in_sim_file, elem_pairs_file, out_base_name, verbose=False, debug=False
-):
-    """iwfm_sub_sim.py - Read in a list of element pairs for a submodel.
+def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, debug=False):
+    '''iwfm_sub_sim.py - Read in a list of element pairs for a submodel.
     Use existing model Elements, Nodes, Stream specification and stratigraphy
     files to produce new preprocessor files for the submodel and a list of
     model node pairs
 
-    Parameters:
-      in_sim_file     (str):  Name of existing simulation main input file
-      elem_pairs_file (str):  Name of file listing elements of existing nmodel
-                                and submodel
-      out_base_name   (str):  Root of submodel output file names
-      verbose         (bool): Turn command-line output on or off
-      debug           (bool): Turn debugging output on or off
+    *** INCOMPLETE - UNDER DEVELOPMENT ***
+
+    Parameters
+    ----------
+    in_sim_file : str
+        name of existing simulation main input file
+
+    elem_pairs_file : str
+        name of file listing elements of existing nmodel and submodel
+
+    out_base_name : str
+        root of submodel output file names
+
+    verbose : bool, default=False
+        turn command-line output on or off
+
+    debug : bool, default=False
+        turn debugging output on or off
 
     Returns:
       # -- to be determined --
@@ -46,7 +55,7 @@ def iwfm_sub_sim(
       - process Rootzone file
       - process Lake file
 
-    """
+    '''
     import iwfm as iwfm
     import pickle
 
@@ -60,26 +69,19 @@ def iwfm_sub_sim(
 
     # -- read submodel elements
     elem_list, new_srs, elem_dict, rev_elem_dict = iwfm.get_elem_list(elem_pairs_file)
-    elems = []
-    for e in elem_list:
-        elems.append(e[0])
+    elems = [e for e[0] in elem_list]
     if verbose:
         print(f'  Read submodel element pairs file {elem_pairs_file}')
 
     # ** TODO: test for pickle files, read info from source if not present, error if no source
-    node_list = pickle.load(
-        open(out_base_name + '_nodes.bin', 'rb')
-    )  # read information from previous dump
-    snode_dict = pickle.load(
-        open(out_base_name + '_snodes.bin', 'rb')
-    )  # read information from previous dump
+    # read information from previous dump
+    node_list = pickle.load(open(out_base_name + '_nodes.bin', 'rb'))  
+    snode_dict = pickle.load(open(out_base_name + '_snodes.bin', 'rb'))
     if verbose:
         print('  Read submodel nodes and stream nodes')
 
     if have_lake:
-        lake_info = pickle.load(
-            open(out_base_name + '_lakes.bin', 'rb')
-        )  # dump information to file
+        lake_info = pickle.load(open(out_base_name + '_lakes.bin', 'rb'))  
         if verbose:
             print('  Read submodel lakes')
 
@@ -122,7 +124,7 @@ def iwfm_sub_sim(
 
 
 if __name__ == "__main__":
-    """ Run iwfm_sub_sim() from command line """
+    ''' Run iwfm_sub_sim() from command line '''
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm

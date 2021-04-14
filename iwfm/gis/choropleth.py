@@ -17,23 +17,38 @@
 # -----------------------------------------------------------------------------
 
 
-def choropleth(infile,fieldname1='POPULAT11',fieldname2='AREASQKM',iwidth=600,
+def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     iheight=400,denrat=80.0,savename=None):
-    """choropleth() reads a shapefile and writes a chloropleth image
+    ''' choropleth() - Read a shapefile and write a chloropleth image
 
-    Parameters:
-      infile         (str):   Name of source shapefile
-      fieldname1     (str):   Field name for shading
-      fieldname2     (str):   Field name for shading
-      iwidth         (int):   Image width in pixels
-      iheight        (str):   Image height in pixels
-      denrat         (str):   Density retio
-      savename       (str):   Name of image destination file
+    Parameters
+    ----------
+    infile : str
+        source shapefile name
+    
+    fieldname1 : str
+        name of field for shading
+    
+    fieldname2 : str
+        name for field for shading
+    
+    iwidth : int, default=600
+        image width in pixels
+    
+    iheight : str
+        image height in pixels
+    
+    denrat : float, default=80.0
+        density retio
+    
+    savename : str, default=None
+        image destination file name (None = not saved)
 
-    Returns:
-      nothing
+    Returns
+    -------
+    nothing
 
-    """
+    '''
     import shapefile  # pyshp
     from PIL import Image, ImageDraw, ImageOps
     import iwfm as iwfm
@@ -59,5 +74,7 @@ def choropleth(infile,fieldname1='POPULAT11',fieldname2='AREASQKM',iwidth=600,
             (px, py) = iwfm.gis.world2screen(inShp.bbox, iwidth, iheight, x, y)
             pixels.append((px, py))
         draw.polygon(pixels, outline=(255, 255, 255), fill=(R, G, B))
-    img.save(savename)
+    if savename:
+        img.save(savename)
     return
+    

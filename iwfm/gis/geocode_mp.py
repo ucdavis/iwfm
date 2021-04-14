@@ -18,14 +18,19 @@
 
 
 def geocode_mp(cities):
-    """ geo_code() - Use multiprocessing to find multiple geocodes
+    ''' geo_code() - Use multiprocessing to find and return multiple geocodes
 
-    Parameters:
-      cities          (list): List of city names to geocode
+    Parameters
+    ----------
+    cities : list
+        list of city names to geocode
 
-    Returns:
-      results         (list): Geocodes for the input cities
-    """
+    Returns
+    -------
+    results : list
+        geocodes for the input cities
+    
+    '''
     import mp
     from geocode import geocode
 

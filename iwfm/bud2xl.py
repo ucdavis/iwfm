@@ -18,26 +18,32 @@
 
 
 def bud2xl(budget_file, excel_file, verbose=False, row = 6):
-    """ bud2xl() - Read IWFM Budget or Z-Budget output file and paste into 
+    ''' bud2xl() - Read IWFM Budget or Z-Budget output file and paste into 
         existing Excel workbook
 
-    Parameters:
-      budget_file     (str):  Name of IWFM Budget output file
-      excel_file      (str):  Name of existing Excel file
-      verbose         (bool): Turn command-line output on or off
-      row             (int):  Rop row of table data in excel spreadsheets
+    Parameters
+    ----------
+    budget_file : str
+        Name of IWFM Budget output file
 
-    Returns:
-      nothing
-    """
+    excel_file : str
+        Name of existing Excel file
+
+    verbose : bool, default=False
+        Turn command-line output on or off
+
+    row : int, default=6
+        Rop row of table data in excel spreadsheets
+
+    Returns
+    -------
+    nothing
+    '''
     import os
     import iwfm as iwfm
     import win32com.client as win32  # pywin32
 
     cwd = os.getcwd()
-
-    iwfm.file_test(budget_file) 
-    iwfm.file_test(excel_file)  
 
     # -- read the Budget file into array file_lines
     file_lines = open(budget_file).read().splitlines() 
@@ -49,7 +55,7 @@ def bud2xl(budget_file, excel_file, verbose=False, row = 6):
         line += 1
         header += 1
     line += 1
-    while file_lines[line][0].isdigit():  
+    while  line < len(file_lines) and file_lines[line][0].isdigit():  
         line += 1
         table += 1
     line += 1

@@ -18,5 +18,18 @@
 
 
 def shp_getrec(f, i):
-    """Returns a record as a string for a PyShp shapefile"""
+    ''' shp_getrec() - Return a shapefile record as a string
+
+    Parameters
+    ----------
+    f : PyShp shapefile
+    
+    i : int
+        record number
+
+    Returns
+    -------
+    Specified record : str
+
+    '''
     return f.record(i)

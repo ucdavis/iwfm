@@ -18,18 +18,25 @@
 
 
 def elem_poly_coords(elem_nodes, node_coords):
-    """ elem_poly_coords() - Returns a list ofelement coordinates 
+    ''' elem_poly_coords() - Return a list of element coordinates 
         in the form: [[x0,y0],[x1,y1],[x2,y2]<,...>]
 
-    Parameters:
-      elem_nodes      (list): List of elements and associated nodes
-      node_coords     (list): List of nodes and associated X and Y coordinates
+    Parameters
+    ----------
+    elem_nodes : list
+        list of elements and associated nodes
+    
+    node_coords : list
+        list of nodes and associated X and Y coordinates
 
-    Returns:
-      polys           (list): List of polygon coordinates
-    """
+    Returns
+    -------
+    polys : list
+        list of polygon coordinates
+    
+    '''
     polys = []
-    #for e in elem_nodes:
+
     for i in range(0, len(elem_nodes)):  # for each element ...
         coords = []
         for j in range(0, len(elem_nodes[i])):  # for each node in the element ...

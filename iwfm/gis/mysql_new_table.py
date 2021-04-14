@@ -17,8 +17,23 @@
 # -----------------------------------------------------------------------------
 
 
-def mysql_new_table(cur, table_name, debug=0):
-    """ Add a new table to a mysql database"""
+def mysql_new_table(cur, table_name):
+    ''' mysql_new_table() - Add a new table to a mysql database
+
+    ** example/template for future use **
+    
+    Parameters
+    ----------
+    cur : database object
+        mysql database object
+
+    table_name : str
+        name of table to add
+    
+    Returns
+    -------
+    nothing    
+    '''
     # Add name and location fields.
     # The location field is spatially enabled to hold GIS data
     cur.execute(

@@ -19,15 +19,40 @@
 
 def grid_write(outfile, array, xllcorner=277750.0, yllcorner=6122250.0, 
     cellsize=1.0, nodata=-9999):
-    """grid_write() writes an ASCII Grid file"""
+    ''' grid_write() - Write an ASCII Grid file
+    
+    Parameters
+    ----------
+    outfile : str
+        output ASCII Grid file name
+    
+    array : ASCII Grid array
+    
+    xllcorner : float, default=277750.0
+        x value of lower left corner
+    
+    yllcorner : float, default=6122250.0
+        y value of lower left corner
+     
+    cellsize : float, default=1.0
+        call dimensions
+    
+    nodata : int, default=-9999
+        value for cells with no data
+
+    Returns
+    -------
+    nothing
+    
+    '''
     import numpy as np
 
-    header = 'ncols {}\n'.format(array.shape[1])
-    header += 'nrows {}\n'.format(array.shape[0])
-    header += 'xllcorner {}\n'.format(round(xllcorner, 1))
-    header += 'yllcorner {}\n'.format(round(yllcorner, 1))
-    header += 'cellsize {}\n'.format(round(cellsize, 1))
-    header += 'NODATA_value {}\n'.format(nodata)
+    header =  f'ncols {array.shape[1]}\n'
+    header += f'nrows {array.shape[0]}\n'
+    header += f'xllcorner {round(xllcorner, 1)}\n'
+    header += f'yllcorner {round(yllcorner, 1)}\n'
+    header += f'cellsize {round(cellsize, 1)}\n'
+    header += f'NODATA_value {nodata}\n'
     with open(outfile, 'w') as f:
         f.write(header)
         np.savetxt(f, array, fmt='%1.2f')

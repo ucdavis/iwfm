@@ -18,14 +18,18 @@
 
 
 def file_dir(file):
-    """ file_dir() - Return directory portion of filename
+    ''' file_dir() - Return directory portion of filename
 
-    Parameters:
-      file            (str):  File name with path
+    Parameters
+    ----------
+    file : str
+        file name with path
 
-    Returns:
-      path to file
-    """
+    Returns
+    -------
+    path to file
+    
+    '''
     from pathlib import Path
 
     return Path(file).parent

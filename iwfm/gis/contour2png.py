@@ -18,14 +18,34 @@
 
 
 def contour2png(source, target, iwidth=800, iheight=600):
-    """contour2png() Draw an entire contour shapefile to a pngcanvas image"""
+    ''' contour2png() - Draw an entire contour shapefile to a pngcanvas image
+    
+    Parameters
+    ----------
+    source : str
+        input shapefile name
+
+    target : str
+        output PNG file name
+
+    iwidth : int, default=800
+        image width in pixels
+
+    iheight : int, default=600
+        image height in pixels
+
+    Returns
+    -------
+    nothing
+
+    '''
     import shapefile  # pyshp
     import pngcanvas as pngcanvas
 
-    if source[-4:] != ".shp":
-        source += ".shp"
-    if target[-4:] != ".png":
-        target += ".png"
+    if source[-4:] != '.shp':
+        source += '.shp'
+    if target[-4:] != '.png':
+        target += '.png'
     r = shapefile.Reader(source)  # Open the contour shapefile
     # Setup the world to pixels conversion
     xdist = r.bbox[2] - r.bbox[0]
@@ -57,6 +77,7 @@ def contour2png(source, target, iwidth=800, iheight=600):
     for c in contours:
         canvas.polyline(c)
     # Save the image
-    f = open(target, "wb")
+    f = open(target, 'wb')
     f.write(canvas.dump())
     f.close()
+    return

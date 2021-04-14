@@ -18,16 +18,22 @@
 
 
 def xml_fix(infile, outfile, verbose=False):
-    """ xml_fix() - Read a broken XML file
+    ''' xml_fix() - Read a broken XML file and write repaired file
     
 
-    Parameters:
-      infile         (str):   Input XML file
-      outfile        (str):   Output XML file
+    Parameters
+    ----------
+    infile : str
+        input XML file name
+    
+    outfile : str
+        output XML file name
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
     from bs4 import BeautifulSoup
 
     data = open(infile)
@@ -36,6 +42,6 @@ def xml_fix(infile, outfile, verbose=False):
     fixed.write(new_data.prettify())
     fixed.close()
     if verbose:
-        print('=> Fixed file \'{infile}\' and wrote to \'{outfile}\' ')
+        print(f'  Fixed file \'{infile}\' and wrote to \'{outfile}\' ')
     return
     

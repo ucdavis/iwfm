@@ -18,18 +18,27 @@
 
 
 def skip_ahead(line_index, all_lines, skip=0):
-    """ skip_ahead() - Increment line_index by skipping (a) every line that 
+    ''' skip_ahead() - Increment line_index by skipping (a) every line that 
         begins with 'C', 'c' '*' or '#' and (b) 'skip' additional lines.
-        Stop if last line (all_lines) is reached.
+        Stop if last line (all_lines) is reached
 
-    Parameters:
-      line_index      (int):  Current line number
-      all_lines       (list): Each item is one line from a file
-      skip            (int):  Number of non-comment lines to skip
+    Parameters
+    ----------
+    line_index : int
+        current line number
+    
+    all_lines : list
+        each item is one line from a file
+    
+    skip : int
+        number of non-comment lines to skip
 
-    Returns:
-      line_index      (int):  New current line or -1 if end reached
-    """
+    Returns
+    -------
+    line_index : int
+        new current line or -1 if end reached
+    
+    '''
     skip_lines = skip
     comments = 'Cc*#'
     while skip_lines > 0:

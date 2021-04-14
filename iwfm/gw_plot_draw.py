@@ -27,29 +27,50 @@ def gw_plot_draw(
     well_info,
     start_date,
     title_words,
-    yaxis_width,
+    yaxis_width=-1,
 ):
-    """ gw_plot_draw() - Create a PDF file with a graph of the simulated data 
+    ''' gw_plot_draw() - Create a PDF file with a graph of the simulated data 
         vs time for all hydrographs as lines, with observed values vs time as 
         dots, saved as the well_name.pdf
 
-    Parameters:
-      well_name       (str):  Well label, often state well number
-      date            (list): List of dates (paired with meas)
-      meas            (list): List of observed values (paired with date)
-      no_hyds         (int):  Number of simulation time series to be graphed
-      gwhyd_obs       (list): Simulated IWFM groundwater hydrographs 
-                                ([0]==dates, [1 to no_hyds]==datasets)
-      gwhyd_name      (list): Hydrograph names from PEST observations file
-      well_dict       (dict): Dictionary of well data from Groundwater.dat file
-      start_date      (str):  First date in simulation hydrograph files
-      title_words     (str):  Plot title words
-      yaxis_width     (int):  Minimum y-axis width, -1 for automatic
+    Parameters
+    ----------
+    well_name : str
+        well name, often state well number
     
-    Return:
-      nothing
+    date : list
+        dates (paired with meas)
+    
+    meas : list
+        observed values (paired with date)
+    
+    no_hyds : int
+        number of simulation time series to be graphed
+    
+    gwhyd_obs : list
+        simulated IWFM groundwater hydrographs 
+        [0]==dates, [1 to no_hyds]==datasets
+    
+    gwhyd_name : list
+        hydrograph names from PEST observations file
+    
+    well_dict : dictionary
+        key = well name, values = well data from Groundwater.dat file
+    
+    start_date : str
+        first date in simulation hydrograph files
+    
+    title_words : str
+        plot title words
+    
+    yaxis_width : int, default=-1
+        minimum y-axis width, -1 for automatic
+    
+    Return
+    ------
+    nothing
 
-    """
+    '''
     import iwfm as iwfm
     import datetime
     import matplotlib

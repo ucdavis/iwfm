@@ -18,14 +18,18 @@
 
 
 def file_get_path(filename):
-    """ file_get_path() - Return the path to a file as a string
+    ''' file_get_path() - Return the path to a file as a string
 
-    Parameters:
-      filename        (str):  File name with path
+    Parameters
+    ----------
+    filename : str
+        file name with path
 
-    Returns:
-      path to file
-    """
+    Returns
+    -------
+    path to file
+    
+    '''
     import re
     from pathlib import Path
 

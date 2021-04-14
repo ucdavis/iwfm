@@ -19,15 +19,20 @@
 
 
 def read_lu_change_zones(in_zone_file):
-    """ read_lu_change_zones() - When changing IWFM land use for a scenario, 
+    ''' read_lu_change_zones() - When changing IWFM land use for a scenario, 
         determine the model elements for each change zone
 
-    Parameters:
-      in_zone_file    (str):   File with change zones
+    Parameters
+    ----------
+    in_zone_file : str
+        file with change zones
 
-    Returns:
-      zones           (list):  Change zones
-    """
+    Returns
+    -------
+    zones : list
+        1hange zones
+    
+    '''
 
     import re
     comments = 'Cc*#'

@@ -18,7 +18,21 @@
 
 
 def img_stretch(infile, outfile):
-    """img_stretch() stretches the color bands of an image"""
+    '''img_stretch() - Stretch the color bands of an image
+
+    Parameters
+    ----------
+    infile : str
+        image file name
+
+    outfile : str
+        modified image output file name
+
+    Returns
+    -------
+    nothing
+    
+    '''
     from osgeo import gdal_array as gdal_array
     from stretch import stretch
 

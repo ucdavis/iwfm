@@ -17,6 +17,16 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_type(f):
-    """Returns integer shape type for PyShp shapefile"""
-    return f.shapeType
+def shp_type(shp):
+    ''' shp_type() - Return integer shape type for a PyShp shapefile
+
+    Parameters
+    ----------
+    shp : PyShp shapefile object
+
+    Returns
+    -------
+    Shape type
+
+    '''
+    return sho.shapeType

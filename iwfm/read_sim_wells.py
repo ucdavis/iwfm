@@ -18,38 +18,40 @@
 
 
 def read_sim_wells(gw_file):
-    """ read_sim_wells() - Read Groundwater.dat file and build a dictionary of 
+    ''' read_sim_wells() - Read Groundwater.dat file and build a dictionary of 
         groundwater hydrograph info and gwhyd_sim columns, and returns the 
         dictionary
 
-    Parameters:
-      gw_file         (str):  Name of IWFM Groundwater.dat file
+    Parameters
+    ----------
+    gw_file : str
+        IWFM Groundwater.dat file name
 
-    Returns:
-      well_dict       (dict): Dictionary of well information
+    Returns
+    -------
+    well_dict : dictionary
+        key = well name, values = well information (hydrograph file column,
+        x, y, model layer, well name)
     
-    """
+    '''
     import iwfm as iwfm
 
     well_dict, well_list = {}, []
-    gwhyd_info = open(gw_file).read().splitlines()  # open and read input file
-    line_index = 1  # skip first line
-    line_index = iwfm.skip_ahead(line_index, gwhyd_info, 20)  # skip to NOUTH, number of hydrographs
-    line = gwhyd_info[line_index].split()  # read NOUTH
-    nouth = int(line[0])
+    gwhyd_info = open(gw_file).read().splitlines() 
+
+    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  # skip to NOUTH
+    nouth = int(gwhyd_info[line_index].split()[0])
 
     line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph
-    for i in range(0, nouth):  # open(gwhyd_list_file, 'r') as f:
-        items = []
-        line = gwhyd_info[line_index].split()
+    for i in range(0, nouth):  
+        items, line = [], gwhyd_info[line_index].split()
         items.append(line[5].upper())  # state well number = key
-        items.append(int(line[0]))  # column number in hydrograph file
-        items.append(float(line[3]))  # x
-        items.append(float(line[4]))  # y
-        items.append(int(line[2]))  # model layer
+        items.append(int(line[0]))     # column number in hydrograph file
+        items.append(float(line[3]))   # x
+        items.append(float(line[4]))   # y
+        items.append(int(line[2]))     # model layer
         items.append(line[5].lower())  # well name (state well number)
-        key, values = items[0], items[1:]
-        well_dict[key] = values
-        well_list.append(key)
-        line_index = line_index + 1
+        well_dict[items[0]] = items[1:]
+        well_list.append(items[0])
+        line_index += 1
     return well_dict, well_list

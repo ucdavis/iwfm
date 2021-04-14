@@ -18,35 +18,41 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm_precip_adj(
-    precip_filename,
-    elem_VIC_filemane,
-    factors_filename,
-    years_filename,
-    out_filename,
-    verbose=False,
-    per_line=6,
-    debug=0,
-):
-    """iwfm_precip_adj() reads an IWFM precipitation file, list of VIC grid cells for each precipitation column,
-    and table of monthly adjustment factors for each VIC grid cell, and writes out an IWFM precipitation file
-    with precipitation rates adjusted by the VIC factors
+def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
+    years_filename,out_filename,verbose=False,per_line=6):
+    ''' iwfm_precip_adj() - Read an IWFM precipitation file, a list of VIC grid 
+        cells for each precipitation column, and a table of monthly adjustment 
+        factors for each VIC grid cell, and writes out an IWFM precipitation 
+        file with precipitation rates adjusted by the VIC factors
 
-    Parameters:
-      precip_filename   (str):  Name of existing IWFM precipitation file
-      elem_VIC_filemane (str):  Name of file linking model elements to VIC elements
-      factors_filename  (str):  Name of file with VIC factors
-      years_filename    (str):  Name of file with replacement years
-      out_filename      (str):  Name of output IWFM precipitation file
-      verbose           (bool): Turn command-line output on or off
-      per_line          (str):  If verbose==True, number of items to write to CLI per line
-                                  (read but ignored if verbose==False)
-      debug             (bool): Turn additional command-line output on or off
+    Parameters
+    ----------
+    precip_filename : str
+      Name of existing IWFM precipitation file
 
-    Returns:
-      nothing
+    elem_VIC_filemane : str
+      Name of file linking model elements to VIC elements
 
-    """
+    factors_filename : str
+      Name of file with VIC factors
+
+    years_filename : str
+      Name of file with replacement years
+
+    out_filename : str
+      Name of output IWFM precipitation file
+    
+    verbose : bool, default=False
+     Turn command-line output on or off
+    
+    per_line : int, default=6
+      If verbose==True, number of items to write to CLI per line
+
+    Returns
+    -------
+    nothing
+
+    '''
     import re, sys
     import numpy as np
     import iwfm as iwfm
@@ -54,42 +60,23 @@ def iwfm_precip_adj(
     skip = 5  # skip 5 non-comment lines before reaching data lines
 
     # -- read precip column-VIC grid linkage ------------------------
-    vic_precip = (
-        open(elem_VIC_filemane).read().splitlines()
-    )  # data: precip col -> region, VIC ID
-    vic_precip.pop(0)  # remove header lines
-    vic_rows = len(vic_precip)
+    # data: precip col -> region, VIC ID
+    elem_vic = open(elem_VIC_filemane).read().splitlines()
+    elem_vic.pop(0)  # remove header lines
+    vic_rows = len(elem_vic)
 
-    vic_dict = {}
-    for item in vic_precip:
+    vic_cols = {}
+    for item in elem_vic:
         item = re.split(';|,|\t', item)
-        vic_dict[int(item[0])] = [int(item[1]), item[2]]
+        vic_cols[int(item[0])]=[int(item[1]),item[2],item[3]]
     if verbose:
-        print('  Read VIC grid data for {:,} precipitation columns'.format(vic_rows))
-
-    if debug > 0:  # write out the dictionary
-        with open('test_vic_dict.txt', 'w') as tf:
-            for i in range(1, max(vic_dict)):
-                if i in vic_dict:
-                    tf.write('{}\t{}\n'.format(i, vic_dict[i]))
-                else:
-                    tf.write('{}\t-1\n'.format(i))
-        print('  Wrote VIC list to test_vic_dict.txt')
+        print(f'  Read VIC grid data for {vic_rows:,} precipitation columns')
 
     # -- get the climate factors ------------------------------------
     factors = open(factors_filename).read().splitlines()  # open and read input file
-
-    # create a dictionary for VIC cell -> column from the first line
-    vic_list = re.split(';|,|\t', factors[0])  # VIC cell for each column
-    vic_list = [int(x) for x in vic_list[1:]]
-    index_list = list(range(0, len(vic_list) + 1))
-    d_factor_col = dict(zip(vic_list, index_list))  # return VIC grid ID -> column
-
-    d_factors = {}
-    vic_years = []
     factors.pop(0)  # remove header row
-    fac_len = len(factors)
-    i = 0
+    
+    d_factors, vic_years, i = {}, [], 0
     while i < len(factors) and len(factors[i]) > 1:  # put factors into a dictionary
         factor = re.split(';|,|\t', factors[i])
         mm, dd, yy = re.split('/', factor[0])
@@ -100,11 +87,11 @@ def iwfm_precip_adj(
         d_factors[month] = factor
         i += 1
 
-    # -- replacement years for years without VIC factors ------------
+   # -- replacement years for years without VIC factors ------------
     rep_years = open(years_filename).read().splitlines()  # open and read input file
 
-    d_repyr_col = {}  # region name -> column
-    rep_list = rep_years[0].split(',')
+    d_repyr_col = {}  # region name -> column of replacement years file
+    rep_list = rep_years[0].split(',') # header
     for i in range(1, len(rep_list)):
         d_repyr_col[rep_list[i]] = i - 1
 
@@ -119,102 +106,87 @@ def iwfm_precip_adj(
     # -- read IWFM precipitation file ------------------------------------
     precip = open(precip_filename).read().splitlines()  # open and read input file
 
-    of = open(out_filename, 'w')  # open output file for copy of header info
+    with open(out_filename, 'w') as of: # open output file for copy of header info
 
-    # find line with first data set, get month and year
-    pline, status = 0, 1  # pline = line being processed, continue until status < 1
-    while status > 0:
-        if precip[pline][0] == 'C':  # skip lines that begin with 'C', 'c' or '*'
-            of.write(precip[pline] + '\n')
-            pline += 1
-        elif precip[pline][0] != 'C':
-            if skip > 0:  # also handle the other header lines
+        # find line with first data set, get month and year
+        pline, status = 0, 1  # pline = line being processed, continue until status < 1
+        while status > 0:
+            if precip[pline][0] == 'C':  # skip lines that begin with 'C', 'c' or '*'
                 of.write(precip[pline] + '\n')
-                skip -= 1
                 pline += 1
-            else:
-                items = precip[pline].split()
-                pmonth = int(items[0][0:2])
-                pyear = int(items[0][6:10])
-                cols = len(items)
-                status = 0
-    if verbose:
-        print(f'  Precipitation start date: {pmonth}/{pyear}')
-
-    # -- do the work -------------------------------------------------
-    if verbose:
-        print(
-            '  Processing {:,} precipitation dates...'.format(len(precip) - pline - 1)
-        )
-
-    if debug > 1:
-        verbose = False
-
-    if verbose:  # create outport to write unbuffered output to console
-        outport = iwfm.Unbuffered(sys.stdout)
-
-    print_count = 0
-    with open(
-        'factors.dat', 'w'
-    ) as factfile:  # write out the factors to a separate file just in case...
-        header = 'Date        '
-        for i in range(1, cols):
-            header = header + str(i) + '   '
-        header += '\n'
-        factfile.write(header)
-
-        # process each row of the precipitation file, replacing adjusted values
-        while pline < len(precip) and len(precip[pline]) > 10:
-            items = precip[pline].split()
-            date = items[0].replace('_24:00', '')
-
-            if verbose:  # write progress to console
-                if print_count > per_line - 2:
-                    outport.write(' ' + date)
-                    print_count = 0
+            elif precip[pline][0] != 'C':
+                if skip > 0:  # also handle the other header lines
+                    of.write(precip[pline] + '\n')
+                    skip -= 1
+                    pline += 1
                 else:
-                    if print_count == 0:
-                        outport.write('\n  ' + date)
-                    else:
+                    items = precip[pline].split()
+                    pmonth = int(items[0][0:2])
+                    pyear = int(items[0][6:10])
+                    cols = len(items)
+                    status = 0
+
+        # -- do the work -------------------------------------------------
+        if verbose:
+            print(f'  Processing {len(precip) - pline :,} precipitation dates...')
+
+        if verbose:  # create outport to write unbuffered output to console
+            outport = iwfm.Unbuffered(sys.stdout)
+
+        print_count = 0
+        # write out the factors to a separate file just in case...
+        with open('factors.dat', 'w') as factfile:  
+            factfile.write('Date            \t' + '\t'.join(map(str, [i for i in range(1,cols+1)])) + '\n')
+
+            # process each row of the precipitation file, replacing adjusted values
+            while pline < len(precip) and len(precip[pline]) > 10:
+                items = precip[pline].split()
+                pline += 1
+
+                p = [float(x) for x in items[1:]] # precip
+
+                date = items[0].replace('_24:00', '')
+                if verbose:  # write progress to console
+                    if print_count > per_line - 2:
                         outport.write(' ' + date)
-                    print_count += 1
+                        print_count = 0
+                    else:
+                        if print_count == 0:
+                            outport.write('\n  ' + date)
+                        else:
+                            outport.write(' ' + date)
+                        print_count += 1
 
-            p = [
-                float(x) for x in items[1 : vic_rows + 1]
-            ]  # list of precip values to midify
+                f, ex = [], []
+                for e in range(1, len(items)):  # cycle through precip columns
+                    try:
+                        vic_id = vic_cols[e][0]  # precip column -> VIC_ID
+                    except:  # no VIC ID for this column == no change
+                        f.append(1.0)  # factor of precip column
+                        ex.append(e)
+                    else:
+                        mm, dd, yy = re.split('/', date)
+                        month = str(yy) + '-' + str(int(mm))
 
-            mm, dd, yy = re.split('/', date)
-            repyr = []
-            if yy not in vic_years:  # use replacement years
-                y = int(yy)
-                if int(mm) > 9:
-                    y += 1  # bump up to water year
-                repyr = d_VICyear[y]
+                        if yy not in vic_years:  # use replacement years
+                            # replacement year can vary by precip column
+                            repyr = d_VICyear[int(yy)]     # replacement year as string
+                            yy = repyr[d_repyr_col[vic_cols[e][1]]]
+                            month = str(yy) + '-' + str(int(mm))
 
-            f = []
-            for e in range(1, vic_rows + 1):  # cycle through precip columns
+                        f.append(d_factors[month][vic_id-1])  # factor of precip column
 
-                vic_id = vic_dict[e][0]  # element -> VIC_ID
-                column = d_factor_col[vic_id]  # VIC_ID -> factor column
-                if len(repyr) == 0:  # use the input data date
-                    month = str(yy) + '-' + str(int(mm))
-                else:  # get the substitute date
-                    region = vic_dict[e][1]
-                    yy = repyr[d_repyr_col[region]]
-                    month = str(yy) + '-' + str(int(mm))
-                f.append(d_factors[month][column])  # factor of element
-            new_p = np.round(np.array(p) * np.array(f), 2)
+                new_p = np.round(np.array(p) * np.array(f), 2)
+                of.write(items[0] + '\t' + '\t'.join(map(str, new_p)) + '\n')
+                factfile.write(items[0] + '\t' + '\t'.join(map(str, [round(F,2) for F in f])) + '\n')
 
-            out_str = items[0]
-            for i in new_p:
-                out_str = out_str + '\t' + str(i)
-            of.write(out_str + '\n')
-
-            pline += 1
-    of.close()
 
     if verbose:  # write progress to console
         outport.write('\n')
+        if len(ex) > 0:
+            print(f'\n  These precipitation columns had no VIC ID and were not changed:')
+            print('   '+','.join([str(i) for i in ex]))
+
         print(f'\n  Wrote adjusted precipitation rates to {out_filename}\n')
     return
 
@@ -245,14 +217,7 @@ if __name__ == '__main__':
     iwfm.file_test(years_filename)
 
     idb.exe_time()  # initialize timer
-    iwfm_precip_adj(
-        precip_filename,
-        elem_VIC_filemane,
-        factors_filename,
-        years_filename,
-        out_filename,
-        verbose=True,
-        debug=0,
-    )  # set debug=1 to debug
+    iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
+        years_filename,out_filename,verbose=True)
 
     idb.exe_time()  # print elapsed time

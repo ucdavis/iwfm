@@ -18,19 +18,24 @@
 
 
 def simhyd_obs(gwhyd_file):
-    """ symhyd_obs() - read simulate groundwater hydrographs from IWFM file
+    ''' symhyd_obs() - Read simulated groundwater hydrographs from IWFM file
 
+    Parameters
+    ----------
+    gwhyd_file : str
+        IWFM groundwater hydrograph file name
 
-    Parameters:
-      gwhyd_file      (str):  Name of IWFM groundwater hydrograph file
+    Returns
+    -------
+    simhyd_obs : list
+        table of hydrograph information
+    
+    ''' 
 
-    Returns:
-      simhyd_obs      (list):  Table of hydrograph information
-    """ 
-    simhyd_obs = []
-    gwhyd_lines = open(gwhyd_file).read().splitlines()  # open and read input file
+    gwhyd_lines = open(gwhyd_file).read().splitlines() 
     gwhyd_lines = [word.replace('_24:00', ' ') for word in gwhyd_lines]
 
+    simhyd_obs = []
     for j in range(9, len(gwhyd_lines)):
         line = gwhyd_lines[j].split()
         for i in range(1, len(line)):

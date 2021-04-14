@@ -18,16 +18,20 @@
 
 
 def shp_getrow_lg(inshape, rec):
-    """ shp_getrow() - Returns one row or record for PyShp shapefile
-        and works better for large DBF files
+    ''' shp_getrow() - Return one row or record for a shapefile opened
+        with PyShp, works better for large DBF files
 
-    Parameters:
-      inshape         (obj):  PyShp shapefile object
-      rec             (int):  Record number
+    Parameters
+    ----------
+    inshape : PyShp shapefile object
+    
+    rec : int
+        record number
 
-    Returns:
-      one row record
-    """
+    Returns
+    -------
+    one row record
+    '''
     import iwfm as iwfm
 
     return iwfm.gis.shp_getrec_lg(inshape, rec)

@@ -18,21 +18,37 @@
 
 
 def gw_plot(obs_file, gwhyd_info_file, gwhyd_files, gwhyd_names, yaxis_width, titlewords):
-    """ gw_plot() - Assemble groundwater hydrograph info and call fns to 
+    ''' gw_plot() - Assemble groundwater hydrograph info and call fns to 
         write individual plots to PDF files
 
-    Parameters:
-      obs_file        (str):  Name of PEST smp file with observed values 
-                                (or 'none' if no observations)
-      gwhyd_info_file (int):  Name of IWFM groundwater.dat file
-      gwhyd_files     (list): List of IWFM hydrograph file names
-      gwhyd_names     (list): List of legend entries
-      yaxis_width     (int):  Minimum y-axis width, -1 for automatic
-      title_words     (str):  Plot title words
+    Parameters
+    ----------
+    obs_file : str
+        name of PEST smp file with observed values 
+        (or 'none' if no observations)
     
-    Return:
-      count           (int):  Number of hydrographs processed
-    """
+    gwhyd_info_file : int
+        IWFM groundwater.dat file name
+    
+    gwhyd_files : list
+        list of IWFM hydrograph file names
+    
+    gwhyd_names : list
+        list of legend entries
+    
+    yaxis_width : int
+        minimum y-axis width, -1 for automatic
+    
+    title_words : str
+        plot title words
+    
+    Return
+    ------
+    count : int
+        number of hydrographs processed
+    
+    '''
+    
     import iwfm as iwfm 
 
     well_dict, well_list = iwfm.read_sim_wells(gwhyd_info_file)  
@@ -46,8 +62,8 @@ def gw_plot(obs_file, gwhyd_info_file, gwhyd_files, gwhyd_names, yaxis_width, ti
       count = iwfm.gw_plot_noobs(well_list,len(gwhyd_files),gwhyd_sim,gwhyd_names,well_dict,titlewords,yaxis_width)
     return count
 
-if __name__ == "__main__":
-    " Run gw_plot() from command line "
+if __name__ == '__main__':
+    ' Run gw_plot() from command line '
     import sys
     import iwfm as iwfm
     import iwfm.debug as idb
@@ -70,14 +86,14 @@ if __name__ == "__main__":
 
     else:  # get everything form the command line
         titlewords      = input('Graph title: ')
-        obs_file        = input('Observed values file name (smp format) or "none"): ')
+        obs_file        = input('Observed values file name (smp format) or \'none\'): ')
         gwhyd_info_file = input('IWFM Groundwater.dat file name: ')
         yaxis_width     = input('Minimum y-axis scale (-1 to autoscale): ')
         no_hyds         = int(input('Number of hydrographs to plot: '))
         for i in range(0, no_hyds):
-            filename    = input('  IWFM Groundwater Hydrograph {} file name: '.format(i))
+            filename    = input(f'  IWFM Groundwater Hydrograph {i+1} file name: ')
             gwhyd_files.append(filename)
-            legendname  = input('  Graph legend for {}: '.format(filename))
+            legendname  = input(f'  Graph legend for {filename}: ')
             gwhyd_names.append(legendname)
 
     # test that the input files exist

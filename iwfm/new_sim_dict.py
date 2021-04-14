@@ -18,16 +18,20 @@
 
 
 def new_sim_dict(out_base_name):
-    """new_sim_dict() creates and returns a dictionary of simulation file
-    names from a basename
+    ''' new_sim_dict() - Create and return a dictionary of simulation file
+        names from a basename
 
-    Parameters:
-      out_base_name   (str):  Base name of new simulation input files
+    Parameters
+    ----------
+    out_base_name : str
+        base name of new simulation input files
 
-    Returns:
-      sim_dict_new    (dict): Dictionary of new simulation input file names
+    Returns
+    -------
+    sim_dict_new : dictionary
+        dictionary of new simulation input file names
 
-    """
+    '''
     sim_dict_new = {}
     sim_dict_new['sim_name']    = out_base_name + '_Simulation.in'
     sim_dict_new['preout']      = out_base_name + '_Preprocessor.bin'

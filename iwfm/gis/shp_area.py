@@ -18,7 +18,17 @@
 
 
 def shp_area(polygon):
-    """Returns the area of a PyShp polygon"""
+    ''' shp_area() - Return the area of a PyShp polygon
+
+    Parameters
+    ----------
+    polygon : PyShp shapefile polygon
+
+    Returns
+    -------
+    Polygon area : float
+
+    '''
     from area import area
 
     return area(polygon)

@@ -18,14 +18,17 @@
 
 
 def wk2_getBoundingBox(wkt):
-    """ wk2_getBoundingBox() - Get bounding box
+    ''' wk2_getBoundingBox() - Get WKT object bounding box
     
-    Parameters:
-      wkt             (obj):   WKT object
+    Parameters
+    ----------
+    wkt : WKT object
     
-    Return:
-      poly            (obj):   Bounding box
-    """
+    Return
+    ------
+    poly : bounding box
+    
+    '''
     import ogr
 
     poly = ogr.CreateGeometryFromWkt(wkt)

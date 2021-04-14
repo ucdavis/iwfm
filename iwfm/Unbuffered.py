@@ -17,14 +17,19 @@
 
 
 class Unbuffered(object):
-    """ Unbuffered() - Write unbuffered output to console, for example
+    ''' Unbuffered() - Write unbuffered output to console, for example
         to print progress at runtime without newline characters
 
         Example:
           outport = Unbuffered(sys.stdout)
           outport.write(' ' + date)
         From Magnus Lycka Magnus at thinkware.se 
-    """
+
+    Parameters
+    ----------
+    object : console object
+        
+    '''
 
     def __init__(self, stream):
         self.stream = stream

@@ -18,15 +18,21 @@
 
 
 def shp_get_OGR(infile, verbose=False):
-    """shp_get_OGR() - Opens a shapefile with OGR
+    '''shp_get_OGR() - Opens a shapefile with OGR
 
-    Parameters:
-      infile          (str):  File name to save info from url
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    infile : str
+        name to save info from url
+    
+    verbose : bool, default=False
+        True = command-line output on
 
-    Returns:
-      shape           (obj):  Shapefile object
-    """
+    Returns
+    -------
+    shape :  shapefile as OGR object
+    
+    '''
     import ogr as ogr
 
     shape = ogr.Open(infile)

@@ -18,9 +18,26 @@
 
 
 def iwfm_read_strat(strat_file, node_coords):
-    """ iwfm_read_strat() reads an IWFM Stratigraphy file and returns a list
-        of stratigraphy for each node.
-    """
+    ''' iwfm_read_strat() - Read an IWFM Stratigraphy file and return a 
+        list of stratigraphy for each node
+    
+    Parameters:
+    -----------
+    strat_file : str
+        name of existing IWFM stratigraphy file
+    
+    node_coords : list
+        (x,y) locations of IWFM model nodes
+
+    Returns
+    -------
+    strat : list
+        stratigraphy for each node
+    
+    nlayers : int
+        number of layers
+
+    '''
     import iwfm as iwfm
     import re
 

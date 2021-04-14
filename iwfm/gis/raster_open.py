@@ -18,7 +18,18 @@
 
 
 def raster_open(infile):
-    """ raster_open(): open a raster file"""
+    ''' raster_open() - Open a raster file
+
+    Parameters
+    ----------
+    infile : str
+        raster file name
+
+    Returns
+    -------
+    raster :  raster as GDAL object
+
+    '''
     import gdal
 
     raster = gdal.Open(infile)

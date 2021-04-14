@@ -18,15 +18,21 @@
 
 
 def dbf_print_record(db, rec):
-    """ dbf_print_record() - Print a dbf record to command line
+    ''' dbf_print_record() - Print a DBF record to command line
 
-    Parameters:
-      db              (dbf):  Database object
-      rec             (int):  Record number
+    Parameters
+    ----------
+    db : dbf
+        database object
+    
+    rec : int
+        record number
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
     records = list(db)
     print(f'   Record {rec}: \n{records[rec]}')
     return

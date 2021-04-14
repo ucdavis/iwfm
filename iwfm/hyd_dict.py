@@ -18,37 +18,39 @@
 
 
 def hyd_dict(gwhyd_info_file):
-    """ hyd_dict() - Read hydrograph info from Groundwater.dat file and build
+    ''' hyd_dict() - Read hydrograph info from Groundwater.dat file and build
         a dictionary of groundwater hydrograph info
 
-    Parameters:
-      gwhyd_info_file (str):  IWFM Groundwaer.dat file name
+    Parameters
+    ----------
+    gwhyd_info_file : str
+        IWFM Groundwaer.dat file name
 
-    Returns:
-      well_dict       (dict): Dictionary of well information, 
-                                key = state well ID
-    """
+    Returns
+    -------
+    well_dict : dictionary
+        key = well name (i.e. state well ID), value = well information, 
+                                
+    '''
     import iwfm as iwfm
 
     well_dict = {}
     gwhyd_info = open(gwhyd_info_file).read().splitlines()  # open and read input file
-    line_index = 1  # skip first line
-    line_index = iwfm.skip_ahead(
-        line_index, gwhyd_info, 20
-    )  # skip to NOUTH, number of hydrographs
-    line = gwhyd_info[line_index].split()
-    nouth = int(line[0])
+
+    # skip to NOUTH, number of hydrographs
+    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  
+    nouth = int(gwhyd_info[line_index].split()[0])
+
     line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph
-    for i in range(0, nouth):  # open(gwhyd_list_file, 'r') as f:
+    for i in range(0, nouth): 
         items = []
         line = gwhyd_info[line_index].split()
-        items.append(line[5].lower())  # state well number = key
+        items.append(line[5].lower())  # well name = key
         items.append(int(line[0]))     # column number in hydrograph file
         items.append(float(line[3]))   # x
         items.append(float(line[4]))   # y
         items.append(int(line[2]))     # model layer
-        items.append(line[5].lower())  # state well number
-        key, values = items[0], items[1:]
-        well_dict[key] = values
-        line_index = line_index + 1
+        items.append(line[5].lower())  # well name
+        well_dict[items[0]] = items[1:]
+        line_index += 1
     return well_dict

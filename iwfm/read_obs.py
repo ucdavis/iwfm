@@ -19,21 +19,26 @@
 
 
 def read_obs(file):
-    """ read_obs() - Reads observed values PEST-format smp file into array obs,
+    ''' read_obs() - Read observed values PEST-format smp file into array obs,
         including observation dates and measurements
 
-    Parameters:
-      file            (str):  Input observation file name
+    Parameters
+    ----------
+    file : str
+        observation file name
 
-    Returns:
-      obs             (list): Observation dates and measurements
+    Returns
+    -------
+    obs : list
+        observation dates and measurements
     
-    """
-    file_lines = open(file).read().splitlines()  # open and read input file
-    file_lines = [word.replace("_", " ") for word in file_lines]
-    # convert pest results file to array
+    '''
+
+    file_lines = open(file).read().splitlines() 
+    file_lines = [word.replace('_', ' ') for word in file_lines]
+
     obs = []
-    for j in range(0, len(file_lines)):
-        item = file_lines[j].split()
+    for item in file_lines:
+        item = item.split()
         obs.append([item[0], item[1], item[2], float(item[3])])
     return obs

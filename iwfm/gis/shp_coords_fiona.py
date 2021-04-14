@@ -18,15 +18,20 @@
 
 
 def shp_coords_fiona(filename):
-    """ shp_coords_fiona() - Return the shapefile coordinates
+    ''' shp_coords_fiona() - Return the shapefile coordinates
     
 
-    Parameters:
-      filename       (str):   Input shapefile
+    Parameters
+    ----------
+    filename : str
+        shapefile name
 
-    Returns:
-      c              (str):   Shapefile coordinates
-    """
+    Returns
+    -------
+    c : str
+        shapefile coordinates
+    
+    '''
     import fiona
 
     f = fiona.open(filename)

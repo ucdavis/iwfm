@@ -18,14 +18,20 @@
 
 
 def secs_between(start, end):
-    """ secs_between() - Return the number of seconds between two datetime objects
+    ''' secs_between() - Return the number of seconds between two datetime objects
 
-    Parameters:
-      start           (datetime obj):  Starting time
-      end             (datetime obj):  Ending time
+    Parameters
+    ----------
+    start : datetime object
+        starting time
+        
+    end : datetime object
+        ending time
 
-    Returns:
-      number of seconds as float
-    """
+    Returns
+    -------
+    number of seconds as float
+    
+    '''
     diff = str(end - start).split(":")
     return int(diff[0]) * 3600 + int(diff[1]) * 60 + round(float(diff[2]), 1)

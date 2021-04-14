@@ -19,42 +19,52 @@
 
 
 def sub_pp_streams(stream_file, node_list):
-    """sub_pp_streams() reads the stream specification file and returns
+    ''' sub_pp_streams()  - Read the stream specification file and return
         stream reach and rating table info for the submodel
 
-    Parameters:
-      stream_file     (str):   Existing model preprocessor stream file name
-      node_list       (list):  List of existing model nodes in submodel
+    Parameters
+    ----------
+    stream_file : str
+        existing model preprocessor stream file name
+    
+    node_list : list
+        list of existing model nodes in submodel
 
-    Returns:
-      sub_reach_info  (list):  Reach info line for reaches in submodel
-      snode_dict      (dict):  Dictionary of existing model stream nodes in submodel
-      sub_rattab_dict (dict):  Rating tables for stream nodes in submodel
-      rating_header   (str):   Header info for rating tables including factors
-      stream_aq       (str):   Stream-aquifer section of stream preprocessor file
+    Returns
+    -------
+    sub_reach_info : list
+        reach info line for reaches in submodel
+    
+    snode_dict : dictionary
+        key = existing model stream nodes in submodel,
+            value = groundwater node
+    
+    sub_rattab_dict : dictionray
+        key = stream node, values = rating table
+    
+    rating_header : str
+        header info for rating tables including factors
+    
+    stream_aq : str
+        stream-aquifer section of stream preprocessor file
 
-    """
+    '''
     import iwfm as iwfm
 
     nodes = []
     for n in node_list:
         nodes.append(int(n))
 
-    # -- read the stream specification file into array elem_lines
-    stream_lines = open(stream_file).read().splitlines()  # open and read input file
+    stream_lines = open(stream_file).read().splitlines()
 
-    # -- determine stream specification version
     stream_type = stream_lines[0][1:]
 
-    ## -- skip to number of stream reaches
     line_index = iwfm.skip_ahead(0, stream_lines, 0)  # skip comments
     nreach = int(stream_lines[line_index].split()[0])
 
-    # -- skip to number of rating table points
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
     nrate = int(stream_lines[line_index].split()[0])
 
-    # -- get stream reach information
     if stream_type == '4.0':
         # placeholder for iwfm.get_stream_list_40()
         # snode_ids, snode_dict, reach_info, rattab_dict, rating_header, stream_aq = iwfm.get_stream_list_40(stream_lines,line_index,nreach,nrate)
@@ -75,7 +85,6 @@ def sub_pp_streams(stream_file, node_list):
     else:
         exit_now(stream_type)
 
-    # -- list of stream nodes in submodel
     sub_snodes = []
     for sn in snode_ids:
         if snode_dict[sn] in nodes:
@@ -104,9 +113,9 @@ def sub_pp_streams(stream_file, node_list):
 
 
 def exit_now(stream_type):
-    print(f'  ** Error.')
+    print(f'  ** Error: sub_pp_streams() ')
     print(f'  ** No method to read stream specification type {stream_type}')
     print(f'  ** Exiting...\n')
-    import sys
 
+    import sys
     sys.exit()

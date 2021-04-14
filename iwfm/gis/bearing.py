@@ -18,10 +18,24 @@
 
 
 def bearing(p1, p2):
-    """bearing() calculates the bearing between two (lat,lon) points
-    p1 = [lat1,lon1], p2 = [lat2,lon2] in degrees
-    Description of algorithm at https://www.mathsisfun.com/sine-cosine-tangent.html
-    """
+    ''' bearing() - Return the bearing between two (lat,lon) points
+        p1 = [lat1,lon1], p2 = [lat2,lon2] in degrees
+        Description of algorithm at https://www.mathsisfun.com/sine-cosine-tangent.html
+    
+    Parameters
+    ----------
+    p1 : list
+        point coordinates as floats [latitude,longitude]
+
+    p2 : list
+        point coordinates as floats [latitude,longitude]
+
+    Returns
+    -------
+    bearing : float
+        angle between p1 and p2    
+    
+    '''
     import math
 
     lat1, lon1 = p1[0], p1[1]

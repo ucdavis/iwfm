@@ -18,7 +18,33 @@
 
 
 def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbose=False):
-    """ snodes2shp() creates an IWFM stream nodes shapefile """
+    ''' snodes2shp() - Creates an IWFM stream nodes shapefile 
+
+    Parameters
+    ----------
+    nsnodes : int
+        number of stream nodes
+    
+    stnodes_dict : dictionary
+        key = stream node, values = groundwater node, ...
+    
+    node_coords : list
+        stream node coordinates
+    
+    shape_name : str
+        output shapefile name
+    
+    epsg : int, default = 26910 (UTM 10N, CA)
+        EPSG projection code
+    
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    nothing
+
+    '''
     import sys
 
     import fiona  # read and write shapefiles
@@ -66,3 +92,4 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
                 )
     if verbose:
         print(f'  Wrote shapefile {snode_shapename}')
+    return

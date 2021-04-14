@@ -19,14 +19,43 @@
 
 def grid_shadedrelief(source,slopegrid,aspectgrid,shadegrid,
         az=315.0,alt=45.0,z=1.0,scale=1.0,NODATA=-9999):
-    """grid_shadedrelief() Creates a shaded relief ASCII grid from an ASCII DEM.
+    '''grid_shadedrelief() - Creates a shaded relief ASCII grid from an ASCII DEM.
      Also outputs intermediate grids for slope and aspect
 
-    az = azimuth (sun direction)
-    alt = altitude (sun angle)
-    z = elevation exageration
-    scale = resolution
-    NODATA = NODATA_value"""
+    Parameters
+    ----------
+    source : str
+        ASCII DEM file name
+
+    slopegrid : str
+        slope grid (steepness) file name
+
+    aspectgrid : str
+        aspect grid (direction faced between 0 and 360) file name
+
+    shadegrid : str
+        output file name
+
+    az : float, default=315.0
+        azimuth (sun direction) in degrees
+
+    alt : float, default=45.0
+        altitude (sun angle) in degrees
+
+    z : float, default=1.0
+        elevation exageration
+
+    scale : float, default=1.0
+        resolution
+
+    NODATA : int, default=-9999
+        value if no data
+
+    Returns
+    -------
+    nothing
+    
+    '''
 
     import linecache
     import numpy as np
@@ -57,17 +86,16 @@ def grid_shadedrelief(source,slopegrid,aspectgrid,shadegrid,
     aspect = np.arctan2(x, y)  # calculate the aspect
 
     # Calculate the shaded relief
-    shaded = np.sin(alt * deg2rad) * np.sin(slope * deg2rad) + 
-        np.cos(alt * deg2rad) * np.cos(slope * deg2rad) * np.cos((az - 90.0) * deg2rad - aspect)
+    shaded = np.sin(alt * deg2rad) * np.sin(slope * deg2rad) + np.cos(alt * deg2rad) * np.cos(slope * deg2rad) * np.cos((az - 90.0) * deg2rad - aspect)
     shaded = shaded * 255
 
     # Rebuild the new header
-    header =  f'ncols        {shaded.shape[1]}\n')
-    header += f'nrows        {shaded.shape[0]}\n')
-    header += f'xllcorner    {lx + (cell * (cols - shaded.shape[1]))}\n')
-    header += f'yllcorner    {ly + (cell * (rows - shaded.shape[0]))}\n')
-    header += f'cellsize     {cell}\n')
-    header += f'NODATA_value {NODATA}\n')
+    header =  f'ncols        {shaded.shape[1]}\n'
+    header += f'nrows        {shaded.shape[0]}\n'
+    header += f'xllcorner    {lx + (cell * (cols - shaded.shape[1]))}\n'
+    header += f'yllcorner    {ly + (cell * (rows - shaded.shape[0]))}\n'
+    header += f'cellsize     {cell}\n'
+    header += f'NODATA_value {NODATA}\n'
     # Set no-data values
     for pane in window:
         slope[pane == nd] = NODATA

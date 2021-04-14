@@ -19,35 +19,38 @@
 
 
 def sub_pp_lake_file(lake_file, new_lake_file, lake_info):
-    """sub_pp_lake_file() copies the old lake file and replaces the contents with
-        those of the new model, and writes out the new file
+    ''' sub_pp_lake_file() - Copy the old lake file and replace the contents with
+        those of the new model, and write out the new IWFM lake file
 
-    Parameters:
-      lake_file      (str):    Name of existing preprocessor node file
-      new_lake_file  (str):    Name of submodel preprocessor node file
-      lake_info      (list):   Description of each lake in the submodel
+    Parameters
+    ----------
+    lake_file : str
+        name of existing preprocessor node file
+    
+    new_lake_file : str
+        name of submodel preprocessor node file
+    
+    lake_info : list
+        info describing of each lake in the submodel
 
-    Returns:
-      nothing
+    Returns
+    -------
+    nothing
 
-    """
+    '''
     import iwfm as iwfm
 
-    # -- read the lake file into array lake_lines
     lake_lines = open(lake_file).read().splitlines()  # open and read input file
 
-    # -- number of lakes
     line_index = iwfm.skip_ahead(0, lake_lines, 0)  # skip comments
     lake_lines[line_index] = iwfm.pad_both(str(len(lake_info)), f=4, b=35) + ' '.join(
         lake_lines[line_index].split()[1:]
     )
 
-    line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
 
-    # -- copy lake_lines[:line_index] to new_lake_lines
     new_lake_lines = lake_lines[:line_index]
 
-    # --  add lines for the lakes of the submodel
     for i in range(0, len(lake_info)):
         new_lake_lines.append(
             '\t'
@@ -57,11 +60,12 @@ def sub_pp_lake_file(lake_file, new_lake_file, lake_info):
             + '\t'
             + lake_info[i][4]
         )
+
         for j in range(1, len(lake_info[i][5])):
             new_lake_lines.append('\t\t\t\t\t' + str(lake_info[i][5][j]))
 
     new_lake_lines.append('')
-    # -- write new preprocessor input file
+
     with open(new_lake_file, 'w') as outfile:
         outfile.write('\n'.join(new_lake_lines))
 

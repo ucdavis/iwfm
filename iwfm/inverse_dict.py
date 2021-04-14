@@ -18,15 +18,20 @@
 
 
 def inverse_dict(d):
-    """ inverse_dict() - Create an inverse dictionary (only if all
+    ''' inverse_dict() - Create an inverse dictionary (only if all
         values unique, single value for each key)
 
-    Parameters:
-      d               (dict): Dictionary with one value item per key
+    Parameters
+    ----------
+    d : dictionary
+        dictionary with one value item per key
 
-    Returns:
-      inv_dict        (dict): Dictionary
-    """
+    Returns
+    -------
+    inv_dict : dictionary
+        dictionary with keys -> values, values -> keys
+    
+    '''
     inv_dict = []
     inv_dict = {v: k for k, v in d.items()}
     return inv_dict

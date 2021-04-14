@@ -18,7 +18,22 @@
 
 
 def shp_bounds_fiona(filename, verbose=False):
-    """ Return the shapefile bounds"""
+    ''' shp_bounds_fiona() - Return the bounds for shapefile opened with Fiona
+    
+    Parameters
+    ----------
+    filename : str
+        input shapefile name
+
+    verbose : bool, default=False
+        turn command-line output on or off
+
+    Returns
+    -------
+    b : str
+        shapefile bounding box
+
+    '''
     import fiona
 
     f = fiona.open(filename)

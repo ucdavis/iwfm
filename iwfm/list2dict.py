@@ -18,14 +18,19 @@
 
 
 def list2dict(items):
-    """ list2dict() - Create a dictionary from a list
+    ''' list2dict() - Create a dictionary from a list
 
-    Parameters:
-      items           (list): List of items, unique first column
+    Parameters
+    ----------
+    items : list
+        list of items, unique first column
 
-    Returns:
-      d               (dict): Dictionary created from items
-    """
+    Returns
+    -------
+    d : dictionary
+        key =  items{*}[0], values = items[*][1:]
+    
+    '''
     d = {}
     for i in range(0, len(items)):
         key, values = items[i][0], items[i][1:]

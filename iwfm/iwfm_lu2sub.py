@@ -20,41 +20,52 @@
 
 def iwfm_lu2sub(
     elem_file, lu_file, out_file, skip=4, verbose=False, per_line=6):
-    """ iwfm_IWFM_lu2sub() - Reads an IWFM Preprocessor Element File for a 
-        submodel and an IWFM Land Use File for the base model, and writes 
+    ''' iwfm_IWFM_lu2sub() - Read an IWFM Preprocessor Element File for a 
+        submodel and an IWFM Land Use File for the base model, and write 
         a new land use file with land use for only the elements in the 
-        Elements File.
+        Elements File
 
-    Parameters:
-      elem_file       (str):  Submodel IWFM Preprocessor Element file
-      lu_file         (str):  Base model land use area file
-      out_file        (str):  Submodel land use area file (output)
-      skip            (int):  Number of non-comment lines to skip in eac file
-      per_line        (int):  If verbose==True, number of items to write per 
-                                line to the console
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    elem_file : str
+        IWFM submodel Preprocessor Element file name
+    
+    lu_file : str
+        IWFM base model land use area file
+    
+    out_file : str
+        IWFM submodel land use area file name (output)
+    
+    skip : int, default=4
+        number of non-comment lines to skip in each file
+    
+    verbose : bool, default=False
+        True = command-line output on
 
-    Returns:
-      nothing
-    """
+    per_line : int, default=6
+        if verbose==True, items per line to write to the console
+    
+    Returns
+    -------
+    nothing
+    
+    '''
     import sys, re, os
     import iwfm as iwfm
 
-    # -- test that the input files exist
     iwfm.file_test(elem_file)
     iwfm.file_test(lu_file)
 
-    # -- read element file
     elem_ids, _, _ = iwfm.iwfm_read_elements(elem_file) 
     elem_ids.sort()
 
-    # -- read land use file
     lu_lines = open(lu_file).read().splitlines()  # open and read input file
-    line_index = 0  # start at the top
-    line_index = iwfm.skip_ahead(line_index, lu_lines, 4) # skip comments
+    line_index = iwfm.skip_ahead(0, lu_lines, 4) # skip comments
     header = line_index
 
-    outport = iwfm.Unbuffered(sys.stdout)  # to write unbuffered output to console
+    if verbose:
+        outport = iwfm.Unbuffered(sys.stdout)  # to write unbuffered output to console
+
     out_lines, print_count = [], 0
     while line_index < len(lu_lines):
         out = []
@@ -95,8 +106,8 @@ def iwfm_lu2sub(
     return len(out_lines)
 
 
-if __name__ == "__main__":
-    " Run iwfm_lu2sub() from command line "
+if __name__ == '__main__':
+    ' Run iwfm_lu2sub() from command line '
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm

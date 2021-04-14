@@ -18,8 +18,23 @@
 
 
 def dates_diff(date1, date2):
-    """Function dates_diff(date1, date2) returns the number of days between two
-    datetime objects"""
+    ''' dates_diff() - Returns the number of days between two
+    datetime objects
+
+    Parameters
+    ----------
+    date1 : datetime object
+        a date
+
+    date2 : datetime object
+        another date
+
+    Returns
+    -------
+    diff : int
+        number of days between the two input dates
+
+    '''
     return abs(date2 - date1).days
 
 
@@ -32,12 +47,12 @@ if __name__ == "__main__":
         date1 = sys.argv[1]
         date2 = sys.argv[2]
     else:  # ask for file names from terminal
-        date1 = input("First date: ")
-        date2 = input("Second date: ")
+        date1 = input('First date: ')
+        date2 = input('Second date: ')
 
     date_1 = parse(date1)
     date_2 = parse(date2)
 
     diff = dates_diff(date_1, date_2)
 
-    print("  {} and {} are {} days apart".format(date1, date2, diff))  # update cli
+    print(f'  {date1} and {date2} are {diff} days apart')

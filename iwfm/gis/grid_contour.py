@@ -18,7 +18,21 @@
 
 
 def grid_contour(source, target):
-    """grid_contour() Use GDAL and OGR to create a contour shapefile"""
+    '''grid_contour() - Use GDAL and OGR to create a contour shapefile
+    
+    Parameters
+    ----------
+    source : str
+        input shapefile name
+    
+    target : str
+        output shapefile name
+    
+    Returns
+    -------
+    nothing
+
+    '''
     import ogr as ogr
     import gdal as gdal
 

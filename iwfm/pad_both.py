@@ -19,21 +19,32 @@
 # -----------------------------------------------------------------------------
 
 
-def pad_both(item, f=1, b=1, t=" "):
-    """ pad_both(item, f, b, t) - Convert item to a string and then
-    adds f copies of text character t before item , then multiple copies
-    of text character t at the end until it is b characters long
-    (default t is space)
+def pad_both(item, f=1, b=1, t=' '):
+    ''' pad_both(item, f, b, t) - Convert item to a string and then
+        adds f copies of text character t before item , then multiple copies
+        of text character t at the end until it is b characters long
+        (default t is space)
 
-    Parameters:
-      item            (*):    Single item (string, int, float etc)
-      f               (int):  Number of leading fill characters
-      b               (int):  Total lentgh of final string in characters
-      t               (str):  Character(s) to padd front and back
+    Parameters
+    ----------
+    item: (*)
+        single item (string, int, float etc)
+    
+    f : int, default=1
+        number of leading fill characters
+    
+    b : int, default=1
+        total lentgh of final string in characters
+    
+    t : str, default=' '
+        character(s) to padd front and back
 
-    Returns:
-      s               (str):  Padded string b characters long
-    """
+    Returns
+    -------
+    s : str
+        padded string b characters long
+
+    '''
     s = str(item)
     for i in range(0, f):
         s = t + s

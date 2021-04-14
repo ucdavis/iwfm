@@ -18,7 +18,30 @@
 
 
 def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=False):
-    """ nodes2shp() creates an IWFM nodes shapefile """
+    ''' nodes2shp() - Create an IWFM nodes shapefile 
+
+    Parameters
+    ----------
+    node_coords : list
+        node coordinates
+    
+    node_strat : list
+        stratigraphy for each node
+    
+    nlayers : int
+        number of model layers
+    
+    shape_name : str
+        output file name
+    
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    nothing
+
+    '''
     import sys
     import pandas as pd
     import geopandas as gpd
@@ -49,9 +72,8 @@ def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=False):
             'northing': [row[1] for row in node_coords],
         }
     )
-    for i in range(
-        0, nlayers * 2
-    ):  # Add two fields for each layer (aquiclude thickness and aquifer thickness)
+    # Add two fields for each layer (aquiclude thickness and aquifer thickness)
+    for i in range(0, nlayers * 2):  
         df.insert(i + 2, field_names[i], [row[i + 2] for row in node_strat])
     if verbose:
         print(f'  Created pandas dataframe for {node_shapename}')

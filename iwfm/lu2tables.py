@@ -18,30 +18,39 @@
 
 
 def lu2tables(land_use_file, verbose=False, debug=0):
-    """lu2tables() read IWFM land use file and write to a separate file for 
-       each land use type
+    '''lu2tables() - Read an IWFM land use file and write contents to a 
+       separate file for each land use type
 
-    Parameters:
-      land_use_file  (str):  Name of existing model land use file
-      verbose        (bool): Turn command-line output on or off
-      debug          (bool): Turn additional command-line output on or off
+    *** INCOMPLETE - UNDER DEVELOPMENT ***
 
-    Returns:
-      nothing
+    Parameters
+    ----------
+    land_use_file : str
+        name of existing model land use file
+
+    verbose : bool, default=False
+        turn command-line output on or off
+
+    debug : bool, default=0
+        turn additional command-line output on or off
+
+    Returns
+    -------
+    nothing
 
     SUGGESTED FUTURE CHANGES:
       - include option for output file type i.e. type='dat' with options
             like 'csv', 'excel', 'dbf', etc
 
-    """
+    '''
     import datetime
     import sys
     import iwfm as iwfm
 
     # find the base name and extension
-    land_use_file_base = land_use_file[0 : land_use_file.find(".")]
+    land_use_file_base = land_use_file[0 : land_use_file.find('.')]
     land_use_file_ext = land_use_file[
-        land_use_file.find(".") + 1 : len(land_use_file) + 1
+        land_use_file.find('.') + 1 : len(land_use_file) + 1
     ]
 
     # -- SUGGESTED FUTURE CHANGES TO IMPROVE THIS PROGRAM --
@@ -69,18 +78,17 @@ def lu2tables(land_use_file, verbose=False, debug=0):
     max_elem = int(file_lines[i].split()[0])
 
     ts_index, elem_index = 0, 0  # time step index, element being parsed
-    line_index = 0  # line being parsed
-    line_index = iwfm.skip_ahead(line_index, file_lines, 4)  # skip comment lines
+    line_index = iwfm.skip_ahead(0, file_lines, 4)  # skip comment lines
 
     time_steps = int(
         float(len(file_lines) - line_index) / float(max_elem)
     )  # How many time steps of data?
-    dates = ["" for x in range(time_steps)]  # empty list
+    dates = ['' for x in range(time_steps)]  # empty list
     crops = (
         len(file_lines[line_index + 3].split()) - 1
     )  # number of crops/land use types
     data = [
-        [["0" for z in range(time_steps)] for y in range(max_elem)]
+        [['0' for z in range(time_steps)] for y in range(max_elem)]
         for x in range(crops)
     ]  # empty array
 
@@ -108,7 +116,7 @@ def lu2tables(land_use_file, verbose=False, debug=0):
                 if debug > 0:
                     sys.stdout.write(dates[ts_index])  # update cli
                     if ts_index + 1 < time_steps:
-                        sys.stdout.write(", ")  # update cli
+                        sys.stdout.write(', ')  # update cli
             elem = int(this_line.pop(0))  # pop the element number
             if debug > 1:
                 print(f'elem: {elem}')
@@ -130,18 +138,18 @@ def lu2tables(land_use_file, verbose=False, debug=0):
     # write to excel workbook
     # write_2_excel(land_use_file_base,data,crops,max_elem,time_steps,dates)
     # if verbose:
-    #  print("  Wrote land use area tables to {}.xlsx".format(land_use_file_base))
+    #  print('  Wrote land use area tables to {}.xlsx'.format(land_use_file_base))
 
     return
 
 
-if __name__ == "__main__":
-    """ Run lu2tables() from command line 
+if __name__ == '__main__':
+    ''' Run lu2tables() from command line 
 
     SUGGESTED FUTURE CHANGES TO IMPROVE THIS PROGRAM
       - allow multiple items: pop each item from arvg[] and process it
 
-    """
+    '''
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm

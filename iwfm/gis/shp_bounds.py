@@ -18,5 +18,16 @@
 
 
 def shp_bounds(f):
-    """Returns bounding box for PyShp shapefile"""
+    ''' shp_bounds() - Return bounding box for PyShp shapefile
+    
+    Parameters
+    ----------
+    f : PyShp shapefile object
+        shapefile
+
+    Returns
+    -------
+    Bounding box
+    
+    '''
     return f.bbox

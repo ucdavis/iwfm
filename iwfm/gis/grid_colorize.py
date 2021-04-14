@@ -18,8 +18,22 @@
 
 
 def grid_colorize(source, target):
-    """grid_colorize() Convert an ASCII DEM to an image and colorize
-    using a heat-map color ramp"""
+    ''' grid_colorize() - Convert an ASCII DEM to an image and colorize
+        using a heat-map color ramp
+    
+    Parameters
+    ----------
+    source : str
+        ASCII DEM input file name
+
+    target : str
+        output file name
+
+    Returns
+    -------
+    nothing
+    
+    '''
     import numpy as np
     from PIL import Image, ImageDraw, ImageOps  # pillow
 
@@ -45,3 +59,4 @@ def grid_colorize(source, target):
         h -= step
     im.putpalette(palette)  # Apply the palette to the image
     im.save(target)
+    return

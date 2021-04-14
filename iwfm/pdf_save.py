@@ -18,14 +18,20 @@
 
 
 def pdf_save(pdf, filename):
-    """ pdf_save() - Save a PDF instance to a PDF file
+    ''' pdf_save() - Save a PDF instance to a PDF file
 
-    Parameters:
-      pdf             (PDF):  PDF object
-      filename        (str):  Output file name
+    Parameters
+    ----------
+    pdf : PDF object
+        PDF object to be saved
 
-    Returns:
-      nothing
-    """
+    filename : str
+        output file name
+
+    Returns
+    -------
+    nothing
+    
+    '''
     pdf.output(filename, 'F')  # 'F' = to file system
     return

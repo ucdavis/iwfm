@@ -18,14 +18,19 @@
 
 
 def print_to_string(*args, **kwargs):
-    """ print_to_string() - Converts args to a string
+    ''' print_to_string() - Convert args to a string
 
-    Parameters:
-      *args           (list):  items to combine into a string
+    Parameters
+    ----------
+    *args : list
+        items to combine into a string
 
-    Returns:
-      contents        (str):   String
-    """
+    Returns
+    -------
+    contents : str
+        string
+    
+    '''
     import io
 
     output = io.StringIO()

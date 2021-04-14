@@ -18,17 +18,28 @@
 
 
 def pdf_setfont(pdf, font='Arial', style='B', size=20):
-    """ pdf_setfont() - Set the font for a PDF instance
+    ''' pdf_setfont() - Set the font for a PDF instance
 
-    Parameters:
-      pdf             (PDF):  PDF object
-      font            (str):  Font name
-      style           (str):  Font style
-      size            (int):  Font size
+    Parameters
+    ----------
+    pdf : PDF object
+        PDF object to be modified
+    
+    font : str, default='Ariel'
+        font name
+    
+    style : str, default='B'
+        font style
+    
+    size : int, default=20
+        font size in points
 
-    Returns:
-      pdf             (PDF):  PDF object
-    """
+    Returns
+    -------
+    pdf : PDF object
+        modified PDF object
+    
+    '''
 
     pdf.set_font(font, style, size)
     return pdf

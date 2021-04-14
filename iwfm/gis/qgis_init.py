@@ -18,13 +18,27 @@
 
 
 def qgis_init(verbose=False):
+    ''' qgis_init() - Initialize the QGIS application 
+
+    Parameters
+    ----------
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    qgs : QGIS instance object
+
+    '''
     import qgis.core as qcore
     import init_qgis_paths as init_qgis_paths
 
     if verbose:
         print('  Initializing QGIS') 
+
     app_path = init_qgis_paths()
     qcore.QgsApplication.setPrefixPath(app_path, True)  # Path to QGIS binary
+
     # Create a reference to the QgsApplication, True = enables GUI (for applications)
     qgs = qcore.QgsApplication([], True)  
     qgs.initQgis()  # load providers

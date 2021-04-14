@@ -19,19 +19,28 @@
 
 
 def sub_unsat_file(old_filename, new_filename, elem_list, verbose=False):
-    """sub_unsat_file() reads the old unsaturated zone file, determines which
-        elements are in the submodel, and writes out a new file
+    '''sub_unsat_file() - Read the original unsaturated zone file, determine 
+        which elements are in the submodel, and write out a new file
 
-    Parameters:
-      old_filename   (str):  Name of existing model unsaturated zone file
-      new_filename   (str):  Name of new subnmodel unsaturated zone file
-      elem_list      (ints): List of existing model elements in submodel
-      verbose        (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    old_filename : str
+        name of existing model unsaturated zone file
 
-    Returns:
-      nothing
+    new_filename : str
+        name of new subnmodel unsaturated zone file
 
-    """
+    elem_list : list of ints
+        list of existing model elements in submodel
+
+    verbose : bool, default=False
+        turn command-line output on or off
+
+    Returns
+    -------
+    nothing
+
+    '''
     import iwfm as iwfm
 
     comments = ['Cc*#']
@@ -39,8 +48,7 @@ def sub_unsat_file(old_filename, new_filename, elem_list, verbose=False):
     for e in elem_list:
         elems.append(e[0])
 
-    # -- read the unsaturated zone file into list unsat_lines
-    unsat_lines = open(old_filename).read().splitlines()  # open and read input file
+    unsat_lines = open(old_filename).read().splitlines()  
     unsat_lines.append('')
 
     line_index = iwfm.skip_ahead(0, unsat_lines, 9)  # skip factors and comments
@@ -56,7 +64,7 @@ def sub_unsat_file(old_filename, new_filename, elem_list, verbose=False):
         line_index += 1
 
     unsat_lines.append('')
-    # -- write submodel small watersheds file
+
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(unsat_lines))
 

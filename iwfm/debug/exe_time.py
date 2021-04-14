@@ -19,36 +19,38 @@
 
 
 def exe_time():
-    """ print_exe_time() - Tracks the time since the first call, and prints
+    ''' print_exe_time() - Tracks the time since the first call, and prints
         the elapsed time on subsequent calls 
 
-    Parameters:
-      nothing
+    Parameters
+    ----------
+    nothing
     
-    Return:
-      nothing
-    """
+    Return
+    ------
+    nothing
+
+    '''
     import datetime
     import iwfm as iwfm
 
-    if not hasattr(exe_time, "start"):
+    if not hasattr(exe_time, 'start'):
         exe_time.start = datetime.datetime.now()
-        # access exe_time.start in the body however you want
         return
     else:
         end = datetime.datetime.now()
 
-        diff = str(end - exe_time.start).split(":")
+        diff = str(end - exe_time.start).split(':')
         secs = str(round(float(diff[2]), 1))
         if int(diff[0]) > 0:
-            hours = iwfm.pad_front(str(int(diff[0])), 2, "0") + ":"
-            mins = iwfm.pad_front(str(int(diff[1])), 2, "0") + ":"
+            hours = iwfm.pad_front(str(int(diff[0])), 2, '0') + ':'
+            mins = iwfm.pad_front(str(int(diff[1])), 2, '0') + ':'
         elif int(diff[1]) > 0:
-            hours = ""
-            mins = str(int(diff[1])) + " min "
-            secs += " sec"
+            hours = ''
+            mins = str(int(diff[1])) + ' min '
+            secs += ' sec'
         else:
-            hours, mins = "", ""
-            secs += " seconds"
-        print("  Elapsed time: {}{}{}\n".format(hours, mins, secs))
+            hours, mins = '', ''
+            secs += ' seconds'
+        print(f'  Elapsed time: {hours}{mins}{secs}\n')
     return

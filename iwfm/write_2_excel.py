@@ -19,22 +19,37 @@
 
 
 def write_2_excel(file_base_name, data, sheets, elements, time_steps, dates, data_type='Crop'):
-    """ write_2_excel() - Write a 3D array as 2D tables (row=elements
-    x col=time_steps) to an excel workbook with sheets # of worksheets
+    ''' write_2_excel() - Write a 3D array as 2D tables (row=elements
+        x col=time_steps) to an excel workbook with sheets # of worksheets
 
-    Parameters:
-      file_base_name (str):   Base name of output file
-      data           (list):  Data to be written
-      sheets         (int):   Number of sheets
-      elements       (list):  Model element numbers
-      time_steps     (int):   Number of time steps
-      dates          (list):  Dates corresponding to time steps
-      data_type      (str):   Type of information
+    Parameters
+    ----------
+    file_base_name : str
+        base name of output file
+    
+    data : list
+        data to be written
+    
+    sheets : int
+        number of sheets
+    
+    elements : list
+        model element numbers
+    
+    time_steps : int
+        number of time steps
+    
+    dates : list
+        dates corresponding to time steps
+    
+    data_type : str
+        type of information
 
-    Returns:
-      nothing
+    Returns
+    -------
+    nothing
 
-    """
+    '''
     import xlsxwriter
 
     # Create an Excel writer using XlsxWriter as the engine.
@@ -43,9 +58,8 @@ def write_2_excel(file_base_name, data, sheets, elements, time_steps, dates, dat
     worksheets = ['' for x in range(sheets)]  # empty list
     # write to the workbook
     for i in range(sheets):
-        worksheets[i] = workbook.add_worksheet(
-            ''.join([data_type, str(i + 1)])
-        )  # Create a worksheet and name it
+        # Create a worksheet and name it
+        worksheets[i] = workbook.add_worksheet(''.join([data_type, str(i + 1)]))  
         worksheets[i].write(0, 0, ''.join([data_type, str(i + 1)]))  # header label
         worksheets[i].write(1, 0, 'WYr')  #  write header row
         for k in range(time_steps):  # write dates in first column

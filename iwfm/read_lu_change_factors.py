@@ -19,15 +19,20 @@
 
 
 def read_lu_change_factors(in_chg_file):
-    """ read_lu_change_factors() - Read the change factors for changing IWFM 
-        land use for a scenario, 
+    ''' read_lu_change_factors() - Read the change factors for changing IWFM 
+        land use for a scenario
 
-    Parameters:
-      in_chg_file       (str):  Change factors file name
+    Parameters
+    ----------
+    in_chg_file : str
+        change factors file name
 
-    Returns:
-      change_table      (list): Change factors
-    """
+    Returns
+    -------
+    change_table : list
+        change factors
+    
+    '''
     import re
 
     temp = open(in_chg_file).read().splitlines()

@@ -18,16 +18,19 @@
 
 
 def iwfm_aquitard_bottom(strat):
-    """ iwfm_aquitard_bottom() - Extract aquitard bottom from 
+    ''' iwfm_aquitard_bottom() - Extract aquitard bottom from 
         IWFM stratigraphy information
 
-    Parameters:
-      strat           (list): IWFM stratigraphy for each model node
+    Parameters
+    ----------
+    strat : list
+        stratigraphy for each model node
 
-    Returns:
-      aquitard_bot    (list): Aquitard bottom altitude for each model layer
-                                and node
-    """
+    Returns
+    -------
+    aquitard_bot : list
+        wquitard bottom altitude for each model layer and node
+    '''
     import iwfm as iwfm
 
     (

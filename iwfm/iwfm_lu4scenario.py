@@ -26,42 +26,53 @@ def iwfm_lu4scenario(
     skip=4,
     verbose=False,
 ):
-    """ iwfm_lu4scenario() - Modify IWFM land use files for a scenario
+    ''' iwfm_lu4scenario() - Modify IWFM land use files for a scenario
 
-    Parameters:
-      out_base_name   (str):  Base name of output files
-      in_npag_file    (str):  Name of input Non-Ponded Ag Area file
-      in_ponded_file  (str):  Name of input Ponded Ag Area File
-      in_urban_file   (str):  Name of input Urban Area file
-      in_nvrv_file    (str):  Name of input Native and Riparian Area input file
-      skip            (int):  Number of non-comment lines to skip in eac file
-      verbose         (bool): Turn command-line output on or off
-
-    Returns:
-      nothing
-
-    To do:
+    TODO:
       Each land use file is done in series. Can this be replaced with a function that
         does one land use file, and use the function for each land use file?
-    """
+
+    Parameters
+    ----------
+    out_base_name : str
+        output files base name
+    
+    in_npag_file : str
+        input Non-Ponded Ag Area file name
+    
+    in_ponded_file : str
+        input Ponded Ag Area File name
+    
+    in_urban_file : str
+        input Urban Area file name
+    
+    in_nvrv_file : str
+        input Native and Riparian Area input file name
+    
+    skip : int, default=4
+        number of non-comment lines to skip in each file (header)
+    
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    nothing
+
+    '''
     comments = 'Cc*#'
 
-    # -- open and read Non-Ponded Area file ------------------------------------
-    npag_data = open(in_npag_file).read().splitlines()  # open, read and close
+    # -- Non-Ponded Area file
+    npag_data = open(in_npag_file).read().splitlines()
     if verbose:
-        print('   Read {:,} lines from {}'.format(len(npag_data), in_npag_file))
+        print(f'   Read {len(npag_data):,} lines from {in_npag_file}')
 
-    # -- find the file line with the first elemen't data
     npag_index = 0
-    while any(
-        (c in comments) for c in npag_data[npag_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in npag_data[npag_index][0]): 
         npag_index += 1
     for i in range(0, skip):  # skip data spec rows
         npag_index += 1
-    while any(
-        (c in comments) for c in npag_data[npag_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in npag_data[npag_index][0]):
         npag_index += 1
 
     # -- compile the data from the file 
@@ -80,22 +91,17 @@ def iwfm_lu4scenario(
         npag_table.append(line)
         npag_index += 1
 
-    # -- open and read the Ponded Area file -----------------------------------
-    pag_data = open(in_ponded_file).read().splitlines()  # open, read and close
+    # -- Ponded Area file 
+    pag_data = open(in_ponded_file).read().splitlines() 
     if verbose:
-        print("   Read {:,} lines from {}".format(len(pag_data), in_ponded_file))
+        print(f'   Read {len(pag_data):,} lines from {in_ponded_file}')
 
-    # -- find the file line with the first elemen't data 
     pag_index = 0
-    while any(
-        (c in comments) for c in pag_data[pag_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in pag_data[pag_index][0]):
         pag_index += 1
     for i in range(0, skip):  # skip data spec rows
         pag_index += 1
-    while any(
-        (c in comments) for c in pag_data[pag_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in pag_data[pag_index][0]):
         pag_index += 1
 
     # -- compile the data from the file 
@@ -114,22 +120,17 @@ def iwfm_lu4scenario(
         pag_table.append(line)
         pag_index += 1
 
-    # -- open and read the Urban Area file ------------------------------------
-    urb_data = open(in_urban_file).read().splitlines()  # open, read and close
+    # -- Urban Area file 
+    urb_data = open(in_urban_file).read().splitlines() 
     if verbose:
-        print("   Read {:,} lines from {}".format(len(urb_data), in_urban_file))
+        print(f'   Read {len(urb_data):,} lines from {in_urban_file}')
 
-    # -- find the file line with the first elemen't data 
     urb_index = 0
-    while any(
-        (c in comments) for c in urb_data[urb_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in urb_data[urb_index][0]):
         urb_index += 1
     for i in range(0, skip):  # skip data spec rows
         urb_index += 1
-    while any(
-        (c in comments) for c in urb_data[urb_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in urb_data[urb_index][0]):
         urb_index += 1
 
     # -- compile the data from the file 
@@ -148,22 +149,17 @@ def iwfm_lu4scenario(
         urb_table.append(line)
         urb_index += 1
 
-    # -- open and read the Native and Riparian Area file ----------------------
-    nvrv_data = open(in_nvrv_file).read().splitlines()  # open, read and close
+    # -- Native and Riparian Area file
+    nvrv_data = open(in_nvrv_file).read().splitlines()
     if verbose:
-        print("   Read {:,} lines from {}".format(len(nvrv_data), in_nvrv_file))
+        print(f'   Read {len(nvrv_data):,} lines from {in_nvrv_file}')
 
-    # -- find the file line with the first elemen't data
     nvrv_index = 0
-    while any(
-        (c in comments) for c in nvrv_data[nvrv_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in nvrv_data[nvrv_index][0]):
         nvrv_index += 1
     for i in range(0, skip):  # skip data spec rows
         nvrv_index += 1
-    while any(
-        (c in comments) for c in nvrv_data[nvrv_index][0]
-    ):  # skip lines that begin with 'C', 'c' or '*'
+    while any((c in comments) for c in nvrv_data[nvrv_index][0]):
         nvrv_index += 1
 
     # -- compile the data from the file 
@@ -182,7 +178,7 @@ def iwfm_lu4scenario(
         nvrv_table.append(line)
         nvrv_index += 1
 
-    # -- build one table from the four data sets ------------------------------------
+    # -- build one table from the four data sets
     import itertools
 
     land_use = []
@@ -200,23 +196,23 @@ def iwfm_lu4scenario(
         y.append(urb_table[i][0])
         land_use.append(y)
 
-    # -- write to file ---------------------------------------------------------------
-    outFileName = out_base_name + "_Landuse.dat"
-    outFile = open(outFileName, "w", newline="")
-    outFile.write("# Date: {}\n".format(date))
+    # -- write to file
+    outFileName = out_base_name + '_Landuse.dat'
+    outFile = open(outFileName, 'w', newline='')
+    outFile.write(f'# Date: {date}\n')
     outFile.write(
-        "# Elem\tNPA1\tNPA2\tNPA3\tNPA4\tNPA5\tNPA6\tNPA7\tNPA8\tNPA9\tNPA10\tNPA11\tNPA12\tNPA13\tNPA14\tNPA15\tNPA16\tNPA17\tNPA18\tNPA19\tNPA20\tPA1\tPA2\tPA3\tPA4\tPA5\tNV\tRV\tUrb\n"
+        '# Elem\tNPA1\tNPA2\tNPA3\tNPA4\tNPA5\tNPA6\tNPA7\tNPA8\tNPA9\tNPA10\tNPA11\tNPA12\tNPA13\tNPA14\tNPA15\tNPA16\tNPA17\tNPA18\tNPA19\tNPA20\tPA1\tPA2\tPA3\tPA4\tPA5\tNV\tRV\tUrb\n'
     )
     for i in range(0, len(npag_table)):
-        outFile.write("\t".join(land_use[i]))
-        outFile.write("\n")
+        outFile.write('\t'.join(land_use[i]))
+        outFile.write('\n')
     outFile.close
     if verbose:
-        print("   Wrote land use data for {} to {}".format(date, outFileName))
+        print(f'   Wrote land use data for {date} to {outFileName}')
     return
 
-if __name__ == "__main__":
-    """ Run iwfm_lu4scenario() from command line    """
+if __name__ == '__main__':
+    ' Run iwfm_lu4scenario() from command line '
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm
@@ -228,11 +224,11 @@ if __name__ == "__main__":
         in_urban_file = sys.argv[4]
         in_nvrv_file = sys.argv[5]
     else:  # ask for file names from terminal
-        out_base_name  = input("Output file basename: ")
-        in_npag_file   = input("IWFM Non-Ponded Ag file name: ")
-        in_ponded_file = input("IWFM Pondes Ag file name: ")
-        in_urban_file  = input("IWFM Urban file name: ")
-        in_nvrv_file   = input("IWFM Native file name: ")
+        out_base_name  = input('Output file basename: ')
+        in_npag_file   = input('IWFM Non-Ponded Ag file name: ')
+        in_ponded_file = input('IWFM Pondes Ag file name: ')
+        in_urban_file  = input('IWFM Urban file name: ')
+        in_nvrv_file   = input('IWFM Native file name: ')
 
     iwfm.file_test(in_nvrv_file)
     iwfm.file_test(in_npag_file)
@@ -240,7 +236,7 @@ if __name__ == "__main__":
     iwfm.file_test(in_urban_file)
 
     idb.exe_time()  # initialize timer
-    iwfm.iwfm_lu4scenario(out_base_name,in_npag_file,in_ponded_file,
-        in_urban_file,in_nvrv_file,verbose=False) 
+    iwfm_lu4scenario(out_base_name,in_npag_file,in_ponded_file,
+        in_urban_file,in_nvrv_file,verbose=False)
 
     idb.exe_time()  # print elapsed time

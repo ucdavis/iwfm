@@ -18,16 +18,22 @@
 
 
 def igsm_read_nodes(node_file):
-    """ igsm_read_nodes() - Calls  iwfm_read_nodes() to read the nodal 
-        coordinates from the nodes file
+    ''' igsm_read_nodes() - Read the nodal coordinates from the nodes file
 
-    Parameters:
-      node_file       (str):  IGSM preprocessor node file
+    Parameters
+    ----------
+    node_file : str
+        IGSM preprocessor node file
 
-    Returns:
-      node_coord      (list): Nodes and coordinates
-      node_list       (list): Nodes
-    """
+    Returns
+    -------
+    node_coord : list
+        nodes and x,y coordinates
+    
+    node_list : list
+        nodes
+        
+    '''
     import iwfm as iwfm
 
     node_coord, node_list = iwfm.iwfm_read_nodes(node_file)

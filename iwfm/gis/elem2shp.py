@@ -26,25 +26,41 @@ def elem2shp(
     epsg=26910,
     verbose=False,
 ):
-    """ elem2shp() - Creates an IWFM element shapefile 
+    ''' elem2shp() - Creates an IWFM element shapefile 
 
-    Parameters:
-      elem_nodes      (list): List of elements and associated nodes
-      node_coords     (list): List of nodes and associated X and Y coordinates
-      elem_sub        (list): List of elements and associated subregions
-      lake_elems      (list): List of lakes and associated elements
-      shape_name      (str):  Base name for output shapefiles
-      epsg            (int):  EPSG projection (EPSG 26910 = NAD 83 UTM 10, CA)
-      verbose         (bool): Turn command-line output on or off
-
-    Returns:
-      nothing
-
-    To do:
+    TODO:
       - change from fiona to pyshp and wkt format
-    """
-    import fiona  # read and write shapefiles
-    import fiona.crs  # fiona module defining crs
+
+    Parameters
+    ----------
+    elem_nodes : list
+        list of elements and associated nodes
+    
+    node_coords : list
+        list of nodes and associated X and Y coordinates
+    
+    elem_sub : list
+        list of elements and associated subregions
+    
+    lake_elems : list
+        list of lakes and associated elements
+    
+    shape_name : str
+         output shapefiles base name
+    
+    epsg : int default=26910 (NAD 83 UTM 10, CA)
+        EPSG projection
+    
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    nothing
+
+    '''
+    import fiona 
+    import fiona.crs 
     import shapefile as shp # pyshp
     from shapely.geometry import mapping, Polygon
 

@@ -17,49 +17,67 @@
 # -----------------------------------------------------------------------------
 
 
-def detaw_2_table(dir_name, outfile_name, verbose=False, debug=0):
-    """detaw_2_table() Convert DETAW files to tables and write to text files """
+def detaw_2_table(dir_name, outfile_name, verbose=False):
+    '''detaw_2_table() - Convert DETAW files to tables and write to text files
+    
+    Parameters
+    ----------
+
+    dir_name : str
+        name of directory holding files
+
+    outfile_name : str
+        name of output file
+    
+    verbose : bool, default=False
+     Turn command-line output on or off
+    
+    Returns
+    -------
+    nothing    
+    
+    '''
     import os, csv
 
     input_files = os.listdir(dir_name)
-    out_file = open(outfile_name, "w", newline="")
+    out_file = open(outfile_name, 'w', newline='')
     out_writer = csv.writer(out_file)
 
     header, data = 0, []
     for file_name in input_files:
-        if file_name[0] != ".":
+        if file_name[0] != '.':
             file_name = os.path.join(dir_name, file_name)
             file_lines = open(file_name).read().splitlines()  # open and read input file
             if header == 0:  # first file so get header
                 header = 1
-                out_writer.writerow(file_lines[0].split(","))
-                out_writer.writerow(file_lines[1].split(","))
+                out_writer.writerow(file_lines[0].split(','))
+                out_writer.writerow(file_lines[1].split(','))
             temp = []
             for line in file_lines[2:]:
                 temp.append(line)
             data.append(temp)
     if verbose:
-        print("  Read {} files each with {} data lines".format(len(data), len(data[0])))
+        print(f'  Read {len(data)} files each with {len(data[0])} data lines')
 
     for i in range(0, len(data[0])):
         for j in range(0, len(data)):
-            temp = data[j][i].split(",")
+            temp = data[j][i].split(',')
             year = temp[0]
             temp.pop(0)  # remove year
             temp.insert(0, j + 1)  # add subarea number (adjusted for zero-indexing)
             if j == 0:
                 ins = year
             else:
-                ins = " "
+                ins = ' '
             temp.insert(0, ins)
             out_writer.writerow(temp)
     out_file.close()
     if verbose:
-        print("  Wrote crop data to {} ".format(outfile_name))
+        print(f'  Wrote crop data to {outfile_name} ')
+    return
 
-
-if __name__ == "__main__":
-    " Run detaw_2_table() from command line "
+if __name__ == '__main__':
+    ' Run detaw_2_table() from command line '
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm
@@ -68,8 +86,8 @@ if __name__ == "__main__":
         dir_name = sys.argv[1]
         outfile_name = sys.argv[2]
     else:  # ask for file names from terminal
-        dir_name = input("Input directory name: ")
-        outfile_name = input("Output file name: ")
+        dir_name = input('Input directory name: ')
+        outfile_name = input('Output file name: ')
 
     idb.exe_time()  # initialize timer
     detaw_2_table(dir_name, outfile_name, verbose=True)

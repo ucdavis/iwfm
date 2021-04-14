@@ -19,47 +19,64 @@
 
 
 def get_stream_list_42(stream_lines, line_index, nreach, nrate):
-    """ get_stream_list_42() - Reads part of the stream specification file
-    for file type 4.2 and returns stream reach and rating table info
+    ''' get_stream_list_42() - Reads part of the stream specification file
+        for file type 4.2 and returns stream reach and rating table info
 
-    Parameters:
-      stream_lines    (list): Contents of stream specification file
-      line_index      (int):  Current item in stream_lines
-      nreach          (int):  Number of stream reaches
-      nrate           (int):  Number of points in rating tables
+    Parameters
+    ----------
+    stream_lines : list of strings
+        contents of stream specification file
+    
+    line_index : int
+        current item in stream_lines
+    
+    nreach : int
+        number of stream reaches
+    
+    nrate : int
+        number of points in each stream node rating table
 
-    Returns:
-      snode_ids       (list):  List of model stream nodes
-      snode_dict      (dict):  Dictionary of existing model stream nodes and 
-                                 associated groundwater nodes
-      reach_info      (list):  Reach info line for reaches in model
-      rattab_dict     (dict):  Rating tables for stream nodes in model 
-      rating_header   (str):   Header info for rating tables including factors
-      stream_aq       (str):   Stream-aquifer section of stream preprocessor 
-                                 file
-    """
+    Returns
+    -------
+    snode_ids : list
+        list of model stream nodes
+    
+    snode_dict : dictionary
+        keys = stream node IDs, values = associated groundwater nodes
+    
+    reach_info : list
+        reach info lines for reaches in model
+    
+    rattab_dict : dictionary
+        keys = stream node IDs, values = rating tables
+    
+    rating_header : str
+        header info for rating tables including factors
+    
+    stream_aq : str
+        stream-aquifer section of stream preprocessor file
+
+    '''
     import iwfm as iwfm
 
     comments = ['Cc*#']
     reach_ids, reach_nodes, reach_outflows, reach_names = [], [], [], []
     reach_info, snode_ids, rating_header, stream_aq = [], [], [], []
 
-    # -- read the first section, stream reaches and nodes
+    # -- first section, reaches
     snode_dict = {}
     for reach in range(0, nreach):
         line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
         info = stream_lines[line_index].split()  # -- get reach information
 
         snodes_temp, gwnodes_temp = [], []
-        # for sn in range(0, reach_nodes[-1]):
+
         for sn in range(0, int(info[1])):
-            line_index = iwfm.skip_ahead(
-                line_index + 1, stream_lines, 0
-            )  # skip comments
+            line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
             temp = stream_lines[line_index].split()
-            snodes_temp.append(int(temp[0]))  # add to reach list
-            gwnodes_temp.append(int(temp[1]))  # add to reach list
-            snode_ids.append(int(temp[0]))  # add to model list
+            snodes_temp.append(int(temp[0]))  
+            gwnodes_temp.append(int(temp[1])) 
+            snode_ids.append(int(temp[0])) 
             snode_dict[int(temp[0])] = int(temp[1])
 
         reach_info.append(
@@ -73,14 +90,16 @@ def get_stream_list_42(stream_lines, line_index, nreach, nrate):
             ]
         )
 
-    # -- copy the second section, rating table factors, to a list
+    # -- second section, rating table factors
     line_index += 1
     while stream_lines[line_index][0] in comments:
         rating_header.append(stream_lines[line_index])
         line_index += 1
+
     for i in range(0, 3):
         rating_header.append(stream_lines[line_index])
         line_index += 1
+
     while stream_lines[line_index][0] in comments:
         rating_header.append(stream_lines[line_index])
         line_index += 1
@@ -91,9 +110,7 @@ def get_stream_list_42(stream_lines, line_index, nreach, nrate):
     for sn in snode_ids:
         rt_temp = []
         for t in range(0, nrate):  # nrate lines, already read first one
-            line_index = iwfm.skip_ahead(
-                line_index + 1, stream_lines, 0
-            )  # skip comments
+            line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
             rt_temp.append(stream_lines[line_index])
         rattab_dict[sn] = rt_temp
 

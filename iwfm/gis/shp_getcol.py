@@ -18,7 +18,21 @@
 
 
 def shp_getcol(f, col):
-    """Returns one column from the table for PyShp shapefile"""
+    ''' shp_getcol() - Return one column from the shapefile table
+
+    Parameters
+    ----------
+    f : PyShp shapefile
+    
+    col : int
+        column number
+
+    Returns
+    -------
+    data : list
+       items from specified column
+
+    '''
     import iwfm as iwfm
 
     recs = iwfm.shp_recno(f)

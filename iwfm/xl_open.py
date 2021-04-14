@@ -18,14 +18,18 @@
 
 
 def xl_open(excel_file):
-    """ xl_open() - Open an excel workbook 
+    ''' xl_open() - Open an excel workbook
 
-    Parameters:
-      excel_file      (str):  Name of existing Excel file
+    Parameters
+    ----------
+    excel_file : str
+        name of existing Excel file
 
-    Returns:
-      excel workbook object
-    """
+    Returns
+    -------
+    excel workbook object
+    
+    '''
     import win32com.client as win32  # pywin32
 
     # Open the excel workbook

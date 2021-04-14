@@ -18,7 +18,19 @@
 
 
 def shp_fields_print(f):
-    """Prints the field property strings for a PyShp shapefile"""
+    ''' shp_fields_print() - Print the field property strings for a PyShp
+        shapefile
+    
+    Parameters
+    ----------
+    f : PyShp shapefile object
+        shapefile
+
+    Returns
+    -------
+    nothing
+
+    '''
     from shp_fields import shp_fields
 
     fields = shp_fields(f)

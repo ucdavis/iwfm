@@ -18,9 +18,23 @@
 
 
 def histogram(infile, scl=True):
-    """histogram() generates and displays the color histogram of an image"""
+    '''histogram() - Generate and display the color histogram of an image
+    
+    Parameters
+    ----------
+    infile : str
+        input image file
+
+    scl : bool, default=True
+        True = scaling on
+
+    Returns
+    -------
+    nothing
+
+    '''
     from osgeo import gdal_array as gdal_array
-    import iwafm as iwfm
+    import iwfm as iwfm
 
     histograms = []
     t = None

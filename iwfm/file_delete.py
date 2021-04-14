@@ -18,17 +18,20 @@
 
 
 def file_delete(filename):
-    """ file_delete() - Delete a file
+    ''' file_delete() - Delete a file
 
-    Parameters:
-      filename        (str):  File name
+    Parameters
+    ----------
+    filename : str
+        file name
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    '''
     import os
 
     if os.path.isfile(filename):  # if file exists
         os.remove(filename)  # delete it
-    # else ... add functionality for file not present?
+    # else ... add functionality for file not present, in use, etc?
     return

@@ -18,7 +18,21 @@
 
 
 def grid_read(infile):
-    """grid_read() reads an ASCII Grid file"""
+    '''grid_read() - Read an ASCII Grid file
+    
+    Parameters
+    ----------
+    infile : str
+        ASCII Grid file name
+
+    Returns
+    -------
+    header : str
+        information about ASCII Grid array
+
+    myArray : ASCII Grid array
+
+    '''
     import numpy as np
 
     skiprows = 6

@@ -18,7 +18,18 @@
 
 
 def rasterio_open(filename):
-    """rasterio_open() opens a shapefile using rasterio"""
+    ''' rasterio_open() - Open a shapefile using rasterio
+
+    Parameters
+    ----------
+    filename : str
+        input shapefile name
+
+    Returns
+    -------
+    ds :  shapefile as rasterio object
+
+    '''
     import rasterio
 
     ds = rasterio.open(filename)

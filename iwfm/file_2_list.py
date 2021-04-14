@@ -18,14 +18,32 @@
 
 
 def file_2_list(filename, slice_end=0, slice_start=0, skip=0):
-    """Function file_2_list(filemane,slice_end = 0,slice_start = 0,skip=0) reads a
-    text file,  and returns it as a list of file lines. Optionally, it can be a
-    slice of each line.
-    Header lines can also be skipped."""
-    with open(filename, "r") as inputfile:
-        lines = inputfile.read().splitlines()
-    out_list = []  # create an empty list
-    i = skip  # counter
+    ''' file_2_list()  - Reads a text file,  and returns it as a list of 
+        file lines. Optionally, it can be a slice of each line.
+        Header lines can also be skipped.
+        
+    Parameters
+    ----------
+    filemane : str
+        name of input file
+    
+    slice_end : int, default=0
+        last character to read on each line, 0=to end
+    
+    slice_start : int, default=0
+        first character to read on each line, 0=beginning
+    
+    skip : int, default=0
+        number of header lines ot skip
+    
+    Returns
+    -------
+    outlist : list of strings
+
+        '''
+    lines = open(filename).read().splitlines()
+
+    out_list, i = [], skip 
     if slice_end < slice_start:
         slice_end = 0
     while i < len(lines):
@@ -38,18 +56,18 @@ def file_2_list(filename, slice_end=0, slice_start=0, skip=0):
     return out_list
 
 
-if __name__ == "__main__":
-    " Run vic_2_table() from command line "
+if __name__ == '__main__':
+    ' Run file_2_list() from command line '
     import sys
     import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file = sys.argv[1]
     else:  # ask for file names from terminal
-        input_file = input("Imput file name: ")
+        input_file = input('Imput file name: ')
 
     iwfm.file_test(input_file)
 
-    out_list = file_2_list(input_file, slice_end=10, slice_start=20)
+    out_list = file_2_list(input_file)
 
-    print("  {}".format(out_list))  # update cli
+    print(f'  From {input_file} read:\n{out_list}')

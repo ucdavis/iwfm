@@ -18,16 +18,19 @@
 
 
 def iwfm_aquifer_bottom(strat):
-    """ iwfm_aquifer_bottom() - Extract aquitard bottom altitude from 
+    ''' iwfm_aquifer_bottom() - Extract aquitard bottom altitude from 
         IWFM stratigraphy information
 
-    Parameters:
-      strat           (list): IWFM stratigraphy for each model node
+    Parameters
+    ----------
+    strat : list
+        stratigraphy for each model node
 
-    Returns:
-      aquifer_bot     (list): Aquitard thickness for each model layer
-                                and node
-    """
+    Returns
+    -------
+    aquifer_bot : list
+        aquitard thickness for each model layer and node
+    '''
     import iwfm as iwfm
 
     (

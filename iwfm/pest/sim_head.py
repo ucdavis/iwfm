@@ -1,5 +1,5 @@
-# multiproc.py
-# spreads function across multiple cpu cores
+# sim_head.py
+# Return the simulated head for a given date and column
 # Copyright (C) 2020-2021 Hydrolytics LLC
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -17,18 +17,36 @@
 # -----------------------------------------------------------------------------
 
 
-def multiproc(function, inputlist):
-    """ multiproc() - Spread a function across multiple cpu cores
+def write_results(name, date, meas, sim, start_date):
+    ''' write_results() - Write simulated and observed values for one
+        observation well to a text file
 
-    Parameters:
-      function        (ofb):   A function
-      inputlist       (list):  Function input list
+    Parameters
+    ----------
+    name : str
+        Basename of output file
+  
+    date : list
+        Dates for measurements
+  
+    meas : list
+        Measured values
+  
+    sim : list
+        Simulated equivalent values
+  
+    start_date : obj
+        Simulation starting date
 
-    Returns:
-      results         (list):  Results
-    """
-    import multiprocessing as mp  
+    Returns
+    -------
+    i : int
+        Number of lines written
 
-    pool = mp.Pool(processes=mp.cpu_count())  
-    results = pool.map(function, inputlist)
-    return results
+    '''
+    with open(name + '_obs.out', 'w') as o:
+        o.write(f'# Observations for well {name}\n')
+        o.write('# Date\tObserved\tModeled\n')
+        for i in range(0, len(date)):
+            o.write(f'{date[i]}\t{meas[i]}\t{sim[i]}\n')
+    return i

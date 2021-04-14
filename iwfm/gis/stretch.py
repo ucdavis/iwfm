@@ -18,7 +18,17 @@
 
 
 def stretch(a):
-    """stretch() performs a histogram stretch on a gdal_array array image"""
+    '''stretch() - Perform a histogram stretch on a gdal_array array image
+
+    Parameters
+    ----------
+    a : GDAL array object
+
+    Returns
+    -------
+    a : GDAL array object
+
+    '''
     from osgeo import gdal_array as gdal_array
     import functools
     import iwfm as iwfm

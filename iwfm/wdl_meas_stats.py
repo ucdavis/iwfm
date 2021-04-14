@@ -19,29 +19,32 @@
 
 
 def wdl_meas_stats(input_file, verbose=False):
-    """ wdl_meas_stats() - Calculate water level statistics and write out 
+    ''' wdl_meas_stats() - Calculate water level statistics and write out 
         to a file
 
-    Parameters:
-      input_file      (str):  Name of input file
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    input_file : str
+        input file name
+    
+    verbose : bool, default=False
+        True = command-line output on
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+
+    '''
     import statistics
 
     output_file = input_file[0 : input_file.find('.')] + '_stats.out'
 
-    # -- read and process each line of input_file
     lines_in, lines_out, count = 0, 0, 0
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
-        outfile.write(
-            'STN_ID\tMIN_DATE\tMAX_DATE\tCOUNT\tWL_AVG\tWL_MAX\tWL_MIN\tWL_SDV\n'
-        )  # header
+        outfile.write('STN_ID\tMIN_DATE\tMAX_DATE\tCOUNT\tWL_AVG\tWL_MAX\tWL_MIN\tWL_SDV\n')
         first_date, first_well_id, start_date, last_date, wl = 0, '', '', '', []
         for line in infile:
-            lines_in = lines_in + 1
+            lines_in +=  1
             items = line.split()
             if lines_in == 2:
                 first_well_id, start_date, last_date = items[0], items[1], items[1]
@@ -55,18 +58,10 @@ def wdl_meas_stats(input_file, verbose=False):
                         stdev = int(statistics.stdev(wl) * 100) / 100
                     else:
                         stdev = -99.9
-                    outfile.write(
-                        '{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n'.format(
-                            first_well_id,
-                            text_date(start_date),
-                            text_date(last_date),
-                            count,
-                            int(statistics.mean(wl) * 100) / 100,
-                            max(wl),
-                            min(wl),
-                            stdev,
-                        )
-                    )
+                    outfile.write(f'{first_well_id}\t{text_date(start_date)}'+
+                        f'\t{text_date(last_date)}\t{count}'+
+                        f'\t{int(statistics.mean(wl) * 100) / 100}'+
+                        f'\t{max(wl)}\t{min(wl)}\t{stdev}\n')
                     lines_out = lines_out + 1
                     # - reset for the next well
                     first_well_id = this_well_id
@@ -82,5 +77,5 @@ def wdl_meas_stats(input_file, verbose=False):
                 last_date = this_date
 
     if verbose:
-        print('Processed {:,} lines from {}'.format(lines_in, input_file))
-        print('Wrote {:,} lines to {}'.format(lines_out, output_file))
+        print(f'Processed {lines_in:,} lines from {input_file}')
+        print(f'Wrote {lines_out:,} lines to {output_file}')

@@ -66,7 +66,7 @@ from iwfm.new_sim_dict import new_sim_dict
 
 # -- IWFM simulation files --------------------------------
 from iwfm.iwfm_read_sim import iwfm_read_sim
-from iwfm.simhyds_file import simhyds_file
+from iwfm.simhyds import simhyds
 
 # -- IWFM land use methods --------------------------------
 from iwfm.iwfm_adj_crops import iwfm_adj_crops
@@ -101,6 +101,7 @@ from iwfm.wdl_ts_4_wells import wdl_ts_4_wells
 from iwfm.read_obs_smp import read_obs_smp
 from iwfm.read_sim_wells import read_sim_wells
 from iwfm.read_sim_hyds import read_sim_hyds
+from iwfm.hyd_diff import hyd_diff
 from iwfm.gw_plot_draw import gw_plot_draw
 from iwfm.gw_plot_noobs_draw import gw_plot_noobs_draw
 from iwfm.gw_plot_noobs import gw_plot_noobs
@@ -208,6 +209,9 @@ from iwfm.xl_save import xl_save
 from iwfm.xl_quit import xl_quit
 from iwfm.write_2_excel import write_2_excel
 
+
+# -- multiprocessing --------------------------------------
+from iwfm.multiproc import multiproc
 
 # -- other methods -----------------------------------------
 # from iwfm.meas_bounds import meas_bounds

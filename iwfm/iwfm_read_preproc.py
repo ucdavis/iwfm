@@ -18,41 +18,45 @@
 
 
 def iwfm_read_preproc(pre_file):
-    """Function iwfm_read_prepcoc(pre_file,debug = 0) reads an IWFM Preprocessor
-    main input file, and returns a list of the files called and some settings.
+    ''' iwfm_read_preproc() - Read an IWFM Preprocessor main input file, 
+        and return a dictionary with file names and some settings
 
-    Parameters:
-      pre_file        (str):  Name of existing preprocessor main input file
+    Parameters
+    ----------
+    pre_file : str
+        name of existing preprocessor main input file
 
-    Returns:
-      pre_dict       (dict):  Dictionary of preprocessor file names
-      have_lake      (bool):  Does the existing model have a lake file?
+    Returns
+    -------
+    pre_dict : dictionary
+        dictionary of preprocessor file names
+    
+    have_lake : bool
+        True = the existing model has a lake file
 
-    """
+    '''
     import iwfm as iwfm
 
-    # -- read the preprocessor file into array pre_lines
     pre_lines = open(pre_file).read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments
-
-    # -- read input file names and create a dictionary ------------------
     pre_dict = {}
+
+    line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments
     pre_dict['preout'] = pre_lines[line_index].split()[0]  # preproc output file
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0) 
     pre_dict['elem_file'] = pre_lines[line_index].split()[0]  # element file
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
     pre_dict['node_file'] = pre_lines[line_index].split()[0]  # node file
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
     pre_dict['strat_file'] = pre_lines[line_index].split()[0]  # stratigraphy file
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
     pre_dict['stream_file'] = pre_lines[line_index].split()[0]  # stream file
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
     lake_file = pre_lines[line_index].split()[0]  # lake file
     # -- is there a lake file?
     have_lake = True

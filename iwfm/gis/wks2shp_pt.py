@@ -18,20 +18,41 @@
 
 
 def wks2shp_pt(inwksheet, outshp, sheet_index=0):
-    """wks2shp_pt() reads an Excel workbook and creates a POINT shapefile"""
+    ''' wks2shp_pt() - Read an Excel workbook and create a POINT shapefile
+
+    Parameters
+    ----------
+    inwksheet : str
+        Excel workbook name
+    
+    outshp : str
+        output shapefile name
+    
+    sheet_index : int, default=0
+        Sheet number in workbook
+
+    Returns
+    -------
+    nothing
+
+    '''
     import xlrd
     import iwfm as iwfm
 
     xls = xlrd.open_workbook(inwksheet)  # open Excel workbook
     sheet = xls.sheet_by_index(sheet_index)  # select worksheet
+
     w = iwfm.gis.shp_get_writer(outshp, POINT)  # open shapefile writer
+
     for i in range(sheet.ncols):  # move data to shapefile table
         w.field(str(sheet.cell(0, i).value), "C", 40)  # read the header row
+
     for i in range(1, sheet.nrows):
         values = []
         for j in range(sheet.ncols):
             values.append(sheet.cell(i, j).value)
         w.record(*values)
+
         # get lat, lon from last two columns
         w.point(float(values[-2]), float(values[-1]))  
     w.close

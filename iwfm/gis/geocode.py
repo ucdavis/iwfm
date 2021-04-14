@@ -17,12 +17,23 @@
 # -----------------------------------------------------------------------------
 
 
-def geocode(address, debug=0):
-    """Return the lat-lon of a street address"""
+def geocode(address, verbose=True):
+    '''geocode() - Return the lat-lon of a street address
+    
+    Parameters
+    ----------
+    address : str
+        street address
+      
+    verbose : bool, sefault=True
+        turn command-line output on or off
+
+
+      '''
     from geopy.geocoders import Nominatim
 
     g = Nominatim()
     location = g.geocode(address)
-    if debug:
+    if verbose:
         print(f'  Geocoding: \'{address}\' to \'{location}\'')
     return location

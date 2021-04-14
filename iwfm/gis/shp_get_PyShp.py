@@ -18,7 +18,21 @@
 
 
 def shp_get_PyShp(infile, verbose=False):
-    """Read a shapefile"""
+    ''' shp_get_PyShp() - Read a shapefile with PyShp
+
+    Parameters
+    ----------
+    infile : str
+        input shapefile name
+
+      verbose : bool, default=False
+          True = command-line output on 
+
+    Returns
+    -------
+    shp : PyShp shapefile object
+
+    '''
     import shapefile  # pyshp
 
     shp = shapefile.Reader(infile)

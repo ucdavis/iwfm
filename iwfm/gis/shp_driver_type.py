@@ -18,7 +18,21 @@
 
 
 def shp_driver_type(filename, verbose=False):
-    """ Return the driver"""
+    ''' shp_driver_type() - Return the driver
+    
+    Parameters
+    ----------
+    filename : str
+        Input shapefile
+    
+    verbose : bool, default=False
+        turn command-line output on or off
+
+    Returns
+    -------
+    d : str
+        Driver
+    '''
     import fiona
 
     f = fiona.open(filename)

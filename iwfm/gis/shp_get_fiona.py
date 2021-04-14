@@ -18,14 +18,18 @@
 
 
 def shp_get_fiona(infile):
-    """ shp_get_fiona() - Open a shapefile using fiona
+    ''' shp_get_fiona() - Open a shapefile using fiona
     
-    Parameters:
-      infile          (str):   Name of input file
+    Parameters
+    ----------
+    infile : str
+        input file name
     
-    Return:
-       f              (obj):   Shapefile object
-    """
+    Returns
+    -------
+    f : fiona shapefile object
+    
+    '''
     import fiona
 
     f = fiona.open(infile)

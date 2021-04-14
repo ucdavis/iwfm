@@ -18,17 +18,28 @@
 
 
 def file2dict_int(infile, key_field=0, val_field=1, skip=0):
-    """ file2dict_int() - Read file with paired integers, return dictionary 
+    ''' file2dict_int() - Read file with paired integers, return dictionary 
 
-    Parameters:
-      infile          (str):  Name of input file
-      key_fiels       (int):  List field to use as key
-      val_field       (int):  List field to use as value
-      skip            (int):  Rop row of table data in file
+    Parameters
+    ----------
+    infile : str
+        name of input file
+    
+    key_field : int, default=0
+        list field to use as key
+    
+    val_field : int, default=1
+        list field to use as value
+    
+    skip : int, default=0
+        Number of header rows to skip
 
-    Returns:
-      d               (dict): Dictionary 
-    """
+    Returns
+    -------
+    d : dicttionary
+        dictionary from file contents
+    
+    '''
     import re
 
     d = {}

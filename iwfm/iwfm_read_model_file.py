@@ -18,25 +18,29 @@
 
 
 def iwfm_read_model_file(iwfm_file):
-    """ iwfm_read_model() - Read an IWFM model file (*.iwfm) containing file
+    ''' iwfm_read_model() - Read an IWFM model file (*.iwfm) containing file
         names for an IWFM model components (Preprocessor,Simulation, Budget, 
         ZBudget) and return a list of the file names
 
-    Parameters:
-      iwfm_file       (str):  Name of IWFM model file
+    TODO: - change files_list to a dictionary
+    
+    Parameters
+    ----------
+    iwfm_file : str
+        IWFM model file name
 
-    Returns:
-      files_list      (list):  List of file names
+    Returns
+    -------
+    files_list : list
+        list of file names
 
-    To do:
-      - change the list to a dictionary
+    '''
 
-    """
-    # -- read the file contents into array file_lines
-    lines = open(iwfm_file).read().splitlines()  # open and read input file
+    lines = open(iwfm_file).read().splitlines()
+
     files_list = []
     for i, line in enumerate(lines):
-        if line[0] != "#":  # skip comment lines
+        if line[0] != '#':  # skip comment lines
             items = line.split()
             if len(files_list) == 0:
                 files_list.append([items[0], [items[1]]])

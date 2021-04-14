@@ -18,15 +18,21 @@
 
 
 def shp_getrow(inshape, rec):
-    """ shp_getrow() - Returns one row or record for PyShp shapefile
+    ''' shp_getrow() - Return one row or record for a shapefile opened
+        with PyShp
 
-    Parameters:
-      inshape         (obj):  PyShp shapefile object
-      rec             (int):  Record number
+    Parameters
+    ----------
+    inshape : PyShp shapefile object
+    
+    rec : int
+        record number
 
-    Returns:
-      one row record
-    """
+    Returns
+    -------
+    one row record
+    
+    '''
     import iwfm as iwfm
 
     return iwfm.gis.shp_getrec(inshape, rec)

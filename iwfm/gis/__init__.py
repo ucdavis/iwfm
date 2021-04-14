@@ -156,9 +156,6 @@ from iwfm.gis.density_plot import density_plot
 from iwfm.gis.choropleth import choropleth
 from iwfm.gis.heatmap import heatmap
 
-# -- multiprocessing --------------------------------------
-from iwfm.gis.multiproc import multiproc
-
 # -- spreadsheets -----------------------------------------
 from iwfm.gis.wks2shp_pt import wks2shp_pt
 

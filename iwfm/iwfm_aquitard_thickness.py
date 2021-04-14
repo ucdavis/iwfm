@@ -18,16 +18,19 @@
 
 
 def iwfm_aquitard_thickness(strat):
-    """ iwfm_aquitard_thickness() - Extract aquitard thicknesses from 
+    ''' iwfm_aquitard_thickness() - Extract aquitard thicknesses from 
         IWFM stratigraphy information
 
-    Parameters:
-      strat           (list): IWFM stratigraphy for each model node
+    Parameters
+    ----------
+    strat : list
+        stratigraphy for each model node
 
-    Returns:
-      aquitard_thick  (list): Aquitard thickness for each model layer
-                                and node
-    """
+    Returns
+    -------
+    aquitard_thick : list
+        aquitard thickness for each model layer and node
+    '''
     import iwfm as iwfm
 
     aquitard_thick, _ = iwfm.iwfm_strat_arrays(strat)

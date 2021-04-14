@@ -18,5 +18,15 @@
 
 
 def shp_fields(f):
-    """Return the field property strings for PyShp shapefile"""
+    ''' shp_fields() - Return the field property strings for PyShp shapefile
+    
+    Parameters
+    ----------
+    f : PyShp shapefile object
+        shapefile
+
+    Returns
+    -------
+    Shapefile field property strings : list
+    '''
     return f.fields

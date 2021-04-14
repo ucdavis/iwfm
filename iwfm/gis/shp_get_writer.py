@@ -18,8 +18,23 @@
 
 
 def shp_get_writer(outfile, type):
-    """Get a writer for a shapefile of the same type as the input shapefile"""
+    ''' shp_get_writer() - Get a writer for a shapefile of the same type
+        as the input shapefile
+
+    Parameters
+    ----------
+    outfile : str
+        ouput shapefile name
+    
+    type : str
+        shapefile type
+
+    Returns
+    -------
+    w : Shapefile writer
+
+    '''
     import shapefile  # PyShp
 
-    w = shapefile.Writer(outfile, shapeType=type)  # get Writer
+    w = shapefile.Writer(outfile, shapeType=type)  
     return w

@@ -17,11 +17,21 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_schema_print_fiona(f):
-    """ shp_schema_print_fiona() - Print the shapefile schema"""
+def shp_schema_print_fiona(shp):
+    ''' shp_schema_print_fiona() - Print the shapefile schema
+
+    Parameters
+    ----------
+    shp : Fiona shapefile object
+
+    Returns
+    -------
+    nothing
+
+    '''
     import pprint
 
-    pprint(f.schema)
+    pprint(shp.schema)
 
     return
 

@@ -18,14 +18,18 @@
 
 
 def file_test(filename):
-    """ file_test() - Check that the file exists and exit if it does not
+    ''' file_test() - Check that the file exists and exit if it does not
 
-    Parameters:
-      filename        (str):  Name of file
+    Parameters
+    ----------
+    filename : str
+        file name
     
-    Return:
-      nothing
-    """
+    Return
+    ------
+    nothing
+    
+    '''
     import os
     import iwfm as iwfm
 

@@ -18,27 +18,50 @@
 
 
 def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
-    start_date,title_words,yaxis_width):
-    """ gw_plot_obs_draw() - Create a PDF file with a graph of the simulated data 
+    start_date,title_words,yaxis_width=-1):
+    ''' gw_plot_obs_draw() - Create a PDF file with a graph of the simulated data 
         vs time for all hydrographs as lines, with observed values vs time as 
         dots, saved as the_well_name.pdf
 
-    Parameters:
-      well_name       (str):  Well label, often state well number
-      date            (list): List of dates (paired with meas)
-      meas            (list): List of observed values (paired with date)
-      no_hyds         (int):  Number of simulation time series to be graphed
-      gwhyd_obs       (list): Simulated IWFM groundwater hydrographs 
-                                ([0]==dates, [1 to no_hyds]==datasets)
-      gwhyd_name      (list): Hydrograph names from PEST observations file
-      well_info       (list): Well data from Groundwater.dat file
-      start_date      (str):  First date in simulation hydrograph files
-      title_words     (str):  Plot title words
-      yaxis_width     (int):  Minimum y-axis width, -1 for automatic
+    Parameters
+    ----------
+    well_name : str
+        well name, often state well number
     
-    Return:
-      nothing
-    """
+    date : list
+        list of dates (paired with meas)
+    
+    meas : list
+        list of observed values (paired with date)
+    
+    no_hyds : int
+        number of simulation time series to be graphed
+    
+    gwhyd_obs : list
+        simulated IWFM groundwater hydrographs 
+        [0]==dates, [1 to no_hyds]==datasets
+    
+    gwhyd_name : list
+        hydrograph names from PEST observations file
+    
+    well_info : list
+        well data from Groundwater.dat file
+    
+    start_date : str
+        first date in simulation hydrograph files
+    
+    title_words : str
+        plot title words
+    
+    yaxis_width : int, default=-1
+        minimum y-axis width, -1 for automatic
+    
+    Return
+    ------
+    nothing
+    
+    '''
+    
     import datetime
     import matplotlib
     import iwfm as iwfm
@@ -58,20 +81,16 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
 
     col = well_info[0] 
 
+    dates = []
+    for i in range(0, len(gwhyd_obs)):
+        dates.append(datetime.datetime.strptime(gwhyd_obs[i][0], '%m/%d/%Y'))
+
     ymin, ymax, sim_heads, sim_dates = 1e6, -1e6, [], []
     for j in range(0, no_hyds):
-        date_temp, sim_temp = [], []
-        for i in range(0, len(gwhyd_obs[j])):
-            date_temp.append(datetime.datetime.strptime(gwhyd_obs[j][i][0], '%m/%d/%Y'))
-            sim_temp.append(gwhyd_obs[j][i][col])
-            ymin = min(ymin, gwhyd_obs[j][i][col])
-            ymax = max(ymax, gwhyd_obs[j][i][col])
-        sim_dates.append(date_temp)
-        sim_heads.append(sim_temp)
+        sim_heads.append([float(x) for x in gwhyd_obs[j][1:]])
 
-    for i in range(0, len(meas)):
-        ymin = min(ymin, meas[i])
-        ymax = max(ymax, meas[i])
+    ymin = min(ymin, min(min(sim_heads)), min(meas))
+    ymax = max(ymax, max(max(sim_heads)), max(meas))
 
     meas_dates = []
     for i in range(0, len(date)):

@@ -17,34 +17,45 @@
 # -----------------------------------------------------------------------------
 
 
-def headall_read(input_file):
-    """headall_read() reads an IWFM HeadAll.out file and returns
-    the data as floats, with lists of dates and model nodes and
-    the number of model layers
+def headall_read(input_file, skip=5):
+    ''' headall_read() - Reads an IWFM HeadAll.out file and returns
+        the data as floats, with lists of dates and model nodes and
+        the number of model layers
 
-    Parameters:
-      input_file     (str):  Name of IWFM HeadAll.out file
+    Parameters
+    ----------
+    input_file : str
+        IWFM HeadAll.out file name
+    
+    skip : int, default=5
+        number of header lines
 
-    Returns:
-      data           (list):  heads from headall file
-      layers         (int):   Number of model layers
-      dates          (list):  Simulation time step dates corresponding to 
-                                data rows
-      nodes          (list):  Model nodes corresponding to data columns
+    Returns
+    -------
+    data : list
+        heads from headall file
+    
+    layers : int
+        number of model layers
+    
+    dates : list
+        simulation time step dates corresponding to data rows
+    
+    nodes : list
+        model nodes corresponding to data columns
 
-    """
-    start = 5  # skip the first 5 lines
-
+    '''
+    
     file_lines = open(input_file).read().splitlines() 
 
-    line = start
+    line = skip
     nodes = file_lines[line].split()  
     nodes.pop(0)  
     nodes.pop(0)  
 
     line += 1
     layers = 1
-    while file_lines[line + layers][0] == " ":
+    while file_lines[line + layers][0] == ' ':
         layers += 1
 
     data, dates = [], []

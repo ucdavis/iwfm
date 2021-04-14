@@ -19,25 +19,33 @@
 
 
 def headall2dtw(heads_file, pre_file, output_root, verbose=False):
-    """ headall2dtw() - Reads IWFM HeadAll.out file, subtracts heads from
+    ''' headall2dtw() - Reads IWFM HeadAll.out file, subtracts heads from
         land surface elevation, and writes out as a time series with
         one csv file for each layer
 
-    Parameters:
-      heads_file      (str):  Name of headall.out file 
-      pre_file        (str):  Name of IWFM Preprocessor main input file
-      output_root     (str):  Basename of output file
-      verbose         (bool): Turn command-line output on or off
-
-    Returns:
-      nothing
+    Parameters
+    ----------
+    heads_file : str
+        name of headall.out file 
     
-    """
+    pre_file : str
+        name of IWFM Preprocessor main input file
+    
+    output_root : str
+        basename of output file
+    
+    verbose : bool, default=False
+        True = command-line output on
+
+    Returns
+    -------
+    nothing
+    
+    '''
     import numpy as np
     import os
     import iwfm as iwfm
 
-    # -- get node and stratigraphy info from preprocessor input files
     pre_path, pre_proc = os.path.split(pre_file)
     pre_dict, _ = iwfm.iwfm_read_preproc(pre_file)
 

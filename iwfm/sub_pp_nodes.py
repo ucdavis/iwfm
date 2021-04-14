@@ -18,17 +18,23 @@
 
 
 def sub_pp_nodes(elem_file, elem_list):
-    """sub_pp_nodes() reads the element file and returns a list of the
+    ''' sub_pp_nodes() - Read the element file and return a list of the
         nodes in the submodel
 
-    Parameters:
-      elem_file      (str):   Existing model preprocessor element file name
-      elem_list      (ints):  List of existing model elements in submodel
+    Parameters
+    ----------
+    elem_file : str
+        existing model preprocessor element file name
+    
+    elem_list : list of ints
+        list of existing model elements in submodel
 
-    Returns:
-      node_list      (ints):  List of existing model nodes in submodel
+    Returns
+    -------
+    node_list : list of ints
+        list of existing model nodes in submodel
 
-    """
+    '''
     import iwfm as iwfm
 
     comments = ['Cc*#']
@@ -36,20 +42,18 @@ def sub_pp_nodes(elem_file, elem_list):
     for e in elem_list:
         elems.append(int(e[0]))
 
-    # -- read the element file into array elem_lines
     elem_lines = open(elem_file).read().splitlines()  # open and read input file
 
-    # -- skip to number of elements
     line_index = iwfm.skip_ahead(0, elem_lines, 0)  # skip comments
     # -- skip to number of subregions
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
     # -- skip to start of subregion list
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
     # -- skip the subregion lines
     while elem_lines[line_index][0] not in comments:
         line_index += 1
     # -- skip to start of element list
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  # skip comments
+    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0) 
 
     # -- get node list
     node_list = []
@@ -62,8 +66,7 @@ def sub_pp_nodes(elem_file, elem_list):
                 if node not in node_list:
                     node_list.append(node)
     node_list.sort()
-    if (
-        node_list[0] == 0
-    ):  # remove 0, it is not a node number, just indicates a triangular element
+    # remove 0, it is not a node number, just indicates a triangular element
+    if (node_list[0] == 0):  
         node_list.pop(0)
     return node_list

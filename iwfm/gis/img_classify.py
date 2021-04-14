@@ -18,13 +18,28 @@
 
 
 def img_classify(source, target):
-    """img_classify() classifies a remotely sensed image"""
+    ''' img_classify() - Classify a remotely sensed image
+    
+    Parameters
+    ----------
+    source : str
+        imput image file name
+
+    target : str
+        output file name
+
+    Returns
+    -------
+    nothing
+
+    '''
     from osgeo import gdal_array as gdal_array
 
     srcArr = gdal_array.LoadFile(source)  # Load the image into numpy using gdal
-    classes = gdal_array.numpy.histogram(srcArr, bins=20)[
-        1
-    ]  # Split the histogram into 20 bins as our classes
+    
+    # Split the histogram into 20 bins as our classes
+    classes = gdal_array.numpy.histogram(srcArr, bins=20)[1]
+
     # Color look-up table (LUT) - must be len(classes)+1, specified as R, G, B tuples
     lut = [
         [255, 0, 0],
@@ -50,6 +65,7 @@ def img_classify(source, target):
         [184, 138, 0],
     ]
     start = 1  # Starting value for classification
+
     # Set up the RGB color JPEG output image
     rgb = gdal_array.numpy.zeros(
         (
@@ -64,8 +80,10 @@ def img_classify(source, target):
         for j in range(len(lut[i])):
             rgb[j] = gdal_array.numpy.choose(mask, (rgb[j], lut[i][j]))
         start = classes[i] + 1
+
     # Save the image
     output = gdal_array.SaveArray(
         rgb.astype(gdal_array.numpy.uint8), target, format="JPEG"
     )
     output = None
+    return

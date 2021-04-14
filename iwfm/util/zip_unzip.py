@@ -18,15 +18,21 @@
 
 
 def zip_unzip(filename, verbose=False):
-    """ zip_unzip() - Unzips a zipfile
+    ''' zip_unzip() - Unzip a zipfile
 
-    Parameters:
-      filename        (str):  Zip file
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    filename : str
+        Zip file
 
-    Returns:
-      nothing
-    """
+    verbose : bool, default=False
+        True = command-line output on
+
+    Return
+    ------
+    nothing
+
+    '''
     import zipfile
 
     zip = open(filename, 'rb')

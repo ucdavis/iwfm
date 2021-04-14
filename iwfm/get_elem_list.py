@@ -19,38 +19,41 @@
 
 
 def get_elem_list(elem_pairs_file):
-    """get_elem_list() reads the submodel elements and returns a dictionary
+    ''' get_elem_list() - Reads the submodel elements and returns a dictionary
         of old to new elements and a dictionary of new to old elements
 
-    Parameters:
-      elem_pairs_file (str):  Name of file listing elements of existing nmodel
-                                and submodel
+    Parameters
+    ----------
+    elem_pairs_file : str
+        name of file listing elements of existing nmodel and submodel
 
-    Returns:
-      elem_list      (ints):  List of existing model elements in submodel
-      new_srs        (ints):  List of existing model subregions in submodel
-      elem_dict      (dict):  Dictionary existing model element to submodel
-                                element
-      rev_elem_dict  (dict):  Dictionary submodel element to existing model
-                                element
+    Returns
+    -------
+    elem_list : list
+        list of existing model elements in submodel
+    
+    new_srs : list
+        list of existing model subregions in submodel
+    
+    elem_dict : dictionary
+        dictionary key = existing model element, value = submodel element
+    
+    rev_elem_dict : dictionary
+        dictionary key = submodel element, value = existing model element
 
-    """
+    '''
     import iwfm as iwfm
 
-    # == read in the element pairs and create a dictionary
-    elem_list = []
     elem_pairs = open(elem_pairs_file).read().splitlines()  # open and read input file
-    for i in range(0, len(elem_pairs)):  # cycle through the lines
-        line = elem_pairs[i].split()
-        for j in range(0, len(line)):  # convert to integers
-            line[j] = int(line[j])
-        elem_list.append(line)
+
+    elem_list = []
+    for line in elem_pairs:  # cycle through the lines
+        elem_list.append([int(x) for x in line])
     elem_dict = iwfm.list2dict(elem_list)  # dictionary old elem -> new elem
+
     # also create a reverse dictionary new elem -> old elem
     for i in range(0, len(elem_list)):  # switch the new and old elem nos
-        temp = elem_list[i][0]
-        elem_list[i][0] = elem_list[i][1]
-        elem_list[i][1] = temp
+        elem_list[i][0], elem_list[i][1] = elem_list[i][1], elem_list[i][0]
     rev_elem_dict = iwfm.list2dict(elem_list)  # dictionary new elem -> old elem
 
     # make a list of the subregions in the submodel

@@ -18,8 +18,21 @@
 
 
 def histogram_array(arr, bins=list(range(0, 256))):
-    """histogram_array() determines the histogram function for multi-dimensional array <a>.
-    bins = range of numbers to match"""
+    ''' histogram_array() - Determines the histogram function for 
+        multi-dimensional array <arr>
+    
+    Parameters
+    ----------
+    arr : multidimensional array
+
+    bins : list, default=[1,2,...,256]
+        range of numbers to match
+
+    Returns
+    -------
+    hist : array
+        histogram function for array
+    '''
     from osgeo import gdal_array as gdal_array
 
     fa = arr.flat

@@ -17,22 +17,35 @@
 # -----------------------------------------------------------------------------
 
 
-def density_plot(infile,fieldname='POPULAT11',iwidth=600,iheight=400,
+def density_plot(infile,fieldname,iwidth=600,iheight=400,
     denrat=100,savename=None):
-    """density_plot() reads a shapefile and writes it as an image
+    '''density_plot() - Read a shapefile and write it as an image
 
-    Parameters:
-      infile         (str):   Name of source shapefile
-      fieldname      (str):   Field name for shading
-      iwidth         (int):   Image width in pixels
-      iheight        (str):   Image height in pixels
-      denrat         (str):   Density retio
-      savename       (str):   Name of image destination file
+    Parameters
+    ----------
+    infile : str
+        source shapefile name
+    
+    fieldname : str
+        field name for shading
+    
+    iwidth : int, default=600
+        image width in pixels
+    
+    iheight : str, default=400
+        image height in pixels
+    
+    denrat : int, default=100
+        density retio
+    
+    savename : str, default=None
+        image destination file name (None = not saved)
 
-    Returns:
-      nothing
+    Returns
+    -------
+    nothing
 
-    """
+    '''
     import shapefile  # pyshp
     import pngcanvas as pngcanvas
     import world2screen

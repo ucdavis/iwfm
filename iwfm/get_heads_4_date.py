@@ -18,24 +18,31 @@
 
 
 def get_heads_4_date(heads_file, out_date, start=5):
-    """ get_heads_4_date() - Read headall.out file and return heads for a
+    ''' get_heads_4_date() - Read headall.out file and return heads for a
         specific date 
 
-    Parameters:
-      heads_file      (str):  Name of IWFM headall.out file
-      out_date        (str):  Date in MM/DD/YYYY format
-      start           (int):  Number of header lines to skip
+    Parameters
+    ----------
+    heads_file : str
+        name of IWFM headall.out file
+    
+    out_date : str
+        date in MM/DD/YYYY format
+    
+    start : int, default=5
+        number of header lines to skip
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
     import iwfm as iwfm
 
     out_mon = iwfm.month(out_date)
     out_day = iwfm.day(out_date)
     out_year = iwfm.year(out_date)
 
-    # -- read the file into list file_lines
     file_lines = open(heads_file).read().splitlines()  # open and read input file
 
     line_index = start
@@ -49,7 +56,7 @@ def get_heads_4_date(heads_file, out_date, start=5):
     item = file_lines[line_index].split()  # read line w/date
     data.append(item)
     end_date = item.pop(0)  # remove the date
-    # end_date = end_date[:9]                                            # HEC-DSS format to MM/DD/YYYY
+
     while line_index < len(file_lines) - 1:
         line_index += 1
         layer = 1
@@ -75,5 +82,5 @@ def get_heads_4_date(heads_file, out_date, start=5):
             item = file_lines[line_index].split()  # read line w/date
             data.append(item)
             end_date = item.pop(0)  # remove the date
-            # end_date = end_date[:9]                                        # HEC-DSS format to MM/DD/YYYY
+
     return

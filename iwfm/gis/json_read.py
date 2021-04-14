@@ -18,7 +18,22 @@
 
 
 def json_read(jdata, verbose=False):
-    """ read json file"""
+    ''' json_read() - Read a json file
+    
+    Parameters
+    ----------
+    jdata : str
+        JSON file name
+    
+    verbose : bool, default=False
+        True = command line updating on
+
+    Returns
+    -------
+    j : JSON object
+        JSON data
+    
+    '''
     import json
 
     j = json.loads(jdata)

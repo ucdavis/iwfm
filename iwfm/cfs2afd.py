@@ -17,21 +17,34 @@
 # -----------------------------------------------------------------------------
 
 
-def cfs2afd(cfs, debug=0):
-    """Convert flow in CFS to daily volume in Acre-Feet"""
-    return cfs * 1.983
+def cfs2afd(cfs):
+    ''' cfs2afd() - Convert flow in CFS to daily volume in Acre-Feet
+
+    Parameters
+    ----------
+    cfs : float
+        Value in cubic feet per minute
+
+    Returns
+    -------
+    afd : float
+        Value in acre-feet per day
+
+    '''
+    afd = cfs * 1.983
+    return afd
 
 
 if __name__ == "__main__":
     " Run cfs2afd() from command line "
     import sys
-    import iwfm.debug as idb
 
     if len(sys.argv) > 1:  # argument is listed on the command line
         cfs = sys.argv[1]
     else:  # ask for argument from terminal
-        cfs = input("Value in CFS: ")
+        cfs = input('Value in CFS: ')
 
     afd = cfs2afd(float(cfs))
 
-    print("  {} cfs = {} afd".format(cfs, afd))  # update cli
+    print(f'  {cfs} cfs = {afd} afd')
+

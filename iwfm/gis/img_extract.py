@@ -18,19 +18,37 @@
 
 
 def img_extract(source, target):
-    """img_extract() automatically extract features of a threshold image to a shapefile"""
+    ''' img_extract() - Automatically extract features of a threshold image 
+        to a shapefile
+    
+    Parameters
+    ----------
+    source : str
+        input file name
+    
+    target : str
+        ouput file name
+
+    Returns
+    -------
+    extract : OGR object
+        extracted features
+        
+    '''
     import gdal as gdal
     import ogr as ogr
     import osr as osr
 
-    tgtLayer = 'extract'  # OGR layer name
-    srcDS = gdal.Open(source)  # Open the input raster
-    band = srcDS.GetRasterBand(1)  # Grab the first band
-    mask = band  # Force gdal to use the band as a mask
+    srcDS = gdal.Open(source)  
+    band = srcDS.GetRasterBand(1)  
+    mask = band                                     # Force gdal to use the band as a mask
+
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Set up the output shapefile
     shp = driver.CreateDataSource(target)
     srs = osr.SpatialReference()  # Copy the spatial reference
     srs.ImportFromWkt(srcDS.GetProjectionRef())
+
+    tgtLayer = 'extract'  # OGR layer name
     layer = shp.CreateLayer(tgtLayer, srs=srs)
     fd = ogr.FieldDefn('DN', ogr.OFTInteger)  # Set up the dbf file
     layer.CreateField(fd)

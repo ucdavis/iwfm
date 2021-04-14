@@ -27,33 +27,45 @@ def sub_pp_stream_file(
     rating_header,
     stream_aq,
 ):
-    """sub_pp_stream_file() copies the old stream specification file and
-        replaces the contents with those of the new model, and writes
+    ''' sub_pp_stream_file() - Copy the original stream specification file 
+        and replace the contents with those of the new model, and write
         out the new file
 
-    Parameters:
-      stream_file     (str):   Name of existing preprocessor node file
-      new_stream_file (str):   Name of submodel preprocessor node file
-      snode_dict      (ints):  Dictionary of existing model stream nodes in submodel
-      reach_info      (str):   Reach info line for reaches in submodel
-      rattab_dict     (dict):  Rating tables for stream nodes in submodel
-      rating_header   (str):   Header info for rating tables including factors
-      stream_aq       (str):   Stream-aquifer section of stream preprocessor file
+    Parameters
+    ----------
+    stream_file : str
+        name of existing preprocessor node file
+    
+    new_stream_file : str
+        name of submodel preprocessor node file
+    
+    snode_dict : ints
+        dictionary of existing model stream nodes in submodel
+    
+    reach_info : str
+        reach info line for reaches in submodel
+    
+    rattab_dict : dict
+        rating tables for stream nodes in submodel
+    
+    rating_header : str
+        header info for rating tables including factors
+    
+    stream_aq : str
+        stream-aquifer section of stream preprocessor file
 
-    Returns:
-      nothing
+    Returns
+    -------
+    nothing
 
-    """
+    '''
     import iwfm as iwfm
 
-    # -- read the stream file into array stream_lines
-    stream_lines = open(stream_file).read().splitlines()  # open and read input file
+    stream_lines = open(stream_file).read().splitlines()
 
-    # -- determine stream specification version
     stream_type = stream_lines[0][1:]
-    line_index = iwfm.skip_ahead(0, stream_lines, 0)  # skip comments
 
-    # -- copy stream_lines[:line_index] to new_stream_lines
+    line_index = iwfm.skip_ahead(0, stream_lines, 0)  # skip comments
     sub_stream_lines = stream_lines[:line_index]
 
     # -- number of stream reaches
@@ -101,8 +113,36 @@ def sub_pp_stream_file(
 def add_streams_42(
     sub_stream_lines, reach_info, snode_dict, rattab_dict, rating_header, stream_aq
 ):
-    """add_streams_42() adds the reach and rating table info in the format of
-    stream file type 4.2"""
+    ''' add_streams_42()  - adds the reach and rating table info in the format of
+        stream file type 4.2
+    
+    Parameters
+    ----------
+    sub_stream_lines : list
+        sumbodel stream file being assembled
+    
+    reach_info : list
+        ** TODO description **
+    
+    snode_dict : dictionary
+        key = stream node ID, values = groundwater node
+    
+    rattab_dict : dictionary
+        key = stream node ID, values = rating table contents
+    
+    rating_header : list of strings
+        rating table comments and flags/constants from original streams file
+    
+    stream_aq : list of strings
+        stream-aquifer section of original streams file
+    
+    Returns
+    -------
+    sub_stream_lines : list
+        ** TODO description **
+
+    '''
+
     # -- write stream reaches
     for s in reaches_header_42:
         sub_stream_lines.append(s)

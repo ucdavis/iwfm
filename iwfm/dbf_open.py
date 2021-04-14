@@ -18,9 +18,28 @@
 
 
 def dbf_open(infile, load=False, verbose=False):
+    ''' dbf_open() - Open a DBF file
+
+    Parameters
+    ----------
+    infile : str
+        Name of existing DBF file
+    
+    load : bool, default=False
+        Read into memory?
+    
+    verbose : bool, default=False
+        Turn command-line output on or off
+
+    Returns
+    -------
+    db: obj
+        Database
+
+    '''
     from dbfread import DBF
 
     db = DBF(infile, load=load)
     if verbose:
-        print("   Opened file {}, contains {:,} records".format(infile, len(db)))
+        print(f'   Opened file {infile}, contains {len(db):,} records')
     return db

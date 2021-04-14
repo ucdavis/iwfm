@@ -18,16 +18,21 @@
 
 
 def wgs84_2_utm(lon, lat):
-    """ wgs84_2_utm() - Reprojects a WGS84 shapefile to UTM
+    ''' wgs84_2_utm() - Reproject a WGS84 shapefile to UTM
 
-    Parameters:
-      lat             (float): Latitude
-      lon             (float): Longitude
-
-    Returns:
-      [easting, northing, altitude]
+    Parameters
+    ----------
+    lat : float
+        latitude
     
-    """
+    lon : float
+        longitude
+
+    Returns
+    -------
+    [easting, northing, altitude]
+    
+    '''
     import osr as osr
 
     utm_coord_sys = osr.SpatialReference()

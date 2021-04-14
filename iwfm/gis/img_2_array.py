@@ -18,14 +18,17 @@
 
 
 def img_2_array(img):
-    """ img_2_array() - Convert a Python Imaging Library array to a gdal_array image
+    ''' img_2_array() - Convert a Python Imaging Library array to a gdal_array image
     
-    Parameters:
-      img             (obj):  Image as PIL array
+    Parameters
+    ----------
+    img : image as PIL array
 
-    Returns:
-      a               (obj):  Image as gdal_array
-    """
+    Returns
+    -------
+    a : image as gdal_array
+    
+    '''
     from osgeo import gdal_array as gdal_array
 
     a = gdal_array.numpy.fromstring(img.tobytes(), 'b')

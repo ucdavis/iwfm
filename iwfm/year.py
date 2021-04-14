@@ -18,14 +18,18 @@
 
 
 def year(text):
-    """ year() - Extracts year from MM/DD/YY or MM/DD/YYYY to an integer
+    ''' year() - Extract year from MM/DD/YY or MM/DD/YYYY to an integer
 
-    Parameters:
-      year            (str):  Date in MM/DD/YY or MM/DD/YYYY format
+    Parameters
+    ----------
+    text : str
+        date in MM/DD/YY or MM/DD/YYYY format
 
     Returns:
-      nothing
-    """
+    year : int
+        year as integer
+
+    '''
     new_text = text[text.find("/") + 1 : len(text)]
     y = int(new_text[new_text.find("/") + 1 : len(new_text)])
     if y < 1000:  # MM/DD/YY format

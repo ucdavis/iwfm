@@ -18,7 +18,20 @@
 
 
 def qgis_print_geometry(geom):
-    """ geom is a  ...? """
+    ''' qgis_print_geometry() - Print QGIS geometry informatio to screen 
+
+    Parameters
+    ----------
+    geom : qgis object
+        qgis object
+
+    Returns
+    -------
+    nothing
+
+    '''
+
+    
     geom_SingleType = QgsWkbTypes.isSingleType(geom.wkbType())
     if geom.type() == QgsWkbTypes.PointGeometry:
         # the geometry type can be of single or multi type
@@ -31,7 +44,7 @@ def qgis_print_geometry(geom):
     elif geom.type() == QgsWkbTypes.LineGeometry:
         if geom_SingleType:
             x = geom.asPolyline()
-            print(f'Line: {x}, length: {geom.length()'})
+            print(f'Line: {x}, length: {geom.length()}')
         else:
             x = geom.asMultiPolyline()
             print(f'MultiLine: {x}, length: {geom.length()}')

@@ -18,25 +18,25 @@
 
 
 def file_missing(filename):
-    """ file_missing() - Exits with a message that the file does not exist
+    ''' file_missing() - Exit with a message that the file does not exist
 
-    Parameters:
-      filename        (str):  Name of file
+    Parameters
+    ----------
+    filename : str
+        file name
     
-    Return:
-      nothing
-    """
+    Returns
+    -------
+        nothing
+ 
+    '''
     import sys
 
-    print(
-        "  *****************************************************************************"
-    )
-    print("  * ")
-    print("  *   File path {} does not exist.".format(filename))
-    print("  *   Quitting.")
-    print("  * ")
-    print(
-        "  *****************************************************************************"
-    )
+    print('  *****************************************************************')
+    print('  * ')
+    print(f'  *   File path {filename} does not exist.')
+    print('  *   Quitting.')
+    print('  * ')
+    print('  *****************************************************************')
     sys.exit()
     return

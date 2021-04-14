@@ -95,8 +95,8 @@ class iwfm_model:
 
     # -- the functions that do the work 
     def read_preproc(self, pre_file):
-        """ read_prepcoc() - Read an IWFM Preprocessor main input file, and 
-            return a list of the files called and some settings."""
+        ''' read_prepcoc() - Read an IWFM Preprocessor main input file, and 
+            return a list of the files called and some settings.'''
         # -- read the preprocessor file into array file_lines
         pre_lines = open(pre_file).read().splitlines()  # open and read input file
 
@@ -127,8 +127,8 @@ class iwfm_model:
 
 
     def read_sim(self, sim_file):
-        """ read_sim() - Read an IWFM Simulation main input file, and return
-            a dictionary with the files called and some settings."""
+        ''' read_sim() - Read an IWFM Simulation main input file, and return
+            a dictionary with the files called and some settings.'''
 
         sim_lines = open(sim_file).read().splitlines()  # open and read input file
 
@@ -201,8 +201,8 @@ class iwfm_model:
 
 
     def read_nodes(self, node_file):
-        """ read_nodes() - Read an IWFM Node file, and return a list of the 
-            nodes and their coordinates."""
+        ''' read_nodes() - Read an IWFM Node file, and return a list of the 
+            nodes and their coordinates.'''
 
         # -- read the Node file into array file_lines
         node_lines = open(node_file).read().splitlines()  
@@ -230,8 +230,8 @@ class iwfm_model:
 
 
     def read_elements(self, elem_file):
-        """ read_elements() - Read an IWFM Element file, and return a list of 
-            the nodes making up each element."""
+        ''' read_elements() - Read an IWFM Element file, and return a list of 
+            the nodes making up each element.'''
         # -- read the Element file into array file_lines
         elem_lines = open(elem_file).read().splitlines()  # open and read input file
 
@@ -264,8 +264,8 @@ class iwfm_model:
 
 
     def read_chars(self, char_file, elem_nodes):
-        """ read_chars() - Read an IWFM Element Characteristics file and return
-            a list of characteristics for each element."""
+        ''' read_chars() - Read an IWFM Element Characteristics file and return
+            a list of characteristics for each element.'''
 
         char_lines = open(char_file).read().splitlines()  # open and read input file
 
@@ -287,8 +287,8 @@ class iwfm_model:
 
 
     def read_lake_pre(self, lake_file):
-        """ read_lake() - Read an IWFM Lake file and return (a) a list of 
-            elements and (b) a list of properties for each lake."""
+        ''' read_lake() - Read an IWFM Lake file and return (a) a list of 
+            elements and (b) a list of properties for each lake.'''
         lake_lines = open(lake_file).read().splitlines()  # open and read input file
         lake_index = 0  # start at the top
         lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  # skip comments
@@ -315,9 +315,9 @@ class iwfm_model:
 
 
     def read_streams_pre(self, stream_file):
-        """ read_streams() - Read an IWFM Stream Geometry file and compile
+        ''' read_streams() - Read an IWFM Stream Geometry file and compile
             a list of stream reaches and (b) a dictionary of stream nodes,
-            and return the number of stream nodes."""
+            and return the number of stream nodes.'''
         stream_lines = open(stream_file).read().splitlines()  # open and read input file
 
         stream_index = 0  # start at the top
@@ -427,8 +427,8 @@ class iwfm_model:
 
 
     def elems2poly(self):
-        """ elem_poly() - Compile a dictionary of model elements as shapely 
-            polygons"""
+        ''' elem_poly() - Compile a dictionary of model elements as shapely 
+            polygons'''
 
         self.d_elem_polys = {}
         for key in self.d_elem_nodes:  # for each element ...
@@ -448,8 +448,8 @@ class iwfm_model:
 
 
     def point_in_elem(self, x, y):
-        """ point_in_elem() - Return the element number if the point (x,y) is 
-            in an element, 0 otherwise"""
+        ''' point_in_elem() - Return the element number if the point (x,y) is 
+            in an element, 0 otherwise'''
         p = Point(x, y)
         for key in self.d_elem_polys:  # for each element ...
             elem = key
@@ -458,8 +458,8 @@ class iwfm_model:
         return 0
 
     def elem_coords(self):
-        """ elem_coords() - Return a list of coordinates of an element 
-            [[x0,y0],[x1,y1],[x2,y2]<,...>]"""
+        ''' elem_coords() - Return a list of coordinates of an element 
+            [[x0,y0],[x1,y1],[x2,y2]<,...>]'''
         polys = []
         for i in range(0, len(self.elem_nodes)):  # for each element ...
             coords = []

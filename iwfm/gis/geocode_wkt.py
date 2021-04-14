@@ -18,7 +18,22 @@
 
 
 def geocode_wkt(address, verbose=False):
-    """Return the lat-lon of a street address"""
+    '''geocode_wkt() - Return the lat-lon of a street address in WKT format
+
+    Parameters
+    ----------
+    address : str
+        street address
+
+    verbose : bool, default=False
+      Turn command-line output on or off
+
+
+    Returns
+    -------
+    nothing
+    
+    '''
     import geocoder
 
     g = geocoder.google(address)

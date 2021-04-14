@@ -16,125 +16,87 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-# -- IWFM simulation files ---
-def iwfm_read_sim(sim_file, debug=0):
-    """Function iwfm_read_sim(sim_file,debug = 0) reads an IWFM Simulation
-    main input file, and returns a dictionary with the files called and some settings."""
+def iwfm_read_sim(sim_file):
+    ''' iwfm_read_sim() - Read an IWFM Simulation main input file, and 
+        return a dictionary with the files called and some settings
+
+    Parameters
+    ----------
+    sim_file : str
+        Name of IWFM Simulation file
+
+    Returns
+    -------
+    sim_dict : dictionary
+        Dictionary with fixed keys, file names for corresponding values
+          Keys            Refers to
+          ----            ----------
+          preout          Preprocessor output file name
+          gw              Groundwater main file name
+          stream          Stream main file name
+          lake            Lake main file name
+          rootzone        Rootzone main file name
+          smallwatershed  Small Watershed file name
+          unsat           Unsaturated Zone file name
+          irrfrac         Irrigation Fractions file name
+          supplyadj       Supply Adjustment file name
+          precip          Precipitaiton file name
+          et              Evapotranspiration file name
+          start           Starting data (DSS format)
+          step            Time step (IWFM fixed set)
+          end             Ending date (DSS format)
+
+    '''
     import iwfm as iwfm
 
-    if debug:
-        print("      --> Function iwfm_read_sim({})".format(sim_file))
-
-    sim_lines = open(sim_file).read().splitlines()  # open and read input file
-
-    # debugging
-    if debug:
-        print(" --> {}".format(sim_lines[13]))
+    sim_dict = {}
+    sim_lines = open(sim_file).read().splitlines()
 
     line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments
-
-    # -- read input file names and create a dictionary ------------------
-    sim_dict = {}
-    preout = iwfm.file_get_path(sim_lines[line_index].split()[0])  # preproc output file
-    sim_dict["preout"] = preout
-    if debug:
-        print("    --> {}: {}".format("preout", preout))
-
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    gw_file = iwfm.file_file_get_path(
-        sim_lines[line_index].split()[0]
-    )  # groundwater file
-    sim_dict["gw"] = gw_file
-    if debug:
-        print("    --> {}: {}".format("gw_file", gw_file))
-
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    stream_file = iwfm.file_get_path(sim_lines[line_index].split()[0])  # stream file
-    sim_dict["stream"] = stream_file
-    if debug:
-        print("    --> {}: {}".format("stream_file", stream_file))
-
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    temp = sim_lines[line_index].split()[0]  # lake file
-    if temp[0] == "/":
-        lake_file = ""
+    sim_dict['preout'] = iwfm.file_get_path(sim_lines[line_index].split()[0])  
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['gw'] = iwfm.file_file_get_path(sim_lines[line_index].split()[0])
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['stream'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    temp = sim_lines[line_index].split()[0]
+    if temp[0] == '/':   # check for presence of lake file
+        lake_file = ''
     else:
-        lake_file = iwfm.file_get_path(temp)  # lake file
-        if debug:
-            print("    --> {}: {}".format("lake_file", lake_file))
-    sim_dict["lake"] = lake_file
+        lake_file = iwfm.file_get_path(temp)  
+    sim_dict['lake'] = lake_file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    rz_file = iwfm.file_get_path(sim_lines[line_index].split()[0])  # rootzone file
-    sim_dict["rootzone"] = rz_file
-    if debug:
-        print("    --> {}: {}".format("rz_file", rz_file))
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['rootzone'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['smallwatershed'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['unsat'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['irrfrac'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    sw_file = iwfm.file_get_path(
-        sim_lines[line_index].split()[0]
-    )  # small watersheds file
-    sim_dict["smallwatershed"] = sw_file
-    if debug:
-        print("    --> {}: {}".format("sw_file", sw_file))
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['supplyadj'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    us_file = iwfm.file_get_path(
-        sim_lines[line_index].split()[0]
-    )  # unsaturated zone file
-    sim_dict["unsat"] = us_file
-    if debug:
-        print("    --> {}: {}".format("us_file", us_file))
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['precip'] = sim_lines[line_index].split()[0]
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    if_file = iwfm.file_get_path(
-        sim_lines[line_index].split()[0]
-    )  # irrigation fractions file
-    sim_dict["irrfrac"] = if_file
-    if debug:
-        print("    --> {}: {}".format("if_file", if_file))
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['et'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['start'] = sim_lines[line_index].split()[0] 
+    
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['step'] = sim_lines[line_index].split()[0]  
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    sa_file = iwfm.file_get_path(
-        sim_lines[line_index].split()[0]
-    )  # supply adjustment file
-    sim_dict["supplyadj"] = sa_file
-    if debug:
-        print("    --> {}: {}".format("sa_file", sa_file))
-
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    pc_file = sim_lines[line_index].split()[0]  # precipitation file
-    sim_dict["precip"] = pc_file
-    if debug:
-        print("    --> {}: {}".format("pc_file", pc_file))
-
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    et_file = iwfm.file_get_path(
-        sim_lines[line_index].split()[0]
-    )  # unsaturated zone file
-    sim_dict["et"] = et_file
-    if debug:
-        print("    --> {}: {}".format("et_file", et_file))
-
-    # -- starting date
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    start = sim_lines[line_index].split()[0]  # starting date
-    sim_dict["start"] = start
-    if debug:
-        print("    --> {}: {}".format("start", start))
-
-    # -- time step
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 1)  # skip comments
-    step = sim_lines[line_index].split()[0]  # time step
-    sim_dict["step"] = step
-    if debug:
-        print("    --> {}: {}".format("step", step))
-
-    # -- endng date
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  # skip comments
-    end = sim_lines[line_index].split()[0]  # ending date
-    sim_dict["end"] = end
-    if debug:
-        print("    --> {}: {}".format("end", end))
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    sim_dict['end'] = sim_lines[line_index].split()[0]  
 
     return sim_dict

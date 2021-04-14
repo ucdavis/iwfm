@@ -18,25 +18,45 @@
 
 
 def gw_plot_noobs_draw(well_name,date,no_hyds,gwhyd_sim,gwhyd_name,well_info,
-    start_date,title_words,yaxis_width):
-    """ gw_plot_noobs_draw() - Create a PDF file with a graph of the simulated 
+    start_date,title_words,yaxis_width=-1):
+    ''' gw_plot_noobs_draw() - Create a PDF file with a graph of the simulated 
         data vs time for all hydrographs as lines, saved as the well_name.pdf
 
-    Parameters:
-      well_name       (str):  Well label, often state well number
-      date            (list): List of dates (paired with meas)
-      no_hyds         (int):  Number of simulation time series to be graphed
-      gwhyd_sim       (list): Simulated IWFM groundwater hydrographs 
-                                ([0]==dates, [1 to no_hyds]==datasets)
-      gwhyd_name      (list): Hydrograph names from PEST observations file
-      well_info       (list): Well data from Groundwater.dat file
-      start_date      (str):  First date in simulation hydrograph files
-      title_words     (str):  Plot title words
-      yaxis_width     (int):  Minimum y-axis width, -1 for automatic
+    Parameters
+    ----------
+    well_name : str
+        well name, often state well number
     
-    Return:
-      nothing
-    """
+    date : list
+        list of dates (paired with meas)
+    
+    no_hyds : int
+        number of simulation time series to be graphed
+    
+    gwhyd_sim : list
+        simulated groundwater hydrographs 
+        [0]==dates, [1 to no_hyds]==datasets
+    
+    gwhyd_name : list
+        hydrograph names from PEST observations file
+    
+    well_info : list
+        Well data from Groundwater.dat file
+    
+    start_date : str
+        first date in simulation hydrograph files
+    
+    title_words : str
+        plot title words
+    
+    yaxis_width : int, default=-1
+        minimum y-axis width, -1 for automatic
+    
+    Return
+    ------
+    nothing
+    
+    '''
     import datetime
     import matplotlib
 

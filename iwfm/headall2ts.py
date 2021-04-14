@@ -18,17 +18,26 @@
 
 
 def headall2ts(input_file, output_file, verbose=False):
-    """ headall2ts() - Reads IWFM HeadAll.out file and writes out as a time
+    ''' headall2ts() - Read an IWFM HeadAll.out file and write out as a time
         series with one csv file for each layer
 
-    Parameters:
-      input_file      (str):  Name of IWFM headall.out file
-      output_file     (str):  Root name of output csv file
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    input_file : str
+        IWFM headall.out file name
     
-    Return:
-      layers          (int):  Number of model layers
-    """
+    output_file : str
+        output csv file base name
+    
+    verbose : bool, default=False
+        True = command-line output on
+    
+    Return
+    ------
+    layers : int
+        number of model layers
+    
+    '''
     import iwfm as iwfm
 
     data, layers, dates, nodes = iwfm.headall_read(input_file)
@@ -36,8 +45,8 @@ def headall2ts(input_file, output_file, verbose=False):
     return layers
 
 
-if __name__ == "__main__":
-    " Run headall2ts() from command line "
+if __name__ == '__main__':
+    ' Run headall2ts() from command line '
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm

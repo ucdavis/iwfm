@@ -19,32 +19,39 @@
 
 
 def nearest_node(point, node_set):
-    """ nearest_node() - Find the nearest node to a point from the node array
+    ''' nearest_node() - Find the nearest node to a point from the node array
 
-    Parameters:
-      point           (tuple): (x,y) point
-      node_set        (list):  List of node numbers with x and y of each
+    ** INCOMPLETE **
+    TODO: NEED TO UPDATE TO READ WELL FILE 
 
-    Returns:
-      nearest         (int):  Number of nearest node
-    """
+    Parameters
+    ----------
+    point : tuple
+        (x,y) point
+    
+    node_set : list
+        list of node numbers with x and y of each
+
+    Returns
+    -------
+    nearest : int
+        number of nearest node
+    
+    '''
     import iwfm as iwfm
 
-    dist = 9.9e30
-    nearest = -1
+    dist, nearest = 9.9e30, -1
     for j in range(0, len(node_set)):
         line = node_set[j]
         pt = [line[1], line[2]]
-        new_dist = iwfm.distance(
-            point, pt
-        )  # Computes distance between each pair of the two collections of inputs.
+        # Compute distance between each pair of the two collections of inputs.
+        new_dist = iwfm.distance(point, pt)
         if dist > new_dist:
-            dist = new_dist
-            nearest = line[0]
+            dist, nearest = new_dist, line[0]
     return nearest
 
-if __name__ == "__main__":
-    """ Run nearest_node() from command line     """
+if __name__ == '__main__':
+    ' Run nearest_node() from command line '
     import sys
     import iwfm.debug as idb
     import iwfm as iwfm
@@ -53,8 +60,8 @@ if __name__ == "__main__":
         node_file = sys.argv[1]
         well_file = sys.argv[2]
     else:  # ask for file names from terminal
-        node_file = input("IWFM Node file name: ")
-        well_file = input("Well file name: ")
+        node_file = input('IWFM Node file name: ')
+        well_file = input('Well file name: ')
 
     iwfm.file_test(node_file) 
     iwfm.file_test(well_file)
@@ -62,7 +69,7 @@ if __name__ == "__main__":
     idb.exe_time()  # initialize timer
     node_coord, node_list = iwfm.iwfm_read_nodes(node_file)
     # read list of points from well file
-    # ** NEED TO ADD THIS PART **
+    # ** TODO: NEED TO ADD THIS PART **
     print(f'  ** NEED TO UPDATE nearest_node.py TO READ WELL FILE ')
     print(f'  ** EXITING')
     sys.exit()

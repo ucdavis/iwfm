@@ -18,19 +18,26 @@
 
 
 def iwfm2shp(main_file, shape_name, verbose=False):
-    """ iwfm2shp() - Takes the IWFM model main preprocessor file name
-    and a base name for output files, reads the names of the
-    component input files, reads the contents of these files, and
-    creates node, element, stream node and stream reach shapefiles
+    ''' iwfm2shp() - Takes the IWFM model main preprocessor file name
+        and a base name for output files, and create node, element, 
+        stream node and stream reach shapefiles
 
-    Parameters:
-      main_file       (str):  IWFM Preprocessor main file name
-      shape_name      (str):  Base name for output shapefiles
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    main_file : str
+        IWFM Preprocessor main file name
+    
+    shape_name : str
+        output shapefiles base name
+    
+    verbose : bool, default=False
+        True = command-line output on
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
 
     import os, sys
     import iwfm as iwfm
@@ -98,7 +105,7 @@ if __name__ == '__main__':
         input_file = sys.argv[1]
         output_basename = sys.argv[2]
     else:  # ask for file names from terminal
-        input_file = input('IGSM Preprocessor main file name: ')
+        input_file = input('IWFM Preprocessor main file name: ')
         output_basename = input('Output shapefile basename: ')
 
     iwfm.file_test(input_file)

@@ -19,24 +19,34 @@
 
 def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910, 
         verbose=False):
-    """ reach2shp() - Creates an IWFM stream reaches shapefile from IWFM
+    ''' reach2shp() - Creates an IWFM stream reaches shapefile from IWFM
         Preprocessor stream specification information
 
-    Parameters:
-      reach_list      (list): List of elements and associated nodes
-      stnodes_dict    (dict): Dictionary of stream nodes and associated 
-                                groundeater nodes
-      node_coords     (list): List of nodes and associated X and Y coordinates
-      shape_name      (str):  Base name for output shapefiles
-      epsg            (int):  EPSG projection (EPSG 26910 = NAD 83 UTM 10, CA)
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    reach_list : list
+        list of elements and associated nodes
+    
+    stnodes_dict : dictionary
+        key = stream nodes, values = associated groundeater nodes
+    
+    node_coords : list
+        list of nodes and associated X and Y coordinates
+    
+    shape_name : str
+        base name for output shapefiles
+    
+    epsg : int, default=26910 (NAD 83 UTM 10, CA)
+        EPSG projection
+    
+    verbose : bool, default=False
+        True = command-line output on
 
-    Returns:
-      nothing
+    Returns
+    -------
+    nothing
 
-    To do:
-      - change from fiona to pyshp and wkt format
-    """
+    '''
     import sys
     import fiona
     import fiona.crs

@@ -18,7 +18,26 @@
 
 
 def hillshade(array, azimuth, angle_altitude):
-    # Source: http://geoexamples.blogspot.com.br/2014/03/shaded-relief-images-using-gdal-python.html
+    ''' hillshade() - Convert array to hillshade
+        for a city 
+        Source: http://geoexamples.blogspot.com.br/2014/03/shaded-relief-images-using-gdal-python.html
+
+    Parameters
+    ----------
+    array : list
+      Array of [x,y] floats
+
+    azimuth : float
+      Hillshade azimuth
+
+    angle_altitude : float
+      Hillshade sun angle
+
+    Return
+    ------
+    numpy array:  hillshade
+
+    '''
     import numpy as np
 
     x, y = np.gradient(array)
@@ -26,6 +45,5 @@ def hillshade(array, azimuth, angle_altitude):
     aspect = np.arctan2(-x, y)
     azimuthrad = azimuth * np.pi / 180.0
     altituderad = angle_altitude * np.pi / 180.0
-    shaded = np.sin(altituderad) * np.sin(slope) + np.cos(altituderad) * 
-        np.cos(slope) * np.cos(azimuthrad - aspect)
+    shaded = np.sin(altituderad) * np.sin(slope) + np.cos(altituderad) * np.cos(slope) * np.cos(azimuthrad - aspect)
     return 255 * (shaded + 1) / 2

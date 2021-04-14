@@ -18,23 +18,31 @@
 
 
 def mysql_insert_record(cur, city, coord):
-    """ mysql_insert_record() - Insert record into mysql database
+    ''' mysql_insert_record() - Insert a record into a mysql database
 
     ** Demo  **
     
-    Parameters:
-      cur             (oby):   Cursor (pointer to mysql record)
-      city            (str):   City name
-      coord           (str):   City coordinates
+    Parameters
+    ----------
+    cur : obj
+        cursor (pointer to mysql record)
     
-    Return:
-      Nothing
-    """
+    city : str
+        city name
+    
+    coord : str
+        city coordinates
+    
+    Return
+    ------
+    nothing
+    
+    '''
     cur.execute(
-        "INSERT INTO PLACES (name, location) VALUES ("
+        'INSERT INTO PLACES (name, location) VALUES ('
         + city
-        + ", GeomFromText("
+        + ', GeomFromText('
         + coord
-        + "))"
+        + '))'
     )
     return

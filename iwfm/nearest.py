@@ -19,16 +19,25 @@
 
 
 def nearest(d_nodes, x, y):
-    """ nearest() - Finds the nearest node to a point from a node dictionary
+    ''' nearest() - Find the nearest node to a point from a node dictionary
 
-    Parameters:
-      d_nodes         (dict):  Model nodes and x,y locations
-      x               (float): x location of point
-      y               (float): y location of point
+    Parameters
+    ----------
+    d_nodes : dictionary
+        key = model node, value = x and y locations
+    
+    x : float
+        x location of point
+    
+    y : float
+        y location of point
 
-    Returns:
-      nearest         (int):   Node ID of node closest to (x,y)
-    """
+    Returns
+    -------
+    nearest : int
+        node ID of node closest to (x,y)
+    
+    '''
     import iwfm as iwfm
 
     point = [x, y]
@@ -36,9 +45,7 @@ def nearest(d_nodes, x, y):
     nearest = -1
     for key in d_nodes:
         pt = d_nodes[key]
-        new_dist = iwfm.distance(
-            point, pt
-        )  # Computes distance between each pair of the two collections of inputs.
+        new_dist = iwfm.distance(point, pt)
         if dist > new_dist:
             dist = new_dist
             nearest = key

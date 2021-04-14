@@ -17,17 +17,21 @@
 # -----------------------------------------------------------------------------
 
 
-def qgis_save_project(project, name=""):  # save the project
-    """ qgis_save_project() - Save a project 
+def qgis_save_project(project, name=''):  # save the project
+    ''' qgis_save_project() - Save a QGIS project 
     
-    Parameters:
-      project         (obj):   qcore.QgsProject.instance()
+    Parameters
+    ----------
+    project : qcore.QgsProject.instance() object
     
-    Return:
-      Nothing
-    """
+    Return
+    ------
+    nothing
+    
+    '''
+    
     if len(name) < 1:
-        project.write()  # Save the project to the same
+        project.write()  # Save the project to the same file
     else:
         project.write(name)  # Save the project to a new file
     return 

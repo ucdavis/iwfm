@@ -18,11 +18,28 @@
 
 
 def distance_sphere(p1, p2, units='km'):
-    """distance_sphere() uses the Haversine formula to calculate the
-    distance between two (lat,lon) points on a sphere.
-    p1 = [lat1,lon1], p2 = [lat2,lon2] in degrees
-    units = 'km','mi' or 'ft'
-    """
+    ''' distance_sphere() - Uses the Haversine formula to calculate the
+        distance between two (lat,lon) points on a sphere.
+        p1 = [lat1,lon1], p2 = [lat2,lon2] in degrees
+        units = 
+
+    Parameters
+    ----------
+    p1 : list
+        lat, lon coordinates of a point in degrees
+
+    p2 : list
+        lat, lon coordinates of a point in degrees
+
+    units : str, default='km'
+        distance units: 'km','mi' or 'ft'
+
+    Returns
+    -------
+    distance : float
+        distance between p1 and p2
+
+    '''
     import math
 
     lat1 = p1[0]

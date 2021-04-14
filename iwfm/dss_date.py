@@ -18,16 +18,21 @@
 
 
 def dss_date(date):
-    """ dss_date() - Convert datetime object 'date' into a string in DSS 
+    ''' dss_date() - Convert datetime object 'date' into a string in DSS 
         format MM/DD/YYYY_HH:MM with HH in 24-hour format, 
         midnight = 24:00
 
-    Parameters:
-      date            (datetime):  Date as datetime object
+    Parameters
+    ----------
+    date : datetime
+        date as datetime object
 
-    Returns:
-      date            (str):       Date as string in DSS format
-    """
+    Returns
+    -------
+    date : str
+        date as string in DSS format
+    
+    '''
     import iwfm as iwfm
 
     mo = iwfm.pad_front(date.month, 2, '0')  # expand to 2-digits

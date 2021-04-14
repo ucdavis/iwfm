@@ -19,34 +19,37 @@
 
 
 def iwfm_nearest_nodes(filename, node_set):
-    """ iwfm_nearest_nodes() - Read a point file, calculate the nearest node 
+    ''' iwfm_nearest_nodes() - Read a point file, calculate the nearest node 
         and distance for each point, and write the results to the output file
 
-    Parameters:
-      filename        (str):  File containing x,y points
-      node_set        (list): Node IDs and x,y locations
+    Parameters
+    ----------
+    filename : str
+        output file name base
+    
+    node_set : list
+        node IDs and x,y locations
 
-    Returns:
-      number of points processed
-    """
+    Returns
+    -------
+    number of points processed
+    
+    '''
     import iwfm as iwfm
 
     output_filename = filename[0 : filename.find('.')] + '_nodes.out'
     with open(output_filename, 'w') as output_file:
         with open(filename, 'r') as input_file:
             lines = input_file.read().splitlines()  # open and read input file
-            output_file.write('{}\tNdNear\tNdDist\n'.format(lines[0]))
+            output_file.write(f'{lines[0]}\tNdNear\tNdDist\n')
             for line_index in range(1, len(lines)):  # skip header line
                 temp = lines[line_index].split()
-                nearest = iwfm.nearest_node(
-                    [float(temp[1]), float(temp[2])], node_set, debug
-                )  # ID of nearest node
+                nearest = iwfm.nearest_node([float(temp[1]), float(temp[2])], node_set)
                 dist = iwfm.distance(
                     [float(temp[1]), float(temp[2])],
                     [node_set[nearest][1], node_set[nearest][2]],
-                )  # calculate distance to node
+                ) 
                 # write out
-                output_file.write(
-                    '{}\t{}\t{}\n'.format(lines[line_index], nearest, dist)
-                )
+                output_file.write(f'{lines[line_index]}\t{nearest}\t{dist}\n')
+
     return len(lines) - 1

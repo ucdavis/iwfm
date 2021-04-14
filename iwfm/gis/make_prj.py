@@ -18,13 +18,26 @@
 
 
 def make_prj(filename, epsg_code):
-    """Make PRJ file <filename>.prj for epsg cose <epsg_code>"""
+    '''make_prj() - Make projection file <filename>.prj for epsg code <epsg_code>
+    
+    Parameters
+    ----------
+    filename : str
+        input file name
+    
+    epsg_code : int
+        EPSG code for projection
+
+    Returns
+    -------
+    nothing
+
+    '''
     from urllib.request import urlopen
 
     if filename[-4:] != ".prj":
         filename = filename + ".prj"
-    prj = urlopen(
-        "http://spatialreference.org/ref/epsg/{0}/prettywkt/".format(epsg_code)
-    )
+    prj = urlopen(f'http://spatialreference.org/ref/epsg/{epsg_code}/prettywkt/')
     with open(filename, "w") as f:
         f.write(str(prj.read()))
+    return

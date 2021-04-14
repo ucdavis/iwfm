@@ -18,9 +18,23 @@
 
 
 def igsm_read_elements(elem_file):
-    """ igsm_read_elements() - Read an IGSM Element file, and returns a list
+    ''' igsm_read_elements() - Read an IGSM Element file, and returns a list
         of the nodes making up each element
-    """
+    
+    Parameters
+    ----------
+    elem_file : str
+        name of IGSM elements file
+    
+    Returns
+    -------
+    elem_nodes : list
+        list of elements and nodes for each element
+    
+    elem_list : list
+        list of elements
+    
+    '''
     import iwfm as iwfm
 
     # -- read the Element file into array file_lines

@@ -18,14 +18,17 @@
 
 
 def geojson2shp(geojs):
-    """ geojson2shp() - Create a point shape from a geojson object
+    ''' geojson2shp() - Create a point shape from a geojson object
     
-    Parameters:
-      geojs           (obj):  geojson object
+    Parameters
+    ----------
+    geojs :  geojson object
 
-    Returns:
-      point           (obj):  Point shape
-    """
+    Returns
+    -------
+    point : Point shape object
+    
+    '''
     import geojson as geo
 
     point = geo.asShape(geojs)

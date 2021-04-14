@@ -18,7 +18,22 @@
 
 
 def dms2dd(lat, lon):
-    """converts from degree-minute-second to decimal degrees"""
+    ''' dms2dd() - Converts from degree-minute-second to decimal degrees
+    
+    Parameters
+    ----------
+    lat : float
+        Latitude
+
+    lon : float
+        Longitude
+
+    Return
+    ------
+    (lat_dd, lon_dd) : (float, float)
+        Decimal latitude and longitude values
+
+    '''
     import re
 
     lat_deg, lat_min, lat_sec, lat_dir = re.split('[^\d\.A-Z]+', lat)

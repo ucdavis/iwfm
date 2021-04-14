@@ -18,8 +18,25 @@
 
 
 def heatmap(infile, outfile, title):
-    """heatmap() reads (x,y) points from a CSV file and creates a heatmap
-    overlaid on a web map"""
+    ''' heatmap() - Reads (x,y) points from a CSV file and creates a heatmap
+        overlaid on a web map
+    
+    Parameters
+    ----------
+    infile : str
+        csv input file name
+
+    outfile : str
+        output file name
+
+    title : str
+        figure title
+
+    Returns
+    -------
+    nothing
+
+    '''
     import folium
     from folium.plugins import HeatMap
 
@@ -31,3 +48,4 @@ def heatmap(infile, outfile, title):
     m = folium.Map([32.75, -89.52], titles=title, zoom_start=7, max_zoom=7, min_zoom=7)
     HeatMap(incidents, max_zoom=16, radius=22, min_opacity=1, blur=30).add_to(m)
     m.save(outfile)
+    return

@@ -18,37 +18,50 @@
 
 
 def write_2_dat(file_base_name, data, crops, elements, time_steps, dates):
-    """ write_2_dat() - Write a 3D array as 2D tables (row=elements
-        x col=time_steps) to crops # of text files with filename 
+    ''' write_2_dat() - Write a 3D array as 2D tables (row=elements
+        x col=time_steps) to (crops) # of text files with filename 
         extension 'dat'
 
-    Parameters:
-      file_base_name (str):   Base name of output file
-      data           (list):  Data to be written
-      crops          (list):  List of crop codes or names
-      elements       (list):  Model element numbers
-      time_steps     (int):   Number of time steps
-      dates          (list):  Dates corresponding to time steps
+    Parameters
+    ----------
+    file_base_name : str
+        Base name of output file
 
-    Returns:
-      nothing
+    data : list
+        Data to be written
 
-    """
+    crops : list
+        List of crop codes or names
+
+    elements : list
+        Model element numbers
+
+    time_steps : int
+        Number of time steps
+
+    dates : list
+        Dates corresponding to time steps
+
+    Returns
+    -------
+    nothing
+
+    '''
     # Create the output file names
-    files = ["" for x in range(crops)]  # empty list
+    files = ['' for x in range(crops)]  # empty list
     for i in range(0, crops):
-        files[i] = "".join([file_base_name, "_", str(i + 1), ".dat"])
+        files[i] = ''.join([file_base_name, '_', str(i + 1), '.dat'])
     # write the arrays to the output files
     for i in range(crops):
-        fp = open(files[i], "w")
-        fp.write("   WYr  ")
+        fp = open(files[i], 'w')
+        fp.write('   WYr  ')
         for j in range(time_steps):
-            fp.write("               {}  ".format(dates[j].year))
-        fp.write("\n")
+            fp.write(f'               {dates[j].year}  ')
+        fp.write('\n')
         for j in range(elements):
-            fp.write("{:6d} ".format(j + 1))
+            fp.write(f'{(j + 1):6d} ')
             for k in range(time_steps):
-                fp.write("{:20.4f} ".format(float(data[i][j][k])))
-            fp.write("\n")
+                fp.write(f'{float(data[i][j][k]):20.4f} ')
+            fp.write('\n')
         fp.close
     return

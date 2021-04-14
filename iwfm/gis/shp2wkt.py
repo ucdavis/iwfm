@@ -18,14 +18,19 @@
 
 
 def shp2wkt(shapefile):
-    """ shp2wkt() - Translate shapefile geometry info to WKT format
+    ''' shp2wkt() - Translate shapefile geometry info to WKT format
 
-    Parameters:
-      shapefile       (str):  Shapefile name
+    Parameters
+    ----------
+    shapefile : str
+        shapefile name
 
-    Returns:
-      wkt             (list): Shaefile description in WKT format
-    """
+    Returns
+    -------
+    wkt : list
+        shaefile description in WKT format
+
+    '''
     import iwfm as iwfm
 
     shape = iwfm.shp_get_OGR(shapefile)

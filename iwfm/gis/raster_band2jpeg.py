@@ -17,11 +17,31 @@
 # -----------------------------------------------------------------------------
 
 
-def raster_band2jpeg(infile, band, outfile):
-    """ raster_band2jpeg(): extract a raster band to a jpeg"""
+def raster_band2jpeg(infile, band, outfile, format='JPEG'):
+    ''' raster_band2jpeg() - Extract a raster band to a file
+
+    Parameters
+    ----------
+    infile : str
+        input file name
+
+    band : int
+        image band to process
+    
+    outfile : str
+        output file name
+
+    format : str, default='JPEG'
+        output file format
+
+    Returns
+    -------
+    nothing
+
+    '''
     from osgeo import gdal_array as gdal_array
 
     srcArray = gdal_array.LoadFile(infile)
     band = srcArray[band - 1]
-    gdal_array.SaveArray(band, outfile, format='JPEG')
+    gdal_array.SaveArray(band, outfile, format=format)
     return

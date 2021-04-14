@@ -18,23 +18,40 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_plot_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,titlewords,yaxis_width):
-    """ gw_plot_obs() - Create PDF files for simulated data vs time for 
+def gw_plot_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,
+    titlewords,yaxis_width=-1):
+    ''' gw_plot_obs() - Create PDF files for simulated data vs time for 
         all hydrographs as lines, with observed values vs time as dots
 
-    Parameters:
-      well_list       (str):  Well label, often state well number
-      no_hyds         (int):  Number of simulation time series to be graphed
-      gwhyd_sim       (list): Simulated IWFM groundwater hydrographs 
-                                ([0]==dates, [1 to no_hyds]==datasets)
-      gwhyd_names     (list): Hydrograph names from PEST observations file
-      well_dict       (dict): Dictionary of well data from Groundwater.dat file
-      title_words     (str):  Plot title words
-      yaxis_width     (int):  Minimum y-axis width, -1 for automatic
+    Parameters
+    ----------
+    well_list : str
+        well name, often state well number
     
-    Return:
-      count           (int):  Number of files produced
-    """
+    no_hyds : int
+        number of simulation time series to be graphed
+    
+    gwhyd_sim : list
+        simulated IWFM groundwater hydrographs 
+        [0]==dates, [1 to no_hyds]==datasets
+    
+    gwhyd_names : list
+        hydrograph names from PEST observations file
+    
+    well_dict : dictionary
+        key = well name, values = well data from Groundwater.dat file
+    
+    title_words : str
+        plot title words
+    
+    yaxis_width : int, default=-1
+        minimum y-axis width, -1 for automatic
+    
+    Return
+    ------
+    count           (int):  Number of files produced
+    
+    '''
     import iwfm as iwfm
 
     # cycle through the list of wells in obs to print plots

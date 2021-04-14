@@ -18,27 +18,33 @@
 
 
 def print_exe_time(start, end):
-    """Function print_exe_time(start, end) prints the time between two datetime values
+    '''Function print_exe_time(start, end) prints the time between two datetime values
 
-    Parameters:
-      start    (datetime):  Starting time
-      end      (datetime):  Ending time
+    Parameters
+    ----------
+    start : datetime
+        starting time
+
+    end : datetime
+        ending time
     
-    Return:
-      nothing
-"""
+    Return
+    ------
+    nothing
+
+    '''
     import iwfm as iwfm
 
-    diff = str(end - start).split(":")
+    diff = str(end - start).split(':')
     secs = str(round(float(diff[2]), 1))
     if int(diff[0]) > 0:
-        hours = iwfm.pad_front(str(int(diff[0])), 2, "0") + ":"
-        mins = iwfm.pad_front(str(int(diff[1])), 2, "0") + ":"
+        hours = iwfm.pad_front(str(int(diff[0])), 2, '0') + ':'
+        mins = iwfm.pad_front(str(int(diff[1])), 2, '0') + ':'
     elif int(diff[1]) > 0:
-        hours = ""
-        mins = str(int(diff[1])) + " min "
-        secs += " sec"
+        hours = ''
+        mins = str(int(diff[1])) + ' min '
+        secs += ' sec'
     else:
-        hours, mins = "", ""
-        secs += " seconds"
-    print("  Execution time: {}{}{}\n".format(hours, mins, secs))
+        hours, mins = '', ''
+        secs += ' seconds'
+    print(f'  Execution time: {hours}{mins}{secs}\n')

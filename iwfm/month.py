@@ -18,13 +18,18 @@
 
 
 def month(text):
-    """ month() - Extracts month from MM/DD/YY or MM/DD/YYYY to an integer
+    ''' month() - Extract month from MM/DD/YY or MM/DD/YYYY to an integer
 
-    Parameters:
-      text            (str):  Date as a string
+    Parameters
+    ----------
+    text : str
+        date as a string in m/d/y format
 
-    Returns:
-      month           (int):  Month as integer
-    """
+    Returns
+    -------
+    month : int
+        month as integer (Jan == 1, .., Dec == 12)
+
+    '''
     return int(text[0 : text.find('/')])
 

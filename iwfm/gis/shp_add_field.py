@@ -17,19 +17,31 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_add_field(shapefilename, name="TEST", type="F", length=8, prec=5):
-    """ shp_add_field() - Add a field to a shapefile with PyShp
+def shp_add_field(shapefilename, name='TEST', type='F', length=8, prec=5):
+    ''' shp_add_field() - Add a field to a shapefile with PyShp
     
-    Parameters:
-      shapefilename   (str):   Name of shapefile
-      name            (str):   Field name
-      type            (str):   Field type
-      length          (int):   Field length
-      prec            (int):   Field Precision
+    Parameters
+    ----------
+    shapefilename : str
+        shapefile name
+    
+    name : str
+        field name, default='test'
+    
+    type : str, default='F'
+        field type
+    
+    length : int, default=8
+        field length
+    
+    prec : int, default=5
+        field Precision
 
-    Return:
-      Nothing
-    """
+    Return
+    ------
+    nothing
+    
+    '''
     import shapefile  # PyShp
 
     r = shapefile.Reader(shapefilename)

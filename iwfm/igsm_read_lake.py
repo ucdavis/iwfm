@@ -18,9 +18,23 @@
 
 
 def igsm_read_lake(lake_file):
-    """ igsm_read_lake() - Read an IGSM Lake file and returns (a) a list of
-        elements and (b) a list of properties for each lake.
-    """
+    ''' igsm_read_lake() - Read an IGSM Lake file and returns (a) a list of
+        elements and (b) a list of properties for each lake
+        
+    Parameters
+    ----------
+    lake_file : str
+        name of IGSM lake file
+
+    Returns
+    -------
+    lake_elems : list
+        all lake elements
+    
+    lakes : list
+        [lake_id, max_elev, next, nelem] for each lake
+
+    '''
     import iwfm as iwfm
 
     lake_lines = open(lake_file).read().splitlines()  # open and read input file

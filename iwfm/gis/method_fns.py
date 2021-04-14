@@ -17,9 +17,27 @@
 # -----------------------------------------------------------------------------
 
 
-def method_fns(shpfilename, shpfile):
-    """method_fns() returns the functions associated with the shpfile library"""
+def method_fns(shpfilename, shpfile, verbose=False):
+    '''method_fns() - Return the functions associated with the shpfile library
+    
+    Parameters
+    ----------
+    shofilename : str
+        shapefile name (for printing)
+    
+    shpfile : PyShp shapefile object
+
+    verbose : bool, default=False
+        True = update command line
+
+    Returns
+    -------
+    mtds : list
+        list of methods      
+    
+    '''
     # may only work with shpfile created with PyShp
     mtds = getmembers(shpfile)
-    print("\n  Functions for {}: {}".format(shpfilename, mtds))
+    if verbose:
+        print(f'\n  Functions for {shpfilename}: {mtds}')
     return mtds

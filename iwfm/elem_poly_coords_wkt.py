@@ -18,25 +18,32 @@
 
 
 def elem_poly_coords_wkt(elem_nodes, node_coords):
-    """ elem_poly_coords_wkt() - Returns a list ofelement coordinates 
+    ''' elem_poly_coords_wkt() - Return a list ofelement coordinates 
         in WKT form: ['POLYGON ((X0 Y0, X1 Y1, X2 Y2, X3 Y3, X0 Y0)),'<,...>]
 
-    Parameters:
-      elem_nodes      (list): List of elements and associated nodes
-      node_coords     (list): List of nodes and associated X and Y coordinates
-
-    Returns:
-      polys           (list): List of polygon coordinates
-
-    To do:
+    TODO:
       - change i from range to enumerate
       - change polys to WKT format:
       ['POLYGON ((X0 Y0, X1 Y1, X2 Y2, X3 Y3, X0 Y0))',
        'POLYGON ((X0 Y0, X1 Y1, X2 Y2, X3 Y3, X0 Y0))',
         etc...  
-    """
+
+    Parameters
+    ----------
+    elem_nodes : list
+        list of elements and associated nodes
+    
+    node_coords : list
+        list of nodes and associated X and Y coordinates
+
+    Returns
+    -------
+    polys : list
+        list of polygon coordinates
+
+    '''
     polys = []
-    #for e in elem_nodes:
+
     for i in range(0, len(elem_nodes)):  # for each element ...
         coords = []
         for j in range(0, len(elem_nodes[i])):  # for each node in the element ...

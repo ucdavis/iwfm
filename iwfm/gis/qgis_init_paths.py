@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-""" Constant definitions"""
+''' Constant definitions'''
 # Windows 10 paths - can they be read?
 PYTHONPATH_W10 = 'C:\Programs\QGIS3.4\python'
 PLUGINSPATH_W10 = 'C:\Programs\QGIS3.4\python\plugins'  # for processing module, etc
@@ -32,10 +32,23 @@ PYTHONPATH_MAC = '/Applications/QGIS3.4.app/Contents/Resources/python'
 PLUGINSPATH_MAC = '/Applications/QGIS3.4.app/Contents/Resources/python/plugins'  # for processing module, etc
 APPPATH_MAC = '/Applications/QGIS3.4.app/Contents/MacOS/'
 
-"""Function definition"""
+'''Function definition'''
 
 
 def qgis_init_paths(debug=0):  # must run this
+    ''' qgis_init_paths() - Query system and initialize QGIS paths 
+
+    Parameters
+    ----------
+    debug : int, default=0
+        level of debug logging to CLI (0 = none)
+
+    Returns
+    -------
+    app_path : str
+        paths
+
+    '''
     import sys, platform
 
     if debug:
@@ -45,7 +58,7 @@ def qgis_init_paths(debug=0):  # must run this
     # -- Add QGIS paths to the shell path ----
     qos = platform.system()
     if debug:
-        print('  => qos: {}'.format(qos))  # debugging
+        print('  => qos: {qos}')  # debugging
     if qos == 'Windows':  # - Windows 10 QGIS paths --
         sys.path.append(PYTHONPATH_W10)
         sys.path.append(PLUGINSPATH_W10)
@@ -62,7 +75,7 @@ def qgis_init_paths(debug=0):  # must run this
         sys.path.append(APPPATH_MAC)
         app_path = APPPATH_MAC
     else:
-        print('** Failed in init_Qgis_Paths() with qos = {}'.format(qos))
+        print(f'** Failed in init_Qgis_Paths() with qos = {qos}')
         sys.exit()
     if debug:
         print('  => After adding to paths:')  # debugging

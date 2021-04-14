@@ -17,6 +17,16 @@
 # -----------------------------------------------------------------------------
 
 
-def mysql_commit(conn, debug=0):
-    """ Commit changes to mysql database"""
+def mysql_commit(conn):
+    ''' mysql_commit() - Commit changes to a mysql database
+    
+    Parameters
+    ----------
+    conn : mysqp database object
+
+    Returns
+    -------
+    nothing
+    
+    '''
     conn.commit()

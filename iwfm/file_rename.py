@@ -18,29 +18,36 @@
 
 
 def file_rename(filename, newname, force=0):
-    """ file_rename() - Rename a file
+    ''' file_rename() - Rename a file
 
-    Parameters:
-      filename        (str):  Name of existing file
-      newname         (str):  New name for existing file
-      force           (int):  Force overwrite if another file named newname 
-                                already exists
+    Parameters
+    ----------
+    filename : str
+        name of existing file
+    
+    newname : str
+        new name for existing file
+    
+    force : int, default=0
+        0 = don't force overwrite if another file named newname 
+                already exists
+        1 = force overwrite if another file named newname 
+                already exists
 
-    Returns:
-      nothing
-    """
+    Returns
+    -------
+    nothing
+    
+    '''
     import os, sys
 
     if os.path.isfile(newname):  # if file newname already exists
         if force:  # if force>0 then remove
             os.remove(newname)
         else:
-            print(
-                "  *   Error: Can't rename {} to {}. Destination file already exists.\n".format(
-                    filename, newname
-                )
-            )
-            print("  *   Quitting.")
+            print(f'  *   Error: Can\'t rename {filename} to {newname}.\n')
+            print(f'  *   Destination file already exists.\n')
+            print('  *   Quitting.')
             sys.exit()
     os.rename(filename, newname)
     return

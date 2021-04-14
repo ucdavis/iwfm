@@ -18,25 +18,38 @@
 
 
 def headall2csv(data, layers, dates, nodes, output_file, verbose=False):
-    """ headall2csv() - Takes data from a IWFM HeadAll.out file and
-        writes out one csv file for each layer
+    ''' headall2csv() - Write out IWFM Headall.out data as one csv file
+        for each layer
 
-    Parameters:
-      data            (list): numpy array of floats, size nodes x layers
-      layers          (int):  Number of layers
-      dates           (list): List of dates
-      nodes           (int):  Number of nodes
-      output_file     (str):  Root name of output csv file
-      verbose         (bool): Turn command-line output on or off
+    Parameters
+    ----------
+    data : list
+        numpy array of floats, size nodes x layers
     
-    Return:
-      nothing
-    """
+    layers : int
+        number of layers
+    
+    dates : list
+        list of dates
+    
+    nodes : int
+        number of nodes
+    
+    output_file : str
+        output csv file base name
+    
+    verbose : bool, default=False
+        True = command-line output on
+    
+    Return
+    ------
+    nothing
+    
+    '''
     import pandas as pd
 
-    for i in range(0, layers):  # write out to csv
-        out_list = []
-        index = i
+    for i in range(0, layers): 
+        out_list, index = [], i
         while index < len(data):
             out_list.append(data[index])
             index += layers
