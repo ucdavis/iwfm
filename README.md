@@ -30,4 +30,4 @@ Please consider contributing to this effort, whether through bug reporting, maki
 
 ### Who do I talk to? ###
 
-* Repo owner/admin: charles.brush@hydrolytics-llc.com
+* Repo owner/admin: cfbrush@ucdavis.edu
