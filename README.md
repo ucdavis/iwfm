@@ -31,11 +31,13 @@ Once this package is installed, import 'iwfm' to use the package components.
 For example, to use the hyd_diff function (create a new IWFM hydrograph file as the difference between two IWFM hydrograph files):
  
 import iwfm as iwfm
+
 iwfm.hyd_diff(scenario_file_name, base_file_name, diff_file_name)
  
 Or:
  
 import iwfm.hyd_diff as hyd_diff
+
 hyd_diff(scenario_file_name, base_file_name, diff_file_name)
  
 * From the command line
