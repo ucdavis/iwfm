@@ -58,6 +58,24 @@ Install the package using 'python -m pip install -e'. The '-e' option will allow
 
 Submit suggested code changes and additions to the repository using a 'pull request'.
 
+* Adding to the package
+
+Add your new function foo() to this package in two steps.
+
+First, create a new file containing the function foo(), and save it as foo.py in directory iwfm
+
+Next, open the file __init__.py in directory iwfm and add the following line:
+
+from iwfm.foo import foo
+
+Congratulations! foo() is now part of the iwfm package.
+
+You can now call foo() with:
+
+import iwfm as iwfm
+
+iwfm.foo()
+
 ### Who do I talk to? ###
 
 * Repo owner/admin: cfbrush@ucdavis.edu
