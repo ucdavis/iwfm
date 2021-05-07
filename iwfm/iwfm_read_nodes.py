@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm_read_nodes(node_file):
+def iwfm_read_nodes(node_file, factor=0.0):
     ''' iwfm_read_nodes() - Read an IWFM Node file and return a list of the
         nodes and their coordinates
 
@@ -34,6 +34,10 @@ def iwfm_read_nodes(node_file):
     node_list : list
         Node numbers
 
+    factor : float
+        If factor = 0.0, use the factor from the input file
+        Else if factor <> 0.0 use this as the factor
+
     '''
     import iwfm as iwfm
     import re
@@ -48,12 +52,14 @@ def iwfm_read_nodes(node_file):
 
     line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0) 
 
-    factor = float(node_lines[line_index].split()[0])  
+    read_factor = float(node_lines[line_index].split()[0])
+
+    if factor == 0:
+        factor = read_factor
 
     line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  
 
-    node_list = []
-    node_coord = []
+    node_list, node_coord = [], []
     for i in range(0, inodes):  
         l = node_lines[line_index + i].split()
         node_list.append(int(l.pop(0)))
