@@ -1,6 +1,6 @@
 # shp_epsg.py
 # Read the projection file of a shapefile and return EPSG value
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

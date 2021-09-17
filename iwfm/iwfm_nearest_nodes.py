@@ -1,7 +1,7 @@
 # iwfm_nearest_nodes.py
 # Read a file with (x,y) locations and an IWFM node file, and write a file with
 # the nearest node to each (x,y) point
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

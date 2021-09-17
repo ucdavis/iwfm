@@ -2,7 +2,7 @@
 # converts item to a string and then adds f copies of text character t
 # before item, then multiple copies of text character t at the end
 # until it is b characters long (default t is space)
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

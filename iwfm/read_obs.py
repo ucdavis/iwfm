@@ -1,7 +1,7 @@
 # read_obs.py
 # Reads observed values smp file into array obs, including observation data
 # hydrographs as lines, with observed values vs time as dots, saved as the well_name.pdf
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

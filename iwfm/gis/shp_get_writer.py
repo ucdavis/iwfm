@@ -1,6 +1,6 @@
 # shp_get_writer.py
 # Get a writer for a shapefile of the same type as the input shapefile
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

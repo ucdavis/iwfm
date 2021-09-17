@@ -1,6 +1,6 @@
 # print_exe_time.py
 # Print difference between two datetime values
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,8 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def print_exe_time(start, end):
-    '''Function print_exe_time(start, end) prints the time between two datetime values
+def print_exe_time(start, end, verbose=1):
+    '''Function print_exe_time(start, end) returns the time between two datetime values
+       as a sting hh:mm:ss, 
 
     Parameters
     ----------
@@ -28,11 +29,21 @@ def print_exe_time(start, end):
     end : datetime
         ending time
     
+    verbose : bool, default=False
+        True = print exe_time
+
     Return
     ------
-    nothing
-
-    '''
+    exe_time : str
+        execution time as a sting, format dependes on exe_time value
+          if exe_time >= 1 hour:
+             'hh:mm:ss'
+          elif exe_time >1 minute:
+             'mm min ss sec'
+          else:
+             'ss.s seconds'
+ 
+ '''
     import iwfm as iwfm
 
     diff = str(end - start).split(':')
@@ -47,4 +58,7 @@ def print_exe_time(start, end):
     else:
         hours, mins = '', ''
         secs += ' seconds'
-    print(f'  Execution time: {hours}{mins}{secs}\n')
+    exe_time = '' + hours + mins + secs
+    if verbose:
+        print(f'  Execution time: {exe_time}\n')
+    return exe_time

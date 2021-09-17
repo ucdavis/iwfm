@@ -1,7 +1,7 @@
 # geocode_ex.py
 # Example - finds the lat-lon of a street address and then
 #     reverses to use the lat-lon to get the address information
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 # iwfm_read_sim_file.py
 # Read IWFM simulation main file and return dictionary of file names
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

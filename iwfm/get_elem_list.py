@@ -1,7 +1,7 @@
 # get_elem_list.py
 # Reads the submodel elements and returns a dictionary of old to new elements
 # and a dictionary of new to old elements
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

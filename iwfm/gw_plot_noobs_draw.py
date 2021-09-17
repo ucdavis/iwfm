@@ -1,6 +1,6 @@
 # gw_plot_noobs_draw.py - Create a PDF file with a graph of the simulated 
 # data vs time for all hydrographs as lines, saved as the well_name.pdf
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

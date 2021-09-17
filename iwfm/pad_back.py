@@ -1,7 +1,7 @@
 # pad_back.py
 # Convert input value to a string and pad end with specified character
 # (or space if none specified)
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

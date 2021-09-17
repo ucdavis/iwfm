@@ -1,6 +1,6 @@
 # this_sys.py
 # Return OS name as a string
-# Copyright (C) 2018-2021 Hydrolytics LLC
+# Copyright (C) 2018-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

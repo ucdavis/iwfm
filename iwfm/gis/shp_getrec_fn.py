@@ -1,6 +1,6 @@
 # shp_getrec_fn.py
 # Returns the item in column of field_name for record i for a PyShp shapefile
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

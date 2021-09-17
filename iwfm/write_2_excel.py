@@ -1,7 +1,7 @@
 # write_2_excel.py
 # Writes a 3D array as 2D tables (row=elements x col=time_steps)
 # to an excel workbook with sheets # of worksheets
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

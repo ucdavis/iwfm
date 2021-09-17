@@ -1,6 +1,6 @@
 # get_heads_4_date.py
 # Read headall.out file and return heads for a specific date
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

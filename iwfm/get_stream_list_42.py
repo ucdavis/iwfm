@@ -1,7 +1,7 @@
 # get_stream_list_42.py
 # Reads part of the stream specification file for file type 4.2
 # and returns stream reach and rating table info
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 # make_prj.py
 # Make PRJ file <filename>.prj for epsg cose <epsg_code>
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

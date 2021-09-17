@@ -1,7 +1,7 @@
 # wdl_meas_stats.py
 # Calculate water level statistics and write out to a file
 # info and gwhyd_sim columns, and return the dictionary
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

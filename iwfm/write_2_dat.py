@@ -1,6 +1,6 @@
 # write_2_dat.py
 # Write a 3D array of crop areas to a series of 2D files for each crop
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

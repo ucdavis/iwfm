@@ -1,6 +1,6 @@
 # file_2_list.py
 # Converts a portion of a text file to a list of file lines
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

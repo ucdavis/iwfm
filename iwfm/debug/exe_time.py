@@ -1,7 +1,7 @@
 # exe_time.py
 # Print difference between two datetime values
 # First call stores start time, subsequent calls print elapsed time
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

@@ -3,7 +3,7 @@
 # Sets up the matrix to transform cartesian coordinates to coordinates
 # accounting for angles and anisotropy (see GSLIB manual for a detailed
 # definition)
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

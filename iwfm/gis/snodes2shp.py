@@ -1,6 +1,6 @@
 # snodes2shp.py
 # Create stream node shapefiles for an IWFM model
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

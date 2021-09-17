@@ -1,6 +1,6 @@
 # new_pp_dict.py
 # Creates and returns a dictionary of preprocessor file names from a basename
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

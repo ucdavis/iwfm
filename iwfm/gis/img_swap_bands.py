@@ -1,6 +1,6 @@
 # img_swap_bands.py
 # Reads a TIFF file, swaps two bands, and saves it
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

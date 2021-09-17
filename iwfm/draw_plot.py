@@ -1,7 +1,7 @@
 # draw_plot.py
 # Creates a PDF file with a graph of the simulated data vs time for all
 # hydrographs as lines, with observed values vs time as dots, saved as the well_name.pdf
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

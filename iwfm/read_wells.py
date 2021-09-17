@@ -1,7 +1,7 @@
 # read_wells.py
 # Reads from Groundwater.dat file and builds a dictionary of groundwater hydrograph
 # info and gwhyd_sim columns, and returns the dictionary
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

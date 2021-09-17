@@ -1,7 +1,7 @@
 # iwfm_lu2sub.py
 # Read IWFM element file and land use files for a submodel and write out
 # new land use files for the submodel
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

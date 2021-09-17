@@ -2,7 +2,7 @@
 # Read in a list of element pairs for a submodel. Use existing model Elements, 
 # Nodes, Stream specification and stratigraphy files to produce new 
 # preprocessor files for the submodel and a list of model node pairs
-# Copyright (C) 2018-2021 Hydrolytics LLC
+# Copyright (C) 2018-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

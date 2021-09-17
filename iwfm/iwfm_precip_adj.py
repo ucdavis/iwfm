@@ -1,7 +1,7 @@
 # iwfm_precip_adj.py
 # Read IWFM precipitation file, list of VIC cells and VIC adjustment factors
 # and write adjusted precipitation file
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

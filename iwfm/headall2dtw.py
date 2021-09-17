@@ -1,7 +1,7 @@
 # headall2dtw.py
 # Read headall.out file and stratigraphy file and write depth to water with
 # one csv file for each model layer
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

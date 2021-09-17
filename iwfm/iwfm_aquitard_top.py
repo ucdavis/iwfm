@@ -1,6 +1,6 @@
 # iwfm_aquitard_top.py
 # extract aquitard top from IWFM stratigraphy information
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

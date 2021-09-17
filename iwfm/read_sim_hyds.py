@@ -1,6 +1,6 @@
 # read_sim_hyds.py
 # Read simulated hydrographs from IWFM hydrograph.out file
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,6 +46,6 @@ def read_sim_hyds(nhyds, gwhyd_files):
             temp = [items.pop(0)]
             alist = [float(x) for x in items]
             temp.extend(alist)
-        gwhyd_sim.append(temp)
+            gwhyd_sim.append(temp)
 
     return gwhyd_sim

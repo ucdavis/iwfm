@@ -1,7 +1,7 @@
 # read_lu_change_factors.py
 # When changing IWFM land use for a scenario, read the change factors
 # for each change zone
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

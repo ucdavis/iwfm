@@ -1,6 +1,6 @@
 # elem_poly_coords_wkt.py
 # Return a list of the (x,y) coordinates for the nodes of each elememnt
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

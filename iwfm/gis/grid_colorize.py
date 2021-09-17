@@ -1,6 +1,6 @@
 # grid_colorize.py
 # Convert an ASCII DEM to an image and colorize using a heat-map color ramp
-# Copyright (C) 2020-2021 Hydrolytics LLC
+# Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
