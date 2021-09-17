@@ -1,7 +1,7 @@
 # IWFM-DLL Python Wrapper
 This code repository is the beginnings of a python wrapper for the IWFM-DLL. The IWFM-DLL is developed by the California Department of Water Resources' Bay-Delta Office.
 
-To get started with this codebase, you need to have a windows computer. Additionally, you will need an IWFM model to test this IWFM-DLL wrapper. Finally, I strongly recommend you read through the first few chapters of the IWFM-DLL docmentation, available here: https://data.cnra.ca.gov/dataset/iwfm-integrated-water-flow-model/resource/6be7a705-5577-4fa0-b02e-d28cabc75c9a?inner_span=True
+To get started with this codebase, you need to have a windows computer. Additionally, you will need an IWFM model to test this IWFM-DLL wrapper. Finally, I strongly recommend you read through the first few chapters of the IWFM-DLL documentation, available here: https://data.cnra.ca.gov/dataset/iwfm-integrated-water-flow-model/resource/6be7a705-5577-4fa0-b02e-d28cabc75c9a?inner_span=True
 
 This codebase was written with C2VSim Fine Grid version 1.01 in mind, which is an IWFM/IDC model. C2VSimFG v1.01 can be downloaded at https://data.cnra.ca.gov/dataset/c2vsimfg-version-1-01
 This codebase specifies filepaths as if the C2VSimFG v1.01 is downloaded and ran in folder named "modelRuns" located in the same directory as DLL_shortcuts.py.
@@ -10,10 +10,10 @@ This codebase is a work in progress and is not guarenteed to work for all usecas
 
 ## Description of files included
 DLL_shortcuts.py:
-    - This file is the meat of the repository. It follows the IWFM-DLL, but uses calling conventions for python.
+    - This file is the meat of the repository. It follows the IWFM-DLL documentation, but uses calling conventions for python.
     
 customRead_functions.py:
-    - This script utilize DLL_shortucts.py to grab data from all hdf budget files and convert them to a pandas dataframe object
+    - This script utilize DLL_shortucts.py to grab data from all simulation output budget hdf files and convert them to a pandas dataframe object
 
 customPlot_functions.py:    
     - This script uses the pandas dataframe developed by the customRead_function to plot various budget items for various scenarios, all on the same timeseries plot. This function is potentially useful for exploring budget data and comparing model results.
