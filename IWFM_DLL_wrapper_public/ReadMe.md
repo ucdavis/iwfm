@@ -75,3 +75,6 @@ The customRead_functions and customPlot_functions need the following python libr
     - pandas  
     - matplotlib.pyplot   
 These libraries should be included in the standard anaconda distribution.  
+
+### Acknowledgements
+Work on this IWFM-DLL python wrapper was suported by the National Science Foundation, award #1716130
