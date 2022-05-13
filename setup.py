@@ -24,7 +24,7 @@ LONG_DESCRIPTION = 'Classes, methods and functions to read, write and modify IWF
 
 # Setting up
 setup(
-       # the name must match the folder name 'verysimplemodule'
+        # the name must match the folder name
         name="iwfm", 
         version=VERSION,
         author="Charles Brush",
@@ -33,13 +33,16 @@ setup(
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
-        install_requires=[area,bs4,cryptography,csv,datetime,dbfread,fiona,
-            folium,fpdf,gdal,geocoder,geojson,geopandas,hist,matplotlib,moto,
-            numpy,ogr,osgeo,osmnx,osr,pandas,pathlib,pillow,pngcanvas,
-            pynmea,PyPDF2,pyprog,pyshp,rasterio,reportlab,requests,
-            rust,scipy,shapely,statistics,tabula-py,utm,wkt,xlrd,xlsxwriter],
-            # pymysql,Rtree, 
-        # add any additional packages that need to be installed along with your package. Eg: 'qgis'
+        install_requires= ['area','bs4','cryptography','csv','datetime',
+            'dbfread','fiona','folium','fpdf','gdal','geocoder','geojson',
+            'geopandas','hist','matplotlib','moto','numpy','ogr','osgeo',
+            'osmnx','osr','pandas','pathlib','pillow','pngcanvas',
+            'pynmea','PyPDF2','pyprog','pyshp','rasterio','reportlab','requests',
+            'rust','scipy','shapely','statistics','tabula-py','utm','wkt','xlrd',
+            'xlsxwriter'
+            # 'pymysql','Rtree', 
+            # add any additional packages that need to be installed along with your package. Eg: 'qgis'
+        ],
         python_requires='~=3.8',
         
         keywords=['python', 'first package', 'iwfm'],
