@@ -37,7 +37,7 @@ setup(
             folium,fpdf,gdal,geocoder,geojson,geopandas,hist,matplotlib,moto,
             numpy,ogr,osgeo,osmnx,osr,pandas,pathlib,pillow,pngcanvas,
             pynmea,PyPDF2,pyprog,pyshp,rasterio,reportlab,requests,
-            rust,scipy,shapely,statistics,tabula-py,utm,wkt,xlrd,xlsxwriter]
+            rust,scipy,shapely,statistics,tabula-py,utm,wkt,xlrd,xlsxwriter],
             # pymysql,Rtree, 
         # add any additional packages that need to be installed along with your package. Eg: 'qgis'
         python_requires='~=3.8',
