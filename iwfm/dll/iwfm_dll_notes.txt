@@ -1,0 +1,65 @@
+IWFM API procedures are called from Python using the ctypes foreign function library. 
+The windll object exposed by ctypes is used to gain access to the API procedures using the stdcall calling convention.
+
+INITIALIZE THE DLL
+------------------
+import ctypes
+IWFM_dll = ctypes.windll.LoadLibrary("D:\\IWFM\\Bin\\IWFM2015_C.dll")
+
+
+PASSING VALUES
+--------------
+Scalar integer numbers:
+	iArg = ctypes.c_int(5)
+	IWFM_dll.fooScalar(ctypes.byref(iArg))
+
+Scaler real numbers:
+	dArg = ctypes.c_double(3.2)
+	IWFM_dll.fooScalar(ctypes.byref(dArg))
+
+1-dimensional integer arrays:
+	iArrayDim = ctypes.c_int(10)
+	iArray = (ctypes.c_int*iArrayDim.value)()
+	IWFM_dll.foo1DArray(ctypes.byref(iArrayDim), iArray)
+
+1-dimensional real arrays:
+	dArrayDim = ctypes.c_int(15)
+	dArray = (ctypes.c_double*dArrayDim.value)()
+	IWFM_dll.foo1DArray(ctypes.byref(idArrayDim), dArray)
+
+2-dimensional integer arrays:
+	iDim1, iDim2 = ctypes.c_int(5), ctypes.c_int(10)
+	i2DArray = ((ctypes.c_int*iDim1.value)*iDim2.value)()
+	IWFM_dll.foo2DArray(ctypes.byref(iDim1), ctypes.byref(iDim2), i2DArray)
+
+2-dimensional real arrays:
+	dDim1, dDim2 = ctypes.c_int(5), ctypes.c_int(10)
+	d2DArray = ((ctypes.c_double*dDim1.value)*dDim2.value)()
+	IWFM_dll.foo2DArray(ctypes.byref(dDim1), ctypes.byref(dDim2), d2DArray)
+
+String scalar passed to API procedure:
+	sString = ctypes.create_string_buffer(b"This is a test!")
+	iLen = ctypes.c_int(ctypes.sizeof(sString))
+	IWFM_dll.fooStrPassed(ctypes.byref(iLen), sString)
+
+String scalar received from the API procedure:
+	iLen = ctypes.c_int(50)
+	sString = ctypes.create_string_buffer(iLen.value)
+	IWFM_dll.fooStrReceived(ctypes.byref(iLen), sString)
+	print(sString.value)
+
+
+PROCEDURE GROUPS
+----------------
+
+Model: create a model object and retrieve information about a specific model or retrieve simulation results
+
+Budget: retreive data from budget output files without instantiating a model object
+
+ZBudget: retreive data from zbudget output files without instantiating a model object
+
+Miscellaneous: retrieve information on data type codes and version numbers, open and close API message files
+
+
+
+

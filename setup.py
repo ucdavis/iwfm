@@ -35,12 +35,12 @@ setup(
         packages=find_packages(),
         install_requires= ['area','bs4','cryptography','python-csv','datetime',
             'dbfread','fiona','folium','fpdf','gdal','geocoder','geojson',
-            'geopandas','hist','matplotlib','moto','numpy','ogr','osgeo',
+            'geopandas','hist','matplotlib','moto','numpy','ogr',
             'osmnx','osr','pandas','pathlib','pillow','pngcanvas',
             'pynmea','PyPDF2','pyprog','pyshp','rasterio','reportlab','requests',
             'rust','scipy','shapely','statistics','tabula-py','utm','xlrd',
             'xlsxwriter'
-            # 'pymysql','Rtree','wkt', 
+            # 'pymysql','Rtree','wkt','osgeo', 
             # add any additional packages that need to be installed along with your package. Eg: 'qgis'
         ],
         python_requires='~=3.8',
