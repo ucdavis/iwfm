@@ -34,7 +34,7 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
     shape_name : str
         output shapefile name
     
-    epsg : int, default = 26910 (UTM 10N, CA)
+    epsg : int, default=26910 (NAD 83 UTM 10, CA)
         EPSG projection code
     
     verbose : bool, default=False
@@ -64,7 +64,7 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
         },
     }
 
-    # Write a new stream node shapefile - EPSG 26910 = NAD 83 UTM 10
+    # Write a new stream node shapefile 
     with fiona.open(
         snode_shapename,
         'w',

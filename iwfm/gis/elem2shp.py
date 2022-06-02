@@ -17,15 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
-def elem2shp(
-    elem_nodes,
-    node_coords,
-    elem_sub,
-    lake_elems,
-    shape_name,
-    epsg=26910,
-    verbose=False,
-):
+def elem2shp(elem_nodes, node_coords, elem_sub, lake_elems, shape_name,
+    epsg=26910, verbose=False):
     ''' elem2shp() - Creates an IWFM element shapefile 
 
     TODO:
@@ -48,7 +41,7 @@ def elem2shp(
     shape_name : str
          output shapefiles base name
     
-    epsg : int default=26910 (NAD 83 UTM 10, CA)
+    epsg : int, default=26910 (NAD 83 UTM 10, CA)
         EPSG projection
     
     verbose : bool, default=False

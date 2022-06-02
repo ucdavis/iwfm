@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=False):
+def nodes2shp(node_coords, node_strat, nlayers, shape_name, epsg=26910, verbose=False):
     ''' nodes2shp() - Create an IWFM nodes shapefile 
 
     Parameters
@@ -33,6 +33,9 @@ def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=False):
     
     shape_name : str
         output file name
+    
+    epsg : int, default=26910 (NAD 83 UTM 10, CA)
+        EPSG projection
     
     verbose : bool, default=False
         True = command-line output on
@@ -80,7 +83,7 @@ def nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=False):
 
     # Convert pandas dataframe to geopandas geodataframe
     gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.easting, df.northing))
-    gdf.crs = 'epsg:26910'
+    gdf.crs = f'epsg:{str(epsg)}'
 
     # Write a new node shapefile - EPSG 26910 = NAD 83 UTM 10
     gdf.to_file(node_shapename)

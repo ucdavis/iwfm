@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm2shp(main_file, shape_name, verbose=False):
+def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     ''' iwfm2shp() - Takes the IWFM model main preprocessor file name
         and a base name for output files, and create node, element, 
         stream node and stream reach shapefiles
@@ -29,6 +29,9 @@ def iwfm2shp(main_file, shape_name, verbose=False):
     
     shape_name : str
         output shapefiles base name
+        
+    epsg : int, default=26910 (NAD 83 UTM 10, CA)
+        EPSG projection
     
     verbose : bool, default=False
         True = command-line output on
@@ -80,17 +83,17 @@ def iwfm2shp(main_file, shape_name, verbose=False):
     if verbose:
         print(' ')
 
-    # == Create element shapefile in default UTM 10N (EPSG 26910)
-    gis.elem2shp(elem_nodes,node_coords,elem_sub,lake_elems,shape_name,verbose=verbose)
+    # == Create element shapefile
+    gis.elem2shp(elem_nodes,node_coords,elem_sub,lake_elems,shape_name,epsg=epsg,verbose=verbose)
 
-    # == Create node shapefile in default UTM 10N (EPSG 26910)
-    gis.nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=verbose)
+    # == Create node shapefile
+    gis.nodes2shp(node_coords, node_strat, nlayers, shape_name,epsg=epsg,verbose=verbose)
 
-    # == Create stream node shapefile in default UTM 10N (EPSG 26910)
-    gis.snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, verbose=verbose)
+    # == Create stream node shapefile
+    gis.snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
-    # == Create stream reach shapefile in default UTM 10N (EPSG 26910)
-    gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name, verbose=verbose)
+    # == Create stream reach shapefile
+    gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     return 
 
@@ -101,16 +104,23 @@ if __name__ == '__main__':
     import iwfm.debug as idb
     import iwfm as iwfm
 
+    epsg=26910	# default UTM 10N (CA)
+
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file = sys.argv[1]
         output_basename = sys.argv[2]
+        if len(sys.argv) > 3:
+       		epsg=int(sys.argv[3]) 
     else:  # ask for file names from terminal
         input_file = input('IWFM Preprocessor main file name: ')
         output_basename = input('Output shapefile basename: ')
+        projection = input('Projection EPSG integer value (blank for default UTM 10N): ')
+        if len(projection) >1:
+        	epsg=int(projection) 
 
     iwfm.file_test(input_file)
 
     idb.exe_time()  # initialize timer
-    iwfm2shp(input_file, output_basename, verbose=True)
+    iwfm2shp(input_file, output_basename, epsg, verbose=True)
 
     idb.exe_time()  # print elapsed time
