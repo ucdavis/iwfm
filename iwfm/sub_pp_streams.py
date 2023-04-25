@@ -109,7 +109,7 @@ def sub_pp_streams(stream_file, node_list):
         if sn in sub_snodes:
             sub_rattab_dict[sn] = rattab_dict[sn]
 
-    return sub_reach_info, snode_dict, sub_rattab_dict, rating_header, stream_aq
+    return sub_reach_info, snode_dict, sub_rattab_dict, rating_header, stream_aq, sub_snodes
 
 
 def exit_now(stream_type):

@@ -1,7 +1,7 @@
 # cdec2monthly.py
 # Read CDEC observations, convert sub-monthly observations to the monthly average
 # and write to a csv file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@ def cdec2monthly(input_file, output_file, verbose=False):
     flow_data['FLOW (CFS)'] = flow_data['FLOW (CFS)'].astype(float) 
     flow_data['FLOW (AF)'] = (flow_data['FLOW (CFS)'].astype(float) * 1.983)
 
+    # -- sometimes get an error with the next line, some values are not numbers?
     flow_daily = flow_data.resample('D', on='DATE').mean()  # get daily mean value
 
     # the pandas dataframe was doing something weird, so ...

@@ -1,6 +1,6 @@
 # elem2shp.py
 # Create elements shapefile for an IWFM model
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2022 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ def elem2shp(elem_nodes, node_coords, elem_sub, lake_elems, shape_name,
     shape_name : str
          output shapefiles base name
     
-    epsg : int, default=26910 (NAD 83 UTM 10, CA)
+    epsg : int, default=26910 (NAD 83 UTM 10N, CA)
         EPSG projection
     
     verbose : bool, default=False

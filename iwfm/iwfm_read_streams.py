@@ -53,9 +53,6 @@ def iwfm_read_streams(stream_file):
 
     nreach = int(stream_lines[stream_index].split()[0])
     stream_index += 1
-    if stream_type == '4.1':
-        snodes = int(stream_lines[stream_index].split()[0])
-        stream_index += 1
     rating = int(stream_lines[stream_index].split()[0])
 
     # read in stream reaches
@@ -70,21 +67,21 @@ def iwfm_read_streams(stream_file):
         # Handle multiple types of stream packages (stream_type)
         # ***** TODO ************************************
 
-        # streams package version 4.1
-        if stream_type == '4.1':
+        # streams package versions 4.0, 4.1, 4.2
+        if stream_type == '4.0'or stream_type == '4.1' or stream_type == '4.2':
+            snodes = int(l.pop(0))
+
+        # streams package version 5
+        elif stream_type == '5':
             up_node = int(l.pop(0))
             dn_node = int(l.pop(0))
             snodes = dn_node - up_node + 1
 
-        # streams package version 4.2
-        elif stream_type == '4.2': 
-            snodes = int(l.pop(0))
-
-        # streams package version 5
-        # elif stream_type == '5':
-        #     upper = int(l.pop(0))
-        #     lower = int(l.pop(0))
-        #     snodes = lower - upper + 1
+        # old streams package versions...?
+        else: 
+            up_node = int(l.pop(0))
+            dn_node = int(l.pop(0))
+            snodes = dn_node - up_node + 1
 
         oflow = int(l.pop(0))
 

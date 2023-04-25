@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def nodes2shp(node_coords, node_strat, nlayers, shape_name, epsg=26910, verbose=False):
+def nodes2shp(node_coords, node_list, node_strat, nlayers, shape_name, epsg=26910, verbose=False):
     ''' nodes2shp() - Create an IWFM nodes shapefile 
 
     Parameters
@@ -25,6 +25,9 @@ def nodes2shp(node_coords, node_strat, nlayers, shape_name, epsg=26910, verbose=
     node_coords : list
         node coordinates
     
+    node_list : list
+        Node numbers
+
     node_strat : list
         stratigraphy for each node
     
@@ -48,9 +51,11 @@ def nodes2shp(node_coords, node_strat, nlayers, shape_name, epsg=26910, verbose=
     import sys
     import pandas as pd
     import geopandas as gpd
+    import os
+    import shapefile
 
     node_shapename = f'{shape_name}_Nodes.shp'
-
+    print(f"Current working dir : {os.getcwd()}")
     # calculate base altitude for each node
     base = []
     for i in range(0, len(node_strat)):
@@ -60,34 +65,49 @@ def nodes2shp(node_coords, node_strat, nlayers, shape_name, epsg=26910, verbose=
         base.append(temp)
 
     # Create field names for layer properties
-    field_names = []
+    field_names = ['node_id','gse','base']
     for i in range(0, nlayers):
         field_names.append('aqthick_' + str(i + 1))
         field_names.append('laythick_' + str(i + 1))
 
-    # Create a pandas dataframe
-    df = pd.DataFrame(
-        {
-            'node_id': [row[0] for row in node_strat],
-            'gse': [row[1] for row in node_strat],
-            'base': base,
-            'easting': [row[0] for row in node_coords],
-            'northing': [row[1] for row in node_coords],
-        }
-    )
-    # Add two fields for each layer (aquiclude thickness and aquifer thickness)
-    for i in range(0, nlayers * 2):  
-        df.insert(i + 2, field_names[i], [row[i + 2] for row in node_strat])
-    if verbose:
-        print(f'  Created pandas dataframe for {node_shapename}')
+    nodes = shapefile.Writer(shapefile.POINT)
+    [nodes.field(field) for field in field_names]
+    for row in range(0,len(node_coords)):
+        nodes.point((float(node_coords[row][0])),(float(node_coords[row][1])))
+        temp_rec = []
+        temp_rec.append(node_list[row])       # node_id
+        temp_rec.append(node_strat[row][1])   # gse
+        temp_rec.append(base[row])            # basement altitude
+        for i in range(0, nlayers * 2):  
+            temp_rec.append(node_strat[row][i+1])   # aquicluse and aquifer thicknesses
+        nodes.record(*tuple([temp_rec]))
 
-    # Convert pandas dataframe to geopandas geodataframe
-    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.easting, df.northing))
-    gdf.crs = f'epsg:{str(epsg)}'
+    nodes.save(node_shapename)
+#    nodes.save(os.getcwd() + '\'' + node_shapename)
 
-    # Write a new node shapefile - EPSG 26910 = NAD 83 UTM 10
-    gdf.to_file(node_shapename)
-    if verbose:
-        print(f'  Wrote shapefile {node_shapename}')
-
+#    # Create a pandas dataframe
+#    df = pd.DataFrame(
+#        {
+#            'node_id': [row[0] for row in node_strat],
+#            'gse': [row[1] for row in node_strat],
+#            'base': base,
+#            'easting': [row[0] for row in node_coords],
+#            'northing': [row[1] for row in node_coords],
+#        }
+#    )
+#    # Add two fields for each layer (aquiclude thickness and aquifer thickness)
+#    for i in range(0, nlayers * 2):  
+#        df.insert(i + 2, field_names[i], [row[i + 2] for row in node_strat])
+#    if verbose:
+#        print(f'  Created pandas dataframe for {node_shapename}')
+#
+#    # Convert pandas dataframe to geopandas geodataframe
+#    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.easting, df.northing))
+#    gdf.crs = f'epsg:{str(epsg)}'
+#
+#    # Write a new node shapefile - EPSG 26910 = NAD 83 UTM 10
+#    gdf.to_file(node_shapename)
+#    if verbose:
+#        print(f'  Wrote shapefile {node_shapename}')
+ 
     return

@@ -1,6 +1,6 @@
 # gw_plot_noobs_draw.py - Create a PDF file with a graph of the simulated 
 # data vs time for all hydrographs as lines, saved as the well_name.pdf
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ def gw_plot_noobs_draw(well_name,date,no_hyds,gwhyd_sim,gwhyd_name,well_info,
     '''
     import datetime
     import matplotlib
+    import iwfm as iwfm
 
     # Force matplotlib to not use any Xwindows backend.
     matplotlib.use('TkAgg')  # Set to TkAgg ...
@@ -77,21 +78,21 @@ def gw_plot_noobs_draw(well_name,date,no_hyds,gwhyd_sim,gwhyd_name,well_info,
 
     ymin, ymax, sim_heads, sim_dates = 1e6, -1e6, [], []
     for j in range(0, no_hyds):
-        date_temp, sim_temp = [], []
+        date_temp, head_temp = [], []
         for i in range(0, len(gwhyd_sim[j])):
             date_temp.append(datetime.datetime.strptime(gwhyd_sim[j][i][0], '%m/%d/%Y'))
-            sim_temp.append(gwhyd_sim[j][i][col])
+            head_temp.append(gwhyd_sim[j][i][col])
             ymin = min(ymin, gwhyd_sim[j][i][col])
             ymax = max(ymax, gwhyd_sim[j][i][col])
         sim_dates.append(date_temp)
-        sim_heads.append(sim_temp)
+        sim_heads.append(head_temp)
 
     years = mdates.YearLocator()
-    months = mdates.MonthLocator()
-    yearsFmt = mdates.DateFormatter('%Y')
+    #months = mdates.MonthLocator()
+    #yearsFmt = mdates.DateFormatter('%Y')
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
-    with PdfPages(well_name + '_' + pad_front(col, 4, '0') + '.pdf') as pdf:
+    with PdfPages(well_name + '_' + iwfm.pad_front(col, 4, '0') + '.pdf') as pdf:
         fig = plt.figure(figsize=(10, 7.5))
         ax = plt.subplot(111)
         ax.xaxis_date()

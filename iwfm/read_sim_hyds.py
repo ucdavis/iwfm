@@ -41,11 +41,13 @@ def read_sim_hyds(nhyds, gwhyd_files):
         gwhyd_lines = (open(gwhyd_files[k]).read().splitlines())
         gwhyd_lines = [word.replace('_24:00', ' ') for word in gwhyd_lines]
 
+        temp_sim = []
         for j in range(9, len(gwhyd_lines)):
             items= gwhyd_lines[j].split()
             temp = [items.pop(0)]
             alist = [float(x) for x in items]
             temp.extend(alist)
-            gwhyd_sim.append(temp)
+            temp_sim.append(temp)
+        gwhyd_sim.append(temp_sim)
 
     return gwhyd_sim

@@ -37,20 +37,20 @@ def iwfm_read_sim_file(sim_file):
     '''
     import iwfm as iwfm
 
-    sim_lines = open(sim_file).read().splitlines()  # open and read input file
-    line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments
+    sim_lines = open(sim_file).read().splitlines()              # open and read input file
+    line_index = iwfm.skip_ahead(0, sim_lines, 3)               # skip comments
 
     sim_dict = {}
-    sim_dict['preout'] = sim_lines[line_index].split()[0]  # preproc output file
+    sim_dict['preout'] = sim_lines[line_index].split()[0]       # preproc output file
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['gw_file'] = sim_lines[line_index].split()[0]  # element file
+    sim_dict['gw_file'] = sim_lines[line_index].split()[0]      # groundwater main file
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['stream_file'] = sim_lines[line_index].split()[0]  # node file
+    sim_dict['stream_file'] = sim_lines[line_index].split()[0]  # streams main file
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    lake_file = sim_lines[line_index].split()[0]  # lake file
+    lake_file = sim_lines[line_index].split()[0]                # lake file
     have_lake = True
     if lake_file[0] == '/':
         lake_file = ''
@@ -58,12 +58,12 @@ def iwfm_read_sim_file(sim_file):
     sim_dict['lake_file'] = lake_file
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['root_file'] = sim_lines[line_index].split()[0]  # stratigraphy file
+    sim_dict['root_file'] = sim_lines[line_index].split()[0]    # root zone main file
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['swshed_file'] = sim_lines[line_index].split()[0]  # stream file
+    sim_dict['swshed_file'] = sim_lines[line_index].split()[0]  # small watersheds file
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['unsat_file'] = sim_lines[line_index].split()[0]  # stream file
+    sim_dict['unsat_file'] = sim_lines[line_index].split()[0]   # unsaturated zone file
 
     return sim_dict, have_lake

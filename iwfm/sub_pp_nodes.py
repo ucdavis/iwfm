@@ -47,15 +47,20 @@ def sub_pp_nodes(elem_file, elem_list):
     line_index = iwfm.skip_ahead(0, elem_lines, 0)  # skip comments
     # -- skip to number of subregions
     line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+
+    # get number of subregions
+    subs = int(elem_lines[line_index][0:15])
+    
     # -- skip to start of subregion list
     line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+
     # -- skip the subregion lines
-    while elem_lines[line_index][0] not in comments:
-        line_index += 1
+    line_index = iwfm.skip_ahead(line_index + subs, elem_lines, 0)
+
     # -- skip to start of element list
     line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0) 
 
-    # -- get node list
+    # -- get node list from element list
     node_list = []
     for i in range(line_index, len(elem_lines)):
         temp = [int(n) for n in elem_lines[i].split()]

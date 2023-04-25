@@ -1,6 +1,6 @@
 # gw_plot_noobs.py
 # Create PDF files for simulated data vs time for all hydrographs as lines
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -65,7 +65,8 @@ def gw_plot_noobs(well_list,no_hyds,gwhyd_sim,gwhyd_names,well_dict,
             count += 1
             # re-initialize for next observation well
             date, name = [], well_list[j]
-        date.append(gwhyd_sim[j][0][0])
+        elif obs[j][0] == obs_well_name:                    # this observation is for this well
+            date.append(obs[j][1])
     # make the last one
     if name in well_dict:
         iwfm.gw_plot_noobs_draw(name,date,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(name),start_date,titlewords,yaxis_width)

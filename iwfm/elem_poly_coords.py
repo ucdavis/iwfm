@@ -1,6 +1,6 @@
 # elem_poly_coords.py
 # Return a list of the (x,y) coordinates for the nodes of each elememnt
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2022 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -31,11 +31,14 @@ def elem_poly_coords(elem_nodes, node_coords):
 
     Returns
     -------
-    polys : list
+    polygons : list
         list of polygon coordinates
     
     '''
-    polys = []
+    polygons = []
+
+    #print(f'  ==> elem_nodes[:4]: {elem_nodes[:4]}')
+    #print(f'  ==> node_coords[:4]: {node_coords[:4]}')
 
     for i in range(0, len(elem_nodes)):  # for each element ...
         coords = []
@@ -49,5 +52,5 @@ def elem_poly_coords(elem_nodes, node_coords):
         coords.append(
             (node_coords[elem_nodes[i][0] - 1][0], node_coords[elem_nodes[i][0] - 1][1])
         )  # close the polygon
-        polys.append(coords)
-    return polys
+        polygons.append(coords)
+    return polygons

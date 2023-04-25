@@ -1,5 +1,5 @@
 # sub_pp_stream_file.py
-# Copies the old element file and replaces the contents with those of the new
+# Copies the old stream file and replaces the contents with those of the new
 # submodel, and writes out the new file
 # Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------

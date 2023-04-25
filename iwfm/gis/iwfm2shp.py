@@ -87,7 +87,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     gis.elem2shp(elem_nodes,node_coords,elem_sub,lake_elems,shape_name,epsg=epsg,verbose=verbose)
 
     # == Create node shapefile
-    gis.nodes2shp(node_coords, node_strat, nlayers, shape_name,epsg=epsg,verbose=verbose)
+    gis.nodes2shp(node_coords, node_list, node_strat, nlayers, shape_name,epsg=epsg,verbose=verbose)
 
     # == Create stream node shapefile
     gis.snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
