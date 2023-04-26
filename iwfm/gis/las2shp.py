@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def las2shp(source, target, debug=0):
+def las2shp(source, target, verbose=0):
     ''' las2shp() - Convert an LAS LIDAR file to a shapefile by creating a
         3D triangle mesh using Delaunay Triangulation
 
@@ -31,8 +31,8 @@ def las2shp(source, target, debug=0):
     target : str
         output shapefile name
     
-    debug : int, default=0
-        level of CLI priniting for debugging (0 = none)
+    verbose : int, default=0
+        level of CLI priniting (0 = none)
 
     Returns
     -------
@@ -60,32 +60,27 @@ def las2shp(source, target, debug=0):
     # Load it from a pickle file or use the voronoi module to create the triangles.
     triangles = None
     las = file(source, mode='r')  # Open LIDAR LAS file
-    points = []
-    if debug:
+    if verbose:
         print('    - Assembling points...')
-    for x, y in np.nditer((las.x, las.y)):  # Pull points from LAS file
-        points.append([x, y])
+    points = [[x, y] for x, y in np.nditer((las.x, las.y))]
     pts = np.array(points)
-    if debug:
-        print('        len(points): {}'.format(len(pts)))
+    if verbose:
+        print(f'        len(points): {len(pts)}')
     # print('  points:\n{}'.format(pts))
 
-    if debug:
+    if verbose:
         print('    - Composing triangles...')
     # Delaunay Triangulation
     # triangles = voronoi.computeDelaunayTriangulation(points)
     # triangles = DelaunayTri(points)             # pyhull.delaunay of list
     # triangles = DelaunayTri(pts)                # pyhull.delaunay of np.array
     triangles = Delaunay(pts)  # scipy.spatial.Dalaunay
-    if debug:
-        print('        points: {}'.format(triangles.simplices))
+    if verbose:
+        print(f'        points: {triangles.simplices}')
 
-    # Save the triangles to save time if we write more than one shapefile.
-    f = open(archive, 'wb')
-    pickle.dump(triangles, f, protocol=2)
-    f.close()
-
-    if debug:
+    with open(archive, 'wb') as f:
+        pickle.dump(triangles, f, protocol=2)
+    if verbose:
         print('    - Creating shapefile...')
     # PolygonZ shapefile (x, y, z, m)
     w = shapefile.Writer(target, shapefile.POLYGONZ)
@@ -106,59 +101,56 @@ def las2shp(source, target, debug=0):
     # for s in triangles.simplices:
     #  for data in itertools.combinations(s.coords,dim):
     #    tri.append(data)
-    if debug:
+    if verbose:
         print(f'        len(tri): {len(tri)}')
         print(f'        points:\n{tri}')
 
     # Loop through shapes and track progress every 10 percent
     last_percent = 0
     count = 0
+    # Check segments for large triangles along the convex hull which is a common
+    # artificat in Delaunay triangulation
+    max = 3
     for i in range(tris):
         # t = triangles[i]
         t = tri[i]
-        if debug:
+        if verbose:
             print(f'        t[{i}]: {t}')
         pct = int((i / (tris * 1.0)) * 100.0)
         if pct % 10.0 == 0 and pct > last_percent:
             last_percent = pct
-            if debug:
-                print(f'        {pct} % done - Shape {i}/{tris} at {time.asctime()}')
-        part = []
+            if verbose:
+                print(f'        {last_percent} % done - Shape {i}/{tris} at {time.asctime()}')
         x1 = las.x[t[0]]
         y1 = las.y[t[0]]
         z1 = las.z[t[0]]
-        if debug:
+        if verbose:
             print(f'        x1,y1,z1: {x1},{x2},{x3}')
         x2 = las.x[t[1]]
         y2 = las.y[t[1]]
         z2 = las.z[t[1]]
-        if debug:
+        if verbose:
             print(f'        x2,y2,z2: {x2},{y2},{z2}')
         x3 = las.x[t[2]]
         y3 = las.y[t[2]]
         z3 = las.z[t[2]]
-        if debug:
+        if verbose:
             print(f'        x3,y3,z3: {x3},{y3},{z3}')
-        # Check segments for large triangles along the convex hull which is a common
-        # artificat in Delaunay triangulation
-        max = 3
         if math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) > max:
             continue
         if math.sqrt((x3 - x2) ** 2 + (y3 - y2) ** 2) > max:
             continue
         if math.sqrt((x3 - x1) ** 2 + (y3 - y1) ** 2) > max:
             continue
-        part.append([x1, y1, z1, 0])
-        part.append([x2, y2, z2, 0])
-        part.append([x3, y3, z3, 0])
-        if debug:
+        part = [[x1, y1, z1, 0], [x2, y2, z2, 0], [x3, y3, z3, 0]]
+        if verbose:
             print(f'        part: {part}\n')
         w.polyz([part])
         w.record(x1, x2, x3, y1, y2, y3, z1, z2, z3)
         count += 1
     if count == 0:
         w = None
-    if debug:
+    if verbose:
         print('    - Saving shapefile...')
         print('    - las2shp() done.')
 

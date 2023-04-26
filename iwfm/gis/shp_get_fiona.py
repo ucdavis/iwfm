@@ -32,5 +32,4 @@ def shp_get_fiona(infile):
     '''
     import fiona
 
-    f = fiona.open(infile)
-    return f
+    return fiona.open(infile)

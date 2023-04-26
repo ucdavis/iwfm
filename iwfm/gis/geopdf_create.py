@@ -33,5 +33,4 @@ def geopdf_create(filename):
     '''
     from geopdf import GeoCanvas
 
-    canvas = GeoCanvas(filename)
-    return canvas
+    return GeoCanvas(filename)

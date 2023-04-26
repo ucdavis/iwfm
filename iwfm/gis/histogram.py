@@ -36,11 +36,9 @@ def histogram(infile, scl=True):
     from osgeo import gdal_array as gdal_array
     import iwfm as iwfm
 
-    histograms = []
     t = None
     arr = gdal_array.LoadFile(infile)
-    for b in arr:
-        histograms.append(hist(b))
+    histograms = [hist(b) for b in arr]
     t = iwfm.gis.histogram_draw(histograms, scale=scl)
     t.pen(shown=False)
     t.done()

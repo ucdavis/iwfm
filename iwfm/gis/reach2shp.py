@@ -60,13 +60,13 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
     }
 
     with fiona.open(
-        reach_shapename,
-        'w',
-        crs=fiona.crs.from_epsg(epsg),
-        driver='ESRI Shapefile',
-        schema=stream_schema,
-    ) as out:
-        for i in range(0, len(reach_list)):
+            reach_shapename,
+            'w',
+            crs=fiona.crs.from_epsg(epsg),
+            driver='ESRI Shapefile',
+            schema=stream_schema,
+        ) as out:
+        for i in range(len(reach_list)):
             upper, lower = reach_list[i][1], reach_list[i][2]
             sncoords, n = [], 0
             for j in range(upper, lower + 1):
@@ -77,7 +77,7 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
                         (node_coords[gw_node - 1][0], node_coords[gw_node - 1][1])
                     )
                     n += 1
-            if len(sncoords) > 0:
+            if sncoords:
                 line = LineString(sncoords)
                 out.write(
                     {

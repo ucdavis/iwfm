@@ -74,10 +74,10 @@ def grid_shadedrelief(source,slopegrid,aspectgrid,shadegrid,
     # set up 3x3 windows for smoothing, excluding 2 pixels around edges which are usually NODATA
     window = []
     for row in range(3):
-        for col in range(3):
-            window.append(
-                arr[row : (row + arr.shape[0] - 2), col : (col + arr.shape[1] - 2)]
-            )
+        window.extend(
+            arr[row : (row + arr.shape[0] - 2), col : (col + arr.shape[1] - 2)]
+            for col in range(3)
+        )
     # process each 3x3 window in both the x and y directions
     x = (z * (window[0] + 2 * window[3] + window[6] - window[2] - 2 * window[5] - window[8])) / (8.0 * xres * scale)
     y = (z * (window[6] + 2 * window[7] + window[8] - window[0] - 2 * window[1] - window[2])) / (8.0 * yres * scale)

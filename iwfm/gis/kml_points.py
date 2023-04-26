@@ -43,7 +43,7 @@ def kml_points(filename, verbose=False):
         print(f'Point\tCoordinates')
 
     points = []
-    for i in range(0, len(Placemarks)):
+    for i in range(len(Placemarks)):
         coordinates = Placemarks[i].getElementsByTagName('coordinates')
         point = coordinates[0].firstChild.data.split(',')
         points.append(point)

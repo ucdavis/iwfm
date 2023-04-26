@@ -58,29 +58,23 @@ def nodes2shp(node_coords, node_list, node_strat, nlayers, shape_name, epsg=2691
     print(f"Current working dir : {os.getcwd()}")
     # calculate base altitude for each node
     base = []
-    for i in range(0, len(node_strat)):
+    for i in range(len(node_strat)):
         temp = node_strat[i][1]  # gse
-        for j in range(0, nlayers * 2):
+        for j in range(nlayers * 2):
             temp = temp - node_strat[i][j + 2]
         base.append(temp)
 
     # Create field names for layer properties
     field_names = ['node_id','gse','base']
-    for i in range(0, nlayers):
-        field_names.append('aqthick_' + str(i + 1))
-        field_names.append('laythick_' + str(i + 1))
-
+    for i in range(nlayers):
+        field_names.extend((f'aqthick_{str(i + 1)}', f'laythick_{str(i + 1)}'))
     nodes = shapefile.Writer(shapefile.POINT)
     [nodes.field(field) for field in field_names]
-    for row in range(0,len(node_coords)):
+    for row in range(len(node_coords)):
         nodes.point((float(node_coords[row][0])),(float(node_coords[row][1])))
-        temp_rec = []
-        temp_rec.append(node_list[row])       # node_id
-        temp_rec.append(node_strat[row][1])   # gse
-        temp_rec.append(base[row])            # basement altitude
-        for i in range(0, nlayers * 2):  
-            temp_rec.append(node_strat[row][i+1])   # aquicluse and aquifer thicknesses
-        nodes.record(*tuple([temp_rec]))
+        temp_rec = [node_list[row], node_strat[row][1], base[row]]
+        temp_rec.extend(node_strat[row][i+1] for i in range(nlayers * 2))
+        nodes.record(*(temp_rec, ))
 
     nodes.save(node_shapename)
 #    nodes.save(os.getcwd() + '\'' + node_shapename)
@@ -109,5 +103,5 @@ def nodes2shp(node_coords, node_list, node_strat, nlayers, shape_name, epsg=2691
 #    gdf.to_file(node_shapename)
 #    if verbose:
 #        print(f'  Wrote shapefile {node_shapename}')
- 
+
     return

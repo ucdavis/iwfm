@@ -64,15 +64,15 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
         },
     }
 
-    # Write a new stream node shapefile 
+    # Write a new stream node shapefile
     with fiona.open(
-        snode_shapename,
-        'w',
-        crs=fiona.crs.from_epsg(epsg),
-        driver='ESRI Shapefile',
-        schema=snode_schema,
-    ) as out:
-        for i in range(0, nsnodes):
+            snode_shapename,
+            'w',
+            crs=fiona.crs.from_epsg(epsg),
+            driver='ESRI Shapefile',
+            schema=snode_schema,
+        ) as out:
+        for i in range(nsnodes):
             this_node = stnodes_dict.get(i + 1)  # gw_node, reach, bottom
             gw_node = this_node[0]
             if gw_node != 0:

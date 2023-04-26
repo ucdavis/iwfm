@@ -76,8 +76,6 @@ def contour2png(source, target, iwidth=800, iheight=600):
     # Loop through the polygons and draw them
     for c in contours:
         canvas.polyline(c)
-    # Save the image
-    f = open(target, 'wb')
-    f.write(canvas.dump())
-    f.close()
+    with open(target, 'wb') as f:
+        f.write(canvas.dump())
     return

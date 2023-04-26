@@ -90,12 +90,12 @@ def las2dem(source, target, cell=1.0, NODATA=0):
     fill = np.where(zavg > 0, zavg, interpolate)
 
     # Create our ASCII DEM header
-    header = 'ncols        {}\n'.format(fill.shape[1])
-    header += 'nrows        {}\n'.format(fill.shape[0])
-    header += 'xllcorner    {}\n'.format(min[0])
-    header += 'yllcorner    {}\n'.format(min[1])
-    header += 'cellsize     {}\n'.format(cell)
-    header += 'NODATA_value      {}\n'.format(NODATA)
+    header =  f'ncols        {fill.shape[1]}\n'
+    header += f'nrows        {fill.shape[0]}\n'
+    header += f'xllcorner    {min[0]}\n'
+    header += f'yllcorner    {min[1]}\n'
+    header += f'cellsize     {cell}\n'
+    header += f'NODATA_value      {NODATA}\n'
 
     # Open the output file, add the header, save the array
     with open(target, 'wb') as f:

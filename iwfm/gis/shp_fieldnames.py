@@ -34,7 +34,4 @@ def shp_fieldnames(f):
     from shp_fields import shp_fields
 
     fields = shp_fields(f)
-    field_names = []
-    for item in fields[1:]:  # Omit 0: Deletion Flag
-        field_names.append(item[0])
-    return field_names
+    return [item[0] for item in fields[1:]]

@@ -34,7 +34,5 @@ def wkt2poly(intxt):
     '''
     import wkt
 
-    wktPoly = intxt  
-    poly = wkt.loads(wktPoly)
-
-    return poly
+    wktPoly = intxt
+    return wkt.loads(wktPoly)

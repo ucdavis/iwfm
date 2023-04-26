@@ -31,7 +31,4 @@ def is_northern(latitude):
     False = latitude is in southern hemisphere
     
     '''
-    if latitude < 0.0:
-        return False
-    else:
-        return True
+    return latitude >= 0.0

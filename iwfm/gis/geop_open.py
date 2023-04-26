@@ -34,5 +34,4 @@ def geop_open(infile):
     import geopandas
 
     gdf = geopandas.GeoDataFrame
-    gdf_file = gdf.from_file(infile)
-    return gdf_file
+    return gdf.from_file(infile)

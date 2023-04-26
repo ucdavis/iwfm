@@ -35,7 +35,7 @@ def shp_epsg(filename):
     import json
 
     if filename[-4:] != '.prj':
-        filename = filename + '.prj'
+        filename = f'{filename}.prj'
     with open(filename, 'r') as f:
         q = urlencode({'exact': True, 'error': True, 'mode': 'wkt', 'terms': f.read()})
         r = urlopen('http://prj2epsg.org/search.json', q.encode())

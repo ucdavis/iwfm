@@ -39,7 +39,8 @@ def igsm2shp(main_file, shape_name, verbose=False):
     import iwfm as iwfm
     import iwfm.gis as gis
 
-    main_lines = open(main_file).read().splitlines() 
+    # read main_file for file names
+    main_lines = open(main_file).read().splitlines()
     line_index = iwfm.skip_ahead(0, main_lines, 6)
     elem_file = main_lines[line_index].split()[0]
     line_index += 1
@@ -88,9 +89,9 @@ def igsm2shp(main_file, shape_name, verbose=False):
             elif len(lakes) == 1:
                 print(f'  Read info for {len(lakes):,} lake from {lake_file}')
     else:
-        lake_elems = [[0,0,0]]  
+        lake_elems = [[0,0,0]]
         if verbose:
-            print(f'  No lakes')
+            print('  No lakes')
 
     reach_list, stnodes_dict, nsnodes = iwfm.igsm_read_streams(stream_file)
     if verbose:
@@ -107,7 +108,7 @@ def igsm2shp(main_file, shape_name, verbose=False):
     gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name, verbose=verbose)
 
     if verbose:
-        print(f'  Wrote node, element, stream node and stream reache shapefiles\n')
+        print('  Wrote node, element, stream node and stream reache shapefiles\n')
 
     return
 

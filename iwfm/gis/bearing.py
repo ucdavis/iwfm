@@ -45,6 +45,4 @@ def bearing(p1, p2):
         - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1),
         math.sin(lon2 - lon1) * math.cos(lat2),
     )
-    # Avoid negative bearing by adding 360 and then using modulo
-    bearing = (math.degrees(angle) + 360) % 360  
-    return bearing
+    return (math.degrees(angle) + 360) % 360

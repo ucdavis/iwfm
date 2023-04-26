@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def histogram_array(arr, bins=list(range(0, 256))):
+def histogram_array(arr, bins=list(range(256))):
     ''' histogram_array() - Determines the histogram function for 
         multi-dimensional array <arr>
     
@@ -38,5 +38,4 @@ def histogram_array(arr, bins=list(range(0, 256))):
     fa = arr.flat
     n = gdal_array.numpy.searchsorted(gdal_array.numpy.sort(fa), bins)
     n = gdal_array.numpy.concatenate([n, [len(fa)]])
-    hist = n[1:] - n[:-1]
-    return hist
+    return n[1:] - n[:-1]

@@ -32,5 +32,4 @@ def rasterio_open(filename):
     '''
     import rasterio
 
-    ds = rasterio.open(filename)
-    return ds
+    return rasterio.open(filename)

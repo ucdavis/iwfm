@@ -48,12 +48,10 @@ def wks2shp_pt(inwksheet, outshp, sheet_index=0):
         w.field(str(sheet.cell(0, i).value), "C", 40)  # read the header row
 
     for i in range(1, sheet.nrows):
-        values = []
-        for j in range(sheet.ncols):
-            values.append(sheet.cell(i, j).value)
+        values = [sheet.cell(i, j).value for j in range(sheet.ncols)]
         w.record(*values)
 
         # get lat, lon from last two columns
-        w.point(float(values[-2]), float(values[-1]))  
+        w.point(float(values[-2]), float(values[-1]))
     w.close
     return

@@ -54,10 +54,9 @@ def distance_sphere(p1, p2, units='km'):
         lon1_rad
     ) * math.cos(lon2_rad)
     c = 2 * math.asin(math.sqrt(a))
-    if units == 'mi':
-        distance = c * 3959  # miles
-    elif units == 'ft':
-        distance = c * 2.0902e7  # feet
-    else:  # units == 'km'
-        distance = c * 6371  # kilometers
-    return distance
+    if units == 'ft':
+        return c * 2.0902e7
+    elif units == 'mi':
+        return c * 3959
+    else:
+        return c * 6371

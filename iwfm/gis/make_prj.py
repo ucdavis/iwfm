@@ -36,7 +36,7 @@ def make_prj(filename, epsg_code):
     from urllib.request import urlopen
 
     if filename[-4:] != ".prj":
-        filename = filename + ".prj"
+        filename = f"{filename}.prj"
     prj = urlopen(f'http://spatialreference.org/ref/epsg/{epsg_code}/prettywkt/')
     with open(filename, "w") as f:
         f.write(str(prj.read()))

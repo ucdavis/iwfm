@@ -37,5 +37,4 @@ def shp2wkt(shapefile):
     layer = shape.GetLayer()
     feature = layer.GetNextFeature()
     geom = feature.GetGeometryRef()
-    wkt = geom.ExportToWkt()
-    return wkt
+    return geom.ExportToWkt()

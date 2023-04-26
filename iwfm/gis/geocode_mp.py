@@ -35,6 +35,4 @@ def geocode_mp(cities):
     from geocode import geocode
 
     pool = mp.Pool(processes=mp.cpu_count())  # allocate a pool of processors
-    results = pool.map(geocode, cities)  # map function and input list to pool
-
-    return results
+    return pool.map(geocode, cities)

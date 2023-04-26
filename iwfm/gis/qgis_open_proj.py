@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def qgis_open_proj(filename, verbose=False, debug=0):  
+def qgis_open_proj(filename, verbose=False, debug=0):
     ''' qgis_open_proj() - Open a QGIS project
 
     ** INCOMPLETE **
@@ -65,11 +65,11 @@ def qgis_open_proj(filename, verbose=False, debug=0):
     # fill instantiated project (file name, not full path)
     project.read(filename)
     if verbose:
-        print(f'  Opened QGIS project {filename}')  
+        print(f'  Opened QGIS project {filename}')
     if debug:
         print(f'  => project:    {project}')
         print(f'  => filename(): \'{project.fileName()}\'')
         print(f'  => title:      \'{project.title()}\'')
         print(f'  => layers:     {project.count()}')
-        print(f'  ----------------------------')
+        print('  ----------------------------')
     return project

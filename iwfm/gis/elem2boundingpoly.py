@@ -51,10 +51,11 @@ def elem2boundingpoly(elem_nodes, node_coords, verbose=False):
     # create a Polygon for each model element
     polys = []
     for elem in elem_nodes:  # for each element ...
-        points = []
-        for node in elem[1:5]:  # for each node in the element ...
-            if node > 0:        # skip empty nodes
-                points.append([d_nodes[node][0],d_nodes[node][1]])
+        points = [
+            [d_nodes[node][0], d_nodes[node][1]]
+            for node in elem[1:5]
+            if node > 0
+        ]
         poly = Polygon([[p[0], p[1]] for p in points])
         polys.append(poly)
 
@@ -63,6 +64,6 @@ def elem2boundingpoly(elem_nodes, node_coords, verbose=False):
     bounding_polygon = Polygon(poly_union.exterior.coords)
 
     if verbose:
-        print(f'  Created bounding polygon for model')
+        print('  Created bounding polygon for model')
 
     return bounding_polygon    
