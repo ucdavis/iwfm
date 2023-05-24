@@ -1,6 +1,6 @@
 # reach2shp.py
 # Create stream reach shapefile for an IWFM model
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -21,6 +21,9 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
         verbose=False):
     ''' reach2shp() - Creates an IWFM stream reaches shapefile from IWFM
         Preprocessor stream specification information
+
+    TODO:
+      - change from fiona to pyshp and wkt format?
 
     Parameters
     ----------
@@ -47,24 +50,22 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
     nothing
 
     '''
-    import sys
     import fiona
-    import fiona.crs
     from shapely.geometry import mapping, LineString
 
-    reach_shapename = f'{shape_name}_StreamReaches.shp'
+    shapename = f'{shape_name}_StreamReaches.shp'
 
-    stream_schema = {
+    schema = {
         'geometry': 'LineString',
         'properties': {'reach_id': 'int', 'flows_to': 'int'},
     }
 
     with fiona.open(
-            reach_shapename,
+            shapename,
             'w',
-            crs=fiona.crs.from_epsg(epsg),
+            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
             driver='ESRI Shapefile',
-            schema=stream_schema,
+            schema=schema,
         ) as out:
         for i in range(len(reach_list)):
             upper, lower = reach_list[i][1], reach_list[i][2]
@@ -86,5 +87,5 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
                     }
                 )
     if verbose:
-        print(f'  Wrote shapefile {reach_shapename}\n')
+        print(f'  Wrote shapefile {shapename}\n')
     return

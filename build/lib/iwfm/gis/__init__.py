@@ -29,6 +29,7 @@ from iwfm.gis.reach2shp import reach2shp
 # -- igsm methods -----------------------------------------
 from iwfm.gis.igsm2shp import igsm2shp
 from iwfm.gis.igsm_elem2shp import igsm_elem2shp
+from iwfm.gis.elem2boundingpoly import elem2boundingpoly
 
 # -- KML methods ------------------------------------------
 from iwfm.gis.kml_points import kml_points

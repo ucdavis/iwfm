@@ -1,6 +1,6 @@
 # gw_plot_obs_draw.py
 # Draw one groundwater hydrograph plot and save to a PDF file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2022 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
+def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_name,well_info,
     start_date,title_words,yaxis_width=-1):
     ''' gw_plot_obs_draw() - Create a PDF file with a graph of the simulated data 
         vs time for all hydrographs as lines, with observed values vs time as 
@@ -37,9 +37,9 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
     no_hyds : int
         number of simulation time series to be graphed
     
-    gwhyd_obs : list
+    gwhyd_sim : list
         simulated IWFM groundwater hydrographs 
-        [0]==dates, [1 to no_hyds]==datasets
+        [0]=dates, [1 to no_hyds]=datasets
     
     gwhyd_name : list
         hydrograph names from PEST observations file
@@ -64,10 +64,11 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
     
     import datetime
     import matplotlib
+    import numpy as np
     import iwfm as iwfm
 
     # Force matplotlib to not use any Xwindows backend.
-    matplotlib.use('TkAgg')  # Set to TkAgg ...
+#    matplotlib.use('TkAgg')  # Set to TkAgg ...
     matplotlib.use('Agg')  # ... then reset to Agg
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
@@ -79,18 +80,21 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
     # 'r-' = red line, 'bo' = blue dots, 'r--' = red dashes, 
     # 'r:' = red dotted line, 'bs' = blue squares, 'g^' = green triangles, etc
 
-    col = well_info[0] 
+    col = well_info[0]
 
-    dates = []
-    for i in range(0, len(gwhyd_obs)):
-        dates.append(datetime.datetime.strptime(gwhyd_obs[i][0], '%m/%d/%Y'))
+    # compile sim_heads here to determine ymax and ymin
+    sim_heads = []
+    for hyd in range(0, no_hyds):
+        temp_heads = []
+        for row in range(0, len(gwhyd_sim[hyd])):
+            temp_heads.append(float(gwhyd_sim[hyd][row][col]))
+        sim_heads.append(temp_heads)
 
-    ymin, ymax, sim_heads, sim_dates = 1e6, -1e6, [], []
-    for j in range(0, no_hyds):
-        sim_heads.append([float(x) for x in gwhyd_obs[j][1:]])
-
-    ymin = min(ymin, min(min(sim_heads)), min(meas))
-    ymax = max(ymax, max(max(sim_heads)), max(meas))
+    ymin = min(1e6, min(meas))
+    ymax = max(1e-6, max(meas))
+    for hyd in range(0, no_hyds):
+        ymin = min(ymin, min(sim_heads[hyd]))
+        ymax = max(ymax, max(sim_heads[hyd]))
 
     meas_dates = []
     for i in range(0, len(date)):
@@ -122,9 +126,13 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_obs,gwhyd_name,well_info,
                     plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
 
         for j in range(0, no_hyds):
-            plt.plot(sim_dates[j], sim_heads[j], line_colors[j], label=gwhyd_name[j])
+            sim_dates = []
+            for i in range(0, len(gwhyd_sim[j])):
+                sim_dates.append(datetime.datetime.strptime(gwhyd_sim[j][i][0], '%m/%d/%Y'))
+            plt.plot(sim_dates, sim_heads[j], line_colors[j], label=gwhyd_name[j])
 
         leg = ax.legend(frameon=1, facecolor='white')
         pdf.savefig()  
         plt.close()
+
     return 

@@ -47,16 +47,16 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
       # -- to be determined --
 
     TODO:
-      - test for node_list pickle file, read info from source if not present, error if no source
+      - test for nodes pickle file, read info from source if not present, error if no source
+      - test for node_coords pickle file, read info from source if not present, error if no source
       - test for elem_list pickle file, read info from source if not present, error if no source
       - test for lake_info pickle file, read info from source if not present, error if no source
-      - process Groundwater file
-      - process Streams file
-      - process Rootzone file
-      - process Lake file
+      - test for geopandas dataframe pickle file, create from node_coords if not present, error if no source
+      - process Lake files
 
     '''
     import iwfm as iwfm
+    import iwfm.gis as gis
     import pickle
 
     # -- get list of file names from preprocessor input file
@@ -67,59 +67,57 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
     # -- create list of new file names
     sim_dict_new = iwfm.new_sim_dict(out_base_name)
 
-    # -- read submodel elements
-    elem_list, new_srs, elem_dict, rev_elem_dict = iwfm.get_elem_list(elem_pairs_file)
-    elems = [e for e[0] in elem_list]
-    if verbose:
-        print(f'  Read submodel element pairs file {elem_pairs_file}')
-
     # ** TODO: test for pickle files, read info from source if not present, error if no source
     # read information from previous dump
-    node_list = pickle.load(open(out_base_name + '_nodes.bin', 'rb'))  
-    snode_dict = pickle.load(open(out_base_name + '_snodes.bin', 'rb'))
+    elem_list =   pickle.load(open(out_base_name + '_elems.bin', 'rb'))  
+    node_list =   pickle.load(open(out_base_name + '_nodes.bin', 'rb'))  
+    elem_nodes =  pickle.load(open(out_base_name + '_elemnodes.bin', 'rb')) 
+    node_coords = pickle.load(open(out_base_name + '_node_coords.bin', 'rb'))  
+    snode_dict =  pickle.load(open(out_base_name + '_snodes.bin', 'rb'))
+    sub_snodes =  pickle.load(open(out_base_name + '_sub_snodes.bin', 'rb'))
     if verbose:
-        print('  Read submodel nodes and stream nodes')
+        print('  Read model elements, nodes, node coordinates and stream nodes')
 
     if have_lake:
         lake_info = pickle.load(open(out_base_name + '_lakes.bin', 'rb'))  
         if verbose:
-            print('  Read submodel lakes')
+            print('  Read model lakes')
 
-    if verbose:
-        print(" ")
+    # -- create bounding polygon
+    bounding_poly = gis.elem2boundingpoly(elem_nodes, node_coords)
 
     # -- create submodel Small Watersheds file
-    iwfm.sub_swhed_file(
-        sim_dict['swshed_file'], sim_dict_new['swshed_file'], node_list, snode_dict
-    )
-    if verbose:
-        print(f'  Wrote small watershed file {sim_dict_new["swshed_file"]}')
+    iwfm.sub_swhed_file(sim_dict['swshed_file'], sim_dict_new['swshed_file'], node_list, snode_dict, verbose)
 
     # -- create submodel Unsaturated Zone file
-    iwfm.sub_unsat_file(sim_dict["unsat_file"], sim_dict_new["unsat_file"], elem_list)
-    if verbose:
-        print(f'  Wrote unsaturated zone file {sim_dict_new["unsat_file"]}')
+    iwfm.sub_unsat_file(sim_dict['unsat_file'], sim_dict_new['unsat_file'], elem_list, verbose)
 
-    return  # ================================================================
+    # -- process submodel Groundwater files 
+    iwfm.sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, verbose=verbose)
 
-    # -- process Groundwater file
+    # -- process submodel Streams file
+    iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose)
 
-    # -- process Streams file
+    # -- process submodel Rootzone file
+    iwfm.sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose)
 
-    # -- process Rootzone file
-
-    # -- process Lake file
-    # if have_lake:
+    # -- process submodel Lake file
+    if have_lake:
+        if verbose:                
+            print('\n   ==> TO DO: Lake process files')
 
     if verbose:
         print(" ")
+
+
 
 
     # -- write new simulation main input file
-    iwfm.sub_pp_file(in_sim_file, sim_dict, sim_dict_new, have_lake)
+    iwfm.sub_sim_file(in_sim_file, sim_dict_new, have_lake)
     if verbose:
-        print(f'  Wrote submodel simulation file {sim_dict_new["prename"]}')
+        print(f'  Wrote submodel simulation file {sim_dict_new["sim_name"]}')
 
+    return  # ================================================================
     return
 
 

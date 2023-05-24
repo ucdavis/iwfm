@@ -17,36 +17,34 @@
 # -----------------------------------------------------------------------------
 
 
-def write_results(name, date, meas, sim, start_date):
-    ''' write_results() - Write simulated and observed values for one
-        observation well to a text file
+def sim_head(date, col, heads):
+    ''' sim_head() - Return the simulated head for a given date and column
 
     Parameters
     ----------
-    name : str
-        Basename of output file
+    date : datetime object
+        Date for simulated head value
   
-    date : list
-        Dates for measurements
+    col : int
+        Column number of simulated heads dataframe
   
-    meas : list
-        Measured values
+    heads : pandas dataframe
+        Index = dates, cols 1-n = simulated head values
   
-    sim : list
-        Simulated equivalent values
-  
-    start_date : obj
-        Simulation starting date
-
     Returns
     -------
-    i : int
-        Number of lines written
+    h : float
+        Simulated head value
 
     '''
-    with open(name + '_obs.out', 'w') as o:
-        o.write(f'# Observations for well {name}\n')
-        o.write('# Date\tObserved\tModeled\n')
-        for i in range(0, len(date)):
-            o.write(f'{date[i]}\t{meas[i]}\t{sim[i]}\n')
-    return i
+
+    print(f' function has not been created ')
+    h = 0.0
+    return h
+
+#    with open(name + '_obs.out', 'w') as o:
+#        o.write(f'# Observations for well {name}\n')
+#        o.write('# Date\tObserved\tModeled\n')
+#        for i in range(0, len(date)):
+#            o.write(f'{date[i]}\t{meas[i]}\t{sim[i]}\n')
+#    return i

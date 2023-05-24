@@ -39,12 +39,13 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
 
     Returns
     -------
-    nothing
+    elem_nodes : list of lists of ints
+        list of [element id, nodes and subregion] for each submodel element
 
     '''
     import iwfm as iwfm
 
-    comments = ['Cc*#']
+    comments = ['C','c','*','#']
 
     elems = []
     for e in elem_list:
@@ -77,13 +78,15 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
 
     new_elem_lines = elem_lines[:line_index]
 
+    elem_nodes = []
     for i in range(line_index, len(elem_lines)):
         if int(elem_lines[i].split()[0]) in elems:
             new_elem_lines.append(elem_lines[i])
+            elem_nodes.append([int(x) for x in elem_lines[i].split()])
 
     new_elem_lines.append('')
 
     with open(new_elem_file, 'w') as outfile:
         outfile.write('\n'.join(new_elem_lines))
 
-    return
+    return elem_nodes

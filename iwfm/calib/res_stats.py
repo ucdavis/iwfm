@@ -1,14 +1,26 @@
-#!/usr/bin/env python
-
-# PestResStats.py
-# Charles Brush 04/2019
+# res_stats.py
 # Read a PEST .smp file, IWFM groundwater hydrograph file, and
 # IWFM groundwater.dat file, and print a text file with
 # the RMSE and bias of each well and of all observations
+# Copyright (C) 2020-2021 University of California
+# -----------------------------------------------------------------------------
+# This information is free; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This work is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# For a copy of the GNU General Public License, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# -----------------------------------------------------------------------------
 
 
-def pest_res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
-    ''' pest_res_stats() - Read a PEST .smp file, IWFM groundwater hydrograph 
+def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
+    ''' res_stats() - Read a PEST .smp file, IWFM groundwater hydrograph 
         file, and IWFM groundwater.dat file, and print a text file with the 
         RMSE and bias of each well and of all observations
     

@@ -48,7 +48,7 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
 
     swshwd_lines = open(old_filename).read().splitlines()  
 
-    line_index = iwfm.skip_ahead(0, swshwd_lines, 2)  # skip factors and comments
+    line_index = iwfm.skip_ahead(0, swshwd_lines, 2)  # skip output file names and comments
 
     nsw_line, nsw = line_index, int(swshwd_lines[line_index].split()[0])
 
@@ -58,7 +58,7 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
     for sw in range(0, nsw):  # small watershed descriptions
         change, line, items = 0, line_index, swshwd_lines[line_index].split()
 
-        if int(items[4]) in node_list:  # if IWB in submodel keep small watershed
+        if int(items[4]) in node_list:  # if IWB = GW node in submodel, keep small watershed
             sw_list.append(int(items[0]))  # ID
             
             # if IWBTS not in submodel, replace with '0'
@@ -78,14 +78,10 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
             if change:
                 swshwd_lines[line] = '\t'.join([i for i in items])
 
+            line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1)  
         else:  # remove these lines
             for i in range(0, int(items[3])):
                 del swshwd_lines[line_index]
-            line_index -= 1
-        line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1)  
-
-    if verbose:
-        print(f'  Submodel uses {len(sw_list)} of {nsw} small watersheds')
 
     # replace NSW
     swshwd_lines[nsw_line] = iwfm.pad_both(str(len(sw_list)), f=6, b=50) + ' '.join(
@@ -98,7 +94,6 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
     for sw in range(0, nsw):  
         if int(swshwd_lines[line_index].split()[0]) not in node_list:  # remove the line
             del swshwd_lines[line_index]
-        line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1) 
 
     line_index = iwfm.skip_ahead(line_index, swshwd_lines, 3)
 
@@ -106,7 +101,6 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
     for sw in range(0, nsw):
         if int(swshwd_lines[line_index].split()[0]) not in node_list:  # remove the line
             del swshwd_lines[line_index]
-        line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1) 
 
     line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1)
 
@@ -114,11 +108,13 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
     for sw in range(0, nsw):  
         if int(swshwd_lines[line_index].split()[0]) not in node_list:  # remove the line
             del swshwd_lines[line_index]
-        line_index = iwfm.skip_ahead(line_index, swshwd_lines, 0)
 
     swshwd_lines.append('')
     # -- write submodel small watersheds file
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(swshwd_lines))
+
+    if verbose:
+        print(f'  Wrote small watershed file {new_filename}')
 
     return

@@ -56,24 +56,25 @@ def gw_plot_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,
 
     # cycle through the list of wells in obs to print plots
     # initialize
-    i, count, date, meas = 1, 0, [], []
-    date.append(obs[0][1])
-    meas.append(obs[0][3])
-    name = well_list[0]
-
+    count, date, meas = 0, [], []
+    date = []         # initialize
+    meas = []         # initialize
+    obs_well_name = obs[0][0]        # first well name in observations list
     start_date = gwhyd_sim[0][0][0]  # get starting date
-    for j in range(1, len(obs)):  # move through the file
-        if obs[j][0] != name:
-            i = i + 1  # move index to next plot, then...
-            if name in well_dict:  # draw and save the current plot
-                iwfm.gw_plot_obs_draw(name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(name),start_date,titlewords,yaxis_width)
+
+    for j in range(1, len(obs)):                      # move through the observation file
+        if obs[j][0] != obs_well_name:                # reached the last observation for this well
+            if obs_well_name in well_dict:            # draw and save the current plot
+                iwfm.gw_plot_obs_draw(obs_well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(obs_well_name),start_date,titlewords,yaxis_width)
                 count += 1
-            # re-initialize for next observation well
-            date, meas, name = [], [], obs[j][0]
-        date.append(obs[j][1])
-        meas.append(obs[j][3])
+            date, meas, name = [], [], obs[j][0]      # re-initialize for next observation well
+            obs_well_name = obs[j][0]
+        elif obs[j][0] == obs_well_name:              # this observation is for this well
+            date.append(obs[j][1])
+            meas.append(obs[j][3])
+
     # make the last one
     if name in well_dict:
-        iwfm.gw_plot_obs_draw(name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(name),start_date,titlewords,yaxis_width)
+        iwfm.gw_plot_obs_draw(obs_well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(obs_well_name),start_date,titlewords,yaxis_width)
         count += 1
     return count

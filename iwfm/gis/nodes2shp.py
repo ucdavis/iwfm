@@ -1,6 +1,6 @@
 # nodes2shp.py
 # Create node shapefiles for an IWFM model
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,22 +17,16 @@
 # -----------------------------------------------------------------------------
 
 
-def nodes2shp(node_coords, node_list, node_strat, nlayers, shape_name, epsg=26910, verbose=False):
+def nodes2shp(node_coords, shape_name, epsg=26910, verbose=False):
     ''' nodes2shp() - Create an IWFM nodes shapefile 
+
+    TODO:
+      - change from fiona to pyshp and wkt format?
 
     Parameters
     ----------
     node_coords : list
         node coordinates
-    
-    node_list : list
-        Node numbers
-
-    node_strat : list
-        stratigraphy for each node
-    
-    nlayers : int
-        number of model layers
     
     shape_name : str
         output file name
@@ -48,60 +42,45 @@ def nodes2shp(node_coords, node_list, node_strat, nlayers, shape_name, epsg=2691
     nothing
 
     '''
-    import sys
-    import pandas as pd
-    import geopandas as gpd
-    import os
-    import shapefile
+    import fiona
+    from shapely.geometry import mapping, Point
 
-    node_shapename = f'{shape_name}_Nodes.shp'
-    print(f"Current working dir : {os.getcwd()}")
+    shapename = f'{shape_name}_Nodes.shp'
+
+    # Define the point feature geometry
+    schema = {
+        'geometry': 'Point',
+        'properties': {'node_id': 'int'},
+    }
+
+    # Write a new node shapefile
+    with fiona.open(
+            shapename,
+            'w',
+            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
+            driver='ESRI Shapefile',
+            schema=schema,
+        ) as out:
+        for i in range(len(node_coords)):
+            x, y = node_coords[i][1],node_coords[i][2]
+            point = Point(x,y)
+            properties = {'node_id': node_coords[i][0]}
+            feature = {'geometry': mapping(point), 'properties': properties}
+            out.write(feature)
+
+    if verbose:
+        print(f'  Wrote shapefile {shapename}')
+
+    return
+
+
+def calc_base(node_strat):
     # calculate base altitude for each node
+    nlayers = int(len(node_strat[0])/2 - 1)
     base = []
     for i in range(len(node_strat)):
         temp = node_strat[i][1]  # gse
         for j in range(nlayers * 2):
             temp = temp - node_strat[i][j + 2]
         base.append(temp)
-
-    # Create field names for layer properties
-    field_names = ['node_id','gse','base']
-    for i in range(nlayers):
-        field_names.extend((f'aqthick_{str(i + 1)}', f'laythick_{str(i + 1)}'))
-    nodes = shapefile.Writer(shapefile.POINT)
-    [nodes.field(field) for field in field_names]
-    for row in range(len(node_coords)):
-        nodes.point((float(node_coords[row][0])),(float(node_coords[row][1])))
-        temp_rec = [node_list[row], node_strat[row][1], base[row]]
-        temp_rec.extend(node_strat[row][i+1] for i in range(nlayers * 2))
-        nodes.record(*(temp_rec, ))
-
-    nodes.save(node_shapename)
-#    nodes.save(os.getcwd() + '\'' + node_shapename)
-
-#    # Create a pandas dataframe
-#    df = pd.DataFrame(
-#        {
-#            'node_id': [row[0] for row in node_strat],
-#            'gse': [row[1] for row in node_strat],
-#            'base': base,
-#            'easting': [row[0] for row in node_coords],
-#            'northing': [row[1] for row in node_coords],
-#        }
-#    )
-#    # Add two fields for each layer (aquiclude thickness and aquifer thickness)
-#    for i in range(0, nlayers * 2):  
-#        df.insert(i + 2, field_names[i], [row[i + 2] for row in node_strat])
-#    if verbose:
-#        print(f'  Created pandas dataframe for {node_shapename}')
-#
-#    # Convert pandas dataframe to geopandas geodataframe
-#    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.easting, df.northing))
-#    gdf.crs = f'epsg:{str(epsg)}'
-#
-#    # Write a new node shapefile - EPSG 26910 = NAD 83 UTM 10
-#    gdf.to_file(node_shapename)
-#    if verbose:
-#        print(f'  Wrote shapefile {node_shapename}')
-
-    return
+    return base

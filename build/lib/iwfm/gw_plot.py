@@ -51,15 +51,17 @@ def gw_plot(obs_file, gwhyd_info_file, gwhyd_files, gwhyd_names, yaxis_width, ti
     
     import iwfm as iwfm 
 
+    # read gw hydrograph information from IWFM Groundwater.dat file
     well_dict, well_list = iwfm.read_sim_wells(gwhyd_info_file)  
 
-    gwhyd_sim = iwfm.read_sim_hyds(len(gwhyd_files), gwhyd_files)  
+    # read simulated heads from multiple IWFM groundwater hydrograph files
+    gwhyd_sim = iwfm.read_sim_hyds(len(gwhyd_files), gwhyd_files)
 
-    if obs_file.lower() != 'none':  # have observed values
-      obs = iwfm.read_obs_smp(obs_file)
-      count = iwfm.gw_plot_obs(well_list,len(gwhyd_files),obs,gwhyd_sim,gwhyd_names,well_dict,titlewords,yaxis_width)
+    if obs_file.lower()[0] != 'n':  # have observed values
+        obs = iwfm.read_obs_smp(obs_file)
+        count = iwfm.gw_plot_obs(well_list,len(gwhyd_files),obs,gwhyd_sim,gwhyd_names,well_dict,titlewords,yaxis_width)
     else:                           # no observed values
-      count = iwfm.gw_plot_noobs(well_list,len(gwhyd_files),gwhyd_sim,gwhyd_names,well_dict,titlewords,yaxis_width)
+        count = iwfm.gw_plot_noobs(well_list,len(gwhyd_files),gwhyd_sim,gwhyd_names,well_dict,titlewords,yaxis_width)
     return count
 
 if __name__ == '__main__':

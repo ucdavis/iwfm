@@ -1,6 +1,6 @@
 # snodes2shp.py
 # Create stream node shapefiles for an IWFM model
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -19,6 +19,9 @@
 
 def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbose=False):
     ''' snodes2shp() - Creates an IWFM stream nodes shapefile 
+
+    TODO:
+      - change from fiona to pyshp and wkt format?
 
     Parameters
     ----------
@@ -45,16 +48,13 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
     nothing
 
     '''
-    import sys
-
-    import fiona  # read and write shapefiles
-    import fiona.crs  # fiona module defining crs
+    import fiona
     from shapely.geometry import Point, mapping
 
-    snode_shapename = f'{shape_name}_StreamNodes.shp'
+    shapename = f'{shape_name}_StreamNodes.shp'
 
     # Define the Point feature geometry
-    snode_schema = {
+    schema = {
         'geometry': 'Point',
         'properties': {
             'snode_id': 'int',
@@ -66,11 +66,11 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
 
     # Write a new stream node shapefile
     with fiona.open(
-            snode_shapename,
+            shapename,
             'w',
-            crs=fiona.crs.from_epsg(epsg),
+            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
             driver='ESRI Shapefile',
-            schema=snode_schema,
+            schema=schema,
         ) as out:
         for i in range(nsnodes):
             this_node = stnodes_dict.get(i + 1)  # gw_node, reach, bottom
@@ -91,5 +91,5 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
                     }
                 )
     if verbose:
-        print(f'  Wrote shapefile {snode_shapename}')
+        print(f'  Wrote shapefile {shapename}')
     return

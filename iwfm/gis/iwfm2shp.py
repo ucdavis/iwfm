@@ -1,6 +1,6 @@
 # iwfm2shp.py
 # Create shapefiles for an IWFM model
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     
     '''
 
-    import os, sys
+    import os
     import iwfm as iwfm
     import iwfm.gis as gis
 
@@ -59,6 +59,8 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     node_coords, node_list = iwfm.iwfm_read_nodes(pre_dict['node_file'], factor = 1)
     if verbose:
         print(f'  Read coordinates of {len(node_coords):,} nodes from {pre_dict["node_file"]}')
+
+    node_coord_dict = iwfm.list2dict(node_coords)    # Put node_coords into a dictionary
 
     node_strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
     if verbose:
@@ -84,10 +86,10 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
         print(' ')
 
     # == Create element shapefile
-    gis.elem2shp(elem_nodes,node_coords,elem_sub,lake_elems,shape_name,epsg=epsg,verbose=verbose)
+    gis.elem2shp(elem_ids,elem_nodes,node_coord_dict,elem_sub,lake_elems,shape_name,epsg=epsg,verbose=verbose)
 
     # == Create node shapefile
-    gis.nodes2shp(node_coords, node_list, node_strat, nlayers, shape_name,epsg=epsg,verbose=verbose)
+    gis.nodes2shp(node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     # == Create stream node shapefile
     gis.snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)

@@ -62,8 +62,8 @@ def iwfm_read_nodes(node_file, factor=0.0):
     node_list, node_coord = [], []
     for i in range(0, inodes):  
         l = node_lines[line_index + i].split()
-        node_list.append(int(l.pop(0)))
-        coords = [float(s) * factor for s in l]
-        node_coord.append(coords)
+        l[0], l[1], l[2] = int(l[0]), float(l[1]), float(l[2])
+        node_list.append(l[0])
+        node_coord.append(l)
 
     return node_coord, node_list

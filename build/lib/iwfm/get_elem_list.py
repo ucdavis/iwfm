@@ -43,12 +43,14 @@ def get_elem_list(elem_pairs_file):
 
     '''
     import iwfm as iwfm
+    import re
 
     elem_pairs = open(elem_pairs_file).read().splitlines()  # open and read input file
 
     elem_list = []
     for line in elem_pairs:  # cycle through the lines
-        elem_list.append([int(x) for x in line])
+        # -- add try-except to gracefully fail with error statement if file is not tab-delimited --
+        elem_list.append([int(x) for x in  re.split(';|,|\*| |\t',line)])
     elem_dict = iwfm.list2dict(elem_list)  # dictionary old elem -> new elem
 
     # also create a reverse dictionary new elem -> old elem

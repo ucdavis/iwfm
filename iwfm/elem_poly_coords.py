@@ -1,6 +1,6 @@
 # elem_poly_coords.py
 # Return a list of the (x,y) coordinates for the nodes of each elememnt
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def elem_poly_coords(elem_nodes, node_coords):
+def elem_poly_coords(elem_nodes, node_coord_dict):
     ''' elem_poly_coords() - Return a list of element coordinates 
         in the form: [[x0,y0],[x1,y1],[x2,y2]<,...>]
 
@@ -26,8 +26,8 @@ def elem_poly_coords(elem_nodes, node_coords):
     elem_nodes : list
         list of elements and associated nodes
     
-    node_coords : list
-        list of nodes and associated X and Y coordinates
+    node_coord_dict : dictionary
+        key = node_id, values = associated X and Y coordinates
 
     Returns
     -------
@@ -35,22 +35,15 @@ def elem_poly_coords(elem_nodes, node_coords):
         list of polygon coordinates
     
     '''
-    polygons = []
 
-    #print(f'  ==> elem_nodes[:4]: {elem_nodes[:4]}')
-    #print(f'  ==> node_coords[:4]: {node_coords[:4]}')
+    polygons = []
 
     for i in range(0, len(elem_nodes)):  # for each element ...
         coords = []
-        for j in range(0, len(elem_nodes[i])):  # for each node in the element ...
-            coords.append(
-                (
-                    node_coords[elem_nodes[i][j] - 1][0],
-                    node_coords[elem_nodes[i][j] - 1][1],
-                )
-            )
+        for j in elem_nodes[i]:  # for each node in the element ...
+            coords.append((node_coord_dict[j][0],node_coord_dict[j][1]))
         coords.append(
-            (node_coords[elem_nodes[i][0] - 1][0], node_coords[elem_nodes[i][0] - 1][1])
-        )  # close the polygon
+            (node_coord_dict[elem_nodes[i][0]][0], node_coord_dict[elem_nodes[i][0]][1])
+        )  # close the polygon with the first node
         polygons.append(coords)
     return polygons

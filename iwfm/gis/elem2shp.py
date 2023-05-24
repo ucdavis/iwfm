@@ -1,6 +1,6 @@
 # elem2shp.py
 # Create elements shapefile for an IWFM model
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,20 +17,23 @@
 # -----------------------------------------------------------------------------
 
 
-def elem2shp(elem_nodes, node_coords, elem_sub, lake_elems, shape_name,
+def elem2shp(elem_ids,elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_name,
     epsg=26910, verbose=False):
     ''' elem2shp() - Creates an IWFM element shapefile 
 
     TODO:
-      - change from fiona to pyshp and wkt format
+      - change from fiona to pyshp and wkt format?
 
     Parameters
     ----------
+    elem_ids : list
+        list of element id numbers
+    
     elem_nodes : list
         list of elements and associated nodes
-    
-    node_coords : list
-        list of nodes and associated X and Y coordinates
+
+    node_coord_dict : dictionary
+        key = node_id, values = associated X and Y coordinates
     
     elem_sub : list
         list of elements and associated subregions
@@ -56,27 +59,26 @@ def elem2shp(elem_nodes, node_coords, elem_sub, lake_elems, shape_name,
     import fiona.crs
     import shapefile as shp # pyshp
     from shapely.geometry import mapping, Polygon
-
     import iwfm as iwfm
 
-    elem_shapename = f'{shape_name}_Elements.shp'
+    shapename = f'{shape_name}_Elements.shp'
 
     # Create list of element polygons
-    polygons = iwfm.elem_poly_coords(elem_nodes, node_coords)
+    polygons = iwfm.elem_poly_coords(elem_nodes, node_coord_dict)
 
     # Define the polygon feature geometry
-    elem_schema = {
+    schema = {
         'geometry': 'Polygon',
         'properties': {'elem_id': 'int', 'subregion': 'int', 'lake_no': 'int'},
     }
 
     # Write a new element shapefile
     with fiona.open(
-            elem_shapename,
+            shapename,
             'w',
-            crs=fiona.crs.from_epsg(epsg),
+            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
             driver='ESRI Shapefile',
-            schema=elem_schema,
+            schema=schema,
         ) as out:
         for i in range(len(polygons)):
             poly = Polygon(polygons[i])
@@ -89,11 +91,11 @@ def elem2shp(elem_nodes, node_coords, elem_sub, lake_elems, shape_name,
                 {
                     'geometry': mapping(poly),
                     'properties': {
-                        'elem_id': i + 1,
+                        'elem_id': elem_ids[i],
                         'subregion': elem_sub[i],
                         'lake_no': lake_no,
                     },
                 }
             )
     if verbose:
-        print(f'  Wrote shapefile {elem_shapename}')
+        print(f'  Wrote shapefile {shapename}')

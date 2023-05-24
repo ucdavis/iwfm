@@ -1,7 +1,7 @@
 # sub_unsat_file.py
-# Copies the old node file and replaces the contents with those of the new
-# submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copies the old unsaturated zone file and replaces the contents with those 
+# of the new submodel, and writes out the new file
+# Copyright (C) 2020-2022 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ def sub_unsat_file(old_filename, new_filename, elem_list, verbose=False):
     '''
     import iwfm as iwfm
 
-    comments = ['Cc*#']
+    comments = ['C','c','*','#']
     elems = []
     for e in elem_list:
         elems.append(e[0])
@@ -67,5 +67,8 @@ def sub_unsat_file(old_filename, new_filename, elem_list, verbose=False):
 
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(unsat_lines))
+
+    if verbose:
+        print(f'  Wrote unsaturated zone file {new_filename}')
 
     return

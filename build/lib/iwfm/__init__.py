@@ -60,8 +60,28 @@ from iwfm.new_pp_dict import new_pp_dict
 
 from iwfm.iwfm_sub_sim import iwfm_sub_sim
 from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
+from iwfm.sub_sim_file import sub_sim_file
 from iwfm.sub_swhed_file import sub_swhed_file
 from iwfm.sub_unsat_file import sub_unsat_file
+from iwfm.sub_gw_file import sub_gw_file
+from iwfm.sub_gw_bc_file import sub_gw_bc_file
+from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+from iwfm.sub_gw_pump_file import sub_gw_pump_file
+from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+from iwfm.sub_gw_td_file import sub_gw_td_file
+from iwfm.sub_gw_subs_file import sub_gw_subs_file
+from iwfm.sub_streams_file import sub_streams_file
+from iwfm.sub_st_inflow_file import sub_st_inflow_file
+from iwfm.sub_st_bp_file import sub_st_bp_file
+from iwfm.sub_rootzone_file import sub_rootzone_file
+from iwfm.sub_rz_npc_file import sub_rz_npc_file
+from iwfm.sub_rz_pc_file import sub_rz_pc_file
+from iwfm.sub_rz_urban_file import sub_rz_urban_file
+from iwfm.sub_rz_nv_file import sub_rz_nv_file
+from iwfm.sub_remove_items import sub_remove_items
+from iwfm.sub_lu_file import sub_lu_file
+
 from iwfm.new_sim_dict import new_sim_dict
 
 # -- IWFM simulation files --------------------------------

@@ -1,6 +1,6 @@
-# __init__.py for iwfm.pest package
-# Classes, methods and functions for interactions between IWFM and PEST
-# Copyright (C) 2018-2021 University of California
+# read_hdf5.py 
+# read an hdf5 file
+# Copyright (C) 2018-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,7 +16,28 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-# -- PEST functions ---------------------------------------
-from iwfm.pest.setrot import setrot
-from iwfm.pest.write_results import write_results
-from iwfm.pest.write_rmse_bias import write_rmse_bias
+def read_hdf5(filename, verbose=False):
+    '''read_hdf5() - Read an HDF5 file
+
+    Parameters
+    ----------
+    filename : str
+        name of hdf5 file
+    
+
+    Returns
+    -------
+    f : file object
+
+    '''
+    import h5py
+    import iwfm as iwfm
+
+    iwfm.file_test(filename)
+
+    f = h5py.File(filename)
+
+    if verbose:
+        print(f'  Opened {filename}')
+
+    return f
