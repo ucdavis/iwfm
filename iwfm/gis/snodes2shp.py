@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbose=False):
+def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbose=False):
     ''' snodes2shp() - Creates an IWFM stream nodes shapefile 
 
     TODO:
@@ -28,8 +28,8 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
     nsnodes : int
         number of stream nodes
     
-    stnodes_dict : dictionary
-        key = stream node, values = groundwater node, ...
+    snodes_list : list of lists
+        each contains [snode: int, gwnode: int, reach: int]
     
     node_coords : list
         stream node coordinates
@@ -60,7 +60,6 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
             'snode_id': 'int',
             'gw_node': 'int',
             'reach': 'int',
-            'bottom': 'float:9.2',
         },
     }
 
@@ -73,23 +72,17 @@ def snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name, epsg=26910, verbo
             schema=schema,
         ) as out:
         for i in range(nsnodes):
-            this_node = stnodes_dict.get(i + 1)  # gw_node, reach, bottom
-            gw_node = this_node[0]
+            snode_id, gw_node, reach = snodes_list[i]
             if gw_node != 0:
-                point = Point(
-                    [(node_coords[gw_node - 1][0], node_coords[gw_node - 1][1])]
-                )
-                out.write(
-                    {
-                        'geometry': mapping(point),
-                        'properties': {
-                            'snode_id': i + 1,
-                            'gw_node': this_node[0],
-                            'reach': this_node[1],
-                            'bottom': float(this_node[2]),
-                        },
+                x, y = node_coords[gw_node - 1][1],node_coords[gw_node - 1][2]
+                point = Point(x,y)
+                properties = {
+                    'snode_id': snode_id,
+                    'gw_node': gw_node,
+                    'reach': reach,
                     }
-                )
+                feature = {'geometry': mapping(point), 'properties': properties}
+                out.write(feature)
     if verbose:
         print(f'  Wrote shapefile {shapename}')
     return

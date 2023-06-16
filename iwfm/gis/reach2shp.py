@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910, 
+def reach2shp(reach_list, snodes_list, node_coords, shape_name, epsg=26910, 
         verbose=False):
     ''' reach2shp() - Creates an IWFM stream reaches shapefile from IWFM
         Preprocessor stream specification information
@@ -30,8 +30,8 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
     reach_list : list
         list of elements and associated nodes
     
-    stnodes_dict : dictionary
-        key = stream nodes, values = associated groundeater nodes
+    snodes_list : list of lists
+        each contains [snode: int, gwnode: int, reach: int]
     
     node_coords : list
         list of nodes and associated X and Y coordinates
@@ -69,23 +69,21 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
         ) as out:
         for i in range(len(reach_list)):
             upper, lower = reach_list[i][1], reach_list[i][2]
-            sncoords, n = [], 0
+            points, n = [], 0
             for j in range(upper, lower + 1):
-                this_node = stnodes_dict.get(j)
-                gw_node = this_node[0]
+                snode_id, gw_node, reach = snodes_list[j-1]
                 if gw_node != 0:
-                    sncoords.append(
-                        (node_coords[gw_node - 1][0], node_coords[gw_node - 1][1])
-                    )
+                    x, y = node_coords[gw_node - 1][1],node_coords[gw_node - 1][2]
+                    points.append((x, y))
                     n += 1
-            if sncoords:
-                line = LineString(sncoords)
-                out.write(
-                    {
-                        'geometry': mapping(line),
-                        'properties': {'reach_id': i + 1, 'flows_to': reach_list[i][3]},
+            if points:
+                line = LineString(points)
+                properties = {
+                    'reach_id': i + 1,
+                    'flows_to': reach_list[i][3],
                     }
-                )
+                feature = {'geometry': mapping(line), 'properties': properties}
+                out.write(feature)
     if verbose:
         print(f'  Wrote shapefile {shapename}\n')
     return

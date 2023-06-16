@@ -1,6 +1,6 @@
 # iwfm_read_streams.py
 # read IWFM preprocessor streams file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -126,4 +126,4 @@ def iwfm_read_streams(stream_file):
         key, values = i + 1, [snodes_list[j][1],snodes_list[j][2],selev[i]]
         stnodes_dict[key] = values
 
-    return reach_list, stnodes_dict, len(snodes_list), rating_dict
+    return reach_list, snodes_list, stnodes_dict, len(snodes_list), rating_dict

@@ -1,6 +1,6 @@
-# sim_head.py
-# Return the simulated head for a given date and column
-# Copyright (C) 2020-2021 University of California
+# dts2days.py
+# Calculate number of days since simulation start
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,35 +16,30 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-
-def sim_head(date, col, heads):
-    ''' sim_head() - Return the simulated head for a given date and column
-
+def dts2days(dates, start_date):
+    ''' dts2days() - Converts a series of dates to a series of float values that represent days 
+        since start_date.
+    
     Parameters
     ----------
-    date : datetime object
-        Date for simulated head value
-  
-    col : int
-        Column number of simulated heads dataframe
-  
-    heads : pandas dataframe
-        Index = dates, cols 1-n = simulated head values
-  
+    dates : list of datetime objects
+        dates during simulation period
+
+    start_date : dtaetime object
+        simulation start time
+
     Returns
     -------
-    h : float
-        Simulated head value
+    out : list of floats
+        each is a dates item - start_date
 
     '''
+    from datetime import date, datetime
 
-    print(f' function has not been created ')
-    h = 0.0
-    return h
-
-#    with open(name + '_obs.out', 'w') as o:
-#        o.write(f'# Observations for well {name}\n')
-#        o.write('# Date\tObserved\tModeled\n')
-#        for i in range(0, len(date)):
-#            o.write(f'{date[i]}\t{meas[i]}\t{sim[i]}\n')
-#    return i
+    if isinstance(dates, datetime): # there's only one item, not a list
+        out = (dates - start_date).days
+    else:
+        out = []
+        for d in dates:
+            out.append((d - start_date).days)
+    return out

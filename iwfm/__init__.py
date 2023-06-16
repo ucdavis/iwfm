@@ -1,7 +1,7 @@
 # __init__.py for iwfm package
 # Classes and methods to read, write and modify IWFM and IGSM files and
 # associated data files
-# Copyright (C) 2018-2021 University of California
+# Copyright (C) 2018-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ from iwfm.idw import idw
 
 # -- IWFM model file ---------------------------------------
 from iwfm.iwfm_read_model_file import iwfm_read_model_file
+from iwfm.sim_info import sim_info
 
 # -- IWFM preprocessor files -------------------------------
 from iwfm.iwfm_read_preproc import iwfm_read_preproc
@@ -42,6 +43,9 @@ from iwfm.iwfm_aquifer_bottom import iwfm_aquifer_bottom
 from iwfm.iwfm_aquitard_thickness import iwfm_aquitard_thickness
 from iwfm.iwfm_aquitard_top import iwfm_aquitard_top
 from iwfm.iwfm_aquitard_bottom import iwfm_aquitard_bottom
+
+# -- IWFM simulation files -------------------------------
+from iwfm.iwfm_read_gw import iwfm_read_gw
 
 # -- create a submodel ------------------------------------
 from iwfm.iwfm_sub_preproc import iwfm_sub_preproc
@@ -111,6 +115,9 @@ from iwfm.igsm_read_strat import igsm_read_strat
 from iwfm.igsm_read_lake import igsm_read_lake
 from iwfm.igsm_read_streams import igsm_read_streams
 
+# -- IWFM budget files ------------------------------------
+from iwfm.budget_info import budget_info
+
 # -- post-process IWFM results ----------------------------
 from iwfm.write_results import write_results
 from iwfm.simhyd_obs import simhyd_obs
@@ -158,6 +165,7 @@ from iwfm.print_to_string import print_to_string
 from iwfm.file_2_list import file_2_list
 
 # -- date and time methods --------------------------------
+from iwfm.diff_dates import diff_dates
 from iwfm.dss_date import dss_date
 from iwfm.month import month
 from iwfm.day import day
@@ -166,6 +174,11 @@ from iwfm.text_date import text_date
 from iwfm.date2text import date2text
 from iwfm.index_date import index_date
 from iwfm.date_index import date_index
+from iwfm.str2datetime import str2datetime
+from iwfm.dts2days import dts2days
+from iwfm.dates_diff import dates_diff
+from iwfm.secs_between import secs_between
+from iwfm.Unbuffered import Unbuffered
 
 # -- dictionary methods -----------------------------------
 from iwfm.file2dict import file2dict
@@ -199,11 +212,6 @@ from iwfm.file_2_bak import file_2_bak
 from iwfm.file_type_error import file_type_error
 from iwfm.file_get_path import file_get_path
 
-# -- date and time methods --(using datetime module) ------
-from iwfm.dates_diff import dates_diff
-from iwfm.secs_between import secs_between
-from iwfm.Unbuffered import Unbuffered
-
 # -- unit conversion --------------------------------------
 from iwfm.cfs2afd import cfs2afd
 
@@ -213,6 +221,7 @@ from iwfm.logtrans import logtrans
 from iwfm.rmse_calc import rmse_calc
 from iwfm.bias_calc import bias_calc
 from iwfm.round import round
+from iwfm.column_sum import column_sum
 
 # -- data file methods ------------------------------------
 from iwfm.cdec2monthly import cdec2monthly

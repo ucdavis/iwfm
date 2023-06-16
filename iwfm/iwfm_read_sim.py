@@ -53,47 +53,47 @@ def iwfm_read_sim(sim_file):
     sim_lines = open(sim_file).read().splitlines()
 
     line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments
-    sim_dict['preout'] = iwfm.file_get_path(sim_lines[line_index].split()[0])  
+    sim_dict['preout'] = sim_lines[line_index].split()[0]
     
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['gw'] = iwfm.file_file_get_path(sim_lines[line_index].split()[0])
+    sim_dict['gw'] = sim_lines[line_index].split()[0]
     
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['stream'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    sim_dict['stream'] = sim_lines[line_index].split()[0]
     
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
     temp = sim_lines[line_index].split()[0]
     if temp[0] == '/':   # check for presence of lake file
         lake_file = ''
     else:
-        lake_file = iwfm.file_get_path(temp)  
+        lake_file = temp
     sim_dict['lake'] = lake_file
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['rootzone'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    sim_dict['rootzone'] = sim_lines[line_index].split()[0]
     
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['smallwatershed'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    sim_dict['smallwatershed'] = sim_lines[line_index].split()[0]
     
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['unsat'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    sim_dict['unsat'] = sim_lines[line_index].split()[0]
     
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['irrfrac'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    sim_dict['irrfrac'] = sim_lines[line_index].split()[0]
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['supplyadj'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
+    sim_dict['supplyadj'] = sim_lines[line_index].split()[0]
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
     sim_dict['precip'] = sim_lines[line_index].split()[0]
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-    sim_dict['et'] = iwfm.file_get_path(sim_lines[line_index].split()[0])
-    
+    sim_dict['et'] = sim_lines[line_index].split()[0]
+
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
     sim_dict['start'] = sim_lines[line_index].split()[0] 
     
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
+    line_index = iwfm.skip_ahead(line_index + 2, sim_lines, 0)  
     sim_dict['step'] = sim_lines[line_index].split()[0]  
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  

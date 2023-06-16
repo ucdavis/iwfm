@@ -98,7 +98,7 @@ def igsm2shp(main_file, shape_name, verbose=False):
         print(f'  Read info for {len(reach_list):,} stream reaches and {nsnodes:,} stream nodes from {stream_file}\n')
 
 
-    gis.nodes2shp(node_coords, node_strat, nlayers, shape_name, verbose=verbose)
+    gis.nodes2shp(node_coords, shape_name, verbose=verbose)
 
     gis.igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,
         shape_name,verbose=verbose)

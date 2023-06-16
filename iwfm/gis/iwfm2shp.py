@@ -78,7 +78,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
         if verbose:
             print('  No lakes file')
 
-    reach_list, stnodes_dict, nsnodes, rating_dict = iwfm.iwfm_read_streams(pre_dict['stream_file'])
+    reach_list, snodes_list, stnodes_dict, nsnodes, rating_dict = iwfm.iwfm_read_streams(pre_dict['stream_file'])
     if verbose:
         print(f'  Read info for {len(reach_list):,} stream reaches and {nsnodes:,} stream nodes from {pre_dict["stream_file"]}')
 
@@ -92,10 +92,10 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     gis.nodes2shp(node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     # == Create stream node shapefile
-    gis.snodes2shp(nsnodes, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
+    gis.snodes2shp(nsnodes, snodes_list, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     # == Create stream reach shapefile
-    gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
+    gis.reach2shp(reach_list, snodes_list, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     return 
 
