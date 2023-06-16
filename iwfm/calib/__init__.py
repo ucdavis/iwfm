@@ -17,6 +17,25 @@
 # -----------------------------------------------------------------------------
 
 # -- PEST functions ---------------------------------------
+from iwfm.calib.compare import compare
+from iwfm.calib.get_hyd_fname import get_hyd_fname
+from iwfm.calib.get_hyd_info import get_hyd_info
+from iwfm.calib.get_hyd_names import get_hyd_names
+from iwfm.calib.get_obshyd import get_obshyd
+from iwfm.calib.get_sim_hyd import get_sim_hyd
+from iwfm.calib.headdiff_hyds import headdiff_hyds
+from iwfm.calib.headdiff_read import headdiff_read
+from iwfm.calib.hyds_missed import hyds_missed
+from iwfm.calib.iwfm2obs import iwfm2obs
+from iwfm.calib.ltbud import ltbud
+from iwfm.calib.ltsmp import ltsmp
+from iwfm.calib.obs_smp import obs_smp
+from iwfm.calib.read_settings import read_settings
+from iwfm.calib.real2iwfm import real2iwfm
 from iwfm.calib.setrot import setrot
+from iwfm.calib.sim_4_sites import sim_4_sites
+from iwfm.calib.sim_smp import sim_smp
+from iwfm.calib.to_smp_ins import to_smp_ins
+from iwfm.calib.write_missing import write_missing
 from iwfm.calib.write_results import write_results
 from iwfm.calib.write_rmse_bias import write_rmse_bias

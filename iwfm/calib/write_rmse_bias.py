@@ -1,6 +1,7 @@
 # write_rmse_bias.py
 # write RMSE and bias values to a text file
 # Copyright (C) 2020-2021 University of California
+# Based on a PEST utility written by John Doherty
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-def write_rmse_bias(output_filename, well_dict, well_name, rmse, bias, count):
+def write_rmse_bias(output_filename, well_dict, well_names, rmse, bias, count):
     ''' write_rmse_bias() - Write the RMSE and Bias values plus well info
         (name,x,y,layer) for all observation wells to a text file
 
@@ -29,7 +30,7 @@ def write_rmse_bias(output_filename, well_dict, well_name, rmse, bias, count):
     well_dict : dictionary
         well data, key=well_name, values=[X,Y,Layer]
 
-    well_name : list
+    well_names : list
         list of well_dict keys, for example state well names
 
     rmse : arr
@@ -48,10 +49,10 @@ def write_rmse_bias(output_filename, well_dict, well_name, rmse, bias, count):
     '''
     with open(output_filename, 'w') as o:
         o.write('Order\tWell_Name\tX\tY\tLayer\tRMSE\tBias\tCount\n')
-        for i in range(0, len(well_name)):
-            if well_dict.get(well_name[i]) is not None:
-                info = well_dict.get(well_name[i])
-                o.write(f'{i+1}\t{well_name[i]}\t{round(info[1], 2)}'+
+        for i in range(0, len(well_names)):
+            if well_dict.get(well_names[i]) is not None:
+                info = well_dict.get(well_names[i])
+                o.write(f'{i+1}\t{well_names[i]}\t{round(info[1], 2)}'+
                     f'\t{round(info[2], 2)}\t{info[3]}\t{round(rmse[i], 2)}'+
                     f'\t{round(bias[i], 2)}\t{count[i]}\n')
     return
