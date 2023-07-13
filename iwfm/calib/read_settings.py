@@ -1,6 +1,6 @@
 # read_settings.py
 # Read a PEST-style settings file
-# Copyright (C) 2018-2020 Hydrolytics LLC
+# Copyright (C) 2018-2020 University of California
 # Based on a PEST utility written by John Doherty
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it

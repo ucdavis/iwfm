@@ -1,6 +1,6 @@
 # setup.py for iwfm package
 # Classes, methods and functions to read, write and modify IWFM and IGSM files
-# Copyright (C) 2018-2021 Hydrolytics LLC
+# Copyright (C) 2018-2023 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,14 +33,11 @@ setup(
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
-        install_requires= ['area','bs4','cryptography','python-csv','datetime',
-            'dbfread','fiona','folium','fpdf','gdal','geocoder','geojson',
-            'geopandas','hist','matplotlib','moto','numpy','ogr',
-            'osmnx','osr','pandas','pathlib','pillow','pngcanvas',
-            'pynmea','PyPDF2','pyprog','pyshp','rasterio','reportlab','requests',
-            'rust','scipy','shapely','statistics','tabula-py','utm','xlrd',
-            'xlsxwriter'
-            # 'pymysql','Rtree','wkt','osgeo', 
+        install_requires= ['area', 'bs4', 'folium', 'fpdf', 'geocoder', 
+            'geojson', 'geopandas', 'matplotlib', 'numpy', 'ogr', 'osmnx', 
+            'pandas', 'pathlib', 'pillow', 'pngcanvas', 'pynmea', 'pypdf2', 
+            'pyshp', 'python_dateutil', 'rasterio', 'requests', 'scipy', 
+            'statistics', 'utm', 'xlrd'
             # add any additional packages that need to be installed along with your package. Eg: 'qgis'
         ],
         python_requires='~=3.8',

@@ -2,7 +2,7 @@
 # Read IWFM hydrograph output files and corresponding observation smp files,
 # interpolate simulated values to the observation times ('simulated equivalents'),
 # and save them in an smp file, optionally writing a paired instruction file.
-# Copyright (C) 2020-2023 Hydrolytics LLC
+# Copyright (C) 2020-2023 University of California
 # Based on a PEST utility written by Matt Tonkin
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it

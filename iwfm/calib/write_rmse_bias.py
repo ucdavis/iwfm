@@ -1,6 +1,6 @@
 # write_rmse_bias.py
 # write RMSE and bias values to a text file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # Based on a PEST utility written by John Doherty
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it

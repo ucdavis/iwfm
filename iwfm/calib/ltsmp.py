@@ -1,6 +1,6 @@
 # ltsmp.py
 # Read a PEST SMP file, and log-transform the observation values
-# Copyright (C) 2018-2020 Hydrolytics LLC
+# Copyright (C) 2018-2020 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
