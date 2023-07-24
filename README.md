@@ -27,7 +27,9 @@ There are two potential installation errors, with workarounds described here.
 1. pip may stop when trying to install demjson. This package will install using an older version of setuptools.
 Roll back the setuptools to version 57.5.0, install demjson, and then update to the current setuptools.
 	> pip install setuptools==57.5.0
+ 
 	> pip install demjson
+ 
 	> pip install --upgrade setuptools
 Then run ‘pip install -e iwfm’ again.
 
