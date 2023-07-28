@@ -230,15 +230,6 @@ from iwfm.detaw_2_table import detaw_2_table
 from iwfm.dicu2table import dicu2table
 from iwfm.write_flows import write_flows
 
-# -- Excel methods -----------------------------------------
-from iwfm.bud2xl import bud2xl
-from iwfm.xl_open import xl_open
-from iwfm.xl_write_2d import xl_write_2d
-from iwfm.xl_save import xl_save
-from iwfm.xl_quit import xl_quit
-from iwfm.write_2_excel import write_2_excel
-
-
 # -- multiprocessing --------------------------------------
 from iwfm.multiproc import multiproc
 

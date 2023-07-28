@@ -1,6 +1,6 @@
 # bud2xl.py
 # Read IWFM Budget or Z-Budget output file and paste into existing Excel workbook
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -86,9 +86,9 @@ def bud2xl(budget_file, excel_file, verbose=False, row = 6):
     for t in range(0, tables):  
         line += header  
         budget_data = []
-        for j in range(0, table):
-            list = file_lines[line].split()
-            budget_data.append(list)
+        for _ in range(table):
+            lines = file_lines[line].split()
+            budget_data.append(lines)
             line += 1
         line += footer  
         # -- write to excel worksheet
