@@ -50,7 +50,7 @@ def grid_colorize(source, target):
     # Step through colors from: blue-green-yellow-orange-red.
     # Blue=low elevation, Red=high-elevation
     step = h / 256.0
-    for i in range(256):  # Build the palette
+    for _ in range(256):
         rp, gp, bp = colorsys.hsv_to_rgb(h, s, v)
         r = int(rp * 255)
         g = int(gp * 255)

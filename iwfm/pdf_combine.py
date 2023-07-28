@@ -54,10 +54,10 @@ def pdf_combine(start_dir, save_dir, save_name):
     for filename in mergelist:
         count += 1
         pdfFileObj = open(filename, 'rb')
-        pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-        for pageNum in range(pdfReader.numPages):  
-            pageObj = pdfReader.getPage(pageNum)
-            pdfWriter.addPage(pageObj)
+        pdfReader = PyPDF2.PdfReader(pdfFileObj)
+        for pageNum in range(len(pdfReader.pages)):  
+            pageObj = pdfReader.pages[pageNum]
+            pdfWriter.add_page(pageObj)
 
     os.chdir(start_dir) 
     pdfOutput = open(save_name, 'wb') 

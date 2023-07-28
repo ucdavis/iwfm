@@ -32,5 +32,4 @@ def raster_open(infile):
     '''
     import gdal
 
-    raster = gdal.Open(infile)
-    return raster
+    return gdal.Open(infile)

@@ -59,8 +59,8 @@ def mysql_create(dbname, host='localhost', port=3306, user='root', passwd='', ve
     cur = conn.cursor()
 
     # check if database exists, and drop it if it does
-    cur.execute('DROP DATABASE IF EXISTS ' + dbname)
-    cur.execute('CREATE DATABASE ' + dbname)
+    cur.execute(f'DROP DATABASE IF EXISTS {dbname}')
+    cur.execute(f'CREATE DATABASE {dbname}')
 
     # Close cursor and connection
     cur.close()

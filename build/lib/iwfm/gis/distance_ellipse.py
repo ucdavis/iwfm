@@ -58,7 +58,7 @@ def distance_ellipse(p1, p2, units='m'):
     cosU2 = math.cos(U2)
     lam = L
 
-    for i in range(100):
+    for _ in range(100):
         sinLam = math.sin(lam)
         cosLam = math.cos(lam)
         sinSigma = math.sqrt(
@@ -82,7 +82,7 @@ def distance_ellipse(p1, p2, units='m'):
             * sinSigma
             * (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM))
         )
-        if not abs(lam - LP) > 1e-12:
+        if abs(lam - LP) <= 1e-12:
             break
     uSq = cosSqAlpha * (a ** 2 - b ** 2) / b ** 2
     A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)))
@@ -105,12 +105,11 @@ def distance_ellipse(p1, p2, units='m'):
         )
     )
     s = b * A * (sigma - deltaSigma)  # distance in meters
-    if units == 'mi':
-        distance = s * 0.000621371  # miles
-    elif units == 'ft':
-        distance = s * 3.28084  # feet
+    if units == 'ft':
+        return s * 3.28084
     elif units == 'km':
-        distance = s / 1000  # kilometers
-    else:  # units == 'm':
-        distance = s  # meters
-    return distance
+        return s / 1000
+    elif units == 'mi':
+        return s * 0.000621371
+    else:
+        return s

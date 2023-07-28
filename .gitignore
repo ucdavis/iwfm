@@ -17,5 +17,10 @@
 *.ini
 
 # local python files
-__pycache__
-iwfm.egg-info
+__pycache__/
+build/
+dist/
+iwfm.egg-info/
+*.bak
+*.whl
+*.gz

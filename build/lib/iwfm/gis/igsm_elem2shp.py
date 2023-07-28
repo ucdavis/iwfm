@@ -54,8 +54,8 @@ def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
     '''
     import sys
 
-    import fiona 
-    import fiona.crs 
+    import fiona
+    import fiona.crs
     from shapely.geometry import mapping, Polygon
 
     import iwfm as iwfm
@@ -78,18 +78,18 @@ def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
         },
     }
 
-    # Write a new element shapefile 
+    # Write a new element shapefile
     with fiona.open(
-        elem_shapename,
-        'w',
-        crs=fiona.crs.from_epsg(epsg),
-        driver='ESRI Shapefile',
-        schema=elem_schema,
-    ) as out:
-        for i in range(0, len(polygons)):
+            elem_shapename,
+            'w',
+            crs=fiona.crs.from_epsg(epsg),
+            driver='ESRI Shapefile',
+            schema=elem_schema,
+        ) as out:
+        for i in range(len(polygons)):
             poly = Polygon(polygons[i])
             lake_no = 0
-            for j in range(0, len(lake_elems)):
+            for j in range(len(lake_elems)):
                 if lake_elems[j][1] == i + 1:  # lake on this element
                     lake_no = lake_elems[j][0]
             out.write(

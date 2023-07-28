@@ -34,7 +34,7 @@ def histogram_draw(hist, scale=True):
     
     '''
     import turtle as t
-    
+
     t.color('black')
     # Draw the axes
     axes = ((-355, -200), (355, -200), (-355, -200), (-355, 250))
@@ -61,7 +61,7 @@ def histogram_draw(hist, scale=True):
         t.goto(x, y - 10)
         t.up()
         t.goto(x, y - 25)
-        t.write('{}'.format((i * 25)), align='center')
+        t.write(f'{i * 25}', align='center')
     # y axis
     x = -355
     y = -200
@@ -82,7 +82,7 @@ def histogram_draw(hist, scale=True):
         t.goto(x - 10, y)
         t.up()
         t.goto(x - 15, y - 6)
-        t.write('{}'.format((i * label)), align='right')
+        t.write(f'{i * label}', align='right')
     # Plot each histogram as a colored line
     x_ratio = 709.0 / 256
     y_ratio = 450.0 / pixels

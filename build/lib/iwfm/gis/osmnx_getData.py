@@ -33,5 +33,4 @@ def osmnx_getData(place):
     '''
     import osmnx
 
-    ox = osmnx.core.graph_from_place(place, network_type='drive')
-    return ox
+    return osmnx.core.graph_from_place(place, network_type='drive')

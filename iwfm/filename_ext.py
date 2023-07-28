@@ -1,6 +1,6 @@
 # filename_ext.py
 # Return filename extension
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ def filename_ext(filename, ext):
     
     '''
     if filename.find('.') == len(filename) - 1:  # if last char is '.'
-        filename = filename[0 : len(filename) - 1]  # remove it
-    if '.' + ext not in filename:
-        filename = filename + '.' + ext
+        filename = filename[:-1]
+    if f'.{ext}' not in filename:
+        filename = f'{filename}.{ext}'
     return filename

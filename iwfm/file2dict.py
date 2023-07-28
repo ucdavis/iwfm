@@ -1,6 +1,6 @@
 # file2dict.py
 # Read file of paired items into a dictionary
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ def file2dict(infile, key_field=0, val_field=1, skip=0):
 
     d = {}
     info = open(infile).read().splitlines()  # open and read input file
-    for i in range(0, len(info)):
+    for i in range(len(info)):
         if i > skip - 1:  # because of zero indexing
             items = re.split(';|,|\*|\n|\t', info[i])
             key, values = items[key_field], items[val_field]

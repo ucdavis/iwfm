@@ -1,6 +1,6 @@
 # file_test.py
 # Test for file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,4 +35,3 @@ def file_test(filename):
 
     if not os.path.isfile(filename):  # test that input file exists
         iwfm.file_missing(filename)
-    return

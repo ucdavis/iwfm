@@ -1,6 +1,6 @@
 # file_get_path.py
 # Return the path to a file as a string
-# Copyright (C) 2018-2021 University of California
+# Copyright (C) 2018-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,5 +34,4 @@ def file_get_path(filename):
     from pathlib import Path
 
     fpath = re.split('\\|/', filename)
-    newpath = Path('/'.join(fpath))
-    return newpath
+    return Path('/'.join(fpath))

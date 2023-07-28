@@ -32,5 +32,4 @@ def shp_get(infile):
     '''
     import iwfm as iwfm
 
-    shp = iwfm.gis.shp_get_PyShp(infile)
-    return shp
+    return iwfm.gis.shp_get_PyShp(infile)

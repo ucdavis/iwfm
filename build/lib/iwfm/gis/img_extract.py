@@ -39,8 +39,8 @@ def img_extract(source, target):
     import ogr as ogr
     import osr as osr
 
-    srcDS = gdal.Open(source)  
-    band = srcDS.GetRasterBand(1)  
+    srcDS = gdal.Open(source)
+    band = srcDS.GetRasterBand(1)
     mask = band                                     # Force gdal to use the band as a mask
 
     driver = ogr.GetDriverByName('ESRI Shapefile')  # Set up the output shapefile
@@ -53,5 +53,4 @@ def img_extract(source, target):
     fd = ogr.FieldDefn('DN', ogr.OFTInteger)  # Set up the dbf file
     layer.CreateField(fd)
     dst_field = 0
-    extract = gdal.Polygonize(band, mask, layer, dst_field, [], None)
-    return extract
+    return gdal.Polygonize(band, mask, layer, dst_field, [], None)

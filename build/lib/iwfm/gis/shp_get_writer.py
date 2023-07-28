@@ -36,5 +36,4 @@ def shp_get_writer(outfile, type):
     '''
     import shapefile  # PyShp
 
-    w = shapefile.Writer(outfile, shapeType=type)  
-    return w
+    return shapefile.Writer(outfile, shapeType=type)

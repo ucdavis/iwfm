@@ -36,6 +36,6 @@ def point2geojson(point, verbose=False):
 
     geojs = geojson.Point(point)
     if verbose:
-        print(f'  GeoJSON Data: ')
+        print('  GeoJSON Data: ')
         print(geojson.dumps(geojs, indent=5))
     return geojs

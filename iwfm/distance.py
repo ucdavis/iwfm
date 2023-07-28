@@ -1,6 +1,6 @@
 # distance.py
 # distance between two (x,y) points
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,5 +36,5 @@ def distance(a, b):
     '''
     import math
 
-    dist = math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
-    return dist
+    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+

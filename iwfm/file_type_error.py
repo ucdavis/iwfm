@@ -1,6 +1,6 @@
 # file_type_error.py
 # Message re. wrong file type
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -38,4 +38,3 @@ def file_type_error(filename, filetype):
 
     print(f'  {filename} must be a {filetype} file.\n  Exiting...')
     sys.exit()
-    return

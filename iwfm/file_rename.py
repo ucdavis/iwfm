@@ -1,6 +1,6 @@
 # file_rename.py
 # Rename file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -50,4 +50,3 @@ def file_rename(filename, newname, force=0):
             print('  *   Quitting.')
             sys.exit()
     os.rename(filename, newname)
-    return

@@ -1,6 +1,6 @@
 # file_missing.py
 # Print message to console and exit
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -39,4 +39,3 @@ def file_missing(filename):
     print('  * ')
     print('  *****************************************************************')
     sys.exit()
-    return

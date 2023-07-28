@@ -31,5 +31,4 @@ def geojson2shp(geojs):
     '''
     import geojson as geo
 
-    point = geo.asShape(geojs)
-    return point
+    return geo.asShape(geojs)

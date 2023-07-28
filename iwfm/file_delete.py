@@ -1,6 +1,6 @@
 # file_delete
 # Delete file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,4 +34,4 @@ def file_delete(filename):
     if os.path.isfile(filename):  # if file exists
         os.remove(filename)  # delete it
     # else ... add functionality for file not present, in use, etc?
-    return
+
