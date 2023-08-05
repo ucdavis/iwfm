@@ -115,8 +115,12 @@ from iwfm.igsm_read_strat import igsm_read_strat
 from iwfm.igsm_read_lake import igsm_read_lake
 from iwfm.igsm_read_streams import igsm_read_streams
 
-# -- IWFM budget files ------------------------------------
+# -- IWFM budget and zbudget files ------------------------
+from iwfm.budgets import budgets
 from iwfm.budget_info import budget_info
+from iwfm.iwfm_read_bud import iwfm_read_bud
+from iwfm.bud2csv import bud2csv
+from iwfm.zbudget2csv import zbudget2csv
 
 # -- post-process IWFM results ----------------------------
 from iwfm.write_results import write_results

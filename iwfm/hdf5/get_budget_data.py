@@ -60,7 +60,9 @@ def get_budget_data(bud_file,
     '''
     
     from pywfm import IWFMBudget
+    import iwfm as iwfm
 
+    iwfm.file_test(bud_file)                        # test that input file exists
     bud = IWFMBudget(bud_file)                      # open budget HDF file
     
     # get some basic information about the file contents
