@@ -21,5 +21,6 @@
 from iwfm.hdf5.read_hdf5 import read_hdf5
 from iwfm.hdf5.get_budget_data import get_budget_data
 from iwfm.hdf5.hdfbud2xl import hdfbud2xl
+from iwfm.hdf5.get_zbudget_data import get_zbudget_data
 
 
