@@ -1,4 +1,4 @@
-# budget.py
+# budgets.py
 # Read information from an IWFM Budget.in file and write output to 
 # an Excel file (perhaps in future also to csv file or other type of file)
 # Copyright (C) 2020-2023 University of California

@@ -20,6 +20,8 @@
 def file2dict_int(infile, key_field=0, val_field=1, skip=0):
     ''' file2dict_int() - Read file with paired integers, return dictionary 
 
+    TODO: merge into file2dict as type=='int' option, also add 'float' etc
+
     Parameters
     ----------
     infile : str

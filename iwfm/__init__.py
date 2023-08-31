@@ -20,7 +20,6 @@
 # -- IWFM model class -------------------------------------
 from iwfm.iwfm_model import iwfm_model
 from iwfm.gw_well_lay_elev import gw_well_lay_elev
-from iwfm.idw import idw
 
 # -- IWFM model file ---------------------------------------
 from iwfm.iwfm_read_model_file import iwfm_read_model_file
@@ -45,52 +44,15 @@ from iwfm.iwfm_aquitard_top import iwfm_aquitard_top
 from iwfm.iwfm_aquitard_bottom import iwfm_aquitard_bottom
 
 # -- IWFM simulation files -------------------------------
+from iwfm.iwfm_read_rz import iwfm_read_rz
+from iwfm.iwfm_read_rz_npc import iwfm_read_rz_npc
 from iwfm.iwfm_read_gw import iwfm_read_gw
-
-# -- create a submodel ------------------------------------
-from iwfm.iwfm_sub_preproc import iwfm_sub_preproc
-from iwfm.sub_pp_file import sub_pp_file
-from iwfm.sub_pp_node_file import sub_pp_node_file
-from iwfm.sub_pp_elem_file import sub_pp_elem_file
-from iwfm.sub_pp_lake_file import sub_pp_lake_file
-from iwfm.sub_pp_strat_file import sub_pp_strat_file
-from iwfm.sub_pp_stream_file import sub_pp_stream_file
-from iwfm.get_elem_list import get_elem_list
-from iwfm.sub_pp_nodes import sub_pp_nodes
-from iwfm.sub_pp_lakes import sub_pp_lakes
-from iwfm.sub_pp_streams import sub_pp_streams
-from iwfm.get_stream_list_42 import get_stream_list_42
-from iwfm.new_pp_dict import new_pp_dict
-
-from iwfm.iwfm_sub_sim import iwfm_sub_sim
-from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
-from iwfm.sub_sim_file import sub_sim_file
-from iwfm.sub_swhed_file import sub_swhed_file
-from iwfm.sub_unsat_file import sub_unsat_file
-from iwfm.sub_gw_file import sub_gw_file
-from iwfm.sub_gw_bc_file import sub_gw_bc_file
-from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
-from iwfm.sub_gw_pump_file import sub_gw_pump_file
-from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
-from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
-from iwfm.sub_gw_td_file import sub_gw_td_file
-from iwfm.sub_gw_subs_file import sub_gw_subs_file
-from iwfm.sub_streams_file import sub_streams_file
-from iwfm.sub_st_inflow_file import sub_st_inflow_file
-from iwfm.sub_st_bp_file import sub_st_bp_file
-from iwfm.sub_rootzone_file import sub_rootzone_file
-from iwfm.sub_rz_npc_file import sub_rz_npc_file
-from iwfm.sub_rz_pc_file import sub_rz_pc_file
-from iwfm.sub_rz_urban_file import sub_rz_urban_file
-from iwfm.sub_rz_nv_file import sub_rz_nv_file
-from iwfm.sub_remove_items import sub_remove_items
-from iwfm.sub_lu_file import sub_lu_file
-
-from iwfm.new_sim_dict import new_sim_dict
+from iwfm.read_gw_params import read_gw_params
 
 # -- IWFM simulation files --------------------------------
 from iwfm.iwfm_read_sim import iwfm_read_sim
 from iwfm.simhyds import simhyds
+from iwfm.get_gw_params import get_gw_params
 
 # -- IWFM land use methods --------------------------------
 from iwfm.iwfm_adj_crops import iwfm_adj_crops
@@ -133,24 +95,22 @@ from iwfm.read_obs_smp import read_obs_smp
 from iwfm.read_sim_wells import read_sim_wells
 from iwfm.read_sim_hyds import read_sim_hyds
 from iwfm.hyd_diff import hyd_diff
-from iwfm.gw_plot_draw import gw_plot_draw
-from iwfm.gw_plot_noobs_draw import gw_plot_noobs_draw
-from iwfm.gw_plot_noobs import gw_plot_noobs
-from iwfm.gw_plot_obs_draw import gw_plot_obs_draw
-from iwfm.gw_plot_obs import gw_plot_obs
-from iwfm.gw_plot import gw_plot
 from iwfm.write_smp import write_smp
-from iwfm.draw_plot import draw_plot
 from iwfm.read_obs import read_obs
 from iwfm.pdf_combine import pdf_combine
+from iwfm.bnds2mask import bnds2mask
 
 # -- post-process headall.out file ------------------------
 from iwfm.headall_read import headall_read
 from iwfm.headall2csv import headall2csv
 from iwfm.headall2dtw import headall2dtw
+from iwfm.headall2shp import headall2shp
 from iwfm.headall2table import headall2table
 from iwfm.headall2ts import headall2ts
 from iwfm.get_heads_4_date import get_heads_4_date
+from iwfm.read_from_index import read_from_index
+from iwfm.read_nodes import read_nodes
+from iwfm.find_line_num import find_line_num
 
 # -- finite-element methods -------------------------------
 from iwfm.elem_poly_coords import elem_poly_coords
@@ -222,8 +182,6 @@ from iwfm.cfs2afd import cfs2afd
 # -- math -------------------------------------------------
 from iwfm.distance import distance
 from iwfm.logtrans import logtrans
-from iwfm.rmse_calc import rmse_calc
-from iwfm.bias_calc import bias_calc
 from iwfm.round import round
 from iwfm.column_sum import column_sum
 
@@ -233,6 +191,47 @@ from iwfm.vic_2_table import vic_2_table
 from iwfm.detaw_2_table import detaw_2_table
 from iwfm.dicu2table import dicu2table
 from iwfm.write_flows import write_flows
+
+# -- create a submodel ------------------------------------
+from iwfm.iwfm_sub_preproc import iwfm_sub_preproc
+from iwfm.sub_pp_file import sub_pp_file
+from iwfm.sub_pp_node_file import sub_pp_node_file
+from iwfm.sub_pp_elem_file import sub_pp_elem_file
+from iwfm.sub_pp_lake_file import sub_pp_lake_file
+from iwfm.sub_pp_strat_file import sub_pp_strat_file
+from iwfm.sub_pp_stream_file import sub_pp_stream_file
+from iwfm.get_elem_list import get_elem_list
+from iwfm.sub_pp_nodes import sub_pp_nodes
+from iwfm.sub_pp_lakes import sub_pp_lakes
+from iwfm.sub_pp_streams import sub_pp_streams
+from iwfm.get_stream_list_42 import get_stream_list_42
+from iwfm.new_pp_dict import new_pp_dict
+
+from iwfm.iwfm_sub_sim import iwfm_sub_sim
+from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
+from iwfm.sub_sim_file import sub_sim_file
+from iwfm.sub_swhed_file import sub_swhed_file
+from iwfm.sub_unsat_file import sub_unsat_file
+from iwfm.sub_gw_file import sub_gw_file
+from iwfm.sub_gw_bc_file import sub_gw_bc_file
+from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+from iwfm.sub_gw_pump_file import sub_gw_pump_file
+from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+from iwfm.sub_gw_td_file import sub_gw_td_file
+from iwfm.sub_gw_subs_file import sub_gw_subs_file
+from iwfm.sub_streams_file import sub_streams_file
+from iwfm.sub_st_inflow_file import sub_st_inflow_file
+from iwfm.sub_st_bp_file import sub_st_bp_file
+from iwfm.sub_rootzone_file import sub_rootzone_file
+from iwfm.sub_rz_npc_file import sub_rz_npc_file
+from iwfm.sub_rz_pc_file import sub_rz_pc_file
+from iwfm.sub_rz_urban_file import sub_rz_urban_file
+from iwfm.sub_rz_nv_file import sub_rz_nv_file
+from iwfm.sub_remove_items import sub_remove_items
+from iwfm.sub_lu_file import sub_lu_file
+
+from iwfm.new_sim_dict import new_sim_dict
 
 # -- multiprocessing --------------------------------------
 from iwfm.multiproc import multiproc

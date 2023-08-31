@@ -20,6 +20,9 @@
 def file2dict(infile, key_field=0, val_field=1, skip=0):
     ''' file2dict() - Read file with paired items, return dictionary 
 
+    TODO: accept 'int', 'float' etc on command line to convert string of 
+            numbers to numbers of the specified type
+
     Parameters
     ----------
     infile : str

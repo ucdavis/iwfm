@@ -1,7 +1,7 @@
 # bud2csv.py
 # Read information from an IWFM Budget HDF file and write to a CSV file
 # Currently processes any budget file, but only modifies headers to field names
-# for Lane and Water Use and Root Zone budget files
+# for Land and Water Use and Root Zone budget files
 # Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -20,7 +20,7 @@
 
 
 
-def budget2csv(f, loc_names, column_headers, loc_values, budget_info, 
+def bud2csv(f, loc_names, column_headers, loc_values, budget_info, 
                         print_header=False):
     ''' budget2csv() - open an IWFM Budget HDF file and retreive all of the data
 
