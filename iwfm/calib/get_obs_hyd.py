@@ -1,4 +1,4 @@
-# get_obshyd.py
+# get_obs_hyd.py
 # Extract one column from a VIC file to another file
 # Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
@@ -17,8 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
-def get_obshyd(obs_file,start_date):
-    ''' get_obshyd - reads an observation sample bore (smp) file, and returns a list 
+def get_obs_hyd(obs_file,start_date):
+    ''' get_obs_hyd - reads an observation sample bore (smp) file, and returns a list 
         of observation sites and a list of observation data as [site_id, days since 
         start, date as datetime object]
 

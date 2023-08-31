@@ -1,4 +1,4 @@
-# gw_plot_obs.py
+# gw_hyd_obs.py
 # Create PDF files for simulated data vs time for all hydrographs
 #  as lines, with observed values vs time as dots
 # Copyright (C) 2020-2023 University of California
@@ -18,9 +18,9 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_plot_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,
+def gw_hyd_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,
     titlewords,yaxis_width=-1):
-    ''' gw_plot_obs() - Create PDF files for simulated data vs time for 
+    ''' gw_hyd_obs() - Create PDF files for simulated data vs time for 
         all hydrographs as lines, with observed values vs time as dots
 
     Parameters
@@ -52,7 +52,7 @@ def gw_plot_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,
     count           (int):  Number of files produced
     
     '''
-    import iwfm as iwfm
+    import iwfm.plot as iplot
 
     # cycle through the list of wells in obs to print plots
     # initialize
@@ -60,18 +60,20 @@ def gw_plot_obs(well_list,no_hyds,obs,gwhyd_sim,gwhyd_names,well_dict,
     obs_well_name = well_list[0][0]  # first well name in observations list
     start_date = gwhyd_sim[0][0][0]  # get starting date
 
-    for j in range(1, len(obs)):                            # move through the observation file
+    for j in range(1, len(obs)):                        # move through the observation file
         if obs[j][0] != obs_well_name:                      # reached the last observation for this well
             if obs_well_name in well_dict:                  # draw and save the current plot
-                iwfm.gw_plot_obs_draw(obs_well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(obs_well_name),start_date,titlewords,yaxis_width)
+                iplot.gw_hyd_obs_draw(obs_well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,
+                        well_dict.get(obs_well_name),start_date,titlewords,yaxis_width)
                 count += 1
             date, meas, obs_well_name = [], [], obs[j][0]   # re-initialize for next observation well
-        elif obs[j][0] == obs_well_name:                    # this observation is for this well
+        else:
             date.append(obs[j][1])
             meas.append(obs[j][3])
 
     # make the last one
     if obs_well_name in well_dict:
-        iwfm.gw_plot_obs_draw(obs_well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(obs_well_name),start_date,titlewords,yaxis_width)
+        iplot.gw_hyd_obs_draw(obs_well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_names,
+                    well_dict.get(obs_well_name),start_date,titlewords,yaxis_width)
         count += 1
     return count

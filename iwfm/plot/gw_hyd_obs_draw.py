@@ -1,4 +1,4 @@
-# gw_plot_obs_draw.py
+# gw_hyd_obs_draw.py
 # Draw one groundwater hydrograph plot and save to a PDF file
 # Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
@@ -17,9 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_name,well_info,
+def gw_hyd_obs_draw(well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_name,well_info,
     start_date,title_words,yaxis_width=-1):
-    ''' gw_plot_obs_draw() - Create a PDF file with a graph of the simulated data 
+    ''' gw_hyd_obs_draw() - Create a PDF file with a graph of the simulated data 
         vs time for all hydrographs as lines, with observed values vs time as 
         dots, saved as the_well_name.pdf
 
@@ -85,27 +85,20 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_name,well_info,
     col = well_info[0]
 
     # compile sim_heads here to determine ymax and ymin
-    sim_heads = []
-    for hyd in range(0, no_hyds):
-        temp_heads = []
-        for row in range(0, len(gwhyd_sim[hyd])):
-            temp_heads.append(float(gwhyd_sim[hyd][row][col]))
-        sim_heads.append(temp_heads)
+    sim_heads = [[float(gwhyd_sim[hyd][row][col]) for row in range(len(gwhyd_sim[hyd]))] for hyd in range(no_hyds)]
 
     ymin = min(1e6, min(meas))
     ymax = max(1e-6, max(meas))
-    for hyd in range(0, no_hyds):
-        ymin = min(ymin, min(sim_heads[hyd]))
-        ymax = max(ymax, max(sim_heads[hyd]))
+    ymin = min(ymin, min(min(sim_heads[hyd]) for hyd in range(no_hyds)))
+    ymax = max(ymax, max(max(sim_heads[hyd]) for hyd in range(no_hyds)))
 
-    meas_dates = []
-    for i in range(0, len(date)):
-        meas_dates.append(datetime.datetime.strptime(date[i], '%m/%d/%Y'))
+
+    meas_dates = [datetime.datetime.strptime(d, '%m/%d/%Y') for d in date]
 
     years = mdates.YearLocator()
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
-    with PdfPages(well_name + '_' + iwfm.pad_front(col, 4, '0') + '.pdf') as pdf:
+    with PdfPages(f"{well_name}_{iwfm.pad_front(col, 4, '0')}.pdf") as pdf:
         fig = plt.figure(figsize=(10, 7.5))
         ax = plt.subplot(111)
         ax.xaxis_date()
@@ -115,24 +108,19 @@ def gw_plot_obs_draw(well_name,date,meas,no_hyds,gwhyd_sim,gwhyd_name,well_info,
         ax.xaxis.set_minor_locator(years)
         plt.xlabel('Date')
         plt.ylabel('Head (ft msl)')
-        plt.title(title_words+': '+well_name.upper()+' Layer '+str(well_info[3]))
+        plt.title(f'{title_words}: {well_name.upper()} Layer {str(well_info[3])}')
         plt.plot(meas_dates, meas, 'bo', label='Observed')
 
         # if minimum y axis width was set by user, check and set if necessary
-        if yaxis_width > 0:
-            if ymax > ymin:
-                if ymax - ymin < yaxis_width:  # set minimum and maximum values
-                    center = (ymax - ymin) / 2 + ymin
-                    plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
+        if (yaxis_width > 0) and (ymax > ymin) and (ymax - ymin < yaxis_width):  # set minimum and maximum values
+            center = (ymax - ymin) / 2 + ymin
+            plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
 
-        for j in range(0, no_hyds):
-            sim_dates = []
-            for i in range(0, len(gwhyd_sim[j])):
-                sim_dates.append(datetime.datetime.strptime(gwhyd_sim[j][i][0], '%m/%d/%Y'))
+        for j in range(no_hyds):
+            sim_dates = [datetime.datetime.strptime(gwhyd_sim[j][i][0], '%m/%d/%Y') for i in range(len(gwhyd_sim[j]))]
             plt.plot(sim_dates, sim_heads[j], line_colors[j], label=gwhyd_name[j])
 
         leg = ax.legend(frameon=1, facecolor='white')
-        pdf.savefig()  
+        pdf.savefig()
         plt.close()
 
-    return 

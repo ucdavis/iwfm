@@ -61,70 +61,59 @@ def idw(x, y, elem, nnodes, nlayers, nodexy, elevations, debug=0):
     # inverse distance weighting
     if debug:
         print('\n  ==> iwfm.idw()')
-        print('      =>  {}: \t{}'.format('elem', elem))
-        print('      =>  {}: \t{}'.format('nnodes', nnodes))
-        print('      =>  {}: \t{}'.format('nlayers', nlayers))
-        print('      =>  {}: \t{}'.format('nodexy', nodexy))
-        print('      =>  {}: \t{}'.format('elevations', elevations))
+        print(f'      =>  elem: \t{elem}')
+        print(f'      =>  nnodes: \t{nnodes}')
+        print(f'      =>  nlayers: \t{nlayers}')
+        print(f'      =>  nodexy: \t{nodexy}')
+        print(f'      =>  elevations: \t{elevations}')
 
-    InterpValues = [[0.0 for j in range(0, len(nnodes))] for i in range(0, nlayers)]
+    interp_values = [[0.0 for _ in nnodes] for _ in nlayers]
+
     if debug:
-        print('      =>  {}: \t{}'.format('InterpValues', InterpValues))
+        print(f'      =>  interp_values: \t{interp_values}')
 
-    for i in range(0, nlayers):
+    for i in range(nlayers):
         if debug:
-            print('\n      =>  {}: \t{}'.format('i', i))
+            print(f'\n      =>  i: \t{i}')
         wgt = 0
-        for j in range(0, len(nnodes)):  # for each node of element
+        for j in range(len(nnodes)):  # for each node of element
             if debug:
-                print('\n      =>  {}: \t{}'.format('j', j))
+                print(f'\n      =>  j: \t{j}')
             # if elem > 0:   # all ObsElem > 0
             nodeID = nnodes[i]
             if debug:
-                print('      =>  {}: \t{}'.format('nodeID', nodeID))
+                print(f'      =>  nodeID: \t{nodeID}')
             if nodeID > 0:
                 if debug:
-                    print('      =>  {}, {}: \t{}, {}'.format('x', 'y', x, y))
+                    print(f'      =>  x, y: \t{x}, {y}')
                 if debug:
-                    print('      =>  {}: \t{}'.format('nodexy[j]', nodexy[j]))
-                Distance = float(
+                    print(f'      =>  nodexy[j]: \t{nodexy[j]}')
+                distance = float(
                     np.sqrt((x - nodexy[j][0]) ** 2 + (y - nodexy[j][1]) ** 2)
                 )
                 if debug:
-                    print('      =>  {}: \t{}'.format('Distance', Distance))
-                wgt_tmp = 1.0 / Distance
+                    print(f'      =>  distance: \t{distance}')
+                wgt_tmp = 1.0 / distance
                 if debug:
-                    print('      =>  {}: \t{}'.format('wgt_tmp', wgt_tmp))
+                    print(f'      =>  wgt_tmp: \t{wgt_tmp}')
                 wgt += wgt_tmp
-                for k in range(0, nlayers):
+                for k in range(nlayers):
                     if debug:
-                        print('      =>  i: {} \tk: {}'.format(i, k))
+                        print(f'      =>  i: {i} \tk: {k}')
                     if debug:
-                        print(
-                            '      =>  {}: \t{}'.format(
-                                'InterpValues[i][k]', InterpValues[i][k]
-                            )
-                        )
+                        print(f'      =>  interp_values[i][k]: \t{interp_values[i][k]}')
                     if debug:
-                        print(
-                            '      =>  {}: \t{}'.format(
-                                'elevations[i][k]', elevations[i][k]
-                            )
-                        )
-                    InterpValues[i][k] += wgt_tmp * elevations[i][k]
+                        print(f'      =>  elevations[i][k]: \t{elevations[i][k]}')
+                    interp_values[i][k] += wgt_tmp * elevations[i][k]
                     if debug:
-                        print(
-                            '      =>  {}: \t{}'.format(
-                                'InterpValues[i][k]', InterpValues[i][k]
-                            )
-                        )
+                        print(f'      =>  interp_values[i][k]: \t{interp_values[i][k]}')
         if debug:
-            print('      =>  {}: \t{}'.format('wgt', wgt))
-        for k in range(0, nlayers):
-            InterpValues[i][k] = InterpValues[i][k] / wgt
+            print(f'      =>  wgt: \t{wgt}')
+        for k in range(nlayers):
+            interp_values[i][k] = interp_values[i][k] / wgt
         if debug:
-            print('      =>  {}: \t{}'.format('InterpValues', InterpValues))
+            print(f'      =>  interp_values: \t{interp_values}')
 
     if debug:
         print('\n  ** incomplete: IDW.py **')
-    return InterpValues
+    return interp_values

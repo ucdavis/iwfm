@@ -1,6 +1,6 @@
-# gw_plot_draw.py
-# Draw one groundwater hydrograph plot and save to a PDF file
-# Copyright (C) 2020-2021 University of California
+# gw_hyd_noobs_draw.py - Create a PDF file with a graph of the simulated 
+# data vs time for all hydrographs as lines, saved as the well_name.pdf
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,21 +17,10 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_plot_draw(
-    well_name,
-    date,
-    meas,
-    no_hyds,
-    gwhyd_obs,
-    gwhyd_name,
-    well_info,
-    start_date,
-    title_words,
-    yaxis_width=-1,
-):
-    ''' gw_plot_draw() - Create a PDF file with a graph of the simulated data 
-        vs time for all hydrographs as lines, with observed values vs time as 
-        dots, saved as the well_name.pdf
+def gw_hyd_noobs_draw(well_name,date,no_hyds,gwhyd_sim,gwhyd_name,well_info,
+    start_date,title_words,yaxis_width=-1):
+    ''' gw_hyd_noobs_draw() - Create a PDF file with a graph of the simulated 
+        data vs time for all hydrographs as lines, saved as the well_name.pdf
 
     Parameters
     ----------
@@ -39,23 +28,20 @@ def gw_plot_draw(
         well name, often state well number
     
     date : list
-        dates (paired with meas)
-    
-    meas : list
-        observed values (paired with date)
+        list of dates (paired with meas)
     
     no_hyds : int
         number of simulation time series to be graphed
     
-    gwhyd_obs : list
-        simulated IWFM groundwater hydrographs 
+    gwhyd_sim : list
+        simulated groundwater hydrographs 
         [0]==dates, [1 to no_hyds]==datasets
     
     gwhyd_name : list
         hydrograph names from PEST observations file
     
-    well_dict : dictionary
-        key = well name, values = well data from Groundwater.dat file
+    well_info : list
+        Well data from Groundwater.dat file
     
     start_date : str
         first date in simulation hydrograph files
@@ -69,11 +55,11 @@ def gw_plot_draw(
     Return
     ------
     nothing
-
+    
     '''
-    import iwfm as iwfm
     import datetime
     import matplotlib
+    import iwfm as iwfm
 
     # Force matplotlib to not use any Xwindows backend.
     matplotlib.use('TkAgg')  # Set to TkAgg ...
@@ -82,63 +68,31 @@ def gw_plot_draw(
     import matplotlib.dates as mdates
     from matplotlib.backends.backend_pdf import PdfPages
 
-    line_colors = [
-        'r-',
-        'g-',
-        'c-',
-        'y-',
-        'b-',
-        'm-',
-        'k-',
-        'r--',
-        'g--',
-        'c--',
-        'y--',
-        'b--',
-        'm--',
-        'k--',
-        'r:',
-        'g:',
-        'c:',
-        'y:',
-        'b:',
-        'm:',
-        'k:',
-    ]
+    line_colors = ['b-' ,'y-' ,'r-' ,'g-' ,'c-' ,'m-' ,'k-' ,
+                   'b--','y--','r--','g--','c--','m--','k--',
+                   'b:' ,'y:' ,'r:' ,'g:' ,'c:' ,'m:' ,'k:' ]
     # 'r-' = red line, 'bo' = blue dots, 'r--' = red dashes, 
     # 'r:' = red dotted line, 'bs' = blue squares, 'g^' = green triangles, etc
 
     col = well_info[0]  # gather information
 
-    # each hydrograph in gwhyd_obs has dates in the first column
-    # convert the observed values and each set of simulated values to a pair of 
-    # lists, with date, meas format.
-
     ymin, ymax, sim_heads, sim_dates = 1e6, -1e6, [], []
-    for j in range(0, no_hyds):
-        date_temp, sim_temp = [], []
-        for i in range(0, len(gwhyd_obs[j])):
-            date_temp.append(datetime.datetime.strptime(gwhyd_obs[j][i][0], '%m/%d/%Y'))
-            sim_temp.append(gwhyd_obs[j][i][col])
-            ymin = min(ymin, gwhyd_obs[j][i][col])
-            ymax = max(ymax, gwhyd_obs[j][i][col])
+    for j in range(no_hyds):
+        date_temp, head_temp = [], []
+        for sim in gwhyd_sim[j]:
+            date_temp.append(datetime.datetime.strptime(sim[0], '%m/%d/%Y'))
+            head_temp.append(sim[col])
+            ymin = min(ymin, sim[col])
+            ymax = max(ymax, sim[col])
         sim_dates.append(date_temp)
-        sim_heads.append(sim_temp)
-
-    for i in range(0, len(meas)):
-        ymin = min(ymin, meas[i])
-        ymax = max(ymax, meas[i])
-
-    meas_dates = []
-    for i in range(0, len(date)):
-        meas_dates.append(datetime.datetime.strptime(date[i], '%m/%d/%Y'))
+        sim_heads.append(head_temp)
 
     years = mdates.YearLocator()
-    months = mdates.MonthLocator()
-    yearsFmt = mdates.DateFormatter('%Y')
+    #months = mdates.MonthLocator()
+    #yearsFmt = mdates.DateFormatter('%Y')
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
-    with PdfPages(well_name + '_' + iwfm.pad_front(col, 4, '0') + '.pdf') as pdf:
+    with PdfPages(f'{well_name}_' + iwfm.pad_front(col, 4, '0') + '.pdf') as pdf:
         fig = plt.figure(figsize=(10, 7.5))
         ax = plt.subplot(111)
         ax.xaxis_date()
@@ -148,22 +102,17 @@ def gw_plot_draw(
         ax.xaxis.set_minor_locator(years)
         plt.xlabel('Date')
         plt.ylabel('Head (ft msl)')
-        plt.title(
-            title_words + ': ' + well_name.upper() + ' Layer ' + str(well_info[3])
-        )
-        plt.plot(meas_dates, meas, 'bo', label='Observed')
+        plt.title(f'{title_words}: {well_name.upper()} Layer {str(well_info[3])}')
+        #plt.plot(meas_dates, meas, 'bo', label='Observed')
 
         # if minimum y axis width was set by user, check and set if necessary
-        if yaxis_width > 0:
-            if ymax > ymin:
-                if ymax - ymin < yaxis_width:  # set minimum and maximum values
-                    center = (ymax - ymin) / 2 + ymin
-                    plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
+        if(yaxis_width > 0) and (ymax > ymin) and (ymax - ymin < yaxis_width):  # set minimum and maximum values
+            center = (ymax - ymin) / 2 + ymin
+            plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
 
-        for j in range(0, no_hyds):
+        for j in range(no_hyds):
             plt.plot(sim_dates[j], sim_heads[j], line_colors[j], label=gwhyd_name[j])
 
         leg = ax.legend(frameon=1, facecolor='white')
         pdf.savefig()  # saves the current figure into a pdf page
         plt.close()
-    return 

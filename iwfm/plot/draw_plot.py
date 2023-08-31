@@ -1,7 +1,7 @@
 # draw_plot.py
 # Creates a PDF file with a graph of the simulated data vs time for all
 # hydrographs as lines, with observed values vs time as dots, saved as the well_name.pdf
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -18,18 +18,8 @@
 # -----------------------------------------------------------------------------
 
 
-def draw_plot(
-    well_name,
-    date,
-    meas,
-    no_hyds,
-    gwhyd_obs,
-    gwhyd_name,
-    well_info,
-    start_date,
-    title_words,
-    yaxis_width=-1,
-):
+def draw_plot( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name, well_info,
+    start_date, title_words, yaxis_width=-1):
     ''' draw_plot() - Creates a PDF file with a graph of the simulated data vs time
         for all hydrographs as lines, with observed values vs time as dots, saved 
         as the well_name.pdf

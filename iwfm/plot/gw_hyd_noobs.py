@@ -1,4 +1,4 @@
-# gw_plot_noobs.py
+# gw_hyd_noobs.py
 # Create PDF files for simulated data vs time for all hydrographs as lines
 # Copyright (C) 2020-2023 University of California
 # -----------------------------------------------------------------------------
@@ -17,9 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_plot_noobs(well_list,no_hyds,gwhyd_sim,gwhyd_names,well_dict,
+def gw_hyd_noobs(well_list,no_hyds,gwhyd_sim,gwhyd_names,well_dict,
     titlewords,yaxis_width=-1):
-    ''' gw_plot_noobs() - Create PDF files for simulated data vs time for 
+    ''' gw_hyd_noobs() - Create PDF files for simulated data vs time for 
         all hydrographs as lines
 
     Parameters
@@ -52,16 +52,17 @@ def gw_plot_noobs(well_list,no_hyds,gwhyd_sim,gwhyd_names,well_dict,
         number of files produced
     
     '''
-    import iwfm as iwfm
+    import iwfm.plot as iplot
 
-    i, count, date, meas = 1, 0, [], []
+    count, date = 0, []
     date.append(gwhyd_sim[0][0][0])
     name = well_list[0]
 
     start_date = gwhyd_sim[0][0][0]  
     for j in range(1, len(well_list)):  
         if name in well_dict:  # draw and save the current plot
-            iwfm.gw_plot_noobs_draw(name,date,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(name),start_date,titlewords,yaxis_width)
+            iplot.gw_hyd_noobs_draw(name,date,no_hyds,gwhyd_sim,gwhyd_names,
+                        well_dict.get(name),start_date,titlewords,yaxis_width)
             count += 1
             # re-initialize for next observation well
             date, name = [], well_list[j]
@@ -69,6 +70,7 @@ def gw_plot_noobs(well_list,no_hyds,gwhyd_sim,gwhyd_names,well_dict,
             date.append(obs[j][1])
     # make the last one
     if name in well_dict:
-        iwfm.gw_plot_noobs_draw(name,date,no_hyds,gwhyd_sim,gwhyd_names,well_dict.get(name),start_date,titlewords,yaxis_width)
+        iplot.gw_hyd_noobs_draw(name,date,no_hyds,gwhyd_sim,gwhyd_names,
+                        well_dict.get(name),start_date,titlewords,yaxis_width)
         count += 1
     return count
