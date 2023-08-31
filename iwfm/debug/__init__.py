@@ -16,13 +16,21 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+# program/function timer
+from iwfm.debug.exe_time import exe_time
+from iwfm.debug.print_exe_time import print_exe_time
+
+# test dictionary
+from iwfm.debug.test_dict import test_dict
+from iwfm.debug.print_dict import print_dict
+from iwfm.debug.check_key import check_key
+
+# logging
+from iwfm.debug.logging import logging
+
 # system and python version information
 from iwfm.debug.this_sys import this_sys
 from iwfm.debug.this_sys_version import this_sys_version
 from iwfm.debug.this_python import this_python
 from iwfm.debug.print_env import print_env
-from iwfm.debug.print_exe_time import print_exe_time
-from iwfm.debug.test_dict import test_dict
-from iwfm.debug.print_dict import print_dict
-from iwfm.debug.check_key import check_key
-from iwfm.debug.exe_time import exe_time
+
