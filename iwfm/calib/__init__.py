@@ -17,29 +17,46 @@
 # -----------------------------------------------------------------------------
 
 # -- PEST functions ---------------------------------------
+from iwfm.calib.read_settings import read_settings
+from iwfm.calib.fac2iwfm import fac2iwfm
+from iwfm.calib.iwfm2obs import iwfm2obs
+from iwfm.calib.real2iwfm import real2iwfm
+from iwfm.calib.par2iwfm import par2iwfm
+
+# -- supporting functions ---------------------------------------
+from iwfm.calib.krige import krige
+from iwfm.calib.ltbud import ltbud
+from iwfm.calib.ltsmp import ltsmp
+from iwfm.calib.setrot import setrot
+
+# -- PEST SMP files ---------------------------------------
+from iwfm.calib.obs_smp import obs_smp
+from iwfm.calib.sim_smp import sim_smp
+from iwfm.calib.smp_avg import smp_avg
+from iwfm.calib.to_smp_ins import to_smp_ins
+
+# -- math functions ---------------------------------------
+from iwfm.calib.bias_calc import bias_calc
 from iwfm.calib.compare import compare
 from iwfm.calib.do_avgonly import do_avgonly
-from iwfm.calib.fac2iwfm import fac2iwfm
+from iwfm.calib.idw import idw
+from iwfm.calib.interp_val import interp_val
+from iwfm.calib.res_stats import res_stats
+from iwfm.calib.rmse_calc import rmse_calc
+
+# -- data functions ---------------------------------------
 from iwfm.calib.get_hyd_fname import get_hyd_fname
 from iwfm.calib.get_hyd_info import get_hyd_info
 from iwfm.calib.get_hyd_names import get_hyd_names
-from iwfm.calib.get_obshyd import get_obshyd
+from iwfm.calib.get_obs_hyd import get_obs_hyd
 from iwfm.calib.get_sim_hyd import get_sim_hyd
 from iwfm.calib.headdiff_hyds import headdiff_hyds
 from iwfm.calib.headdiff_read import headdiff_read
 from iwfm.calib.hyds_missed import hyds_missed
-from iwfm.calib.interp_val import interp_val
-from iwfm.calib.iwfm2obs import iwfm2obs
-from iwfm.calib.ltbud import ltbud
-from iwfm.calib.ltsmp import ltsmp
-from iwfm.calib.obs_smp import obs_smp
-from iwfm.calib.read_settings import read_settings
-from iwfm.calib.real2iwfm import real2iwfm
-from iwfm.calib.setrot import setrot
 from iwfm.calib.sim_4_sites import sim_4_sites
-from iwfm.calib.sim_smp import sim_smp
-from iwfm.calib.smp_avg import smp_avg
-from iwfm.calib.to_smp_ins import to_smp_ins
+
+# -- file writing functions ---------------------------------------
 from iwfm.calib.write_missing import write_missing
 from iwfm.calib.write_results import write_results
 from iwfm.calib.write_rmse_bias import write_rmse_bias
+
