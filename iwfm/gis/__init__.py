@@ -25,6 +25,9 @@ from iwfm.gis.elem2shp import elem2shp
 from iwfm.gis.nodes2shp import nodes2shp
 from iwfm.gis.snodes2shp import snodes2shp
 from iwfm.gis.reach2shp import reach2shp
+from iwfm.gis.nodal_values2shp import nodal_values2shp
+from iwfm.gis.nodal_multivalues2shp import nodal_multivalues2shp
+from iwfm.gis.projection import projection
 
 # -- igsm methods -----------------------------------------
 from iwfm.gis.igsm2shp import igsm2shp
