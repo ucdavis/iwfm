@@ -21,3 +21,9 @@
 from iwfm.util.ftp_fetch import ftp_fetch
 from iwfm.util.url_fetch import url_fetch
 from iwfm.util.zip_unzip import zip_unzip
+
+# -- data download functions -----------------------------------
+from iwfm.util.get_cdec import get_cdec
+from iwfm.util.get_usacoe import get_usacoe
+from iwfm.util.get_nwis import get_nwis
+from iwfm.util.get_usbr import get_usbr
