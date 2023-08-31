@@ -65,13 +65,13 @@ def get_stream_list_42(stream_lines, line_index, nreach, nrate):
 
     # -- first section, reaches
     snode_dict = {}
-    for reach in range(0, nreach):
+    for _ in range(nreach):
         line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
         info = stream_lines[line_index].split()  # -- get reach information
 
         snodes_temp, gwnodes_temp = [], []
 
-        for sn in range(0, int(info[1])):
+        for _ in range(int(info[1])):
             line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
             temp = stream_lines[line_index].split()
             snodes_temp.append(int(temp[0]))  
@@ -96,7 +96,7 @@ def get_stream_list_42(stream_lines, line_index, nreach, nrate):
         rating_header.append(stream_lines[line_index])
         line_index += 1
 
-    for i in range(0, 3):
+    for _ in range(3):
         rating_header.append(stream_lines[line_index])
         line_index += 1
 

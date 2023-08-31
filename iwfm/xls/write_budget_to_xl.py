@@ -83,5 +83,5 @@ def write_budget_to_xl(wb, budget_data):
         for i in range(1,36):
             ws.Columns(i).ColumnWidth = 14
 
-    return
+    
 

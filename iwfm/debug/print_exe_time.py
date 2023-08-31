@@ -53,12 +53,13 @@ def print_exe_time(start, end, verbose=1):
         mins = iwfm.pad_front(str(int(diff[1])), 2, '0') + ':'
     elif int(diff[1]) > 0:
         hours = ''
-        mins = str(int(diff[1])) + ' min '
+        mins = f'{int(diff[1])} min '
         secs += ' sec'
     else:
         hours, mins = '', ''
         secs += ' seconds'
-    exe_time = '' + hours + mins + secs
+    exe_time = f'{hours}{mins}{secs}'
     if verbose:
         print(f'  Execution time: {exe_time}\n')
     return exe_time
+#print_exe_time('01:44:30', '04:22:30', verbose = 1)

@@ -32,4 +32,5 @@ def xl_quit(excel):
     excel.DisplayAlerts = False  # return to defaults
     excel.Visible = False
     excel.Application.Quit()
-    return
+    excel = None
+

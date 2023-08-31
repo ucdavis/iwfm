@@ -43,5 +43,5 @@ def zip_unzip(filename, verbose=False):
         out.close()
     if verbose:
         print(f'  Unzipped \'{filename}\' ')
-    return 
+    zip.close() 
 

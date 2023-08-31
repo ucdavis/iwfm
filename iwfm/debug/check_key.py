@@ -34,7 +34,4 @@ def check_key(d, key):
     False : bool if key is not in dictionary
     
     '''
-    if key in d.keys():
-        return True
-    else:
-        return False
+    return key in d.keys()

@@ -31,8 +31,12 @@ def latlon_2_utm(lat, lon):
 
     Returns
     -------
-    UTM coordinates 
+    UTM coordinates: X, Y, Zone Number, Zone Letter
+
     '''
     import utm
+    import numpy as np
 
-    return utm.from_latlon(lat, lon)
+    #return utm.from_latlon(lat, lon)
+
+    return utm.from_latlon(np.array(lat), np.array(lon))

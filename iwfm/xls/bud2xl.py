@@ -103,9 +103,10 @@ def bud2xl(budget_file, excel_file, verbose=False, row = 6):
     excel.DisplayAlerts = False  # return to defaults
     excel.Visible = False
     excel.Application.Quit()  
+    excel = None
     if verbose:
         print(f'  Closed {excel_file}')
-    return
+    
 
 
 if __name__ == '__main__':

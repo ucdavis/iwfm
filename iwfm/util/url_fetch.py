@@ -43,4 +43,4 @@ def url_fetch(url, filename, verbose=False):
         f.write(r.content)
     if verbose:
         print(f'  Retrieved \'{filename}\' ')
-    return 
+

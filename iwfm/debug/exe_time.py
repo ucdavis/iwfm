@@ -47,10 +47,10 @@ def exe_time():
             mins = iwfm.pad_front(str(int(diff[1])), 2, '0') + ':'
         elif int(diff[1]) > 0:
             hours = ''
-            mins = str(int(diff[1])) + ' min '
+            mins = f'{int(diff[1])} min '
             secs += ' sec'
         else:
             hours, mins = '', ''
             secs += ' seconds'
         print(f'  Elapsed time: {hours}{mins}{secs}\n')
-    return
+

@@ -49,4 +49,4 @@ def ftp_fetch(server, dir, filename='download.txt', verbose=False):
         ftp.retrbinary('RETR ' + filename, out.write)
     if verbose:
         print(f'  Downloaded \'{filename}\' ')
-    return 
+     

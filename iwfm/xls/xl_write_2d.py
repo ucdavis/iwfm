@@ -44,6 +44,6 @@ def xl_write_2d(output, wb, row=1, col=1, sheet=0):
     '''
     ss = wb.Worksheets(sheet)  # select the worksheet for this table
     # paste in
-    ss.Range(ss.Cells(row, 1), ss.Cells(row + len(output) - 1, len(output[0]))
+    ss.Range(ss.Cells(row, col), ss.Cells(row + len(output) - 1, len(output[0]))
         ).Value = output  
     return

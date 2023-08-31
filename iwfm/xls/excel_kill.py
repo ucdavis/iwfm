@@ -26,7 +26,7 @@ def excel_kill(excel):
 
     Returns
     -------
-    none
+    nothing
     
     '''
     excel.DisplayAlerts = False  # return to defaults

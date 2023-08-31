@@ -31,8 +31,7 @@ def cfs2afd(cfs):
         Value in acre-feet per day
 
     '''
-    afd = cfs * 1.983
-    return afd
+    return cfs * 1.983
 
 
 if __name__ == "__main__":

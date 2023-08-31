@@ -37,7 +37,8 @@ def print_env():  # print some paths
     print(f'  PATH:              {os.environ["PATH"]}')
     # print(f'  LD_LIBRARY_PATH:   {os.environ['LD_LIBRARY_PATH']}')
     # print(f'  DYLD_LIBRARY_PATH: {os.environ['DYLD_LIBRARY_PATH']}')
-    print(f'  PYTHONPATH:        {os.environ["PYTHONPATH"]}')
+    print(f'  PYTHONPATH:        {os.environ["PATH"]}')
     print(' ')
     return
     
+print_env()

@@ -31,11 +31,12 @@ def xl_open(excel_file):
     
     '''
     import win32com.client as win32  # pywin32
+    import os
 
     # Open the excel workbook and return the workbook object
     excel = win32.gencache.EnsureDispatch('Excel.Application')  # create an excel object
     excel.DisplayAlerts = False  # no warning when overwriting a file
     excel.Visible = False
     # open the excel workbook
-    wb = excel.Workbooks.Open(os.path.join(os.getcwd(), excel_file))
-    return wb
+    return excel.Workbooks.Open(os.path.join(os.getcwd(), excel_file))
+    
