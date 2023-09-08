@@ -40,5 +40,4 @@ def test_dict(name, d, key):  # test dictionary
     
     print(f'   dictionary {name}, key: {key} returns: {d.get(key)}')
     return
-d = {"key": "tell"}
-test_dict("hello",d, "key" )
+

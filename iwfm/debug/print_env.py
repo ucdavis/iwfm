@@ -40,5 +40,4 @@ def print_env():  # print some paths
     print(f'  PYTHONPATH:        {os.environ["PATH"]}')
     print(' ')
     return
-    
-print_env()
+

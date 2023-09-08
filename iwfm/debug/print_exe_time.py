@@ -43,7 +43,7 @@ def print_exe_time(start, end, verbose=1):
           else:
              'ss.s seconds'
  
- '''
+    '''
     import iwfm as iwfm
 
     diff = str(end - start).split(':')
@@ -62,4 +62,3 @@ def print_exe_time(start, end, verbose=1):
     if verbose:
         print(f'  Execution time: {exe_time}\n')
     return exe_time
-#print_exe_time('01:44:30', '04:22:30', verbose = 1)
