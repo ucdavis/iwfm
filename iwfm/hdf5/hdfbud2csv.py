@@ -1,5 +1,6 @@
-# hdfbud2xl.py
-# Read information from an IWFM Budget HDF file and write to an Excel file
+# hdfbud2csv.py
+# Read information from an IWFM Budget HDF file and write to a CSV file in a 
+# format amenable to database input
 # Currently processes any budget file, but only modifies headers to field names
 # for Lane and Water Use and Root Zone budget files
 # Copyright (C) 2020-2023 University of California
@@ -17,6 +18,7 @@
 # For a copy of the GNU General Public License, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
+
 
 
 def adjust_headers(headers):
@@ -227,66 +229,104 @@ def adjust_headers(headers):
 
     return headers
 
+def process_budget_data(f, loc_names, column_headers, loc_values, titles, write_header=False, verbose=False):
+    ''' process_budget_data() - open an IWFM Budget HDF file and retreive all of the data
 
-
-
-def hdfbud2xl(bud_file, xlfile='hdfbudget.xlsx',verbose=False):
-    ''' hdfbud2xl() - write IWFM Budget data to an Excel workbook
-    
     Parameters
     ----------
-    bud_file : string
-        IWFM Budget HDF file name
-            
-    xlfile : string, default='hdfbudget.xlsx'
-        Output Excel file name
-            
+    outfile : File object
+        Output file open for writing
+
+    loc_names : list of strings
+        Location names (subregion, stream reach, stream node, small watershed etc)
+
+    column_headers : list of lists of strings
+        Column headers for each location
+
+    loc_values : list of dataframes
+        Each dataframe contains values for one location
+
+    print_header : bool, default=False
+        If True then print header at top of file
+    
     verbose : bool, default=False
         Turn command-line output on or off
-            
+
     Returns
     -------
     nothing
     '''
+    loc_type = titles[0][1].split()[0]  # location type: 'GROUNDWATER', 'LAND' etc
 
-    import os
+    if write_header:
+        # format nice headers for printout
+        header = 'Subregion,'+','.join([h for h in adjust_headers(column_headers[0])])
+        f.write(f'{header}\n')
+
+    for loc in range(len(loc_names)):
+
+        # subregion and crop
+        names = loc_names[loc].split()
+        sr = " ".join(str(s) for s in names)
+        if loc_type == 'STREAM':    sr = sr.replace('(',' (')
+        values = loc_values[loc]
+        vals = values.to_numpy()    # as numpy arrray, easier to convert time to string
+
+        for row in range(vals.shape[0]):
+            pv_row = []
+            pv_row.append(vals[row][0].strftime('%m/%d/%Y'))    # time to string
+            for i in range(1,vals.shape[1]):
+                pv_row.append(str(vals[row][i]))                # values to strings
+            f.write(f'{sr},{",".join([i for i in pv_row])}\n')
+
+    return
+
+def hdfbud2csv(bud_file, outfile, write_header=True, verbose=False):
+    """ hdfbud2csv() - Read information from an IWFM Budget HDF file and write to a CSV file in a 
+            format amenable to database input
+    
+    Parameters
+    ----------
+    bud_file : string
+        Name of IWFM Budget output HDF-formatted file
+    
+    outfile : string
+        Name of output CSV file
+        
+    verbose : bool, default=False
+        Turn command-line output on or off
+        
+    Returns
+    -------
+    nothing
+    """
     import iwfm.hdf5 as hdf5
-    import iwfm.xls as xl
 
-    budget_data = hdf5.get_budget_data(bud_file, verbose=verbose) # (loc_names, column_headers, loc_values, titles)
+    budget_data   = hdf5.get_budget_data(bud_file, verbose=verbose) # (loc_names, column_headers, loc_values)
+    
+    with open(outfile, 'w') as f:
+        process_budget_data(f, budget_data[0], budget_data[1], budget_data[2], budget_data[3],
+                        write_header=write_header, verbose=verbose)
 
-
-    # initialize Excel
-    excel = xl.excel_init()
-
-    workbook = xl.excel_new_workbook(excel)
-
-    xl.write_budget_to_xl(workbook, budget_data)                 # write budget data to Excel workbook
-                         
-    workbook.SaveAs(os.path.abspath(xlfile))           # save workbook
-
-    workbook.Close(True)
-
-    #xl.excel_kill(excel)
 
 
 if __name__ == '__main__':
     ' Run from command line '
     import sys
     import iwfm.debug as idb
-
+ 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         bud_file = sys.argv[1]
-        xlfile   = sys.argv[2]
+        outfile  = sys.argv[2]
 
     else:  # ask for file names from terminal
         bud_file = input('IWFM Budget HDF file name: ')
-        xlfile   = input('Output file name: ')
+        outfile  = input('Output file name: ')
         print('')
 
     idb.exe_time()  # initialize timer
 
-    hdfbud2xl(bud_file, xlfile)
+    hdfbud2csv(bud_file, outfile)
 
     idb.exe_time()  # print elapsed time
 
