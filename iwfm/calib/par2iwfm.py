@@ -1,5 +1,21 @@
-from krige import krige
-import numpy as np
+# par2iwfm.py 
+# Use kriging to translate parameter values from pilot points to model nodes.
+# Copyright (C) 2020-2023 University of California
+# -----------------------------------------------------------------------------
+# This information is free; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This work is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# For a copy of the GNU General Public License, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# -----------------------------------------------------------------------------
+
 
 def par2iwfm(A, B):
     """ par2iwfm() - Implement krige function to create new parameter values.
@@ -17,9 +33,11 @@ def par2iwfm(A, B):
     a_values : list
         List of calculated floats representing values for A in B's grid
     """
+    import iwfm.calib as calib
+    import numpy as np
 
     #  get krige factors and base set values
-    krige_factors = krige(A, B)
+    krige_factors = calib.krige(A, B)
     values = [val for _, _, _, val in B]
   
     #  convert to numpy arrays for computation

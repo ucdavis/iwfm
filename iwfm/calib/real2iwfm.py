@@ -351,7 +351,7 @@ def read_overwrite_file(overwrite_file, verbose=False):
 
 
 if __name__ == "__main__":
-    ''' Run iwfm2obs() from command line '''
+    ''' Run real2iwfm() from command line '''
     import iwfm.debug as idb
 
     idb.exe_time()  # initialize timer

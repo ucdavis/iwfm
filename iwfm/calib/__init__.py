@@ -22,6 +22,7 @@ from iwfm.calib.fac2iwfm import fac2iwfm
 from iwfm.calib.iwfm2obs import iwfm2obs
 from iwfm.calib.real2iwfm import real2iwfm
 from iwfm.calib.par2iwfm import par2iwfm
+from iwfm.calib.ppk2fac_trans import ppk2fac_trans
 
 # -- supporting functions ---------------------------------------
 from iwfm.calib.krige import krige
