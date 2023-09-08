@@ -69,6 +69,9 @@ def overlay_histograms(data1, data2, file_name, label1='Data 1', label2='Data 2'
 
 
 if __name__ == "__main__":
+
+    # TODO: Add command line arguments
+    
     gw_file = "C2VSimCG_Groundwater1974.dat"
     
     params = ["kh", "ss", "sy", "kq", "kv"]
@@ -90,3 +93,5 @@ if __name__ == "__main__":
     data2 = values[param2][layer2]
 
     overlay_histograms(data1, data2, image_name, label1='Data 1', label2='Data 2', alpha=0.5, bins='auto')
+
+

@@ -54,3 +54,4 @@ def data_to_color(value, min_value, max_value, colormap='rainbow'):
     rgb_color = tuple(int(255 * x) for x in rgba_color[:3])
 
     return rgb_color
+
