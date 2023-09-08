@@ -39,6 +39,9 @@ def iwfm_read_rz(file):
         A list containing parameter values. It consists of 13 sublists, each representing a different parameter.
 
     """
+
+    # TODO: Add functions to skip file contents to desired input, search for string not reliable
+
     import iwfm as iwfm
 
     #  Find the number of the line with column labels, occurs before data but after comments
@@ -60,3 +63,4 @@ def iwfm_read_rz(file):
             params[idx].append(float(value))
         
     return params
+

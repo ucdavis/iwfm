@@ -57,3 +57,4 @@ def read_from_index(file_name, start_index):
             lines.append(formatted_line)
 
     return lines
+

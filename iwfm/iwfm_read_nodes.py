@@ -66,4 +66,4 @@ def iwfm_read_nodes(node_file, factor=0.0):
         node_list.append(l[0])
         node_coord.append(l)
 
-    return node_coord, node_list
+    return node_coord, node_list, factor

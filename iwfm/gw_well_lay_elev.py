@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+# TODO: Incomplete
 
 def gw_well_lay_elev(self, d_wellinfo, debug=0):
     ''' gw_well_lay_elev() - Find layer elevations at each well using node 

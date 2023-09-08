@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+# TODO: Add functions to skip file contents to desired input, search for string not reliable
+
 def read_gw_params(file):
     """read_gw_params() - Read groundwater parameters from a file and organize them into lists.
 
