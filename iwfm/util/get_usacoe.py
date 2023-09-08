@@ -247,6 +247,9 @@ def text_to_csv(files):
     return info
 
 if __name__ == "__main__":
+
+    # TODO: Add command line arguments
+    
     """Run the main script to extract text from websites and save it to CSV files.
     
     WARNING: if 'Name' property is the same for any file(s), their output csv file will have the same name and be overwritten.

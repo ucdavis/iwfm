@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 def get_usbr(year, pdf_url, excel_filename='temp.xlsx'):
-   """ get_usbr() - Save a data table from a USBR website into a csv file
+    """ get_usbr() - Save a data table from a USBR website into a csv file
 
     Parameters
     ----------
@@ -270,6 +270,7 @@ def extract_data_to_csv(excel_file):
 
 
 if __name__ == "__main__":
+    # TODO: Add command line arguments
 
     year = input("Which year's CVP END OF WATER YEAR REPORT would you like? ")
 
