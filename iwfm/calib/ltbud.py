@@ -112,6 +112,8 @@ if __name__ == "__main__":
 
     iwfm.file_test(budget_file)  # test for input file
 
+    # TODO: validate path of budget_file for any OS
+
     idb.exe_time()  # initialize timer
     ltbud(budget_file, output_file, zero_offset, neg_val)
 

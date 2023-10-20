@@ -60,7 +60,7 @@ def ltsmp(input_file, output_file, zero_offset=36, neg_val=0.001):
     
     with open(output_file, 'w') as out_file:
         for i in range(0,len(out_lines)):
-            out_file.write("{}\n".format(out_lines[i]))
+            out_file.write(f'{out_lines[i]}\n')
 
 
 
@@ -83,6 +83,7 @@ if __name__ == "__main__":
 
     iwfm.file_test(input_file)
 
+    # TODO: validate path of budget_file for any OS
 
     idb.exe_time()  # initialize timer
     ltsmp(input_file, output_file, zero_offset, neg_val)
