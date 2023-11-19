@@ -220,12 +220,12 @@ if __name__ == "__main__":
             out_file.write(f'{item}\n')
 
     # write results to output ins file
-    output_file = output_file.replace('.smp','.ins')
-    with open(output_file, 'w') as out_file:
+    outins_file = output_file.replace('.smp','.ins')
+    with open(outins_file, 'w') as out_file:
         for item in ins:
             out_file.write(f'{item}\n')
 
-    print(f'  Read {budget_file} and wrote {output_file}.')  # update cli
+    print(f'  Read {budget_file} and wrote {output_file} and {outins_file}.')  # update cli
 
     idb.exe_time()  # print elapsed time
 

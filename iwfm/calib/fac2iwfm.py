@@ -73,10 +73,10 @@ def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0, rhigh=1000000, em
     for line in param_file_lines:
         items = line.split()
         i += 1
-        pp_params[i] = [items[4]]              # dictionary key: pp_name, values: x, y, layer, param_value
+        pp_params[i] = [items[4]]              # dictionary key: pp_name, value: param_value
 
 
-    # parse the spatial interpolation factors 
+    # parse the spatial interpolation factors and calculate the parameter value
     with open(save_name, 'w') as f:
         for item in pp_factors:
             item = item.split()
@@ -84,8 +84,9 @@ def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0, rhigh=1000000, em
             for i in range(0, na):
                 pp, factor = int(item[4 + i * 2]), float(item[4 + i * 2 + 1])
                 pval += float(pp_params[pp][0]) * factor
-            f.write(f' node:            {node} value:  {round(pval,3)}\n')
-    if verbose: print(f' Wrote nodal parameter values to  {save_name}')
+            pval_str = iwfm.pad_back(str(round(pval,3)),n=8,t='0')
+            f.write(f' node:      {iwfm.pad_front(node,n=6)} value:  {pval_str}\n')
+    if verbose: print(f' Wrote nodal parameter values to {save_name}')
 
 
 if __name__ == "__main__":
@@ -113,7 +114,7 @@ if __name__ == "__main__":
 
     idb.exe_time()  # initialize timer
 
-    fac2iwfm(pp_file_name, param_file_name, save_name, rlow, rhigh, empty,verbose=True)
+    fac2iwfm(pp_file_name, param_file_name, save_name, rlow, rhigh, empty, verbose=True)
 
     print('\n')
     idb.exe_time()  # print elapsed time

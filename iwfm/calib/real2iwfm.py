@@ -19,6 +19,162 @@
 # -----------------------------------------------------------------------------
 
 
+def write_overwrite_file(overwrite_file, in_lines, parnodes, nlay, parvals, fp, ctime, verbose=False):
+    '''  write_overwrite_file() - receive a list of parameters and write them to 
+         an IWFM-2015 overwrite file    
+
+         From REAL2IGSM.F90 by Matt Tonkin, with modifications by others
+
+    Parameters
+    ----------
+    overwrite_file : str
+        Overwrite file name
+
+    in_lines : list
+        each item is one line from the existing (template) overwrite file
+
+    parnodes : list
+        Node numbers corresponding to parvals items
+
+    nlay : int
+        Number of model layers
+
+    parvals : list
+        New parameter values
+
+    fp : list
+        Multiplier factors
+
+    ctime : str
+        Time step in DSS format
+
+    verbose : bool, default=False
+        Print to screen?
+
+    '''
+
+    line_index = 0
+    with open(overwrite_file, 'w') as f:
+
+        while in_lines[line_index][0] == 'C':           # write comment lines
+            f.write(f'{in_lines[line_index]}\n')
+            line_index += 1 
+
+        # write number of parameter lines
+        f.write(f'    {len(parnodes[0][0] * nlay)}                       / NWRITE\n')
+        line_index += 1
+
+        while in_lines[line_index][0] == 'C':           # write comment lines
+            f.write(f'{in_lines[line_index]}\n')
+            line_index += 1 
+
+        # write factors
+        f.write(f'\t{fp[0]}\t{fp[1]}\t{fp[2]}\t{fp[3]}\t{fp[4]}\t{fp[5]}\t{fp[6]}\n')
+        line_index += 1
+
+        while in_lines[line_index][0] == 'C':           # write comment lines
+            f.write(f'{in_lines[line_index]}\n')
+            line_index += 1 
+
+        # write time units
+        f.write(f'    {ctime}               / TUNITKH\n')
+        line_index += 1
+        for i in range(0,2):                            # write remaining DSS time units
+            f.write(f'{in_lines[line_index]}\n')
+            line_index += 1 
+
+        while in_lines[line_index][0] == 'C':           # write comment lines
+            f.write(f'{in_lines[line_index]}\n')
+            line_index += 1 
+
+        for n in range(0, len(parnodes[0][1])):         # cycle through nodes
+            for l in range(0, nlay):                    # cycle through layers
+                pkh = parvals[0][l][n] if parvals[0][l][n] > 0 else -1
+                ps  = parvals[1][l][n] if parvals[1][l][n] > 0 else -1
+                pn  = parvals[2][l][n] if parvals[2][l][n] > 0 else -1
+                pv  = parvals[3][l][n] if parvals[3][l][n] > 0 else -1
+                pl  = parvals[4][l][n] if parvals[4][l][n] > 0 else -1
+                sce = parvals[5][l][n] if parvals[5][l][n] > 0 else -1
+                sci = parvals[6][l][n] if parvals[6][l][n] > 0 else -1
+
+                f.write(f'\t{parnodes[0][l][n]}\t{l+1}\t{pkh:.4f}\t{ps:.3E}\t{pn:.3f}\t{pv:.3E}\t{pl:.4f}\t{sce:.3E}\t{sci:.3E}\n')
+
+    return
+# --------------------------------------------------------------------------------
+
+
+def read_overwrite_file(overwrite_file, nnodes, nlay, param_types, verbose=False):
+    '''  read_overwrite_file() - open and read an IWFM-2015 overwrite file  or 
+              overwrite template file, and return the number of nodes, the
+                scaling factors, and the parameter values  
+
+         From REAL2IGSM.F90 by Matt Tonkin, with modifications by others
+
+    Parameters
+    ----------
+    overwrite_file : str
+        Overwrite file name
+
+    nnodes : int
+        Number of nodes with parameter values
+
+    nlat : int
+        Number of model layers
+
+    param_types : list of strs
+        Parameter type codes
+
+    verbose : bool, default=False
+        Print to screen?
+
+    Returns
+    -------
+    nwrite : int
+        number of parameter lines in overwrite file
+
+    factors : list
+        multiplication factors
+    
+    ctimes : list of strs
+        time steps in DSS format
+
+    parvals_d : dict
+        parameter values for each node and layer
+
+    in_lines : list
+        each item is one line from the overwrite file
+    
+    '''
+    import iwfm as iwfm
+
+    in_lines = open(overwrite_file).read().splitlines()               # open and read input file
+
+    line_index = 0
+    line_index = iwfm.skip_ahead(line_index,in_lines,0)               # skip comments 
+    nwrite = int(in_lines[line_index].split()[0])                     # no. of parameter lines
+
+    line_index = iwfm.skip_ahead(line_index,in_lines,1)               # skip comments
+    factors = [in_lines[line_index].split()[0] for i in range(0,7)]   # scaling factors
+
+    line_index = iwfm.skip_ahead(line_index,in_lines,4)
+
+    line_index = iwfm.skip_ahead(line_index,in_lines,0)
+
+    parvals_d = {}
+    for line in in_lines[line_index:]:                                # skip comments
+        if line[0] == 'C':
+            break
+        line = line.split()
+        key = f'{line[0]}_{line[1]}'
+
+        temp = {"node": int(line[0]), "layer": int(line[1]), "pkh": float(line[2]), 
+                "ps": float(line[3]), "pn": float(line[4]), "pv": float(line[5]), 
+                "pl": float(line[6]), "sce": float(line[7]), "sci": float(line[8])}
+        parvals_d[key] = temp
+
+    return nwrite, factors, parvals_d, in_lines
+# --------------------------------------------------------------------------------
+
 
 
 def real2iwfm(verbose=False):
@@ -48,39 +204,32 @@ def real2iwfm(verbose=False):
     import iwfm as iwfm
 
     param_types = ['PKH', 'PS', 'PN', 'PV', 'PL', 'SCE', 'SCI']
-    # factors for scaling parameters = 1.0 unless otherwise
-    factors = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    
+    factors = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]               # factors for scaling parameters = 1.0 unless otherwise specified
 
     if verbose:
         print(' Program REAL2IWFM reformats the outputs of one or more  ')
         print(' output files from FAC2REALI into a node overwrite file that can ')
         print(' be read by IWFM.')
 
-    new_file = input(
-        'Create a new overwrite file from scratch [y/n]? : ').lower()
+    overwrite_file = input('\n Name of existing overwrite file: ')
+    iwfm.file_test(overwrite_file)
 
-    if new_file[0] == 'n':
-        updatef = True
-        overwrite_file = input('Name of existing overwrite file: ')
-        iwfm.file_test(overwrite_file)
+    output_file = input(' Name of new overwrite file: ')
 
-    else:
-        updatef = False
-        overwrite_file = input('Name of new overwrite file: ')
+    nlay = int(input( 'Number of model layers: '))
 
-    nlay = int(input('Number of model layers: '))
+    nnodes = int(input(' Number of nodes with parameter values: '))
 
-    nnodes = int(input('Number of nodes with parameter values: '))
+    ctime = input(' Parameter time-step units: ')
 
-    ctime = input('Parameter time-step units: ')
+    nwrite, factors, oldparvals_d, in_lines = read_overwrite_file(
+            overwrite_file, nnodes, nlay, param_types, verbose)
 
-    if updatef:
-        nwrite, factors, ctime, parvals = read_overwrite_file(
-            overwrite_file, nnodes, nlay, len(param_types), verbose)
-
+    # read new parameter values
     parvals, parnodes = [], []
     for ptype in param_types:
-        ans = input(f'\n Include data for parameter type {ptype}? [y/n]').lower()
+        ans = input(f'\n Include data for parameter type {ptype}? [y/n] ').lower()
 
         pvals, pnodes = [], []
         if ans[0] == 'y':
@@ -92,7 +241,8 @@ def real2iwfm(verbose=False):
 
                 layer_vals, layer_nodes = [], []
                 if param_file == 'none':
-                    layer_vals, layer_nodes = [-1.0] * nnodes, [-1] * nnodes
+                    layer_vals = [-1.0] * nnodes
+                    pnodes.append(list(range(1,nnodes+1)))
 
                 else:
                     iwfm.file_test(param_file)
@@ -102,250 +252,27 @@ def real2iwfm(verbose=False):
                         layer_nodes.append(int(text[1]))
                         layer_vals.append(float(text[3]))
                     if verbose:
-                        print(
-                            f' Read values for {len(file_lines)} nodes from {param_file}')
+                        print(f' Read values for {len(file_lines)} nodes from {param_file}')
 
                 pvals.append(layer_vals)
                 pnodes.append(layer_nodes)
 
         else:
-            pvals.append([-1] * nnodes)
-            pnodes.append(list(range(1,nnodes+1)))
+            for layer in range(0, nlay):
+                pvals.append([-1] * nnodes)
+                pnodes.append(list(range(1,nnodes+1)))
 
         parvals.append(pvals)
         parnodes.append(pnodes)
 
-
-
-
-
-    write_overwrite_file(overwrite_file, parnodes, nlay, param_types, parvals, factors, ctime, verbose)
+    write_overwrite_file(output_file, in_lines, parnodes, nlay, parvals, factors, ctime, verbose)
 
     if verbose:
-        print(f' Overwrite file {overwrite_file} has been written. If this was created on ')
-        print( ' the basis of an existing overwrite file, the scaling factors from that ')
-        print( ' file have been preserved. If it was created from scratch, all scaling ')
-        print( ' factors have been set equal to 1. In each case this assumes that the ')
-        print( ' user has correctly accounted for the scaling.')
+        print(f'\n\n Created overwrite file {output_file}. ')
+        print( ' All scaling factors from the original file have been preserved. ')
+        print( ' Make sure these factors correctly account for the desired scaling.')
 
     return
-# --------------------------------------------------------------------------------
-
-
-
-
-
-
-def write_overwrite_file(overwrite_file, parnodes, nlay, partypes, parvals, fp, ctime, verbose=False):
-    '''  write_overwrite_file() - receive a list of parameters and write them to 
-         an IWFM-2015 overwrite file    
-
-         From REAL2IGSM.F90 by Matt Tonkin, with modifications by others
-
-    Parameters
-    ----------
-    overwrite_file : str
-        Overwrite file name
-
-    parnodes : list
-        Node numbers corresponding to paramvals items
-
-    nlay : int
-        Number of model layers
-
-    partypes : list of strs
-        Parameter type codes
-
-    parvals : list
-        Parameter values
-
-    factors : list
-        Multiplier actors
-
-    ctime : str
-        Time step in DSS format
-
-    verbose : bool, default=False
-        Print to screen?
-
-    '''
-
-    header1 =['C*******************************************************************************', \
-        'C',\
-        'C               INTEGRATED WATER FLOW MODEL (IWFM)', 'C', \
-        'C*******************************************************************************', \
-        'C', \
-        'C               AQUIFER PARAMETER OVER-WRITE DATA FILE', \
-        'C                       Groundwater Component', \
-        'C                         *** Version 2015 ***', \
-        'C', \
-        'C', \
-        'C             Project : ', \
-        'C             Filename: ', \
-        'C', \
-        'C*******************************************************************************', \
-        'C                           File Description', 'C', \
-        'C   This data file contains node and layer numbers, and associated parameter', \
-        'C   values to over-write values specified in the Groundwater Parameter Data File.', \
-        'C', \
-        'C*******************************************************************************', \
-        'C               Over-writing Parameter Value Data Specifications', 'C', \
-        'C   NWRITE; Total number of groundwater nodes at which previously defined', \
-        'C            parameter values will be over-written.', 'C', \
-        'C-------------------------------------------------------------------------------', \
-        'C   VALUE                       DESCRIPTION', \
-        'C-------------------------------------------------------------------------------']
-
-    header2 =['C-------------------------------------------------------------------------------', \
-        'C', \
-        'C         Conversion factors for over-writing parameter values', \
-        'C', \
-        'C   FKH   ;  Conversion factor for horizontal hydraulic conductivity', \
-        'C              It is used to convert only the spatial component of the unit; ', \
-        'C              DO NOT include the conversion factor for time component of the unit.', \
-        'C              * e.g. Unit of hydraulic conductivity listed in this file = IN/DAY', \
-        'C                     Consistent unit used in simulation                 = FT/MONTH ', \
-        'C                     Enter FKH (IN/MONTH -> FT/MONTH)                   = 8.33333E-02 ', \
-        'C                      (conversion of DAY -> MONTH is performed automatically) ', \
-        'C   FS    ;  Conversion factor for specific storage coefficient', \
-        'C   FN    ;  Weighting factor for specific yield value', \
-        'C   FV    ;  Conversion factor for aquitard vertical hydraulic conductivity', \
-        'C              It is used to convert only the spatial component of the unit;', \
-        'C              DO NOT include the conversion factor for time component of the unit.', \
-        'C              * e.g. Unit of hydraulic conductivity listed in this file = IN/DAY', \
-        'C                     Consistent unit used in simulation                 = FT/MONTH ', \
-        'C                     Enter FKH (IN/MONTH -> FT/MONTH)                   = 8.33333E-02 ', \
-        'C                      (conversion of DAY -> MONTH is performed automatically) ', \
-        'C   FL    ;  Conversion factor for aquifer vertical hydraulic conductivity', \
-        'C              It is used to convert only the spatial component of the unit; ', \
-        'C              DO NOT include the conversion factor for time component of the unit.', \
-        'C              * e.g. Unit of hydraulic conductivity listed in this file = IN/DAY', \
-        'C                     Consistent unit used in simulation                 = FT/MONTH', \
-        'C                     Enter FKH (IN/MONTH -> FT/MONTH)                   = 8.33333E-02 ', \
-        'C                      (conversion of DAY -> MONTH is performed automatically) ', \
-        'C   FSCE  ;  Conversion factor for elastic storage coefficient', \
-        'C   FSCI  ;  Conversion factor for inelastic storage coefficient', \
-        'C   TUNITKH;  Time unit of horizontal hydraulic conductivity.  This should be one of the units ', \
-        'C              recognized by HEC-DSS that are listed in the Main Control File.  ', \
-        'C   TUNITV ;  Time unit of aquitard vertical conductivity.  This should be one of the units ', \
-        'C              recognized by HEC-DSS that are listed in the Main Control File.  ', \
-        'C   TUNITL ;  Time unit of aquifer vertical conductivity.  This should be one of the units ', \
-        'C              recognized by HEC-DSS that are listed in the Main Control File.  ', \
-        'C', \
-        'C    *** NOTE: This file created by utility program REAL2IWFM   ***',  \
-        'C    *** NOTE:      All factors set to 1.0                      ***', \
-        'C', \
-        'C-----------------------------------------------------------------------------------------------------', \
-        'C  FKH            FS             FN             FV             FL             FSCE           FSCI', \
-        'C-----------------------------------------------------------------------------------------------------' ]
-
-    header3 =['C---------------------------------------------------------------------------', \
-        'C     VALUE              DESCRIPTION', \
-        'C---------------------------------------------------------------------------' ]
-
-    header4 =['C---------------------------------------------------------------------------', \
-        'C', \
-        'C   The following lists the groundwater nodenumber, aquifer layer number and', \
-        'C    associated parameter values that will over-write the previously defined', \
-        'C    values.', \
-        'C    *** Enter -1.0 not to over-write the previously set values ***', \
-        'C    *** NOTE: This file created by utility program REAL2IWFM   ***', 
-        'C   ID   ;   Groundwater node number', 'C   LAYER;   Aquifer layer', \
-        'C   PKH  ;   Hydraulic conductivity; [L/T]', 'C   PS   ;   Specific storage; [1/L]', \
-        'C   PN   ;   Specific yield; [L/L]', \
-        'C   PV   ;   Aquitard vertical hydraulic conductivity; [L/T]', \
-        'C   PL   ;   Aquifer vertical hydraulic conductivity; [L/T]', \
-        'C   SCE  ;   Elastic storage coefficient; [1/L]', \
-        'C   SCI  ;   Inelastic storage coefficient; [1/L]', \
-        'C            *Note* The above land subsidence parameters are only for interbed', \
-        'C                    layers (i.e. clay layers)', \
-        'C', \
-        'C-------------------------------------------------------------------------------------------------------------------', \
-        'C                Hydr.          Spec.          Spec.         Aquitard       Aquifer       Elastic       Inelastic', \
-        'C                cond.          Stor.          Yld.           Vert. K       Vert. K      Stg. Coef.     Stg. Coef', \
-        'C  ID   LAYER     PKH            PS             PN              PV             PL           SCE            SCI', \
-        'C-------------------------------------------------------------------------------------------------------------------']
-
-    with open(overwrite_file, 'w') as f:
-        for h in header1:
-            f.write(f'{h}\n')
-
-        f.write(f'    {len(parnodes[0][0])}                       / NWRITE\n')
-
-
-        for h in header2:
-            f.write(f'{h}\n')
-
-        f.write(f'\t{fp[0]}\t{fp[1]}\t{fp[2]}\t{fp[3]}\t{fp[4]}\t{fp[5]}\t{fp[6]}\n')
-
-        for h in header3:
-            f.write(f'{h}\n')
-
-        f.write(f'    {ctime}               / TUNITKH\n')
-        f.write(f'    {ctime}               / TUNITV \n')
-        f.write(f'    {ctime}               / TUNITL \n')
-
-        for h in header4:
-            f.write(f'{h}\n')
-
-        for n in range(0, len(parnodes[0][1])):           # cycle through nodes
-            for l in range(0, nlay):
-                for p in range(0, len(partypes)): 
-                    pkh = parvals[0][l][n]
-                    ps  = parvals[1][l][n]
-                    pn  = parvals[2][l][n]
-                    pv  = parvals[3][l][n]
-                    pl  = parvals[4][l][n]
-                    sce = parvals[5][l][n]
-                    sci = parvals[6][l][n]
-                f.write(f'\t{parnodes[0][l][n]}\t{l+1}\t{pkh}\t{ps}\t{pn}\t{pv}\t{pl}\t{sce}\t{sci}\n')
-
-    return
-# --------------------------------------------------------------------------------
-
-
-
-
-
-def read_overwrite_file(overwrite_file, verbose=False):
-    '''  read_overwrite_file() - open and read an IWFM-2015 overwrite file    
-
-         From REAL2IGSM.F90 by Matt Tonkin, with modifications by others
-
-    Parameters
-    ----------
-    overwrite_file : str
-        Overwrite file name
-
-    verbose : bool, default=False
-        Print to screen?
-
-    Returns
-    -------
-    nwrite : int
-        number of model nodes
-
-    factors : list
-        multiplication factors
-    
-    ctime : str
-        date in DSS format
-    
-    '''
-
-    import iwfm as iwfm
-    in_lines = open(overwrite_file).read().splitlines()               # open and read input file
-
-    line_index = iwfm.skip_ahead(line_index,in_lines,0)               # skip comments 
-    nwrite = int(in_lines[line_index].split()[0])                     # no. of nodes
-
-    line_index = iwfm.skip_ahead(line_index,in_lines,1)               # skip comments
-    factors = in_lines[line_index]
-
-    line_index = iwfm.skip_ahead(line_index,in_lines,1)
-    ctime = int(in_lines[line_index].split()[0])                      # time unit in DSS format
-
-    return nwrite, factors, ctime
 # --------------------------------------------------------------------------------
 
 
@@ -355,7 +282,7 @@ if __name__ == "__main__":
     import iwfm.debug as idb
 
     idb.exe_time()  # initialize timer
-    real2iwfm(verbose=False)
+    real2iwfm(verbose=True)
     print('\n')
     idb.exe_time()  # print elapsed time
 
