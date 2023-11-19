@@ -63,10 +63,7 @@ def budgets(bud_file, type='xlsx', verbose=False):
                                 volume_units=unitvolou,
                                 verbose=verbose) # (loc_names, column_headers, loc_values, titles)
 
-        if type=='csv':     # for future use?
-            pass
-
-        else:   # default type is Excel
+        if type=='xlsx':   # default type is Excel
             workbook = xl.excel_new_workbook(excel)             # create new Excel workbook
 
             xl.write_budget_to_xl(workbook, budget_data)        # write budget data to Excel workbook
@@ -75,6 +72,13 @@ def budgets(bud_file, type='xlsx', verbose=False):
 
             workbook.SaveAs(os.path.abspath(xlfile))            # save workbook
             workbook.Close(True)
+
+        elif type=='csv':     # for future use?
+            pass
+
+        else:
+            pass
+
 
     if type=='xlsx':
         xl.excel_kill(excel)
