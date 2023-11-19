@@ -206,7 +206,7 @@ if __name__ == "__main__":
 
     pre_dict, have_lake = iwfm.iwfm_read_preproc(pre_file)
 
-    node_coords, node_list = iwfm.iwfm_read_nodes(pre_dict['node_file'])
+    node_coords, node_list, factor = iwfm.iwfm_read_nodes(pre_dict['node_file'])
 
     elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(pre_dict['elem_file'])
 

@@ -90,7 +90,7 @@ def iwfm_sub_preproc(
         print('  Compiled list of submodel nodes')
 
     # -- get submodel node coordinates
-    node_coord, node_list = iwfm.iwfm_read_nodes(pre_dict['node_file'])
+    node_coord, node_list, factor = iwfm.iwfm_read_nodes(pre_dict['node_file'])
 
     i = 0
     while i < len(node_coord):

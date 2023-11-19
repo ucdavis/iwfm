@@ -67,7 +67,7 @@ if __name__ == '__main__':
     iwfm.file_test(well_file)
 
     idb.exe_time()  # initialize timer
-    node_coord, node_list = iwfm.iwfm_read_nodes(node_file)
+    node_coord, node_list, factor = iwfm.iwfm_read_nodes(node_file)
     # read list of points from well file
     # ** TODO: NEED TO ADD THIS PART **
     print(f'  ** NEED TO UPDATE nearest_node.py TO READ WELL FILE ')

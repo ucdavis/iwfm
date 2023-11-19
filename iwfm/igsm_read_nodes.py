@@ -36,5 +36,5 @@ def igsm_read_nodes(node_file):
     '''
     import iwfm as iwfm
 
-    node_coord, node_list = iwfm.iwfm_read_nodes(node_file)
-    return node_coord, node_list
+    node_coord, node_list, factor = iwfm.iwfm_read_nodes(node_file)
+    return node_coord, node_list, factor

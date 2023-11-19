@@ -56,7 +56,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     if verbose:
         print(f'  Read nodes of {len(elem_nodes):,} elements from {pre_dict["elem_file"]}')
 
-    node_coords, node_list = iwfm.iwfm_read_nodes(pre_dict['node_file'], factor = 1)
+    node_coords, node_list, factor = iwfm.iwfm_read_nodes(pre_dict['node_file'], factor = 1)
     if verbose:
         print(f'  Read coordinates of {len(node_coords):,} nodes from {pre_dict["node_file"]}')
 

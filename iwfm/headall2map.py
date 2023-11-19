@@ -60,7 +60,7 @@ def headall2map(heads_file, pre_file, bnds_file, out_date, basename, label='Head
     pre_dict, _ = iwfm.iwfm_read_preproc(pre_file)
 
     node_file = os.path.join(pre_path, pre_dict['node_file'])
-    node_coords, node_list = iwfm.iwfm_read_nodes(node_file)
+    node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
     strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
     strat = np.array([np.array(i) for i in strat])    # strat to numpy array

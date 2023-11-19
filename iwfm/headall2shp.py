@@ -60,7 +60,7 @@ def headall2shp(heads_file, pre_file, out_date, basename, label='Heads', units='
     pre_dict, _ = iwfm.iwfm_read_preproc(pre_file)
 
     node_file = os.path.join(pre_path, pre_dict['node_file'])
-    node_coords, node_list = iwfm.iwfm_read_nodes(node_file)
+    node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
     # -- get heads
     data, layers, dates, nodes = iwfm.headall_read(heads_file)
