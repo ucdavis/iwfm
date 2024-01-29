@@ -24,7 +24,7 @@ def iwfm_nearest_nodes(filename, node_set):
 
     Parameters
     ----------
-    filename : str
+    out_file : str
         output file name base
     
     node_set : list
@@ -37,19 +37,40 @@ def iwfm_nearest_nodes(filename, node_set):
     '''
     import iwfm as iwfm
 
-    output_filename = filename[0 : filename.find('.')] + '_nodes.out'
+    output_filename = filename[0 : filename.find('.')] + '_nearest_nodes.out'
     with open(output_filename, 'w') as output_file:
         with open(filename, 'r') as input_file:
             lines = input_file.read().splitlines()  # open and read input file
-            output_file.write(f'{lines[0]}\tNdNear\tNdDist\n')
+            header = lines[0].split(',')
+            output_file.write(f'{header[0]},NdNear,NdDist\n')
             for line_index in range(1, len(lines)):  # skip header line
-                temp = lines[line_index].split()
-                nearest = iwfm.nearest_node([float(temp[1]), float(temp[2])], node_set)
-                dist = iwfm.distance(
-                    [float(temp[1]), float(temp[2])],
-                    [node_set[nearest][1], node_set[nearest][2]],
-                ) 
+                point = lines[line_index].split(',')
+                nearest, dist = iwfm.iwfm_nearest_node([float(point[1]), float(point[2])], node_set)
                 # write out
-                output_file.write(f'{lines[line_index]}\t{nearest}\t{dist}\n')
+                output_file.write(f'{point[0]},{nearest[0]},{round(dist,2)}\n')
 
     return len(lines) - 1
+
+if __name__ == '__main__':
+    ' Run iwfm_nearest_nodes() from command line '
+    import sys
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    if len(sys.argv) > 1:  # arguments are listed on the command line
+        node_file  = sys.argv[1]
+        point_file = sys.argv[2]
+    else:  # ask for file names from terminal
+        node_file  = input('IWFM Node file basename: ')
+        point_file = input('Point file name (csv): ')
+
+    iwfm.file_test(node_file)
+    iwfm.file_test(point_file)
+
+    idb.exe_time()  # initialize timer
+    node_coord, node_list, factor = iwfm.iwfm_read_nodes(node_file)
+    lines = iwfm_nearest_nodes(point_file, node_coord)
+    print(f'  Wrote {lines} lines to output file')
+    idb.exe_time()  # print elapsed time
+
+

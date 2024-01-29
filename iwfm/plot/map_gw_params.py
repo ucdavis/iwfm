@@ -117,7 +117,7 @@ def map_gw_params(node_coords, layers, Kh, Ss, Sy, Kq, Kv, bounding_poly, strat,
     count : int
         number of parameter maps created
     '''
-
+    import numpy as np
     # plot all layers for each parameter
     count = 0
     for layer in range(layers):
@@ -171,7 +171,7 @@ def map_gw_params(node_coords, layers, Kh, Ss, Sy, Kq, Kv, bounding_poly, strat,
             else:
                 plot_data.append([node_coords[i][1], node_coords[i][2], 0 ]) 
         count += plot_one(plot_data, bounding_poly, 'Kv', layer, basename, '(ft/day)', point_width=point_width)
-        if verbose: print(f'  Finished layer {layer+1}\n')
+        if verbose: print(f'  Finished layer {layer+1}')
 
     return count
 

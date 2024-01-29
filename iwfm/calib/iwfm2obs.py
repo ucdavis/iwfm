@@ -61,8 +61,9 @@ def iwfm2obs(verbose=False):
     time_step  = time_step.lower()
 
     sim_file_d = iwfm.iwfm_read_sim(sim_file)                                # get package file names from simulation file
-    gw_file_d = iwfm.iwfm_read_gw(sim_file_d['gw'])                          # get groundwater file names from groundwater file
+    gw_file_d, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy = iwfm.iwfm_read_gw(sim_file_d['gw'])                          # get groundwater file names from groundwater file
 
+    # check for existence of subprocess file names
     file_dict = {   # 0                              1             2             3             4             5    6     7       8     9
         # name/type     main_file                smp_obs       smp_out       ins_out       pcf_out       proc wrins rthresh colid skips
         'Streams':     [sim_file_d['stream']   ,'st_obs.smp','st_temp.smp','st_temp.ins','st_temp.pcf',True,True, 0,      1,    [ 6,6]],
@@ -105,7 +106,6 @@ def iwfm2obs(verbose=False):
         old_value = file_dict[nt]
         new_value = [old_value[0],obs_file,out_file,ins_file,pcf_file,bprocess,bwriteins,rthresh,old_value[8],old_value[9]]
         file_dict.update({nt: new_value})
-    if verbose: print(' ')
     print(' ') # clean screen
 
     # == Process hydrographs --------------------------------------------------------
@@ -152,7 +152,7 @@ def iwfm2obs(verbose=False):
             ts_func = interp1d(ts.sim_dates,ts.time_steps,kind='linear')          # scipy interpolation function uses dataframe
 
             obs_file = file_dict[nt][1]
-            obs_sites, obs_data = calib.get_obshyd(obs_file,start_date)           # get the observation sites and dates
+            obs_sites, obs_data = calib.get_obs_hyd(obs_file,start_date)           # get the observation sites and dates
 
             sim_miss, sim_both = calib.compare(sim_sites,obs_sites)               # how many obs_sites not in sim_sites?
             calib.write_missing(sim_miss,obs_file,fname=missing_file)
@@ -180,7 +180,7 @@ def iwfm2obs(verbose=False):
                         obs_val = float(sim_func(obs_date[i]))                    # use interpolation function
                         ts = ceil(float(ts_func(obs_date[i])))                    # use interpolation function
 
-                        smp, ins = calib.to_smp_ins(obs_site[i],obs_dt[i],obs_val,ts)   # put into smp and ins strings
+                        smp, ins = calib.to_smp_ins(obs_site[i],obs_dt[i],round(obs_val,3),ts)   # put into smp and ins strings
                         smp_out.append(smp)                                       # add smp string to smp_out list
                         ins_out.append(ins)                                       # add ins string to ins_out list
 
@@ -223,6 +223,7 @@ if __name__ == "__main__":
     idb.exe_time()  # initialize timer
     iwfm2obs(verbose=True)
 
+    print(' ') # clean screen
     idb.exe_time()  # print elapsed time
 
 

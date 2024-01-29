@@ -40,7 +40,7 @@ def get_name(s):
     return name
 
 
-def iwfm_read_gw(gw_file):
+def iwfm_read_gw(gw_file, verbose=False):
     ''' iwfm_read_gw() - Read an IWFM Simulation Groundwater file and return
         a dictionary of sub-process file names, and arrays of parameters
 
@@ -129,65 +129,132 @@ def iwfm_read_gw(gw_file):
             line_index += 1   # if line starts with comment character, skip it
         hydrographs.append(file_lines[line_index].split()[0])
         line_index += 1
+    if verbose: print(f' ==> {gw_file} has {nouth} hydrograph(s)')
 
     # element face flow - skip
-    line_index = iwfm.skip_ahead(line_index, file_lines, 0)       # skip hydrograph specifications
+    line_index = iwfm.skip_ahead(line_index, file_lines, 0)             # skip to Element Face Flows
     noutf = int(file_lines[line_index].split()[0])                      # Element Face Flow lines
-    line_index = iwfm.skip_ahead(line_index, file_lines, noutf + 1)     # skip Element Face Flow data
+    if verbose: print(f' ==> {gw_file} has {noutf} face flow line(s)')
+    line_index = iwfm.skip_ahead(line_index, file_lines, noutf + 2)     # skip Element Face Flow file name and data
 
-    line_index = iwfm.skip_ahead(line_index, file_lines, 3)             # skip NGROUP and FACTOR lines
+    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+    ngroup = int(file_lines[line_index].split()[0])                      # skip to Parameter Groups
+    
+    if verbose: print(f' ==> {gw_file} has {ngroup} parameter group(s)')
+
+    line_index = iwfm.skip_ahead(line_index, file_lines, 2)             # skip FACTOR lines
+    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 
     # units
     tunitkh = file_lines[line_index].split()[0]                         # time unit for aquifer Kh
     line_index += 1
+    if verbose: print(f' ==> {tunitkh=}')
     tunitv = file_lines[line_index].split()[0]                          # time unit for aquitard Kv
     line_index += 1
+    if verbose: print(f' ==> {tunitv=}')
     tunitl = file_lines[line_index].split()[0]                          # time unit for aquifer Kv
     units=[tunitkh, tunitv, tunitl]
+    if verbose: print(f' ==> {tunitl=}')
 
     line_index = iwfm.skip_ahead(line_index, file_lines, 1)             # skip to parameter section
+    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 
-    # how many layers?
-    layers = 1
-    len1 = len(file_lines[line_index].split())                          # includes node number
-    len2 = len(file_lines[line_index+1].split())                        # does not include node number unless one layer
-    if len2 == len1:
+    if ngroup > 0:                                                      # read parameter grid
+        line_index = iwfm.skip_ahead(line_index, file_lines, 1)         # skip model node numbers
+        if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+
+        nodes = int(file_lines[line_index].split()[0])                  # number of parametric grid nodes
+        line_index = iwfm.skip_ahead(line_index, file_lines, 1)         # skip model node numbers
+        nep = int(file_lines[line_index].split()[0])                    # number of parametric grid elements
+        if verbose: print(f' ==> {nodes=}')
+        if verbose: print(f' ==> {nep=}')
+
+        line_index = iwfm.skip_ahead(line_index, file_lines, nep+1)         # skip parametric grid element description
+        if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+
+        # how many layers?
         layers = 1
-    else: 
-        while len(file_lines[line_index+layers].split()) < len1:
-            layers += 1
+        len1 = len(file_lines[line_index].split())                          # includes node number
+        len2 = len(file_lines[line_index+1].split())                        # does not include node number unless one layer
+        if len2 == len1:
+            layers = 1
+        else: 
+            while len(file_lines[line_index+layers].split()) < len1:
+                layers += 1
 
-    # how many nodes?
-    nodes = 0
-    while file_lines[line_index+(nodes*layers)].split()[0] != 'C':
-        nodes += 1
-    nodes -= 1
+        if verbose: print(f' ==> {layers=}')
+        if verbose: print(f' ==> {nodes=}')
 
-    # initialize parameter arrays
-    node_id = [0 for row in range(nodes)]
-    Kh = [[0 for col in range(layers)] for row in range(nodes)]
-    Ss = [[0 for col in range(layers)] for row in range(nodes)]
-    Sy = [[0 for col in range(layers)] for row in range(nodes)]
-    Kq = [[0 for col in range(layers)] for row in range(nodes)]
-    Kv = [[0 for col in range(layers)] for row in range(nodes)]
+        # initialize parameter arrays
+        node_id = [0 for row in range(nodes)]
+        x = [0 for row in range(nodes)]
+        y = [0 for row in range(nodes)]
+        Kh = [[0 for col in range(layers)] for row in range(nodes)]
+        Ss = [[0 for col in range(layers)] for row in range(nodes)]
+        Sy = [[0 for col in range(layers)] for row in range(nodes)]
+        Kq = [[0 for col in range(layers)] for row in range(nodes)]
+        Kv = [[0 for col in range(layers)] for row in range(nodes)]
 
-    # read parameter values
-    for node in range(nodes):
-        for layer in range(layers):
-            #print(f'{line_index=} {node=}, {nodes=} {file_lines[line_index]=}')
-            values = file_lines[line_index].split()
-            if layer == 0:
-                node_id[node] = int(values.pop(0))
-            Kh[node][layer] = float(values[0])
-            Ss[node][layer] = float(values[1])
-            Sy[node][layer] = float(values[2])
-            Kq[node][layer] = np.float32(values[3])
-            Kv[node][layer] = float(values[4])
-            line_index += 1
+        # read parameter values
+        for node in range(nodes):
+            for layer in range(layers):
+                values = file_lines[line_index].split()
+                if layer == 0:
+                    node_id[node] = int(values.pop(0))
+                    x[node] = int(values.pop(0))
+                    y[node] = int(values.pop(0))
+                Kh[node][layer] = float(values[0])
+                Ss[node][layer] = float(values[1])
+                Sy[node][layer] = float(values[2])
+                Kq[node][layer] = np.float32(values[3])
+                Kv[node][layer] = float(values[4])
+                line_index += 1
+
+    else:                                                               # read parameter values
+        # how many layers?
+        layers = 1
+        len1 = len(file_lines[line_index].split())                      # includes node number
+        len2 = len(file_lines[line_index+1].split())                    # does not include node number unless one layer
+        if len2 == len1:
+            layers = 1
+        else: 
+            while len(file_lines[line_index+layers].split()) < len1:
+                layers += 1
+
+        # how many nodes?
+        nodes = 0
+        while file_lines[line_index+(nodes*layers)].split()[0] != 'C':
+            nodes += 1
+        nodes -= 1
+
+        # initialize parameter arrays
+        node_id = [0 for row in range(nodes)]
+        Kh = [[0 for col in range(layers)] for row in range(nodes)]
+        Ss = [[0 for col in range(layers)] for row in range(nodes)]
+        Sy = [[0 for col in range(layers)] for row in range(nodes)]
+        Kq = [[0 for col in range(layers)] for row in range(nodes)]
+        Kv = [[0 for col in range(layers)] for row in range(nodes)]
+
+        # read parameter values
+        for node in range(nodes):
+            for layer in range(layers):
+                values = file_lines[line_index].split()
+                if layer == 0:
+                    node_id[node] = int(values.pop(0))
+                Kh[node][layer] = float(values[0])
+                Ss[node][layer] = float(values[1])
+                Sy[node][layer] = float(values[2])
+                Kq[node][layer] = np.float32(values[3])
+                Kv[node][layer] = float(values[4])
+                line_index += 1
 
     line_index = iwfm.skip_ahead(line_index, file_lines, 0)       # skip anomaly section
+    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
     nebk = int(file_lines[line_index].split()[0])                 # anomaly lines
+    if verbose: print(f' ==> {nebk=}')
     line_index = iwfm.skip_ahead(line_index, file_lines, nebk+4)  # skip anomaly section and FACTHP
+
+    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 
     # initial condition
     init_cond = []
@@ -198,5 +265,6 @@ def iwfm_read_gw(gw_file):
             temp.append(float(items[l+1]))
         init_cond.append(temp)
         line_index += 1
+    if verbose: print(' ==> leaving iwfm_read_gw.py <==')
 
     return gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy

@@ -25,3 +25,6 @@ iwfm.egg-info/
 *.whl
 *.gz
 .bat
+
+# sourcery files
+.sourcery.yaml

@@ -1,5 +1,5 @@
 # nearest_node.py
-# Return nearest IWFM node to an (x,y) location
+# Read IWFM well file and return nearest IWFM node to an (x,y) location
 # the nearest node to each (x,y) point
 # Copyright (C) 2020-2021 University of California
 # -----------------------------------------------------------------------------

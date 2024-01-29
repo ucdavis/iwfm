@@ -115,6 +115,7 @@ from iwfm.find_line_num import find_line_num
 # -- finite-element methods -------------------------------
 from iwfm.elem_poly_coords import elem_poly_coords
 from iwfm.iwfm_nearest_nodes import iwfm_nearest_nodes
+from iwfm.iwfm_nearest_node import iwfm_nearest_node
 from iwfm.nearest_node import nearest_node
 from iwfm.nearest import nearest
 from iwfm.in_element import in_element

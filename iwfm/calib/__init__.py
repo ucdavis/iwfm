@@ -23,6 +23,9 @@ from iwfm.calib.iwfm2obs import iwfm2obs
 from iwfm.calib.real2iwfm import real2iwfm
 from iwfm.calib.par2iwfm import par2iwfm
 from iwfm.calib.ppk2fac_trans import ppk2fac_trans
+from iwfm.calib.stacdep2obs import stacdep2obs
+from iwfm.calib.divshort2obs import divshort2obs
+from iwfm.calib.iwfm_exe_time import iwfm_exe_time
 
 # -- supporting functions ---------------------------------------
 from iwfm.calib.krige import krige
@@ -44,6 +47,7 @@ from iwfm.calib.idw import idw
 from iwfm.calib.interp_val import interp_val
 from iwfm.calib.res_stats import res_stats
 from iwfm.calib.rmse_calc import rmse_calc
+from iwfm.calib.pest_res_stats import pest_res_stats
 
 # -- data functions ---------------------------------------
 from iwfm.calib.get_hyd_fname import get_hyd_fname
@@ -55,9 +59,10 @@ from iwfm.calib.headdiff_hyds import headdiff_hyds
 from iwfm.calib.headdiff_read import headdiff_read
 from iwfm.calib.hyds_missed import hyds_missed
 from iwfm.calib.sim_4_sites import sim_4_sites
+from iwfm.calib.well_pairs_2_obs_list import well_pairs_2_obs_list
 
 # -- file writing functions ---------------------------------------
 from iwfm.calib.write_missing import write_missing
 from iwfm.calib.write_results import write_results
 from iwfm.calib.write_rmse_bias import write_rmse_bias
-
+from iwfm.calib.simout2gw import simout2gw

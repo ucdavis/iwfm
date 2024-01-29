@@ -26,7 +26,7 @@ def bud2csv(f, loc_names, column_headers, loc_values, budget_info,
 
     Parameters
     ----------
-    outfile : File object
+    f : File object
         Output file open for writing
 
     loc_names : list of strings
@@ -38,7 +38,7 @@ def bud2csv(f, loc_names, column_headers, loc_values, budget_info,
     loc_values : list of dataframes
         Each dataframe contains values for one location
 
-    budget_type : string
+    budget_info : string
         Type of budget, 'GROUNDWATER' == Groundwater, 'LAND' == Lane Use,
         'STREAM' == Stream or Stream Node, 'ROOT' == Root Zone,
         'SMALL' == Small Watershed, 'UNSAT' == Unsaturates Zone
@@ -50,6 +50,8 @@ def bud2csv(f, loc_names, column_headers, loc_values, budget_info,
     -------
     nothing
     '''
+
+    print(f' => ')
 
     # determine budget type and location type
     budget_type = budget_info[0][1].split()[0]
