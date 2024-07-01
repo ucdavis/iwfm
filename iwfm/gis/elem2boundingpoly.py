@@ -55,10 +55,10 @@ def elem2boundingpoly(elem_nodes, node_coords, verbose=False):
         poly = Polygon([[p[0], p[1]] for p in points])
         polys.append(poly)
 
-    if verbose: print(f'  create poly_union')
+    #  create poly_union
     poly_union = unary_union(polys)
 
-    if verbose: print(f'  create bounding_polygon')
+    # create bounding_polygon
     bounding_polygon = Polygon(poly_union.exterior.coords)
 
     if verbose: print('  Created bounding polygon for model')

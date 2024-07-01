@@ -1,6 +1,6 @@
 # bud2xl.py
 # Read IWFM Budget or Z-Budget output file and paste into existing Excel workbook
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -81,6 +81,13 @@ def bud2xl(budget_file, excel_file, verbose=False, row = 6):
     if verbose:
         print(f'  Opened {excel_file}')
 
+    # -- If there are too few worksheets, add some
+    if wb.Sheets.Count < tables + 1:
+        print(f'=> {tables} tables for {wb.Sheets.Count} worksheets in {excel_file}')
+        print(f'=> Adding {tables - wb.Sheets.Count + 1} worksheets to {excel_file}')
+        for i in range(wb.Sheets.Count,tables + 1):
+            wb.Worksheets.Add(After=wb.Worksheets(wb.Sheets.Count))
+    
     # -- Step through the Budget file, one table at a time
     line = 0  
     for t in range(0, tables):  

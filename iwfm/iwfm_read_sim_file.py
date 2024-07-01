@@ -1,6 +1,6 @@
 # iwfm_read_sim_file.py
 # Read IWFM simulation main file and return dictionary of file names
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -65,5 +65,11 @@ def iwfm_read_sim_file(sim_file):
 
     line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
     sim_dict['unsat_file'] = sim_lines[line_index].split()[0]   # unsaturated zone file
+
+    line_index = iwfm.skip_ahead(line_index + 3, sim_lines, 0) 
+    sim_dict['precip_file'] = sim_lines[line_index].split()[0]  # precipitation file
+
+    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
+    sim_dict['et_file'] = sim_lines[line_index].split()[0]      # evapotranspiration file
 
     return sim_dict, have_lake

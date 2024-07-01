@@ -1,6 +1,6 @@
 # shp_add_field.py
 # Add a field to a shapefile with PyShp
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def shp_add_field(shapefilename, name='TEST', type='F', length=8, prec=5):
+def shp_add_field(shapefilename, field_name='TEST', type='F', length=8, prec=5):
     ''' shp_add_field() - Add a field to a shapefile with PyShp
     
     Parameters
@@ -25,7 +25,7 @@ def shp_add_field(shapefilename, name='TEST', type='F', length=8, prec=5):
     shapefilename : str
         shapefile name
     
-    name : str
+    field_name : str
         field name, default='test'
     
     type : str, default='F'
@@ -45,7 +45,17 @@ def shp_add_field(shapefilename, name='TEST', type='F', length=8, prec=5):
     import shapefile  # PyShp
 
     r = shapefile.Reader(shapefilename)
-    with shapefile.Writer(name, r.shapeType) as w:
-        w.fields = list(r.fields)
-        w.field(name, type, length, prec)
+    shapes = r.shapes()
+    fields = r.fields[1:]                           # skip first deletion field
+    field_names = [field[0] for field in fields]
+    attributes = r.records()
+
+    with shapefile.Writer(shapefilename, r.shapeType) as w:
+        w.fields = list(r.fields)                   # copy the existing fields
+        w.field(field_name, type, length, prec)     # add the new field
+
+        for i in range(len(shapes)):
+            w.record(*attributes[i])                # copy the existing records
+            w.shape(shapes[i])                      # add the new shape
     return 
+

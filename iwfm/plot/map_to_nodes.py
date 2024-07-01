@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 def map_to_nodes(dataset, bounding_poly, image_name, cmap='rainbow', marker_size = 10, title="Parameter values", 
-                label='Z values', units='', verbose=False):
+                label='Z values', units='', format='tiff', verbose=False):
     """map_to_nodes() - Create a colored image map representing nodal values such as groundwater data.
 
     NOTE: add title, legend, etc. to plot
@@ -48,6 +48,9 @@ def map_to_nodes(dataset, bounding_poly, image_name, cmap='rainbow', marker_size
 
     units : str, default = ''
         Units for the colorbar.
+
+    format : str, default = 'tiff'
+        output file format: eps, jpeg, jpg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff, webp
 
     verbose : bool, default = False
         If True, print status messages.  
@@ -84,11 +87,11 @@ def map_to_nodes(dataset, bounding_poly, image_name, cmap='rainbow', marker_size
 
     ax.axis('off')                  # Hide X axis and Y axis labels
 
-    plt.savefig(image_name)         # Save the plot to an image file
+    plt.savefig(image_name,format=format)     # Save the plot 
 
     #plt.show()                     # Show the plot
 
     plt.close()
 
-    if verbose: print(f"Image saved to {image_name}")
+    if verbose: print(f"  Image saved to {image_name}")
 

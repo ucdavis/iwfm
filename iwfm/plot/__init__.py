@@ -30,6 +30,7 @@ from iwfm.plot.map_gw_params import map_gw_params
 from iwfm.plot.map_rz_npc import map_rz_npc
 
 from iwfm.plot.data_to_color import data_to_color
+from iwfm.plot.contour_levels import contour_levels
 
 from iwfm.plot.get_maxs import get_maxs
 from iwfm.plot.get_mins import get_mins

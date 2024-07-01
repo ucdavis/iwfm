@@ -1,6 +1,6 @@
-# read_obs_smp.py
-# Read observations from an smp file (PEST observation file)
-# Copyright (C) 2020-2024 University of California
+# get_elem_centroids.py 
+# Calculate the centroid of each element
+# Copyright (C) 2023-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,31 +16,32 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-
-def read_obs_smp(smp_file):
-    ''' read_obs_smp() - Read the contents of the observed values smp file
-    and return as array
+def get_elem_centroids(elem_ids, elem_nodes, node_coords):
+    ''' get_elem_centroids() - Calculate the centroid of each element
 
     Parameters
     ----------
-    smp_file : str
-        Data file name (PEST-style smp format)
+    elem_ids : list
+        list of element ids
 
-    Returns
-    -------
-    obs : list
-        data file contents
-    
+    elem_nodes : list of lists
+        list of nodes for each element
+
+    node_coords : list of lists
+        list of node coordinates
+
+    Return
+    ------
+    elem_centroids : list of lists
+        list of element centroids
+
     '''
-    file_lines = open(smp_file).read().splitlines() 
-    file_lines = [word.replace("_", " ") for word in file_lines]
+    import sys
 
-    obs = []
-    for j in range(0, len(file_lines)):
-        temp = file_lines[j].split()
-        obs.append([temp[0], temp[1], temp[2], float(temp[3])])
+    elem_centroids = []
+    for elem_id, nodes in zip(elem_ids, elem_nodes):
+        x = [node_coords[node-1][1] for node in nodes]
+        y = [node_coords[node-1][2] for node in nodes]
+        elem_centroids.append([elem_id, sum(x)/len(x), sum(y)/len(y)])
 
-    # sort the list by first column then second then third column
-    obs.sort(key=lambda x: (x[0], x[1], x[2]))
-
-    return obs
+    return elem_centroids

@@ -16,53 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def contour_levels(Z, no_levels=20, verbose=False):
-    """contour_levels() - Define the contour levels for a contour map.
-
-    Parameters
-    ----------
-    Z : numpy array
-        The values to be contoured.
-
-    step_level : int, default = 25
-        Step size for contour levels.
-
-    verbose : bool, default = False
-        If True, print status messages.
-
-    Returns
-    -------
-    levels : numpy array
-        The contour levels.
-    """
-
-    import numpy as np
-
-    # Define the contour levels
-    if Z.max() - Z.min() > 10:
-        # set interval for contour levels
-        if Z.max() - Z.min() > 500:
-            step_level = 50
-        elif Z.max() - Z.min() > 200:
-            step_level = 20
-        elif Z.max() - Z.min() > 100:
-            step_level = 10
-        else:
-            step_level = 5
-        min_level = int(Z.min())
-        while min_level % step_level != 0:
-            min_level -= 1
-        max_level = int(Z.max())
-        while max_level % step_level != 0:
-            max_level += 1
-        levels = np.arange(min_level, max_level + step_level, step_level)
-    else:
-        levels = np.linspace(Z.min(), Z.max(), no_levels)
-
-    return levels
-
 def map_to_nodes_contour(dataset, bounding_poly, image_name, cmap='rainbow', title="Parameter values", 
-                 label='Z values', units='', no_levels=20, contour='line', verbose=False):
+                 label='Z values', units='', no_levels=20, contour='line', format='tiff', verbose=False):
     """map_to_nodes_contour() - Create a contour map representing nodal values such as groundwater data.
 
     Parameters
@@ -95,6 +50,9 @@ def map_to_nodes_contour(dataset, bounding_poly, image_name, cmap='rainbow', tit
     contour : str, default = 'line'
         Type of contour to be plotted.  Options are 'line' or 'filled'.
 
+    format : str, default = 'tiff'
+        output file format: eps, jpeg, jpg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff, webp
+
     verbose : bool, default = False
         If True, print status messages.  
 
@@ -112,7 +70,7 @@ def map_to_nodes_contour(dataset, bounding_poly, image_name, cmap='rainbow', tit
     X, Y, Z = iplot.get_XYvalues(dataset)  # list of lists to numpy arrays
 
     # Define the contour levels
-    levels = contour_levels(Z, no_levels=no_levels, verbose=verbose)
+    levels = iplot.contour_levels(Z, no_levels=no_levels, verbose=verbose)
 
     # create a regular grid for interpolation
     ratio = (X.max() - X.min()) / (Y.max() - Y.min())
@@ -148,15 +106,15 @@ def map_to_nodes_contour(dataset, bounding_poly, image_name, cmap='rainbow', tit
     patch = PathPatch(path, facecolor='none')
     ax.add_patch(patch)
 
-    ax.set_title(title)             # Add a title   
+    ax.set_title(title)                     # Add a title   
 
-    plt.axis('off')                 # Hide X axis and Y axis labels
+    plt.axis('off')                         # Hide X axis and Y axis labels
 
-    plt.savefig(image_name)         # Save the plot to an image file
+    plt.savefig(image_name,format=format)   # Save the plot to a pdf file
 
-    #plt.show()                     # Show the plot
+    #plt.show()                              # Show the plot
 
-    plt.close('all')                # close the plot to free up memory
+    plt.close('all')                        # close the plot to free up memory
 
     if verbose: print(f"Image saved to {image_name}")
 

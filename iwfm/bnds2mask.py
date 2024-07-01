@@ -16,8 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-
-
 def bnds2mask(bnds_d, coords):
     ''' bnds2mask() - Bounding polygon for IWFM mmodel
 
@@ -36,12 +34,17 @@ def bnds2mask(bnds_d, coords):
     -------
     Bounding polygon as numpy array of x,y coordinates
     '''
+    import sys
     coords_d = dict( (c[0], c[1:]) for c in coords)
 
     xy = []
     for i in range(len(bnds_d)):    # march down the list of boundary nodes
-        node = bnds_d[i]          
-        xy.append((coords_d[node][0],coords_d[node][1])) 
+        node = bnds_d[i]
+        try:
+            xy.append((coords_d[node][0],coords_d[node][1])) 
+        except KeyError:
+            print(f'\n  ** Error: Invalid node number {bnds_d[i]} in boundary list **\n')
+            sys.exit(1)
     node = bnds_d[0]                # close the polygon
     xy.append((coords_d[node][0],coords_d[node][1])) 
     return xy                             # create numpy array of coordinates

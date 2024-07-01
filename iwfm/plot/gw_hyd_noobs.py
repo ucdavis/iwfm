@@ -1,6 +1,6 @@
 # gw_hyd_noobs.py
 # Create PDF files for simulated data vs time for all hydrographs as lines
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_hyd_noobs(well_list,no_hyds,gwhyd_sim,gwhyd_names,well_dict,
-    titlewords,yaxis_width=-1):
+def gw_hyd_noobs(sim_well_list,gwhyd_sim,sim_hyd_names,sim_well_dict,title_words,
+                 yaxis_width=-1,verbose=False):
     ''' gw_hyd_noobs() - Create PDF files for simulated data vs time for 
         all hydrographs as lines
 
@@ -27,50 +27,59 @@ def gw_hyd_noobs(well_list,no_hyds,gwhyd_sim,gwhyd_names,well_dict,
     well_list : list
         list of well names
     
-    no_hyds : int
-        number of simulation time series to be graphed
-    
     gwhyd_sim : list
-        simulated IWFM groundwater hydrographs 
-        [0]==dates, [1 to no_hyds]==datasets
-     
-    gwhyd_names : list
-        hydrograph names from PEST observations file
+        simulated IWFM groundwater hydrographs: [0]==dates, [1 to no_hyds]==datasets
     
-    well_dict : dictionary
-        key = well name, values = well data from Groundwater.dat file
+    sim_hyd_names : list
+        simulated hydrograph names (legend entries)
+    
+    sim_well_dict : dictionary
+        key = well name, values = well data from Groundwater.dat file (if IHYDTYP == 0: [HYDTYP, LAYER, X, Y, NAME])
     
     title_words : str
         plot title words
     
     yaxis_width : int, default=-1
         minimum y-axis width, -1 for automatic
+
+    verbose : bool, default=False
+        print extra information
     
     Return
     ------
     count : int
-        number of files produced
+        Number of files produced
     
     '''
     import iwfm.plot as iplot
+    import numpy as np
+    import matplotlib          
+    import matplotlib.dates as mdates
+    import datetime
 
-    count, date = 0, []
-    date.append(gwhyd_sim[0][0][0])
-    name = well_list[0]
+    no_sim_hyds = len(gwhyd_sim)  # number of simulation time series to be graphed
 
-    start_date = gwhyd_sim[0][0][0]  
-    for j in range(1, len(well_list)):  
-        if name in well_dict:  # draw and save the current plot
-            iplot.gw_hyd_noobs_draw(name,date,no_hyds,gwhyd_sim,gwhyd_names,
-                        well_dict.get(name),start_date,titlewords,yaxis_width)
-            count += 1
-            # re-initialize for next observation well
-            date, name = [], well_list[j]
-        elif obs[j][0] == obs_well_name:                    # this observation is for this well
-            date.append(obs[j][1])
-    # make the last one
-    if name in well_dict:
-        iplot.gw_hyd_noobs_draw(name,date,no_hyds,gwhyd_sim,gwhyd_names,
-                        well_dict.get(name),start_date,titlewords,yaxis_width)
+    print(f'\n     Processing {len(sim_well_list):,} wells,  {no_sim_hyds} simulation(s),  observation data for {len(obs_well_list):,} wells\n')
+
+    # compile simulated hydrographs for each well
+    count = 0
+    for col, sim_well_name in enumerate(sim_well_list): # move through simulation wells
+        if verbose:
+            print(f' ==> Processing well {sim_well_name}, {col+1} of {len(sim_well_list)}')
+
+        # get simulation data for this well
+        sim_hyd_data = []
+        for j in range(0, len(gwhyd_sim)):          # cycle through simulation datasets
+            temp = []
+            for k in range(0, len(gwhyd_sim[j])):   # loop over rows in gwhyd_sim[j]
+                temp.append([gwhyd_sim[j][k][0],gwhyd_sim[j][k][col+1]])
+            sim_hyd_data.append(temp)
+                
+        well_info = sim_well_dict.get(sim_well_name)
+
+        iplot.gw_hyd_noobs_draw(sim_well_name, sim_hyd_data, well_info, sim_hyd_names, title_words, 
+                                yaxis_width, verbose=verbose)
+
         count += 1
+
     return count

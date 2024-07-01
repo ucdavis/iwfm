@@ -1,6 +1,6 @@
 # map_gw_params.py
 # Create PNG images of groundwater parameters from an IWFM simulation
-# Copyright (C) 2023 University of California
+# Copyright (C) 2023-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,21 +16,20 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-
-def plot_one(plot_data, bounding_poly, param_name, layer, basename, units='', point_width=100, png=False, verbose=False ):
+def plot_one(param_name, plot_data, bounding_poly, layer, basename, units='', point_width=100, format='tiff', verbose=False ):
     ''' plot_one() - Draw and save one plot
 
     Parameters
     ----------
+    param_name : string
+        name of parameter
+    
     plot_data : list
         numpy array containing x, y, and value
 
     bounding_poly : shapely Polygon
         Model boundary polygon
 
-    param_name : string
-        name of parameter
-    
     layer : int
         layer number
 
@@ -43,8 +42,11 @@ def plot_one(plot_data, bounding_poly, param_name, layer, basename, units='', po
     point_width : int, default = 100
         The width of the polygon or diameter of the circle to be drawn around each data point.
 
-    png : bool, default = False
-        If True, create a png image file.
+    format : string, default = 'tiff'
+        output file format: eps, jpeg, jpg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff, webp
+
+    verbose : bool, default = False
+        If True, print status messages.
     
     Returns
     -------
@@ -53,28 +55,26 @@ def plot_one(plot_data, bounding_poly, param_name, layer, basename, units='', po
     import iwfm.plot as iplot
     count = 0
 
-    #  Produce tiff point map
-    image_name = f'{basename}_{param_name}{layer+1}_nodes.tiff'               #  Set image file name
+    #  Produce point map
+    image_name = f'{basename}_{param_name}{layer+1}_nodes.'+format               #  Set image file name
     iplot.map_to_nodes(plot_data, bounding_poly, image_name, title=f'{param_name} layer {layer+1}', 
-                       label=f'{param_name}', units=units )
+                       label=f'{param_name}', units=units, format=format )
     count += 1
 
-    #  Produce tiff contour lines map
-    image_name = f'{basename}_{param_name}{layer+1}_contour.tiff'       #  Set image file name
-    iplot.map_to_nodes_contour(plot_data, bounding_poly, image_name, title=f'{param_name} layer {layer+1}', 
-                               label=f'{param_name}', units=units )
-    count += 1
+    # if all plot_data values are equal then they can't be contoured
+    if len(set([i[2] for i in plot_data])) == 1:
+        print(f'  Skipping {param_name} contour plots for layer {layer+1}, all values are the same')
+    else:
+        #  Produce contour lines map
+        image_name = f'{basename}_{param_name}{layer+1}_contour.'+format       #  Set image file name
+        iplot.map_to_nodes_contour(plot_data, bounding_poly, image_name, title=f'{param_name} layer {layer+1}', 
+                               label=f'{param_name}', units=units, format=format )
+        count += 1
 
-    #  Produce tiff filled contour map
-    image_name = f'{basename}_{param_name}{layer+1}_contourf.tiff'      #  Set image file name
-    iplot.map_to_nodes_contour(plot_data, bounding_poly, image_name, title=f'{param_name} layer {layer+1}', 
-                               label=f'{param_name}', units=units, contour='filled' )
-    count += 1
-
-    if png:
-        #  Produce png map
-        image_name = f'{basename}_{param_name}{layer+1}.png'            #  Set png image file name
-        iplot.map_to_nodes_png(plot_data, image_name, point_type='circle', point_width=point_width )
+        #  Produce filled contour map
+        image_name = f'{basename}_{param_name}{layer+1}_contourf.'+format      #  Set image file name
+        iplot.map_to_nodes_contour(plot_data, bounding_poly, image_name, title=f'{param_name} layer {layer+1}', 
+                               label=f'{param_name}', units=units, format=format, contour='filled' )
         count += 1
 
     return count
@@ -83,21 +83,23 @@ def plot_one(plot_data, bounding_poly, param_name, layer, basename, units='', po
 
 
 
-def map_gw_params(node_coords, layers, Kh, Ss, Sy, Kq, Kv, bounding_poly, strat, basename='gw_param_map',
+def map_gw_params(param_type, param_values, node_coords, layers, bounding_poly, strat, format='tiff', basename='gw_param_map',
                    point_width=100, verbose=False):
-    ''' map_gw_params() - Create PNG images of groundwater parameters 
-            from an IWFM simulation
+    ''' map_gw_params() - Create PNG images of groundwater parameters from an IWFM simulation
 
     Parameters
     ----------
+    param_type : string
+        name of parameter
+
+    param_values : numpy array
+        groundwater parameter values
+
     node_coords: numpy array
         nodal coordinates
 
     layers: int
         number of model layers
-
-    Kh, Ss, Sy, Kq, Kv: numpy arrays
-        groundwater parameters
 
     bounding_poly : numpy array
         Model boundary polygon for masking
@@ -106,11 +108,15 @@ def map_gw_params(node_coords, layers, Kh, Ss, Sy, Kq, Kv, bounding_poly, strat,
         thicknesses of model layers
         strat[][2] == Aquiclude 1, strat[][3] == Layer 1, etc
     
+    format : string, default = 'tiff'
+        output file format: eps, jpeg, jpg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff, webp
+
     basename : string
         base name of image file, default = gw_param_map
 
     point_width : int, default = 100
         The width of the polygon or diameter of the circle to be drawn around each data point.
+
 
     Returns
     -------
@@ -118,60 +124,41 @@ def map_gw_params(node_coords, layers, Kh, Ss, Sy, Kq, Kv, bounding_poly, strat,
         number of parameter maps created
     '''
     import numpy as np
-    # plot all layers for each parameter
+
     count = 0
     for layer in range(layers):
         thickness = strat[:,layer*2 + 3]
 
-        # plot Kh for layer 
-        plot_data = []
-        for i in range(len(node_coords)):
-            if thickness[i] > 0:
-                plot_data.append([node_coords[i][1], node_coords[i][2], Kh[i][layer]]) 
+        if param_type in ['Kh', 'Kv']:                                          # plot Kh or Kv for layer 
+            units, do_it ='(ft/day)', 1
+        elif param_type == 'Kq':                                                # plot Kq for layer
+            if (np.max(strat,axis=0)[layer*2 + 2]) > 0:                         # if aquiclude thickness > 0
+                units, do_it ='(ft/day)', 1
+                thickness = strat[:,layer*2 + 2]                                # aquiclude thickness
             else:
-                plot_data.append([node_coords[i][1], node_coords[i][2], 0 ]) 
-        count += plot_one(plot_data, bounding_poly, 'Kh', layer, basename, '(ft/day)', point_width=point_width)
+                do_it = 0
+                #print(f'  Skipping Kq, layer {layer+1}')
+        elif param_type == 'Sy' and layer == 0:                                 # plot Sy for layer 1
+            units, do_it ='', 1
+        elif param_type == 'Ss' and layer >= 1:                                 # plot Ss for layers > 0
+            units, do_it ='', 1
+        else:
+            do_it = 0
+            #print(f'  Skipping {param_type}, layer {layer+1}')
 
-        # plot Ss for layers > 0
-        if layer >= 1:
+        if do_it == 1:                                                          # compile plot data and produce plots
             plot_data = []
             for i in range(len(node_coords)):
                 if thickness[i] > 0:
-                    plot_data.append([node_coords[i][1], node_coords[i][2], Ss[i][layer]]) 
+                    plot_data.append([node_coords[i][1], node_coords[i][2], param_values[i][layer]]) 
                 else:
                     plot_data.append([node_coords[i][1], node_coords[i][2], 0 ]) 
-            count += plot_one(plot_data, bounding_poly, 'Ss', layer, basename, '', point_width=point_width)
 
-        # plot Sy for layer 1
-        if layer < 1:
-            plot_data = []
-            for i in range(len(node_coords)):
-                if thickness[i] > 0:
-                    plot_data.append([node_coords[i][1], node_coords[i][2], Sy[i][layer]]) 
-                else:
-                    plot_data.append([node_coords[i][1], node_coords[i][2], 0 ]) 
-            count += plot_one(plot_data, bounding_poly, 'Sy', layer, basename, '', point_width=point_width)
- 
-        # plot Kq for layer if any thicknesses are greater than 0.0
-        if (np.max(strat,axis=0)[layer*2 + 2]) > 0:
-            q_thick = strat[:,layer*2 + 2]
-            plot_data = []
-            for i in range(len(node_coords)):
-                if q_thick[i] > 0:
-                    plot_data.append([node_coords[i][1], node_coords[i][2], Kq[i][layer]]) 
-                else:
-                    plot_data.append([node_coords[i][1], node_coords[i][2], 0 ]) 
-            count += plot_one(plot_data, bounding_poly, 'Kq', layer, basename, '(ft/day)', point_width=point_width)
- 
-        # plot Kv for layer 
-        plot_data = []
-        for i in range(len(node_coords)):
-            if thickness[i] > 0:
-                plot_data.append([node_coords[i][1], node_coords[i][2], Kv[i][layer]]) 
-            else:
-                plot_data.append([node_coords[i][1], node_coords[i][2], 0 ]) 
-        count += plot_one(plot_data, bounding_poly, 'Kv', layer, basename, '(ft/day)', point_width=point_width)
-        if verbose: print(f'  Finished layer {layer+1}')
+            result = plot_one(param_type, plot_data, bounding_poly, layer, basename, units, point_width=point_width, format=format)
+
+            if verbose and result > 0: print(f'  Mapped {param_type} for layer {layer+1} ')
+
+            count += result
 
     return count
 
@@ -182,27 +169,39 @@ if __name__ == "__main__":
     import iwfm as iwfm
     import iwfm.debug as idb
 
-    if len(sys.argv) > 1:  # arguments are listed on the command line
-        gw_file   = sys.argv[1]      # groundwate.dat file
-        pre_file  = sys.argv[2]      # preprocessor.in file
-        bnds_file = sys.argv[3]      # boundary.csv file file
-        basename  = sys.argv[4]      # output file base name
+    point_width_default = 100
+    point_width = point_width_default
 
-        if(len(sys.argv) > 4): point_width = int(sys.argv[5])  # point width
-        if point_width == 0: point_width = 100  #default point width
+    args = sys.argv
 
+# TODO: Change to get Simulation file name, and get Groundwater.dat file name from Simulation file
+
+    if len(args) > 1:  # arguments are listed on the command line
+        gw_file   = args[1]         # groundwate.dat file
+        pre_file  = args[2]         # preprocessor.in file
+        bnds_file = args[3]         # boundary.csv file file
+        basename  = args[4]         # output file base name
+        format    = args[5].lower() # output file format: eps, jpeg, jpg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff, webp
+
+        if(len(args) > 5): 
+            point_width = int(args[6])  # point width
+        if point_width < 1: 
+            point_width = point_width_default  # default point width
 
     else:  # get everything form the command line
         gw_file   = input('IWFM Groundwater.dat file name: ')
         pre_file  = input('IWFM Preprocessor file name: ')
         bnds_file = input('Model boundary CSV file name: ')
         basename  = input('Output file base name: ')
+        format    = input('Output file format (pdf, png, tiff): ').lower()
 
     iwfm.file_test(gw_file)
     iwfm.file_test(pre_file)
     iwfm.file_test(bnds_file)
 
     idb.exe_time()  # initialize timer
+
+# TODO: Put path into pre_dict, sim_dict and add to Preprocessor and Simulation file names when calling read functions
 
     pre_dict, have_lake = iwfm.iwfm_read_preproc(pre_file)
 
@@ -212,15 +211,30 @@ if __name__ == "__main__":
 
     strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
 
-    strat = np.array([np.array(i) for i in strat])    # strat to numpy array
+    bnds_d = iwfm.file2dict_int(bnds_file)                  # read boundary file into dictionary
+
+    bounding_poly = iwfm.bnds2mask(bnds_d, node_coords)     # create model boundary polygon
 
     layers, Kh, Ss, Sy, Kq, Kv = iwfm.get_gw_params(gw_file)
 
-    bnds_d = iwfm.file2dict_int(bnds_file)
+    strat = np.array([np.array(i) for i in strat])          # strat to numpy array
 
-    bounding_poly = iwfm.bnds2mask(bnds_d, node_coords)
 
-    count = map_gw_params(node_coords, layers, Kh, Ss, Sy, Kq, Kv, bounding_poly, strat, basename, point_width=point_width)
+    count = map_gw_params('Kh', Kh, node_coords, layers, bounding_poly, strat, format=format, 
+                          basename=basename, point_width=point_width, verbose=True)
+
+    count += map_gw_params('Kv', Kv, node_coords, layers, bounding_poly, strat, format=format, 
+                          basename=basename, point_width=point_width, verbose=True)
+
+    count += map_gw_params('Kq', Kq, node_coords, layers, bounding_poly, strat, format=format, 
+                          basename=basename, point_width=point_width, verbose=True)
+
+    count += map_gw_params('Sy', Sy, node_coords, layers, bounding_poly, strat, format=format, 
+                          basename=basename, point_width=point_width, verbose=True)
+
+    count += map_gw_params('Ss', Ss, node_coords, layers, bounding_poly, strat, format=format, 
+                          basename=basename, point_width=point_width, verbose=True)
+
 
     print(f'  Created {count} groundwater parameter maps')  # update cli
 

@@ -43,10 +43,24 @@ from iwfm.iwfm_aquitard_thickness import iwfm_aquitard_thickness
 from iwfm.iwfm_aquitard_top import iwfm_aquitard_top
 from iwfm.iwfm_aquitard_bottom import iwfm_aquitard_bottom
 
-# -- IWFM simulation files -------------------------------
+# -- IWFM simulation input files -------------------------------
+from iwfm.iwfm_read_et_vals import iwfm_read_et_vals
+from iwfm.iwfm_read_precip_vals import iwfm_read_precip_vals
 from iwfm.iwfm_read_rz import iwfm_read_rz
 from iwfm.iwfm_read_rz_npc import iwfm_read_rz_npc
+from iwfm.iwfm_read_rz_pc import iwfm_read_rz_pc
+from iwfm.iwfm_read_rz_urban import iwfm_read_rz_urban
+from iwfm.iwfm_read_rz_nr import iwfm_read_rz_nr
+from iwfm.iwfm_read_uz import iwfm_read_uz
 from iwfm.iwfm_read_gw import iwfm_read_gw
+from iwfm.iwfm_read_div_areas import iwfm_read_div_areas
+
+# -- IWFM simulation parameterss -------------------------------
+from iwfm.iwfm_read_param_table_ints import iwfm_read_param_table_ints
+from iwfm.iwfm_read_param_table_floats import iwfm_read_param_table_floats
+from iwfm.iwfm_read_rz_params import iwfm_read_rz_params
+from iwfm.iwfm_read_uz_params import iwfm_read_uz_params
+from iwfm.iwfm_read_gw_params import iwfm_read_gw_params
 from iwfm.read_gw_params import read_gw_params
 
 # -- IWFM simulation files --------------------------------
@@ -119,6 +133,8 @@ from iwfm.iwfm_nearest_node import iwfm_nearest_node
 from iwfm.nearest_node import nearest_node
 from iwfm.nearest import nearest
 from iwfm.in_element import in_element
+from iwfm.elem_centroids import elem_centroids
+from iwfm.get_elem_centroids import get_elem_centroids
 
 # -- text file methods -------------------------------------
 from iwfm.write_2_dat import write_2_dat

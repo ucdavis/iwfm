@@ -1,5 +1,5 @@
-# read_obs_smp.py
-# Read observations from an smp file (PEST observation file)
+# elem_centroids.py
+# Return a list of the element id and (x,y) coordinates for the centroid of each elememnt
 # Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -17,30 +17,31 @@
 # -----------------------------------------------------------------------------
 
 
-def read_obs_smp(smp_file):
-    ''' read_obs_smp() - Read the contents of the observed values smp file
-    and return as array
+def elem_centroids(node_filename, elem_filename):
+    ''' elem_centroids() - Return a list of element centroids
+        in the form: [[x0,y0],[x1,y1],[x2,y2]<,...>]
 
     Parameters
     ----------
-    smp_file : str
-        Data file name (PEST-style smp format)
+    nose_filename : str
+        Path to node file
+    
+    elem_filename : str
+        Path to elelment file
+    
 
     Returns
     -------
-    obs : list
-        data file contents
+    centroids : list
+        list of element centroids
     
     '''
-    file_lines = open(smp_file).read().splitlines() 
-    file_lines = [word.replace("_", " ") for word in file_lines]
+    import iwfm as iwfm
 
-    obs = []
-    for j in range(0, len(file_lines)):
-        temp = file_lines[j].split()
-        obs.append([temp[0], temp[1], temp[2], float(temp[3])])
+    node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_filename)
 
-    # sort the list by first column then second then third column
-    obs.sort(key=lambda x: (x[0], x[1], x[2]))
+    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(elem_filename)
+    
+    centroids = iwfm.get_elem_centroids(elem_ids, elem_nodes, node_coords)#    print(f" ==> {node_coord[0:2]=}")
 
-    return obs
+    return centroids

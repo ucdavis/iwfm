@@ -1,5 +1,5 @@
-# read_obs_smp.py
-# Read observations from an smp file (PEST observation file)
+# iwfm_read_gw_params.py
+# read IWFM simulation groundwater file groundwater parameters
 # Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -17,30 +17,28 @@
 # -----------------------------------------------------------------------------
 
 
-def read_obs_smp(smp_file):
-    ''' read_obs_smp() - Read the contents of the observed values smp file
-    and return as array
+def iwfm_read_gw_params(gw_file):
+    ''' iwfm_read_gw_params() - Read an IWFM Simulation Groundwater file and return
+        a list of parameters
 
     Parameters
     ----------
-    smp_file : str
-        Data file name (PEST-style smp format)
+    gw_file : str
+        IWFM Simulation Groundwater file name
 
     Returns
     -------
-    obs : list
-        data file contents
-    
+    params : list
+        A list containing parameter values. It consists of 13 sublists, each representing a different parameter.
+          
     '''
-    file_lines = open(smp_file).read().splitlines() 
-    file_lines = [word.replace("_", " ") for word in file_lines]
+    import iwfm as iwfm
+    import numpy as np
+    import re
 
-    obs = []
-    for j in range(0, len(file_lines)):
-        temp = file_lines[j].split()
-        obs.append([temp[0], temp[1], temp[2], float(temp[3])])
+    iwfm.file_test(gw_file)
 
-    # sort the list by first column then second then third column
-    obs.sort(key=lambda x: (x[0], x[1], x[2]))
+    gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy = iwfm.iwfm_read_gw(gw_file)
+    data = [Kh, Ss, Sy, Kq, Kv, init_cond]
 
-    return obs
+    return data

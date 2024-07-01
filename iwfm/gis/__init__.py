@@ -1,6 +1,6 @@
 # __init__.py for iwfm.gis package
 # Classes, methods and functions to read, write and modify gis files for IWFM and IGSM files
-# Copyright (C) 2018-2021 University of California
+# Copyright (C) 2018-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -28,6 +28,13 @@ from iwfm.gis.reach2shp import reach2shp
 from iwfm.gis.nodal_values2shp import nodal_values2shp
 from iwfm.gis.nodal_multivalues2shp import nodal_multivalues2shp
 from iwfm.gis.projection import projection
+from iwfm.gis.map_divs2shp import map_divs2shp
+from iwfm.gis.map_param2shp_nodes import map_param2shp_nodes
+from iwfm.gis.map_param2shp_elems import map_param2shp_elems
+from iwfm.gis.map_param2shp_rz import map_param2shp_rz
+from iwfm.gis.map_param2shp_urban import map_param2shp_urban
+from iwfm.gis.map_param2shp_natrip import map_param2shp_natrip
+from iwfm.gis.get_boundary_coords import get_boundary_coords
 
 # -- igsm methods -----------------------------------------
 from iwfm.gis.igsm2shp import igsm2shp

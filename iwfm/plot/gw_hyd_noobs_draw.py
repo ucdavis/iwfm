@@ -1,6 +1,6 @@
 # gw_hyd_noobs_draw.py - Create a PDF file with a graph of the simulated 
 # data vs time for all hydrographs as lines, saved as the well_name.pdf
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,82 +17,81 @@
 # -----------------------------------------------------------------------------
 
 
-def gw_hyd_noobs_draw(well_name,date,no_hyds,gwhyd_sim,gwhyd_name,well_info,
-    start_date,title_words,yaxis_width=-1):
-    ''' gw_hyd_noobs_draw() - Create a PDF file with a graph of the simulated 
-        data vs time for all hydrographs as lines, saved as the well_name.pdf
+
+def gw_hyd_noobs_draw(sim_well_name, sim_hyd_data, well_info, sim_hyd_names, title_words, 
+                      yaxis_width=-1,verbose=False):
+    ''' gw_hyd_obs_draw() - Create a PDF file with a graph of the simulated data 
+        vs time for all hydrographs as lines, with observed values vs time as 
+        dots, saved as the_well_name.pdf
 
     Parameters
     ----------
-    well_name : str
-        well name, often state well number
+    sim_well_name : str
+        simulated hydrograph well name, often state well number
     
-    date : list
-        list of dates (paired with meas)
-    
-    no_hyds : int
-        number of simulation time series to be graphed
-    
-    gwhyd_sim : list
-        simulated groundwater hydrographs 
-        [0]==dates, [1 to no_hyds]==datasets
-    
-    gwhyd_name : list
-        hydrograph names from PEST observations file
-    
+    sim_hyd_data : numpy array
+        simulated IWFM groundwater hydrographs for one well, multiple model runs
+
     well_info : list
-        Well data from Groundwater.dat file
+        well data from Groundwater.dat file
+        if IHYDTYP == 0: [HYDTYP, LAYER, X, Y, NAME]
+        if IHYDTYP == 1: [HYDTYP, LAYER, NODE #, NAME]
     
-    start_date : str
-        first date in simulation hydrograph files
-    
+    sim_hyd_names : list
+        simulated hydrograph names (legend entries)
+        
     title_words : str
         plot title words
     
     yaxis_width : int, default=-1
         minimum y-axis width, -1 for automatic
+
+    verbose : bool, default=False
+        print extra information
     
     Return
     ------
     nothing
     
     '''
+    
     import datetime
     import matplotlib
+    import numpy as np
     import iwfm as iwfm
 
     # Force matplotlib to not use any Xwindows backend.
-    matplotlib.use('TkAgg')  # Set to TkAgg ...
+#    matplotlib.use('TkAgg')  # Set to TkAgg ...
     matplotlib.use('Agg')  # ... then reset to Agg
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
     from matplotlib.backends.backend_pdf import PdfPages
 
-    line_colors = ['b-' ,'y-' ,'r-' ,'g-' ,'c-' ,'m-' ,'k-' ,
+    line_colors = ['r-' ,'g-' ,'c-' ,'m-' ,'k-' ,'b-' ,'y-' ,
                    'b--','y--','r--','g--','c--','m--','k--',
                    'b:' ,'y:' ,'r:' ,'g:' ,'c:' ,'m:' ,'k:' ]
     # 'r-' = red line, 'bo' = blue dots, 'r--' = red dashes, 
     # 'r:' = red dotted line, 'bs' = blue squares, 'g^' = green triangles, etc
 
-    col = well_info[0]  # gather information
+    no_hyds = len(sim_hyd_names)
 
-    ymin, ymax, sim_heads, sim_dates = 1e6, -1e6, [], []
+    if verbose:
+        print(f'     Plotting {sim_well_name} with {no_hyds} simulated hydrograph(s).')
+
+    col = well_info[0]
+
+    # determine ymin and ymax for y-axis
+    ymin, ymax = 1e6, 1e-6
+
     for j in range(no_hyds):
-        date_temp, head_temp = [], []
-        for sim in gwhyd_sim[j]:
-            date_temp.append(datetime.datetime.strptime(sim[0], '%m/%d/%Y'))
-            head_temp.append(sim[col])
-            ymin = min(ymin, sim[col])
-            ymax = max(ymax, sim[col])
-        sim_dates.append(date_temp)
-        sim_heads.append(head_temp)
+        sim_vals = [float(sim_hyd_data[j][i][1]) for i in range(len(sim_hyd_data[j]))]
+        ymin = min(ymin,  min(sim_vals))
+        ymax = max(ymax,  max(sim_vals))
 
     years = mdates.YearLocator()
-    #months = mdates.MonthLocator()
-    #yearsFmt = mdates.DateFormatter('%Y')
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
-    with PdfPages(f'{well_name}_' + iwfm.pad_front(col, 4, '0') + '.pdf') as pdf:
+    with PdfPages(f"{sim_well_name}_{iwfm.pad_front(col, 4, '0')}.pdf") as pdf:
         fig = plt.figure(figsize=(10, 7.5))
         ax = plt.subplot(111)
         ax.xaxis_date()
@@ -102,17 +101,19 @@ def gw_hyd_noobs_draw(well_name,date,no_hyds,gwhyd_sim,gwhyd_name,well_info,
         ax.xaxis.set_minor_locator(years)
         plt.xlabel('Date')
         plt.ylabel('Head (ft msl)')
-        plt.title(f'{title_words}: {well_name.upper()} Layer {str(well_info[3])}')
-        #plt.plot(meas_dates, meas, 'bo', label='Observed')
+        plt.title(f'{title_words}: {sim_well_name.upper()} Layer {str(well_info[3])}')
 
         # if minimum y axis width was set by user, check and set if necessary
-        if(yaxis_width > 0) and (ymax > ymin) and (ymax - ymin < yaxis_width):  # set minimum and maximum values
+        if (yaxis_width > 0) and (ymax > ymin) and (ymax - ymin < yaxis_width):  # set minimum and maximum values
             center = (ymax - ymin) / 2 + ymin
             plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
 
         for j in range(no_hyds):
-            plt.plot(sim_dates[j], sim_heads[j], line_colors[j], label=gwhyd_name[j])
+            sim_dates = [datetime.datetime.strptime(sim_hyd_data[j][i][0], '%m/%d/%Y') for i in range(len(sim_hyd_data[j]))]
+            sim_data  = [float(sim_hyd_data[j][i][1]) for i in range(len(sim_hyd_data[j]))]
+            plt.plot(sim_dates, sim_data, line_colors[j], label=sim_hyd_names[j])
 
         leg = ax.legend(frameon=1, facecolor='white')
-        pdf.savefig()  # saves the current figure into a pdf page
+        pdf.savefig()
         plt.close()
+

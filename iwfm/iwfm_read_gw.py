@@ -51,7 +51,7 @@ def iwfm_read_gw(gw_file, verbose=False):
 
     Returns
     -------
-    gw_files : dictionary
+    gw_dict : dictionary
         Groundwater sub-process file names
 
     node_id : list
