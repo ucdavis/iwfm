@@ -33,7 +33,7 @@ def iwfm_read_streams(stream_file):
         information for each stream reach
     
     stnodes_dict : dictionary
-        key = stream node ID, value = groundwater node
+        key = stream node ID, values = [groundwater node, reach, elevation]
     
     len(snodes_list) : int
         number of stream nodes
@@ -102,7 +102,7 @@ def iwfm_read_streams(stream_file):
     selev = []
     for i in range(0, len(snodes_list)):
         l = stream_lines[stream_index].split()
-        snd = l[0]
+        snode = l[0]
         selev.append(float(l[1]))
         # read the rating table values for this stream node
         temp = [[l[2], l[3]]]
@@ -112,18 +112,15 @@ def iwfm_read_streams(stream_file):
                 stream_index += 1
             temp.append(stream_lines[stream_index].split())
             stream_index += 1
-        rating_dict[snd] = temp
+        rating_dict[snode] = temp   # key = stream node ID, values = rating table
 
         if i < len(snodes_list) - 1:  # stop at end
             stream_index = iwfm.skip_ahead(stream_index, stream_lines, 0)
 
     # put stream node info into a dictionary
-    stnodes_dict = {}
-    for i in range(0, len(snodes_list)):
-        j = 0
-        while snodes_list[j][0] != i + 1:  # find info for i in snodes list
-            j += 1
-        key, values = i + 1, [snodes_list[j][1],snodes_list[j][2],selev[i]]
+    stnodes_dict, j = {}, 0
+    for i, snode in enumerate(snodes_list):
+        key, values = snode[0], [snode[1],snode[2],selev[i]]    # key = stream node ID, values = [groundwater node, reach, elevation]
         stnodes_dict[key] = values
 
     return reach_list, snodes_list, stnodes_dict, len(snodes_list), rating_dict

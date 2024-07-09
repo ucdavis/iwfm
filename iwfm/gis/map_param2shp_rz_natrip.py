@@ -1,4 +1,4 @@
-# map_param2shp_natrip.py
+# map_param2shp_rz_natrip.py
 # Read a shapefile of IWFM model elements and map IWFM Rootzone Native and Riparian 
 # parameters to the elements
 # Copyright (C) 2020-2024 University of California
@@ -18,8 +18,8 @@
 # -----------------------------------------------------------------------------
 
 
-def map_param2shp_natrip(param_types, param_vals, elem_shp_name, out_shp_name='elem_parameters', verbose=False):
-    ''' map_param2shp_natrip() - Read a shapefile of IWFM model elements and map IWFM 
+def map_param2shp_rz_natrip(param_types, param_vals, elem_shp_name, out_shp_name='elem_parameters', verbose=False):
+    ''' map_param2shp_rz_natrip() - Read a shapefile of IWFM model elements and map IWFM 
                     Rootzone Native and Riparian parameters to the elements
     
     Parameters

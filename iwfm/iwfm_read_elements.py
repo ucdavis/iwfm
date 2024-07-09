@@ -46,11 +46,11 @@ def iwfm_read_elements(elem_file, verbose=False):
     elem_lines = open(elem_file).read().splitlines()  
     line_index = iwfm.skip_ahead(0, elem_lines, 0) 
 
-    elements = int(re.findall('\d+', elem_lines[line_index])[0])  
+    elements = int(elem_lines[line_index].split()[0])  
 
     line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
 
-    subregions = int(re.findall('\d+', elem_lines[line_index])[0]) 
+    subregions = int(elem_lines[line_index].split()[0])  
 
     line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
     line_index = iwfm.skip_ahead(line_index + 1, elem_lines, subregions - 1)
@@ -60,7 +60,7 @@ def iwfm_read_elements(elem_file, verbose=False):
         l = elem_lines[line_index + i].split()
         this_elem = int(l.pop(0))
         elem_ids.append(this_elem)
-        nodes = [int(s) for s in l]
+        nodes = [int(s) for s in l[0:5]]
         elem_sub.append(nodes.pop(4))
         if nodes[3] == 0:
             nodes.pop(3)  # remove empty node on triangles

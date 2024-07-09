@@ -28,13 +28,22 @@ from iwfm.gis.reach2shp import reach2shp
 from iwfm.gis.nodal_values2shp import nodal_values2shp
 from iwfm.gis.nodal_multivalues2shp import nodal_multivalues2shp
 from iwfm.gis.projection import projection
+from iwfm.gis.get_boundary_coords import get_boundary_coords
+from iwfm.gis.elem2shp_simple import elem2shp_simple
+
+
+# -- GIS and input files -----------------------------------
 from iwfm.gis.map_divs2shp import map_divs2shp
 from iwfm.gis.map_param2shp_nodes import map_param2shp_nodes
 from iwfm.gis.map_param2shp_elems import map_param2shp_elems
-from iwfm.gis.map_param2shp_rz import map_param2shp_rz
-from iwfm.gis.map_param2shp_urban import map_param2shp_urban
-from iwfm.gis.map_param2shp_natrip import map_param2shp_natrip
-from iwfm.gis.get_boundary_coords import get_boundary_coords
+#from iwfm.gis.map_param2shp_rz import map_param2shp_rz
+#from iwfm.gis.map_param2shp_rz_npc import map_param2shp_rz_npc
+#from iwfm.gis.map_param2shp_rz_pc import map_param2shp_rz_npc
+#from iwfm.gis.map_param2shp_rz_urban import map_param2shp_rz_urban
+#from iwfm.gis.map_param2shp_natrip import map_param2shp_rz_natrip
+
+
+
 
 # -- igsm methods -----------------------------------------
 from iwfm.gis.igsm2shp import igsm2shp

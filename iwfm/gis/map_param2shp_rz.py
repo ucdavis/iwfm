@@ -17,25 +17,22 @@
 # -----------------------------------------------------------------------------
 
 
-def map_param2shp_rz(param_types, param_vals, crops, elem_shp_name, out_shp_name='elem_parameters', verbose=False):
+def map_param2shp_rz(param_types, param_vals, elem_shp_name, out_shp_name='elem_parameters.shp', verbose=False):
     ''' map_param2shp_rz() - Read a shapefile of IWFM model elements and map IWFM 
                     Rootzone Crop parameters to the elements
     
     Parameters
     ----------
     param_types : list
-        names of parameters (eg ['CN','Ksoil',...])
+        names of parameters (eg ["wp", "fc", ...])
 
     param_vals : numpy array
         parameter values
 
-    crops : list
-        list of crop names
-
     elem_shp_name : shapefile name
         IWFM Elements shapefile name
 
-    out_shp_name : shapefile name, default = 'elem_parameters'
+    out_shp_name : shapefile name, default = 'elem_parameters.shp'
         IWFM output shapefile name
 
     verbose : bool, default = False
@@ -89,3 +86,34 @@ def map_param2shp_rz(param_types, param_vals, crops, elem_shp_name, out_shp_name
 
     return 
 
+
+if __name__ == "__main__":
+    ''' Run map_param2shp_rz() from command line'''
+    import sys
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    args = sys.argv
+
+    if len(args) > 1:  # arguments are listed on the command line
+        rz_file_name       = args[1]
+        elem_shp_name      = args[2]
+        out_shp_name       = args[3]
+    else:  # ask for file names from terminal
+        rz_file_name       = input('IWFM Root Zone Main file name: ')
+        elem_shp_name      = input('IWFM Elements shapefile name: ')
+        out_shp_name       = input('Output shapefile name: ')
+
+    iwfm.file_test(rz_file_name)
+    iwfm.file_test(elem_shp_name)
+
+    idb.exe_time()                                                      # initialize timer
+
+    param_types = ["wp", "fc", "tn", "lambda", "ksoil", "rhc", "caprise", "irne", "frne", "imsrc", "typdest", "dest", "kponded"]
+
+    param_vals = iwfm.iwfm_read_rz_params(rz_file_name)                 # Read rootzone parameters
+
+    map_param2shp_rz(param_types, param_vals, elem_shp_name, out_shp_name=out_shp_name)
+    #map_param2shp_elems(param_types, param_vals, elem_shp_name, out_shp_name, verbose=True)   
+
+    idb.exe_time()                                                      # print elapsed time

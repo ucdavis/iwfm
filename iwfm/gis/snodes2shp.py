@@ -48,6 +48,7 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
     nothing
 
     '''
+    import iwfm as iwfm
     import fiona
     from shapely.geometry import Point, mapping
 
@@ -63,6 +64,8 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
         },
     }
 
+    node_coords_dict = iwfm.list2dict(node_coords)
+
     # Write a new stream node shapefile
     with fiona.open(
             shapename,
@@ -74,7 +77,7 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
         for i in range(nsnodes):
             snode_id, gw_node, reach = snodes_list[i]
             if gw_node != 0:
-                x, y = node_coords[gw_node - 1][1],node_coords[gw_node - 1][2]
+                x, y = node_coords_dict[gw_node][0],node_coords_dict[gw_node][1]
                 point = Point(x,y)
                 properties = {
                     'snode_id': snode_id,

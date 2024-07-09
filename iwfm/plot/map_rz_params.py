@@ -16,73 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-#def get_elem_centroids(elem_ids, elem_nodes, node_coords):
-#    ''' get_elem_centroids() - Calculate the centroid of each element
-#
-#    Parameters
-#    ----------
-#    elem_ids : list
-#        list of element ids
-#
-#    elem_nodes : list of lists
-#        list of nodes for each element
-#
-#    node_coords : list of lists
-#        list of node coordinates
-#
-#    Return
-#    ------
-#    elem_centroids : list of lists
-#        list of element centroids
-#
-#    '''
-#    import sys
-#
-#    elem_centroids = []
-#    for elem_id, nodes in zip(elem_ids, elem_nodes):
-#        x = [node_coords[node-1][1] for node in nodes]
-#        y = [node_coords[node-1][2] for node in nodes]
-#        elem_centroids.append([elem_id, sum(x)/len(x), sum(y)/len(y)])
-#
-#    return elem_centroids
-
-
-
-#def get_boundary_coords(elem_nodes, node_coords):
-#    ''' get_boundary_coords() - Use elem_nodes and node_coords to get (x,y) list for the nodes 
-#            on the bounding polygon
-#
-#
-#    Parameters
-#    ----------
-#    elem_nodes : list of lists
-#        list of nodes for each element
-#
-#    node_coords : list of lists
-#        list of node coordinates
-#
-#    Return
-#    ------
-#    boundary_coords : list of tuples
-#        bounding coordinates for the model
-#
-#    '''
-#
-#    from shapely.geometry import Polygon, mapping
-#    import iwfm.gis as igis
-#
-#
-#    # create a bounding polygon shape from the element nodes and node coordinates
-#    model_boundary = igis.elem2boundingpoly(elem_nodes, node_coords)
-#
-#    # map the bounding polygon to a dictionary
-#    mapped_boundary = mapping(model_boundary)
-#
-#    # extract the coordinates from the dictionary
-#    boundary_coords = mapped_boundary['coordinates'][0]
-#
-#    return boundary_coords
-
 
 def map_rz_params(node_file_name, elem_file_name, out_name, rz_file_name, 
                   format='tiff', point_width=100, verbose=False):
@@ -325,6 +258,7 @@ def map_rz_params(node_file_name, elem_file_name, out_name, rz_file_name,
                     label=label, units='', format=format)    
             count += 1
 
+        label='Column'
         # urban pervious area
         dataset=[[elem_centroids[j][1], elem_centroids[j][2], param_vals_u[0][:,0][j] ] for j in range(len(elem_centroids))]
         image_name = f'{out_name}_PervArea_Urban.{format}'

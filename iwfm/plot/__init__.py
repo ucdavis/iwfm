@@ -27,7 +27,8 @@ from iwfm.plot.map_to_nodes import map_to_nodes
 from iwfm.plot.map_to_nodes_png import map_to_nodes_png
 from iwfm.plot.map_to_nodes_contour import map_to_nodes_contour
 from iwfm.plot.map_gw_params import map_gw_params
-from iwfm.plot.map_rz_npc import map_rz_npc
+
+from iwfm.plot.map_rz_params_npc import map_rz_params_npc
 
 from iwfm.plot.data_to_color import data_to_color
 from iwfm.plot.contour_levels import contour_levels

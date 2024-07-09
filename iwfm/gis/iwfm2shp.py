@@ -95,7 +95,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     gis.snodes2shp(nsnodes, snodes_list, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     # == Create stream reach shapefile
-    gis.reach2shp(reach_list, snodes_list, node_coords, shape_name,epsg=epsg,verbose=verbose)
+    gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     return 
 

@@ -1,5 +1,5 @@
-# map_param2shp_urban.py
-# Read a shapefile of IWFM model elements and map IWFM Rootzone Urban parameters to the elements
+# map_param2shp_rz_npc.py
+# Read a shapefile of IWFM model elements and map IWFM Non-Ponded Crop parameters to the elements
 # Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -17,9 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def map_param2shp_urban(param_types, param_vals, elem_shp_name, out_shp_name='elem_parameters', verbose=False):
-    ''' map_param2shp_urban() - Read a shapefile of IWFM model elements and map IWFM 
-                    Rootzone Urban parameters to the elements
+def map_param2shp_rz_npc(param_types, param_vals, crops, elem_shp_name, out_shp_name='elem_parameters', verbose=False):
+    ''' map_param2shp_rz_npc() - Read a shapefile of IWFM model elements and map IWFM 
+                    Non-Ponded Crop parameters to the elements
     
     Parameters
     ----------
@@ -28,6 +28,9 @@ def map_param2shp_urban(param_types, param_vals, elem_shp_name, out_shp_name='el
 
     param_vals : list of lists
         lists of parameter values
+
+    crops : list
+        list of crop names
 
     elem_shp_name : shapefile name
         IWFM Elements shapefile name
@@ -48,45 +51,49 @@ def map_param2shp_urban(param_types, param_vals, elem_shp_name, out_shp_name='el
 
     param_types = [t.upper() for t in param_types]                      # convert parameter names to upper case
 
-    ic = param_vals[1]
-
-    param_vals = param_vals[0]
-
     gdf = gpd.read_file(elem_shp_name)                                  # read elements shapefile into geopandas dataframe
+
+    gdf.columns = gdf.columns.str.lower()                               # convert column names to lower case
 
     out_shp_base = os.path.basename(out_shp_name).split('.')[0]         # create a parameter shapefile name
 
-    gdf_new = gdf.copy()                                                # make a copy of the geopandas dataframe
+    count = 0
 
     for j in range(len(param_types)):
+        gdf_copy = gdf.copy()                                           # make a copy of the geopandas dataframe
         field_name = f'{param_types[j]}'                                # create the field name
     
-        if verbose: 
-            print(f'  Mapping parameter {param_types[j]} to elements')
+        if param_vals[j].ndim > 1: 
 
-        data = param_vals[:,j]                                          # compile data for the field
+            for i in range(param_vals[j].shape[1]):
 
-        gdf_new[field_name] = data                                      # add a field to the geopandas dataframe
+                if param_vals[j].shape[1] == len(crops) + 1:            # initial condition has extra fiels
+                    if i == 0:
+                        f_name = f'{param_types[j]}_IC'
+                    else:
+                        f_name = field_name+'_'+crops[i-1]
+                else:
+                    f_name = field_name+'_'+crops[i]
 
-    out_shp_name = out_shp_base+'.shp'
+                data = param_vals[j][:,i]
 
-    gdf_new.to_file(out_shp_name)                                       # write the geopandas dataframe to a shapefile
+                gdf_copy[f_name] = data                                 # add a field to the geopandas dataframe
 
-    if verbose: print(f'  Created IWFM parameter shapefile {out_shp_name}')
+                count += 1
+                # to avoid fragmentation, make a deep copy every 50 fields
+                if count >= 50:
+                    gdf_copy = gdf_copy.copy()
+                    count = 0
 
+            out_shp_name = out_shp_base+'_'+param_types[j]+'.shp'
 
-    # write IC to a separate shapefile
-    gdf_ic = gdf.copy()                                                 # make a copy of the geopandas dataframe
+            gdf_copy.to_file(out_shp_name)                              # write the geopandas dataframe to a shapefile
 
-    gdf_ic['FSOILMP'] = ic[:,0]                                         # add a field to the geopandas dataframe
+            if verbose: print(f'  Created IWFM parameter shapefile {out_shp_name}')
 
-    gdf_ic['SOILM'] = ic[:,1]                                           # add a field to the geopandas dataframe
+        else:
+            print(f'  Skipping parameter {param_types[j]}')
 
-    out_shp_name = out_shp_base+'_IC.shp'
-
-    gdf_ic.to_file(out_shp_name)                                        # write the geopandas dataframe to a shapefile
-
-    if verbose: print(f'  Created IWFM parameter shapefile {out_shp_name}')
 
     return 
 

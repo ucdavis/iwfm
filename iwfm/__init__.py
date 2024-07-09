@@ -33,6 +33,8 @@ from iwfm.iwfm_read_chars import iwfm_read_chars
 from iwfm.iwfm_read_lake import iwfm_read_lake
 from iwfm.iwfm_read_streams import iwfm_read_streams
 from iwfm.iwfm_read_strat import iwfm_read_strat
+from iwfm.read_elements_csv import read_elements_csv
+from iwfm.read_nodes_csv import read_nodes_csv
 
 from iwfm.iwfm_strat_arrays import iwfm_strat_arrays
 from iwfm.iwfm_lse import iwfm_lse
@@ -42,6 +44,7 @@ from iwfm.iwfm_aquifer_bottom import iwfm_aquifer_bottom
 from iwfm.iwfm_aquitard_thickness import iwfm_aquitard_thickness
 from iwfm.iwfm_aquitard_top import iwfm_aquitard_top
 from iwfm.iwfm_aquitard_bottom import iwfm_aquitard_bottom
+from iwfm.iwfm_boundary_coords import iwfm_boundary_coords
 
 # -- IWFM simulation input files -------------------------------
 from iwfm.iwfm_read_et_vals import iwfm_read_et_vals

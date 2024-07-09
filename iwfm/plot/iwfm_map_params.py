@@ -58,32 +58,32 @@ def get_params(data_filename, param_type, param_values, verbose=False):
         format = 'nodes'
     elif param_values[0] == 'Rootzone':
         data = iwfm.iwfm_read_rz_params(data_filename)
-        param_types = {'wp':0, 'fc':1, 'tn':2, 'lambda':3, 'rzk':4, 'rhc':5, 'cp':6, 'irne':7, 'frne':8, 'imsrc':9, 'tp':10, 'dest':11, 'pk':12}
+        param_types = {'wp':0, 'fc':1, 'tn':2, 'lambda':3, 'ksoil':4, 'rhc':5, 'cp':6, 'irne':7, 'frne':8, 'imsrc':9, 'tp':10, 'dest':11, 'kpond':12}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Non-ponded':
         data = iwfm.iwfm_read_rz_npc_params(data_filename)
-        param_types = {'npcn': 0, 'npet': 1, 'npwsp': 2, 'npip': 3, 'npms': 4, 'npts': 5, 'nprf': 6, 'npru': 7, 'npic': 8}
+        param_types = {'cnnp': 0, 'etnp': 1, 'wspnp': 2, 'ipnp': 3, 'msnp': 4, 'tsnp': 5, 'rfnp': 6, 'runp': 7, 'icnp': 8}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Ponded':
         data = iwfm.iwfm_read_rz_pc_params(data_filename)
-        param_types = {'pcn': 0, 'pet': 1, 'pwsp': 2, 'pip': 3, 'pd': 4, 'pad': 5, 'prf': 6, 'pru': 7, 'pic': 8}
+        param_types = {'cnpc': 0, 'etpc': 1, 'wsppc': 2, 'ippc': 3, 'pdpc': 4, 'adpc': 5, 'rfpc': 6, 'rupc': 7, 'icpc': 8}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Urban':
         data = iwfm.iwfm_read_rz_urban_params(data_filename)
-        param_types = {'perv': 0, 'ucn': 1, 'pop': 2, 'wtr': 3, 'ufr': 4, 'uet': 5, 'urt': 6, 'uru': 7, 'uri': 8, 'uic': 9}
+        param_types = {'perv': 0, 'cnur': 1, 'pop': 2, 'wtr': 3, 'frur': 4, 'etur': 5, 'rtur': 6, 'ruur': 7, 'riur': 8, 'icur': 9}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Native':
         data = iwfm.iwfm_read_rz_nr_params(data_filename)
-        param_types = {'ncn': 0, 'rcn': 1, 'net': 2, 'ret': 3, 'rst': 4, 'nvic': 5, 'rvic': 6}
+        param_types = {'cnnv': 0, 'cnrv': 1, 'etnv': 2, 'etrv': 3, 'strv': 4, 'icnv': 5, 'icrv': 6}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Unsaturated':
         data = iwfm.iwfm_read_uz_params(data_filename)
-        param_types = {'uzthk': 0, 'uzn': 1, 'uzi': 2, 'uzk': 3, 'urhc': 4, 'uzic': 5}  
+        param_types = {'thkuz': 0, 'nuz': 1, 'iuz': 2, 'kuz': 3, 'rhcuz': 4, 'icuz': 5}  
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'ET':
@@ -153,9 +153,9 @@ def iwfm_map_params(dataset, bounding_poly, image_basename, cmap='rainbow', titl
     import numpy as np
     import iwfm.plot as iplot
 
+    image_name = f'{image_basename}.png'           # image file name
 
-
-    X, Y, Z = iplot.get_XYvalues(dataset)  # list of lists to numpy arrays
+    X, Y, Z = iplot.get_XYvalues(dataset)           # list of lists to numpy arrays
 
     # Define the contour levels
     levels = iplot.contour_levels(Z, no_levels=no_levels, verbose=verbose)
@@ -173,7 +173,6 @@ def iwfm_map_params(dataset, bounding_poly, image_basename, cmap='rainbow', titl
     fig, ax = plt.subplots(figsize=(10, 8))
 
     # create path from boundary polygon
-    print(f"Bounding polygon file: {bounding_poly}")
     path = Path(bounding_poly)
 
     # create a mask from the path
@@ -217,25 +216,23 @@ if __name__ == "__main__":
     import iwfm.debug as idb
     import iwfm as iwfm
     import iwfm.plot as iplot
+    import iwfm.gis as igis
 
     args = sys.argv
 
     if len(args) > 1:  # arguments are listed on the command line
         sim_filename    = args[1]
         pre_filename    = args[2]
-        bounding_poly   = args[3]
-        param_type      = args[4]
-        image_basename  = args[5]
+        param_type      = args[3]
+        image_basename  = args[4]
     else:  # ask for file names from terminal
         sim_filename    = input('IWFM Simulation file name: ')
         pre_filename    = input('IWFM Preprocessor file name: ')
-        bounding_poly   = input('Boundary polygon file name: ')
         param_type      = input('Parameter keyword: ')
         image_basename  = input('Output image basename: ')
 
     iwfm.file_test(sim_filename)
     iwfm.file_test(pre_filename)
-    iwfm.file_test(bounding_poly)
 
     input_dict = { 
          'kh'     : [ 'Groundwater', 'Horizontal hydraulic conductivity' ],
@@ -244,16 +241,18 @@ if __name__ == "__main__":
          'kv'     : [ 'Groundwater', 'Vertical hydraulic conductivity' ],
          'kq'     : [ 'Groundwater', 'Aquiclude hydraulic conductivity' ],
          'gwic'   : [ 'Groundwater', 'Initial groundwater head' ],
-         'uzn'    : [ 'Unsaturated', 'Unsaturated zone porosity' ],
-         'uzi'    : [ 'Unsaturated', 'Unsaturated zone pore-size distribution index' ],
-         'uzk'    : [ 'Unsaturated', 'Unsaturated zone hydraulic conductivity' ],
-         'urhc'   : [ 'Unsaturated', 'Method to represent hydraulic conductivity vs. moisture content curve' ],
-         'uzic'   : [ 'Unsaturated', 'Initial unsaturated zone moisture content' ],
+
+         'nuz'    : [ 'Unsaturated', 'Unsaturated zone porosity' ],
+         'iuz'    : [ 'Unsaturated', 'Unsaturated zone pore-size distribution index' ],
+         'kuz'    : [ 'Unsaturated', 'Unsaturated zone hydraulic conductivity' ],
+         'rhcuz'  : [ 'Unsaturated', 'Method to represent hydraulic conductivity vs. moisture content curve' ],
+         'icuz'   : [ 'Unsaturated', 'Initial unsaturated zone moisture content' ],
+
          'wp'     : [ 'Rootzone',    'Wilting point' ],
          'fc'     : [ 'Rootzone',    'Field capacity' ],
          'tn'     : [ 'Rootzone',    'Porosity' ],
          'lambda' : [ 'Rootzone',    'Pore-size distribution index' ],
-         'rzk'    : [ 'Rootzone',    'Rootzone hydraulic conductivity' ],
+         'ksoil'  : [ 'Rootzone',    'Rootzone hydraulic conductivity' ],
          'rhc'    : [ 'Rootzone',    'Method to represent hydraulic conductivity vs. moisture content curve' ],
          'cp'     : [ 'Rootzone',    'Capillary rise' ],
          'irne'   : [ 'Rootzone',    'Precipitation column' ],
@@ -261,41 +260,50 @@ if __name__ == "__main__":
          'imsrc'  : [ 'Rootzone',    'Irrigation source column' ],
          'tp'     : [ 'Rootzone',    'Runoff and return flow destination type' ],
          'dest'   : [ 'Rootzone',    'Runoff and return flow destination value' ],
-         'pk'     : [ 'Rootzone',    'Ponded hydraulic conductivity' ],
-         'npcn'   : [ 'Non-ponded',  'Curve Number value' ],
-         'npet'   : [ 'Non-ponded',  'ET column' ],
-         'npip'   : [ 'Non-ponded',  'Irrigation Period column' ],
-         'npts'   : [ 'Non-ponded',  'Target soil moisture column' ],
-         'nprf'   : [ 'Non-ponded',  'Irrigation water return flow fraction column' ],
-         'npic'   : [ 'Non-ponded',  'Initial soil moisture condition' ],
-         'pcn'    : [ 'Ponded',      'Curve Number value' ],
-         'pet'    : [ 'Ponded',      'ET column' ],
-         'pip'    : [ 'Ponded',      'Irrigation Period column' ],
-         'pic'    : [ 'Ponded',      'Initial soil moisture condition' ],
+         'kpond'  : [ 'Rootzone',    'Ponded hydraulic conductivity' ],
+
+         'cnnp'   : [ 'Non-ponded',  'Curve Number value' ],
+         'etnp'   : [ 'Non-ponded',  'ET column' ],
+         'ipnp'   : [ 'Non-ponded',  'Irrigation Period column' ],
+         'tsnp'   : [ 'Non-ponded',  'Target soil moisture column' ],
+         'rfnp'   : [ 'Non-ponded',  'Irrigation water return flow fraction column' ],
+         'icnp'   : [ 'Non-ponded',  'Initial soil moisture condition' ],
+
+         'cnpc'    : [ 'Ponded',      'Curve Number value' ],
+         'etpc'    : [ 'Ponded',      'ET column' ],
+         'wsppc'   : [ 'Ponded',      'Water Supply Requirement column' ],
+         'ippc'    : [ 'Ponded',      'Irrigation Period column' ],
+         'pdpc'    : [ 'Ponded',      'Ponding Depths column' ],
+         'adpc'    : [ 'Ponded',      'Application Depths column' ],
+         'rfpc'    : [ 'Ponded',      'Return Flow Depths column' ],
+         'rupc'    : [ 'Ponded',      'Reuse Flow Depths column' ],
+         'icpc'    : [ 'Ponded',      'Initial soil moisture condition' ],
+
          'perv'   : [ 'Urban',       'Percent pervious' ],
-         'ucn'    : [ 'Urban',       'Curve Number value' ],
+         'cnur'   : [ 'Urban',       'Curve Number value' ],
          'pop'    : [ 'Urban',       'Population column' ],
          'wtr'    : [ 'Urban',       'Water use column' ],
-         'ufr'    : [ 'Urban',       'Urban demand population fraction' ],
-         'uet'    : [ 'Urban',       'ET column' ],
-         'urt'    : [ 'Urban',       'Urban fraction to runoff column' ],
-         'uru'    : [ 'Urban',       'Urban fraction reused column' ],
-         'uri'    : [ 'Urban',       'Urban fraction used indoors column' ],
-         'uic'    : [ 'Urban',       'Initial urban moisture content' ],
-         'ncn'    : [ 'Native',      'Native Vegetation Curve Number value' ],
-         'rcn'    : [ 'Native',      'Riparian Vegetation Curve Number value' ],
-         'net'    : [ 'Native',      'Native Vegetation ET column' ],
-         'ret'    : [ 'Native',      'Riparian Vegetation ET column' ],
-         'rst'    : [ 'Native',      'Riparian Vegetation source stream node' ],
-         'nvic'   : [ 'Native',      'Initial native vegetation moisture content' ],
-         'rvic'   : [ 'Native',      'Initial riparian vegetation moisture content' ],
+         'frur'   : [ 'Urban',       'Urban demand population fraction' ],
+         'etur'   : [ 'Urban',       'ET column' ],
+         'rtur'   : [ 'Urban',       'Urban fraction to runoff column' ],
+         'ruur'   : [ 'Urban',       'Urban fraction reused column' ],
+         'riur'   : [ 'Urban',       'Urban fraction used indoors column' ],
+         'icur'   : [ 'Urban',       'Initial urban moisture content' ],
+
+         'cnnv'   : [ 'Native',      'Native Vegetation Curve Number value' ],
+         'cnrv'   : [ 'Native',      'Riparian Vegetation Curve Number value' ],
+         'etnv'   : [ 'Native',      'Native Vegetation ET column' ],
+         'etrv'   : [ 'Native',      'Riparian Vegetation ET column' ],
+         'strv'   : [ 'Native',      'Riparian Vegetation source stream node' ],
+         'icnv'   : [ 'Native',      'Initial native vegetation moisture content' ],
+         'icrv'   : [ 'Native',      'Initial riparian vegetation moisture content' ],
+
          'et'     : [ 'ET',          'ET values' ],
          'pr'     : [ 'Precip',      'Precipitation values' ],
         }   
 
     print(f" ==> {sim_filename=}")
     print(f" ==> {pre_filename=}")
-    print(f" ==> {bounding_poly=}")
     print(f" ==> {param_type=}")
 #    print(f"{image_basename=}\n")
 
@@ -349,8 +357,6 @@ if __name__ == "__main__":
     print(f' ==> Path of {pre_file.name} is {pre_file.parent}')
 
 
-
-
     if data_filetype == 'root_file':        # get rootzone file names
         rz_filename = Path(sim_filename).parent / sim_dict[data_filetype].replace('\\', '/')
         rz_dict = iwfm.iwfm_read_rz(rz_filename)
@@ -383,6 +389,9 @@ if __name__ == "__main__":
 
     # calculate element centroids
     elem_centroids = iwfm.elem_centroids(node_filename, elem_filename)
+
+
+    boundary_coords = iwfm.iwfm_boundary_coords(node_filename, elem_filename)
 
     if format == 'nodes':
         print(' ==> nodal data')

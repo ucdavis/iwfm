@@ -42,7 +42,7 @@ def shp2png_poly(shape, outfile, iwidth=800, iheight=600):
     import iwfm as iwfm
     import pngcanvas as pngcanvas
 
-    r = iwfm.shp_read(shapefile)  
+    shp = iwfm.shp_read(shape)  
     
     # Setup the world to pixels conversion
     xdist = shp.bbox[2] - shp.bbox[0]

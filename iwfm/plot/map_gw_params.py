@@ -167,10 +167,13 @@ if __name__ == "__main__":
     import sys
     import numpy as np
     import iwfm as iwfm
+    import iwfm.gis as igis
     import iwfm.debug as idb
 
     point_width_default = 100
     point_width = point_width_default
+
+    verbose = True
 
     args = sys.argv
 
@@ -179,25 +182,22 @@ if __name__ == "__main__":
     if len(args) > 1:  # arguments are listed on the command line
         gw_file   = args[1]         # groundwate.dat file
         pre_file  = args[2]         # preprocessor.in file
-        bnds_file = args[3]         # boundary.csv file file
-        basename  = args[4]         # output file base name
-        format    = args[5].lower() # output file format: eps, jpeg, jpg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff, webp
+        basename  = args[3]         # output file base name
+        format    = args[4].lower() # output file format: eps, jpeg, jpg, pdf, pgf, png, ps, raw, rgba, svg, svgz, tif, tiff, webp
 
-        if(len(args) > 5): 
-            point_width = int(args[6])  # point width
+        if(len(args) > 4): 
+            point_width = int(args[5])  # point width
         if point_width < 1: 
             point_width = point_width_default  # default point width
 
     else:  # get everything form the command line
         gw_file   = input('IWFM Groundwater.dat file name: ')
         pre_file  = input('IWFM Preprocessor file name: ')
-        bnds_file = input('Model boundary CSV file name: ')
         basename  = input('Output file base name: ')
         format    = input('Output file format (pdf, png, tiff): ').lower()
 
     iwfm.file_test(gw_file)
     iwfm.file_test(pre_file)
-    iwfm.file_test(bnds_file)
 
     idb.exe_time()  # initialize timer
 
@@ -211,32 +211,30 @@ if __name__ == "__main__":
 
     strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
 
-    bnds_d = iwfm.file2dict_int(bnds_file)                  # read boundary file into dictionary
-
-    bounding_poly = iwfm.bnds2mask(bnds_d, node_coords)     # create model boundary polygon
+    bounding_poly = igis.get_boundary_coords(elem_nodes, node_coords)
 
     layers, Kh, Ss, Sy, Kq, Kv = iwfm.get_gw_params(gw_file)
 
-    strat = np.array([np.array(i) for i in strat])          # strat to numpy array
+    strat = np.array([np.array(i) for i in strat])          # stratigraphy to numpy array
 
 
     count = map_gw_params('Kh', Kh, node_coords, layers, bounding_poly, strat, format=format, 
-                          basename=basename, point_width=point_width, verbose=True)
+                          basename=basename, point_width=point_width, verbose=verbose)
 
     count += map_gw_params('Kv', Kv, node_coords, layers, bounding_poly, strat, format=format, 
-                          basename=basename, point_width=point_width, verbose=True)
+                          basename=basename, point_width=point_width, verbose=verbose)
 
     count += map_gw_params('Kq', Kq, node_coords, layers, bounding_poly, strat, format=format, 
-                          basename=basename, point_width=point_width, verbose=True)
+                          basename=basename, point_width=point_width, verbose=verbose)
 
     count += map_gw_params('Sy', Sy, node_coords, layers, bounding_poly, strat, format=format, 
-                          basename=basename, point_width=point_width, verbose=True)
+                          basename=basename, point_width=point_width, verbose=verbose)
 
     count += map_gw_params('Ss', Ss, node_coords, layers, bounding_poly, strat, format=format, 
-                          basename=basename, point_width=point_width, verbose=True)
+                          basename=basename, point_width=point_width, verbose=verbose)
 
 
-    print(f'  Created {count} groundwater parameter maps')  # update cli
+    print(f'  Created {count:,} groundwater parameter maps')  # update cli
 
     idb.exe_time()  # print elapsed time
 

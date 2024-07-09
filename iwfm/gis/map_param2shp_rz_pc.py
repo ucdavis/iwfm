@@ -57,13 +57,15 @@ def map_param2shp_rz_pc(param_types, param_vals, crops, elem_shp_name, out_shp_n
 
     out_shp_base = os.path.basename(out_shp_name).split('.')[0]         # create a parameter shapefile name
 
+    gdf_copy = gdf.copy()                                               # make a copy of the geopandas dataframe
+
     count = 0
 
     for j in range(len(param_types)):
-        gdf_copy = gdf.copy()                                           # make a copy of the geopandas dataframe
-        field_name = f'{param_types[j]}'                                # create the field name
     
-        if param_vals[j].ndim > 1: 
+        if param_vals[j].ndim > 1:                                      # if parameter is assigned to multiple elements
+
+            field_name = f'{param_types[j]}'                                # create the field name
 
             for i in range(param_vals[j].shape[1]):
 
@@ -92,7 +94,7 @@ def map_param2shp_rz_pc(param_types, param_vals, crops, elem_shp_name, out_shp_n
             if verbose: print(f'  Created IWFM parameter shapefile {out_shp_name}')
 
         else:
-            print(f'  Skipping parameter {param_types[j]}')
+            print(f'  Skipping parameter {param_types[j]}')             # one value for all elements
 
 
     return 
