@@ -29,7 +29,8 @@ from iwfm.gis.nodal_values2shp import nodal_values2shp
 from iwfm.gis.nodal_multivalues2shp import nodal_multivalues2shp
 from iwfm.gis.projection import projection
 from iwfm.gis.get_boundary_coords import get_boundary_coords
-from iwfm.gis.elem2shp_simple import elem2shp_simple
+from iwfm.gis.nodes2shp_csv import nodes2shp_csv
+from iwfm.gis.elems2shp_csv import elems2shp_csv
 
 
 # -- GIS and input files -----------------------------------

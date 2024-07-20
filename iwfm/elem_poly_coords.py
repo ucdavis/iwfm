@@ -1,6 +1,6 @@
 # elem_poly_coords.py
 # Return a list of the (x,y) coordinates for the nodes of each elememnt
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

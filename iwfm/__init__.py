@@ -78,6 +78,8 @@ from iwfm.read_lu_file import read_lu_file
 from iwfm.write_lu2file import write_lu2file
 from iwfm.lu2tables import lu2tables
 from iwfm.lu2csv import lu2csv
+from iwfm.refined_lu_factors import refined_lu_factors
+from iwfm.iwfm_lu2refined import iwfm_lu2refined
 
 # -- IWFM land use file changes for scenarios -------------
 from iwfm.iwfm_lu4scenario import iwfm_lu4scenario

@@ -1,4 +1,4 @@
-# elem2shp_simple.py
+# elems2shp_csv.py
 # Read csv files of elements and nodes and create a shapefile of the elements
 # with no information other than the element id and the node ids
 # Copyright (C) 2024 University of California
@@ -17,16 +17,45 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def elem2shp_simple(elem_nodes, node_coord_dict, shapename='elem', epsg=26910, verbose=True):
+def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910, verbose=True):
+    ''' Create a shapefile of the elements with the element ids and node ids 
+    
+    Parameters
+    ----------
+    elem_nodes : list
+        List of elements and their nodes
+        
+    node_coord_dict : dict
+        Dictionary of node coordinates
+        
+    shapename : str, default 'elems.shp'
+        Name of the shapefile to be created
+        
+    epsg : int, default 26910
+        EPSG code for the shapefile
+            
+    verbose : bool, default True
+        Print information to the console
+                
+    Returns
+    -------
+        nothing
+    '''
+
+    import fiona
+    from shapely.geometry import mapping, Polygon
 
     # Create list of element polygons
     polygons = []
     for elem in elem_nodes:  # for each element ...
+        if elem[-1]==0:  # remove the last item in list if zero
+            elem = elem[:-1]
+
         coords = []
         for j in elem[1:]:  # for each node in the element ...
             coords.append((node_coord_dict[j][0],node_coord_dict[j][1]))
         coords.append(
-            (node_coord_dict[elem[0]][0], node_coord_dict[elem[0]][1])
+            (node_coord_dict[elem[1]][0], node_coord_dict[elem[1]][1])
         )  # close the polygon with the first node
         polygons.append(coords)
 
@@ -62,13 +91,10 @@ def elem2shp_simple(elem_nodes, node_coord_dict, shapename='elem', epsg=26910, v
 
 
 if __name__ == "__main__":
-    ''' Run elem2shp_simple from command line '''
+    ''' Run elems2shp_csv from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm.gis as igis
     import iwfm as iwfm
-    import fiona
-    from shapely.geometry import mapping, Polygon
 
     args = sys.argv
     verbose=True
@@ -93,10 +119,10 @@ if __name__ == "__main__":
     elem_ids, elem_nodes = iwfm.read_elements_csv(elem_file_name)       
     if verbose: print(f'  Read {len(elem_ids):,} elements from {elem_file_name}')
 
-    shapename = elem_file_name.replace('.csv', '_nodes.shp')
+    shapename = elem_file_name.replace('.csv', '.shp')
 
     # Wtrite elements to shapefile
-    elem2shp_simple(elem_nodes, node_coord_dict, shapename=shapename, epsg=epsg, verbose=verbose)
+    elems2shp_csv(elem_nodes, node_coord_dict, shapename=shapename, epsg=epsg, verbose=verbose)
 
 
 

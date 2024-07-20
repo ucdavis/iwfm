@@ -1,0 +1,73 @@
+# refined_lu_factors.py
+# Calculate land use factors for refined model elements
+# Copyright (C) 2020-2024 University of California
+# -----------------------------------------------------------------------------
+# This information is free; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This work is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# For a copy of the GNU General Public License, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# -----------------------------------------------------------------------------
+
+def refined_lu_factors(orig_elems_file,refined_elems_file,elem2elem_file):
+    ''' refined_lu_factors() - Calculate land use factors for refined model elements
+
+    Parameters
+    ----------
+    orig_elems_file : str
+        original model element areas file name
+
+    refined_elems_file : str
+        refined model element areas file name
+
+    elem2elem_file : str
+        element to element file name
+
+    Returns
+    -------
+    lu_factors : list
+        list of land use factors for refined model elements
+
+    '''
+
+    import csv
+    import numpy as np
+    import pandas as pd
+
+    # -- read the original model element areas file
+    with open(orig_elems_file, 'r') as file:
+        orig_elems = list(csv.reader(file))[1:]
+    for line in orig_elems:
+        line[0], line[1] = int(line[0]), float(line[1])
+    orig_elems_d = dict(orig_elems)
+
+    # -- read the refined model element areas file
+    with open(refined_elems_file, 'r') as file:
+        refined_elems = list(csv.reader(file))[1:]
+    for line in refined_elems:
+        line[0], line[1] = int(line[0]), float(line[1])
+
+    # -- read the element to element file
+    with open(elem2elem_file, 'r') as file:
+        elem2elem = list(csv.reader(file))[1:]
+    for line in elem2elem:
+        line[0], line[1] = int(line[0]), int(line[1])
+    elem2elem_d = dict(elem2elem)
+
+    # -- calculate the land use factors
+    lu_factors = []
+    for elem in refined_elems:
+        refined_elem, refined_area = elem[0], elem[1]
+        orig_elem = elem2elem_d[refined_elem]
+        orig_area = orig_elems_d[orig_elem]
+        lu_factors.append([refined_elem, orig_elem, refined_area / orig_area ]) 
+
+    return lu_factors
+
