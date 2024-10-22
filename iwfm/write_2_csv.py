@@ -1,4 +1,4 @@
-# write_2_dat.py
+# write_2_csv.py
 # Write a 3D array of crop areas to a series of 2D files for each crop
 # Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
@@ -17,10 +17,10 @@
 # -----------------------------------------------------------------------------
 
 
-def write_2_dat(file_base_name, data, crop_list, elem_list, no_time_steps, date_list):
-    ''' write_2_dat() - Write a 3D array as 2D tables (row=elements
-        x col=time_steps) to (crops) # of text files with filename 
-        extension 'dat'
+def write_2_csv(file_base_name, data, crop_list, elem_list, no_time_steps, date_list):
+    ''' write_2_csv() - Write a 3D array as 2D tables (row=elements
+        x col=time_steps) to (crops) # of comma-separated text files with filename 
+        extension 'csv'
 
     Parameters
     ----------
@@ -51,19 +51,19 @@ def write_2_dat(file_base_name, data, crop_list, elem_list, no_time_steps, date_
     files = ['' for x in range(0, len(crop_list))]  # empty list
 
     for i in range(0, len(crop_list)):
-        files[i] = ''.join([file_base_name, '_', str(i + 1), '.dat'])
+        files[i] = ''.join([file_base_name, '_', str(i + 1), '.csv'])
 
     # write the arrays to the output files
     for i in range(0, len(crop_list)):
         fp = open(files[i], 'w')
-        fp.write('   WYr  ')
+        fp.write('WYr')
         for j in range(no_time_steps):
-            fp.write(f'               {date_list[j].year}  ')
+            fp.write(f',{date_list[j].year}')
         fp.write('\n')
         for j in range(0, len(elem_list)):
-            fp.write(f'{(elem_list[j]):6d} ')
+            fp.write(f'{(elem_list[j])}')
             for k in range(no_time_steps):
-                fp.write(f'{float(data[i][j][k]):20.4f} ')
+                fp.write(f',{float(data[i][j][k])}')
             fp.write('\n')
         fp.close
     return
