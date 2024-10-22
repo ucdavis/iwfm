@@ -80,6 +80,7 @@ from iwfm.lu2tables import lu2tables
 from iwfm.lu2csv import lu2csv
 from iwfm.refined_lu_factors import refined_lu_factors
 from iwfm.iwfm_lu2refined import iwfm_lu2refined
+from iwfm.tables2lu import tables2lu
 
 # -- IWFM land use file changes for scenarios -------------
 from iwfm.iwfm_lu4scenario import iwfm_lu4scenario
@@ -97,7 +98,7 @@ from iwfm.igsm_read_lake import igsm_read_lake
 from iwfm.igsm_read_streams import igsm_read_streams
 
 # -- IWFM budget and zbudget files ------------------------
-from iwfm.budgets import budgets
+from iwfm.buds2xl import buds2xl
 from iwfm.budget_info import budget_info
 from iwfm.iwfm_read_bud import iwfm_read_bud
 from iwfm.bud2csv import bud2csv
@@ -126,6 +127,8 @@ from iwfm.headall2dtw import headall2dtw
 from iwfm.headall2shp import headall2shp
 from iwfm.headall2table import headall2table
 from iwfm.headall2ts import headall2ts
+from iwfm.headall2surfer import headall2surfer
+from iwfm.headall2excel import headall2excel
 from iwfm.get_heads_4_date import get_heads_4_date
 from iwfm.read_from_index import read_from_index
 from iwfm.read_nodes import read_nodes
@@ -143,6 +146,8 @@ from iwfm.get_elem_centroids import get_elem_centroids
 
 # -- text file methods -------------------------------------
 from iwfm.write_2_dat import write_2_dat
+from iwfm.write_2_csv import write_2_csv
+from iwfm.write_2_surfer import write_2_surfer
 from iwfm.skip_ahead import skip_ahead
 from iwfm.pad_front import pad_front
 from iwfm.pad_back import pad_back

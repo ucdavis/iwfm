@@ -1,4 +1,4 @@
-# budgets.py
+# buds2xl.py
 # Read information from an IWFM Budget.in file and write output to 
 # an Excel file (perhaps in future also to csv file or other type of file)
 # Copyright (C) 2020-2023 University of California
@@ -18,8 +18,8 @@
 # -----------------------------------------------------------------------------
 
 
-def budgets(bud_file, type='xlsx', verbose=False):
-    ''' process_budgets() - Read IWFM Budget.in file and write output to an Excel
+def buds2xl(bud_file, type='xlsx', verbose=False):
+    ''' buds2xl() - Read IWFM Budget.in file and write output to an Excel
         or csv file
     Parameters
     ----------
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
     idb.exe_time()  # initialize timer
 
-    budgets(bud_file, verbose=True)
+    buds2xl(bud_file, verbose=True)
 
     idb.exe_time()  # print elapsed time
 

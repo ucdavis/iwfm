@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 def get_usacoe(files):
-   """ get_usacoe() - Save a data table from a USACOE website into a csv file
+    """ get_usacoe() - Save a data table from a USACOE website into a csv file
 
     Parameters
     ----------

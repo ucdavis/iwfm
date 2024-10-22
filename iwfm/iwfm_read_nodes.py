@@ -48,7 +48,7 @@ def iwfm_read_nodes(node_file, factor=0.0):
 
     line_index = iwfm.skip_ahead(0, node_lines, 0)  
 
-    inodes = int(re.findall('\d+', node_lines[line_index])[0])  
+    inodes = int(re.findall(r'\d+', node_lines[line_index])[0])  
 
     line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0) 
 

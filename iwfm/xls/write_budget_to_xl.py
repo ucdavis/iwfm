@@ -21,7 +21,7 @@ def write_budget_to_xl(wb, budget_data):
 
     Parameters
     ----------
-    workbook : Excel workbook COM object
+    wb : Excel workbook COM object
         Output Excel file open for writing
 
     budget_data: list 

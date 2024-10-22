@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def headall_read(input_file, skip=5):
+def headall_read(input_file, skip=5, verbose=False):
     ''' headall_read() - Reads an IWFM HeadAll.out file and returns
         the data as floats, with lists of dates and model nodes and
         the number of model layers
@@ -29,6 +29,9 @@ def headall_read(input_file, skip=5):
     
     skip : int, default=5
         number of header lines
+
+    verbose: bool, default=False
+        True = command-line output on
 
     Returns
     -------
@@ -52,23 +55,51 @@ def headall_read(input_file, skip=5):
     nodes = file_lines[line].split()  
     nodes.pop(0)  
     nodes.pop(0)  
+    if verbose: print(f' ==> nodes[0:4]: {nodes[:5]}')
 
     line += 1
     layers = 1
     while file_lines[line + layers][0] == ' ':
         layers += 1
+    if verbose: print(f' ==> {layers=}')
 
     data, dates = [], []
 
-    layer = 0
+    layer, temp = 0, []
     while line < len(file_lines):
         in_list = file_lines[line].split()  
         if layer == 0:
             date = in_list.pop(0)
             dates.append(date[:10])
-        data.append([float(item) for item in in_list])
+        temp.append([float(item) for item in in_list])
         line += 1
         layer += 1
         if layer == layers:
             layer = 0
+            data.append(temp)
+            temp = []
     return data, layers, dates, nodes
+
+if __name__ == '__main__':
+    ' Run headall_read() from command line '
+    import sys
+    import os
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    args = sys.argv[1:]  # get command line arguments
+    if len(sys.argv) > 1:  # arguments are listed on the command line
+        heads_file, output_root = args
+    else:  # ask for file names from terminal
+        heads_file  = input('IWFM Headall file name: ')
+        output_root = input('Output file rootname: ')
+
+    iwfm.file_test(heads_file)
+
+    idb.exe_time()  # initialize timer
+
+    data, layers, dates, nodes = iwfm.headall_read(heads_file)
+
+    idb.exe_time()  # print elapsed time
+
+    print(f' Wrote {count} surfer output files.')
