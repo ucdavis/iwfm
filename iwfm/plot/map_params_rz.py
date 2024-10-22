@@ -1,4 +1,4 @@
-# map_rz_params.py 
+# map_params_rz.py 
 # Read root zone parameters and create figures of the parameters
 # Copyright (C) 2023-2024 University of California
 # -----------------------------------------------------------------------------
@@ -17,9 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def map_rz_params(node_file_name, elem_file_name, out_name, rz_file_name, 
+def map_params_rz(node_file_name, elem_file_name, out_name, rz_file_name, 
                   format='tiff', point_width=100, verbose=False):
-    ''' map_rz_params() - Read a shapefile of IWFM model elements and map IWFM 
+    ''' map_params_rz() - Read a shapefile of IWFM model elements and map IWFM 
                     Rootzone parameters to the elements
 
     Parameters
@@ -391,7 +391,7 @@ def map_rz_params(node_file_name, elem_file_name, out_name, rz_file_name,
 
 
 
-# Run map_rz_params() from command line
+# Run map_params_rz() from command line
 if __name__ == "__main__":
     import sys
     import numpy as np
@@ -454,7 +454,7 @@ if __name__ == "__main__":
 
     verbose = True
 
-    count = map_rz_params(node_file_name, elem_file_name, out_name, rz_file_names, 
+    count = map_params_rz(node_file_name, elem_file_name, out_name, rz_file_names, 
                         format=format, point_width=point_width, verbose=verbose)
     
     print(f'  Wrote {count:,} {format.upper()} images')

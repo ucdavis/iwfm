@@ -1,4 +1,4 @@
-# map_gw_params.py
+# map_params_gw.py
 # Create PNG images of groundwater parameters from an IWFM simulation
 # Copyright (C) 2023-2024 University of California
 # -----------------------------------------------------------------------------
@@ -83,9 +83,9 @@ def plot_one(param_name, plot_data, bounding_poly, layer, basename, units='', po
 
 
 
-def map_gw_params(param_type, param_values, node_coords, layers, bounding_poly, strat, format='tiff', basename='gw_param_map',
+def map_params_gw(param_type, param_values, node_coords, layers, bounding_poly, strat, format='tiff', basename='gw_param_map',
                    point_width=100, verbose=False):
-    ''' map_gw_params() - Create PNG images of groundwater parameters from an IWFM simulation
+    ''' map_params_gw() - Create PNG images of groundwater parameters from an IWFM simulation
 
     Parameters
     ----------
@@ -218,19 +218,19 @@ if __name__ == "__main__":
     strat = np.array([np.array(i) for i in strat])          # stratigraphy to numpy array
 
 
-    count = map_gw_params('Kh', Kh, node_coords, layers, bounding_poly, strat, format=format, 
+    count = map_params_gw('Kh', Kh, node_coords, layers, bounding_poly, strat, format=format, 
                           basename=basename, point_width=point_width, verbose=verbose)
 
-    count += map_gw_params('Kv', Kv, node_coords, layers, bounding_poly, strat, format=format, 
+    count += map_params_gw('Kv', Kv, node_coords, layers, bounding_poly, strat, format=format, 
                           basename=basename, point_width=point_width, verbose=verbose)
 
-    count += map_gw_params('Kq', Kq, node_coords, layers, bounding_poly, strat, format=format, 
+    count += map_params_gw('Kq', Kq, node_coords, layers, bounding_poly, strat, format=format, 
                           basename=basename, point_width=point_width, verbose=verbose)
 
-    count += map_gw_params('Sy', Sy, node_coords, layers, bounding_poly, strat, format=format, 
+    count += map_params_gw('Sy', Sy, node_coords, layers, bounding_poly, strat, format=format, 
                           basename=basename, point_width=point_width, verbose=verbose)
 
-    count += map_gw_params('Ss', Ss, node_coords, layers, bounding_poly, strat, format=format, 
+    count += map_params_gw('Ss', Ss, node_coords, layers, bounding_poly, strat, format=format, 
                           basename=basename, point_width=point_width, verbose=verbose)
 
 
