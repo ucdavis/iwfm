@@ -234,7 +234,7 @@ def process_budget_data(f, loc_names, column_headers, loc_values, titles, write_
 
     Parameters
     ----------
-    outfile : File object
+    f : File object
         Output file open for writing
 
     loc_names : list of strings
@@ -246,7 +246,10 @@ def process_budget_data(f, loc_names, column_headers, loc_values, titles, write_
     loc_values : list of dataframes
         Each dataframe contains values for one location
 
-    print_header : bool, default=False
+    titles : list of tuples
+        Each tuple contains the location type and the number of columns in the dataframe
+
+    write_header : bool, default=False
         If True then print header at top of file
     
     verbose : bool, default=False
@@ -258,8 +261,7 @@ def process_budget_data(f, loc_names, column_headers, loc_values, titles, write_
     '''
     loc_type = titles[0][1].split()[0]  # location type: 'GROUNDWATER', 'LAND' etc
 
-    if write_header:
-        # format nice headers for printout
+    if write_header:        # format nice headers for printout
         header = 'Subregion,'+','.join([h for h in adjust_headers(column_headers[0])])
         f.write(f'{header}\n')
 
