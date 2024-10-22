@@ -16,12 +16,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def refined_lu_factors(orig_elems_file,refined_elems_file,elem2elem_file):
+def refined_lu_factors(orig_areas_file,refined_areas_file,elem2elem_file):
     ''' refined_lu_factors() - Calculate land use factors for refined model elements
 
     Parameters
     ----------
-    orig_elems_file : str
+    orig_areas_file : str
         original model element areas file name
 
     refined_elems_file : str
@@ -42,16 +42,16 @@ def refined_lu_factors(orig_elems_file,refined_elems_file,elem2elem_file):
     import pandas as pd
 
     # -- read the original model element areas file
-    with open(orig_elems_file, 'r') as file:
-        orig_elems = list(csv.reader(file))[1:]
-    for line in orig_elems:
+    with open(orig_areas_file, 'r') as file:
+        orig_areas = list(csv.reader(file))[1:]
+    for line in orig_areas:
         line[0], line[1] = int(line[0]), float(line[1])
-    orig_elems_d = dict(orig_elems)
+    orig_areas_d = dict(orig_areas)
 
     # -- read the refined model element areas file
-    with open(refined_elems_file, 'r') as file:
-        refined_elems = list(csv.reader(file))[1:]
-    for line in refined_elems:
+    with open(refined_areas_file, 'r') as file:
+        refined_areas = list(csv.reader(file))[1:]
+    for line in refined_areas:
         line[0], line[1] = int(line[0]), float(line[1])
 
     # -- read the element to element file
@@ -63,10 +63,10 @@ def refined_lu_factors(orig_elems_file,refined_elems_file,elem2elem_file):
 
     # -- calculate the land use factors
     lu_factors = []
-    for elem in refined_elems:
+    for elem in refined_areas:
         refined_elem, refined_area = elem[0], elem[1]
         orig_elem = elem2elem_d[refined_elem]
-        orig_area = orig_elems_d[orig_elem]
+        orig_area = orig_areas_d[orig_elem]
         lu_factors.append([refined_elem, orig_elem, refined_area / orig_area ]) 
 
     return lu_factors
