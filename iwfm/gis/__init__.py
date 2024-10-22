@@ -37,10 +37,10 @@ from iwfm.gis.elems2shp_csv import elems2shp_csv
 from iwfm.gis.map_divs2shp import map_divs2shp
 from iwfm.gis.map_param2shp_nodes import map_param2shp_nodes
 from iwfm.gis.map_param2shp_elems import map_param2shp_elems
-#from iwfm.gis.map_param2shp_rz import map_param2shp_rz
-#from iwfm.gis.map_param2shp_rz_npc import map_param2shp_rz_npc
-#from iwfm.gis.map_param2shp_rz_pc import map_param2shp_rz_npc
-#from iwfm.gis.map_param2shp_rz_urban import map_param2shp_rz_urban
+from iwfm.gis.map_param2shp_rz import map_param2shp_rz
+from iwfm.gis.map_param2shp_rz_npc import map_param2shp_rz_npc
+from iwfm.gis.map_param2shp_rz_pc import map_param2shp_rz_pc
+from iwfm.gis.map_param2shp_rz_urban import map_param2shp_rz_urban
 #from iwfm.gis.map_param2shp_natrip import map_param2shp_rz_natrip
 
 

@@ -46,43 +46,23 @@ def map_param2shp_rz(param_types, param_vals, elem_shp_name, out_shp_name='elem_
     import geopandas as gpd
     import os
 
-    param_types = [t.upper() for t in param_types]                      # convert parameter names to upper case
-
     gdf = gpd.read_file(elem_shp_name)                                  # read elements shapefile into geopandas dataframe
 
     gdf.columns = gdf.columns.str.lower()                               # convert column names to lower case
 
-    out_shp_base = os.path.basename(out_shp_name).split('.')[0]         # create a parameter shapefile name
+    gdf_new = gdf.copy()                                                # make a copy of the geopandas dataframe
+
+    param_types = [t.lower() for t in param_types]                      # convert parameter names to lower case
 
     for j in range(len(param_types)):
-        gdf_new = gdf.copy()                                            # make a copy of the geopandas dataframe
-        field_name = f'{param_types[j]}'                                # create the field name
     
-        if param_vals[j].ndim > 1: 
+        gdf_new[f'{param_types[j]}' ] = param_vals[j]                   # add a field to the geopandas dataframe
 
-            for i in range(param_vals[j].shape[1]):
+    out_shp_name = os.path.basename(out_shp_name).split('.')[0] + '.shp'
 
-                if param_vals[j].shape[1] == len(crops) + 1:            # initial condition has extra fiels
-                    if i == 0:
-                        f_name = f'{param_types[j]}_IC'
-                    else:
-                        f_name = field_name+'_'+crops[i-1]
-                else:
-                    f_name = field_name+'_'+crops[i]
+    gdf_new.to_file(out_shp_name)                                       # write the geopandas dataframe to a shapefile
 
-                data = param_vals[j][:,i]
-
-                gdf_new[f_name] = data                                 # add a field to the geopandas dataframe
-
-            out_shp_name = out_shp_base+'_'+param_types[j]+'.shp'
-
-            gdf_new.to_file(out_shp_name)                              # write the geopandas dataframe to a shapefile
-
-            if verbose: print(f'  Created IWFM parameter shapefile {out_shp_name}')
-
-        else:
-            if verbose: print(f'  Skipping parameter {param_types[j]}')
-
+    if verbose: print(f'  Created IWFM parameter shapefile {out_shp_name}')
 
     return 
 
@@ -109,11 +89,11 @@ if __name__ == "__main__":
 
     idb.exe_time()                                                      # initialize timer
 
-    param_types = ["wp", "fc", "tn", "lambda", "ksoil", "rhc", "caprise", "irne", "frne", "imsrc", "typdest", "dest", "kponded"]
+    param_types = ["wp", "fc", "tn", "lambda", "ksoil", "rhc", "caprise", "irne", "frne", 
+                   "imsrc", "typdest", "dest", "kponded"]
 
     param_vals = iwfm.iwfm_read_rz_params(rz_file_name)                 # Read rootzone parameters
 
-    map_param2shp_rz(param_types, param_vals, elem_shp_name, out_shp_name=out_shp_name)
-    #map_param2shp_elems(param_types, param_vals, elem_shp_name, out_shp_name, verbose=True)   
+    map_param2shp_rz(param_types, param_vals, elem_shp_name, out_shp_name=out_shp_name, verbose=True)
 
     idb.exe_time()                                                      # print elapsed time

@@ -47,7 +47,7 @@ def map_param2shp_rz_natrip(param_types, param_vals, elem_shp_name, out_shp_name
     import geopandas as gpd
     import os
 
-    param_types = [t.upper() for t in param_types]                      # convert parameter names to upper case
+    param_types = [t.lower() for t in param_types]                      # convert parameter names to lower case
 
     ic = param_vals[1]
 

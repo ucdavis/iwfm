@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-
 def map_param2shp_rz_urban(param_types, param_vals, elem_shp_name, out_shp_name='elem_parameters', verbose=False):
     ''' map_param2shp_rz_urbanrz() - Read a shapefile of IWFM model elements and map IWFM 
                     Rootzone Urban parameters to the elements
@@ -46,7 +45,7 @@ def map_param2shp_rz_urban(param_types, param_vals, elem_shp_name, out_shp_name=
     import geopandas as gpd
     import os
 
-    param_types = [t.upper() for t in param_types]                      # convert parameter names to upper case
+    param_types = [t.lower() for t in param_types]                      # convert parameter names to lower case
 
     ic = param_vals[1]
 
@@ -90,3 +89,34 @@ def map_param2shp_rz_urban(param_types, param_vals, elem_shp_name, out_shp_name=
 
     return 
 
+
+
+if __name__ == "__main__":
+    ''' Run map_param2shp_rz_urban() from command line'''
+    import sys
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    args = sys.argv
+
+    if len(args) > 1:  # arguments are listed on the command line
+        rz_file_name       = args[1]
+        elem_shp_name      = args[2]
+        out_shp_name       = args[3]
+    else:  # ask for file names from terminal
+        rz_file_name       = input('IWFM Root Zone Main file name: ')
+        elem_shp_name      = input('IWFM Elements shapefile name: ')
+        out_shp_name       = input('Output shapefile name: ')
+
+    iwfm.file_test(rz_file_name)
+    iwfm.file_test(elem_shp_name)
+
+    idb.exe_time()                                                      # initialize timer
+
+    param_types = ["perv", "cnurb", "icpopul", "icwtruse", "fracdm", "iceturb", "icrtfurb", "icrufurb", "icurbspec", "ic"]
+
+    crops, param_vals, files = iwfm.iwfm_read_rz_urban(rz_file_name)                 # Read rootzone parameters
+
+    map_param2shp_rz_urban(param_types, param_vals, elem_shp_name, out_shp_name=out_shp_name, verbose=True)
+
+    idb.exe_time()                                                      # print elapsed time

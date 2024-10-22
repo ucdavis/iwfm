@@ -72,7 +72,7 @@ def map_param2shp_nodes(param_type, param_vals, node_shp_name, out_shp_name='nod
             if do_it == 1:                                              # add a field for the parameter
                 field_name = f'{param_type}_{layer+1}'                  # create the field name
 
-                data = [param_vals[node-1][layer] for node in node_ids] # compile data for the field
+                data = [param_vals[i][layer] for i in range(0, len(node_ids))] # compile data for the field
 
                 gdf[field_name] = data                                  # add a field to the geopandas dataframe
 
