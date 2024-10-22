@@ -1,6 +1,6 @@
 # __init__.py for iwfm.calib package
 # Classes, methods and functions for interactions between IWFM model calibration
-# Copyright (C) 2018-2023 University of California
+# Copyright (C) 2018-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ from iwfm.calib.ltsmp import ltsmp
 from iwfm.calib.setrot import setrot
 
 # -- PEST SMP files ---------------------------------------
+from iwfm.calib.smp_read import smp_read
 from iwfm.calib.obs_smp import obs_smp
 from iwfm.calib.sim_smp import sim_smp
 from iwfm.calib.smp_avg import smp_avg
@@ -58,6 +59,8 @@ from iwfm.calib.get_sim_hyd import get_sim_hyd
 from iwfm.calib.headdiff_hyds import headdiff_hyds
 from iwfm.calib.headdiff_read import headdiff_read
 from iwfm.calib.hyds_missed import hyds_missed
+from iwfm.calib.read_obs_wells import read_obs_wells
+from iwfm.calib.read_sim_heads import read_sim_heads
 from iwfm.calib.sim_4_sites import sim_4_sites
 from iwfm.calib.well_pairs_2_obs_list import well_pairs_2_obs_list
 
