@@ -1,6 +1,6 @@
 # igsm_elem2shp.py
 # Create an elements shapefile for an IGSM model
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -20,9 +20,6 @@
 def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
     epsg=26910,verbose=False):
     ''' igsm_elem2shp() - Create an elements shapefile for an IGSM model
-
-    TODO:
-      - change from fiona to pyshp and wkt format
 
     Parameters
     ----------
@@ -53,59 +50,53 @@ def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
 
     '''
     import sys
-
-    import fiona
-    import fiona.crs
-    from shapely.geometry import mapping, Polygon
+    import shapefile
+    import pyproj
+    from shapely.geometry import Polygon  # mapping no longer needed
 
     import iwfm as iwfm
 
-    elem_shapename = f'{shape_name}_Elements.shp'
+    elem_shapename = f'{shape_name}_Elements'  # remove .shp extension
 
     polygons = iwfm.elem_poly_coords(elem_nodes, node_coords)
 
-    # Define the polygon feature geometry
-    elem_schema = {
-        'geometry': 'Polygon',
-        'properties': {
-            'elem_id': 'int',
-            'raingage': 'int',
-            'rainfactor': 'float:6.3',
-            'drainnode': 'int',
-            'subregion': 'int',
-            'soiltype': 'float:4.2',
-            'lake_no': 'int',
-        },
-    }
+    # Create a new shapefile writer object
+    w = shapefile.Writer(elem_shapename, shapeType=shapefile.POLYGON)
+    
+    # Define fields
+    w.field('elem_id', 'N', 10, 0)      # Integer
+    w.field('raingage', 'N', 10, 0)     # Integer
+    w.field('rainfactor', 'F', 6, 3)    # Float with 3 decimals
+    w.field('drainnode', 'N', 10, 0)    # Integer
+    w.field('subregion', 'N', 10, 0)    # Integer
+    w.field('soiltype', 'F', 4, 2)      # Float with 2 decimals
+    w.field('lake_no', 'N', 10, 0)      # Integer
 
-    # Write a new element shapefile
-    with fiona.open(
-            elem_shapename,
-            'w',
-            crs=fiona.crs.from_epsg(epsg),
-            driver='ESRI Shapefile',
-            schema=elem_schema,
-        ) as out:
-        for i in range(len(polygons)):
-            poly = Polygon(polygons[i])
-            lake_no = 0
-            for j in range(len(lake_elems)):
-                if lake_elems[j][1] == i + 1:  # lake on this element
-                    lake_no = lake_elems[j][0]
-            out.write(
-                {
-                    'geometry': mapping(poly),
-                    'properties': {
-                        'elem_id': i + 1,
-                        'raingage': elem_char[i][0],
-                        'rainfactor': elem_char[i][1],
-                        'drainnode': elem_char[i][2],
-                        'subregion': elem_char[i][3],
-                        'soiltype': elem_char[i][4],
-                        'lake_no': lake_no,
-                    },
-                }
-            )
+    # Write features
+    for i in range(len(polygons)):
+        lake_no = 0
+        for j in range(len(lake_elems)):
+            if lake_elems[j][1] == i + 1:  # lake on this element
+                lake_no = lake_elems[j][0]
+        
+        w.poly([polygons[i]])  # Add geometry
+        w.record(              # Add attributes
+            i + 1,                # elem_id
+            elem_char[i][0],      # raingage
+            elem_char[i][1],      # rainfactor
+            elem_char[i][2],      # drainnode
+            elem_char[i][3],      # subregion
+            elem_char[i][4],      # soiltype
+            lake_no               # lake_no
+        )
+    
+    # Write projection file
+    prj = open(f"{elem_shapename}.prj", "w")
+    epsg = f'EPSG:{epsg}'
+    prj.write(pyproj.CRS(epsg).to_wkt())
+    prj.close()
+    
+    w.close()
     if verbose:
-        print(f'  Wrote shapefile {elem_shapename}')
+        print(f'  Wrote shapefile {elem_shapename}.shp')
     return 

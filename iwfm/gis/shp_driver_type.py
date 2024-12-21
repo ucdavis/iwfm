@@ -1,6 +1,6 @@
 # shp_driver_type.py
 # Return shapefile driver with fiona
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,11 +33,15 @@ def shp_driver_type(filename, verbose=False):
     d : str
         Driver
     '''
-    import fiona
+    import shapefile
 
-    f = fiona.open(filename)
-    d = f.driver
-    f = None # release memory
+    try:
+        sf = shapefile.Reader(filename)
+        d = 'ESRI Shapefile'  # pyshp only handles ESRI Shapefiles
+        sf.close()
+    except shapefile.ShapefileException:
+        d = None
+        
     if verbose:
         print(f'  Driver for {filename}: {d}')
     return d

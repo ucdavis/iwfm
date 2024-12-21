@@ -1,6 +1,6 @@
 # nodes2shp.py
 # Create node shapefiles for an IWFM model
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -19,9 +19,6 @@
 
 def nodes2shp(node_coords, shape_name, epsg=26910, verbose=False):
     ''' nodes2shp() - Create an IWFM nodes shapefile 
-
-    TODO:
-      - change from fiona to pyshp and wkt format?
 
     Parameters
     ----------
@@ -42,31 +39,31 @@ def nodes2shp(node_coords, shape_name, epsg=26910, verbose=False):
     nothing
 
     '''
-    import fiona
-    from shapely.geometry import mapping, Point
+    import shapefile
+    import pyproj
 
     shapename = f'{shape_name}_Nodes.shp'
 
-    # Define the point feature geometry
-    schema = {
-        'geometry': 'Point',
-        'properties': {'node_id': 'int'},
-    }
-
-    # Write a new node shapefile
-    with fiona.open(
-            shapename,
-            'w',
-            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
-            driver='ESRI Shapefile',
-            schema=schema,
-        ) as out:
-        for i in range(len(node_coords)):
-            x, y = node_coords[i][1],node_coords[i][2]
-            point = Point(x,y)
-            properties = {'node_id': node_coords[i][0]}
-            feature = {'geometry': mapping(point), 'properties': properties}
-            out.write(feature)
+    # Create a new shapefile writer for points
+    w = shapefile.Writer(shapename, shapeType=shapefile.POINT)
+    
+    # Define the field for node_id
+    w.field('node_id', 'N', 10, 0)
+    
+    # Write points and their attributes
+    for i in range(len(node_coords)):
+        x, y = node_coords[i][1], node_coords[i][2]
+        w.point(x, y)  # Add geometry
+        w.record(node_id=node_coords[i][0])  # Add attributes
+    
+    # Create .prj file for spatial reference
+    prj = open(f"{shapename[:-4]}.prj", "w")
+    epsg = pyproj.CRS.from_epsg(epsg)
+    prj.write(epsg.to_wkt())
+    prj.close()
+    
+    # Save and close the shapefile
+    w.close()
 
     if verbose:
         print(f'  Wrote shapefile {shapename}')

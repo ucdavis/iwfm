@@ -20,9 +20,6 @@
 def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbose=False):
     ''' snodes2shp() - Creates an IWFM stream nodes shapefile 
 
-    TODO:
-      - change from fiona to pyshp and wkt format?
-
     Parameters
     ----------
     nsnodes : int
@@ -49,43 +46,37 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
 
     '''
     import iwfm as iwfm
-    import fiona
-    from shapely.geometry import Point, mapping
+    import shapefile
+    import pyproj
+    from shapely.geometry import Point  # mapping no longer needed
 
-    shapename = f'{shape_name}_StreamNodes.shp'
-
-    # Define the Point feature geometry
-    schema = {
-        'geometry': 'Point',
-        'properties': {
-            'snode_id': 'int',
-            'gw_node': 'int',
-            'reach': 'int',
-        },
-    }
+    shapename = f'{shape_name}_StreamNodes'  # remove .shp extension
 
     node_coords_dict = iwfm.list2dict(node_coords)
 
-    # Write a new stream node shapefile
-    with fiona.open(
-            shapename,
-            'w',
-            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
-            driver='ESRI Shapefile',
-            schema=schema,
-        ) as out:
-        for i in range(nsnodes):
-            snode_id, gw_node, reach = snodes_list[i]
-            if gw_node != 0:
-                x, y = node_coords_dict[gw_node][0],node_coords_dict[gw_node][1]
-                point = Point(x,y)
-                properties = {
-                    'snode_id': snode_id,
-                    'gw_node': gw_node,
-                    'reach': reach,
-                    }
-                feature = {'geometry': mapping(point), 'properties': properties}
-                out.write(feature)
+    # Create a new shapefile writer object
+    w = shapefile.Writer(shapename, shapeType=shapefile.POINT)
+    
+    # Define fields (replaces schema)
+    w.field('snode_id', 'N', 10, 0)  # N = numeric, 10 digits, 0 decimals
+    w.field('gw_node', 'N', 10, 0)
+    w.field('reach', 'N', 10, 0)
+
+    # Write features
+    for i in range(nsnodes):
+        snode_id, gw_node, reach = snodes_list[i]
+        if gw_node != 0:
+            x, y = node_coords_dict[gw_node][0], node_coords_dict[gw_node][1]
+            w.point(x, y)  # Add geometry
+            w.record(snode_id, gw_node, reach)  # Add attributes
+    
+    # Write projection file
+    prj = open(f"{shapename}.prj", "w")
+    epsg = f'EPSG:{epsg}'
+    prj.write(pyproj.CRS(epsg).to_wkt())
+    prj.close()
+    
+    w.close()
     if verbose:
         print(f'  Wrote shapefile {shapename}')
     return

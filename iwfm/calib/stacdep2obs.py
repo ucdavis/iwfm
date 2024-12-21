@@ -2,7 +2,7 @@
 # Convert IWFM Stream Reach Budget to the SMP file format for 
 # use by PEST.
 # Based on STACDEP2OBS.F90 by Matt Tonkin, SSPA with routines by John Doherty
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -167,7 +167,7 @@ def stacdep2obs(budget_table, dates, reaches, nwidth=20):
         temp = [int(i) for i in date.split('/')]
         smp_dates.append(iwfm.date2text(temp[1],temp[0],temp[2]))
         temp = date.split('/')
-        ins_dates.append(f'{temp[0]}{temp[1]}{temp[2]}') 
+        ins_dates.append(f'{temp[0]}{temp[2]}') 
 
     stacdep, ins = [], []
     for reach in reaches:

@@ -1,6 +1,6 @@
 # elem2shp.py
 # Create elements shapefile for an IWFM model
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -20,9 +20,6 @@
 def elem2shp(elem_ids,elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_name,
     epsg=26910, verbose=False):
     ''' elem2shp() - Creates an IWFM element shapefile 
-
-    TODO:
-      - change from fiona to pyshp and wkt format?
 
     Parameters
     ----------
@@ -55,10 +52,8 @@ def elem2shp(elem_ids,elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_n
     nothing
 
     '''
-    import fiona
-    import fiona.crs
-    import shapefile as shp # pyshp
-    from shapely.geometry import mapping, Polygon
+    import shapefile
+    import pyproj
     import iwfm as iwfm
 
     shapename = f'{shape_name}_Elements.shp'
@@ -66,36 +61,35 @@ def elem2shp(elem_ids,elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_n
     # Create list of element polygons
     polygons = iwfm.elem_poly_coords(elem_nodes, node_coord_dict)
 
-    # Define the polygon feature geometry
-    schema = {
-        'geometry': 'Polygon',
-        'properties': {'elem_id': 'int', 'subregion': 'int', 'lake_no': 'int'},
-    }
+    # Create a new shapefile writer
+    w = shapefile.Writer(shapename, shapeType=shapefile.POLYGON)
+    
+    # Define fields
+    w.field('elem_id', 'N', 10, 0)
+    w.field('subregion', 'N', 10, 0)
+    w.field('lake_no', 'N', 10, 0)
+    
+    # Write features
+    for i in range(len(polygons)):
+        poly = polygons[i]  # Already in the correct format for PyShp
+        lake_no = 0
+        if lake_elems > 0:
+            for j in range(len(lake_elems)):
+                if lake_elems[j][1] == i + 1:  # lake on this element
+                    lake_no = lake_elems[j][0]
+        
+        # Add geometry and attributes
+        w.poly([poly])
+        w.record(elem_id=elem_ids[i], subregion=elem_sub[i], lake_no=lake_no)
+    
+    # Create .prj file for spatial reference
+    prj = open(f"{shapename[:-4]}.prj", "w")
+    epsg = pyproj.CRS.from_epsg(epsg)
+    prj.write(epsg.to_wkt())
+    prj.close()
+    
+    # Save and close the shapefile
+    w.close()
 
-    # Write a new element shapefile
-    with fiona.open(
-            shapename,
-            'w',
-            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
-            driver='ESRI Shapefile',
-            schema=schema,
-        ) as out:
-        for i in range(len(polygons)):
-            poly = Polygon(polygons[i])
-            lake_no = 0
-            if lake_elems > 0:
-                for j in range(len(lake_elems)):
-                    if lake_elems[j][1] == i + 1:  # lake on this element
-                        lake_no = lake_elems[j][0]
-            out.write(
-                {
-                    'geometry': mapping(poly),
-                    'properties': {
-                        'elem_id': elem_ids[i],
-                        'subregion': elem_sub[i],
-                        'lake_no': lake_no,
-                    },
-                }
-            )
     if verbose:
         print(f'  Wrote shapefile {shapename}')

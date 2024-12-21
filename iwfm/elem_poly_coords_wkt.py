@@ -1,6 +1,6 @@
 # elem_poly_coords_wkt.py
 # Return a list of the (x,y) coordinates for the nodes of each elememnt
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -21,13 +21,6 @@ def elem_poly_coords_wkt(elem_nodes, node_coords):
     ''' elem_poly_coords_wkt() - Return a list ofelement coordinates 
         in WKT form: ['POLYGON ((X0 Y0, X1 Y1, X2 Y2, X3 Y3, X0 Y0)),'<,...>]
 
-    TODO:
-      - change i from range to enumerate
-      - change polys to WKT format:
-      ['POLYGON ((X0 Y0, X1 Y1, X2 Y2, X3 Y3, X0 Y0))',
-       'POLYGON ((X0 Y0, X1 Y1, X2 Y2, X3 Y3, X0 Y0))',
-        etc...  
-
     Parameters
     ----------
     elem_nodes : list
@@ -44,17 +37,22 @@ def elem_poly_coords_wkt(elem_nodes, node_coords):
     '''
     polys = []
 
-    for i in range(0, len(elem_nodes)):  # for each element ...
+    for elem in elem_nodes:  # for each element ...
         coords = []
-        for j in range(0, len(elem_nodes[i])):  # for each node in the element ...
+        for j in range(0, len(elem)):  # for each node in the element ...
             coords.append(
                 (
-                    node_coords[elem_nodes[i][j] - 1][0],
-                    node_coords[elem_nodes[i][j] - 1][1],
+                    node_coords[elem[j] - 1][0],
+                    node_coords[elem[j] - 1][1],
                 )
             )
         coords.append(
-            (node_coords[elem_nodes[i][0] - 1][0], node_coords[elem_nodes[i][0] - 1][1])
+            (node_coords[elem[0] - 1][0], node_coords[elem[0] - 1][1])
         )  # close the polygon
-        polys.append(coords)
+
+        # Convert coordinates to WKT format
+        coords_str = ', '.join(f"{x} {y}" for x, y in coords)
+        wkt_polygon = f"POLYGON (({coords_str}))"
+        polys.append(wkt_polygon)
+
     return polys

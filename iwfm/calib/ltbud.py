@@ -1,6 +1,6 @@
 # ltbud.py
 # Read an IWFM Budget-format output file, and log-transform the values
-# Copyright (C) 2018-2020 University of California
+# Copyright (C) 2018-2024 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ def ltbud(budget_file, output_file, zero_offset=2, neg_val=1e-7):
     Returns
     -------
     nothing
+
+    TOTO: Add error code for too few budget tables
 
     '''
 
@@ -111,8 +113,7 @@ if __name__ == "__main__":
         neg_val     = float(input("Value to replace negative no.: "))
 
     iwfm.file_test(budget_file)  # test for input file
-
-    # TODO: validate path of budget_file for any OS
+    iwfm.file_validate_path(output_file)
 
     idb.exe_time()  # initialize timer
     ltbud(budget_file, output_file, zero_offset, neg_val)

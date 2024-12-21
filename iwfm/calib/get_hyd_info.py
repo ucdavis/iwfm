@@ -51,11 +51,11 @@ def get_hyd_info(ftype,file_dict):
     if ftype == 'Tile drains':
         # -- the first part of the tile drain file is different
         line_index = iwfm.skip_ahead(line_index,in_lines,0)
-        td_no = int(in_lines[line_index].split()[0])                      # no. tile drain param rows
-        line_index = iwfm.skip_ahead(line_index,in_lines,td_no + 3)            # skip tile drain parameters + 3 lines
+        td_no = int(in_lines[line_index].split()[0])                    # no. tile drain param rows
+        line_index = iwfm.skip_ahead(line_index,in_lines,td_no + 3)     # skip tile drain parameters + 3 lines
         line_index = iwfm.skip_ahead(line_index,in_lines,1)
-        sd_no = int(in_lines[line_index].split()[0])                      # no. subsurface irrigation points
-        line_index = iwfm.skip_ahead(line_index,in_lines,sd_no + 4)            # skip subsurface irrigation params + 4  lines
+        sd_no = int(in_lines[line_index].split()[0])                    # no. subsurface irrigation points
+        line_index = iwfm.skip_ahead(line_index,in_lines,sd_no + 4)     # skip subsurface irrigation params + 4  lines
     else:
         # -- all of the other types
         line_index = iwfm.skip_ahead(line_index,in_lines,skips[0])
@@ -67,7 +67,7 @@ def get_hyd_info(ftype,file_dict):
     line_index = iwfm.skip_ahead(line_index,in_lines,skips[1])
     hyd_file = in_lines[line_index].split()[0]
     if not os.path.isfile(hyd_file):                                    # test for input file
-        iwfm.file_missing(hyd_file)                                            # stop
+        iwfm.file_missing(hyd_file)                                     # stop
 
     # -- get hydrograph names and locations as list
     hyd_names = []

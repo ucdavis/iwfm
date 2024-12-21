@@ -22,9 +22,6 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
     ''' reach2shp() - Creates an IWFM stream reaches shapefile from IWFM
         Preprocessor stream specification information
 
-    TODO:
-      - change from fiona to pyshp and wkt format?
-
     Parameters
     ----------
     reach_list : list
@@ -51,42 +48,45 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
 
     '''
     import iwfm as iwfm
-    import fiona
-    from shapely.geometry import mapping, LineString
+    import shapefile
+    import pyproj
 
     shapename = f'{shape_name}_StreamReaches.shp'
 
-    schema = {
-        'geometry': 'LineString',
-        'properties': {'reach_id': 'int', 'flows_to': 'int'},
-    }
-
+    # Create a new shapefile writer for lines
+    w = shapefile.Writer(shapename, shapeType=shapefile.POLYLINE)
+    
+    # Define fields
+    w.field('reach_id', 'N', 10, 0)
+    w.field('flows_to', 'N', 10, 0)
+    
     node_coords_dict = iwfm.list2dict(node_coords)
-
-    with fiona.open(
-            shapename,
-            'w',
-            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
-            driver='ESRI Shapefile',
-            schema=schema,
-        ) as out:
-        for i in range(len(reach_list)):
-            upper, lower = reach_list[i][1], reach_list[i][2]
-            points, n = [], 0
-            for snode in range(upper, lower + 1):
-                gw_node, reach, elev = stnodes_dict[snode]
-                if gw_node != 0:
-                    x, y = node_coords_dict[gw_node][0],node_coords_dict[gw_node][1]
-                    points.append((x, y))
-                    n += 1
-            if points:
-                line = LineString(points)
-                properties = {
-                    'reach_id': reach,
-                    'flows_to': reach_list[i][3],
-                    }
-                feature = {'geometry': mapping(line), 'properties': properties}
-                out.write(feature)
+    
+    # Write features
+    for i in range(len(reach_list)):
+        upper, lower = reach_list[i][1], reach_list[i][2]
+        points = []
+        n = 0
+        for snode in range(upper, lower + 1):
+            gw_node, reach, elev = stnodes_dict[snode]
+            if gw_node != 0:
+                x, y = node_coords_dict[gw_node][0], node_coords_dict[gw_node][1]
+                points.append([x, y])
+                n += 1
+        if points:
+            # Add geometry and attributes
+            w.line([points])  # PyShp expects a list of lists for line parts
+            w.record(reach_id=reach, flows_to=reach_list[i][3])
+    
+    # Create .prj file for spatial reference
+    prj = open(f"{shapename[:-4]}.prj", "w")
+    epsg = pyproj.CRS.from_epsg(epsg)
+    prj.write(epsg.to_wkt())
+    prj.close()
+    
+    # Save and close the shapefile
+    w.close()
+    
     if verbose:
         print(f'  Wrote shapefile {shapename}\n')
     return

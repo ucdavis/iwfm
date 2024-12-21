@@ -16,8 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-# TODO: Add functions to skip file contents to desired input, search for string not reliable
-
 def read_gw_params(file):
     """read_gw_params() - Read groundwater parameters from a file and organize them into lists.
 
@@ -48,8 +46,12 @@ def read_gw_params(file):
 
     """
     import iwfm as iwfm
+
+
     #  Fild line number
+    # TODO: Add functions to skip file contents to desired input, search for string not reliable
     desired = "C           ID         PKH          PS             PN          PV              PL"
+
     line_num = iwfm.find_line_num(file, desired)
 
 

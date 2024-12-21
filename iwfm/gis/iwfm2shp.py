@@ -44,7 +44,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
 
     import os
     import iwfm as iwfm
-    import iwfm.gis as gis
+    import iwfm.gis as igis
 
     topdir = os.getcwd()
 
@@ -86,16 +86,16 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
         print(' ')
 
     # == Create element shapefile
-    gis.elem2shp(elem_ids,elem_nodes,node_coord_dict,elem_sub,lake_elems,shape_name,epsg=epsg,verbose=verbose)
+    igis.elem2shp(elem_ids,elem_nodes,node_coord_dict,elem_sub,lake_elems,shape_name,epsg=epsg,verbose=verbose)
 
     # == Create node shapefile
-    gis.nodes2shp(node_coords, shape_name,epsg=epsg,verbose=verbose)
+    igis.nodes2shp(node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     # == Create stream node shapefile
-    gis.snodes2shp(nsnodes, snodes_list, node_coords, shape_name,epsg=epsg,verbose=verbose)
+    igis.snodes2shp(nsnodes, snodes_list, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     # == Create stream reach shapefile
-    gis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
+    igis.reach2shp(reach_list, stnodes_dict, node_coords, shape_name,epsg=epsg,verbose=verbose)
 
     return 
 

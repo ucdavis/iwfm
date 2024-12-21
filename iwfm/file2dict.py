@@ -1,6 +1,6 @@
 # file2dict.py
 # Read file of paired items into a dictionary
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,11 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
-def file2dict(infile, key_field=0, val_field=1, skip=0):
+def file2dict(infile, key_field=0, val_field=1, skip=0, key_type=str, val_type=str):
     ''' file2dict() - Read file with paired items, return dictionary 
-
-    TODO: accept 'int', 'float' etc on command line to convert string of 
-            numbers to numbers of the specified type
 
     Parameters
     ----------
@@ -37,19 +34,29 @@ def file2dict(infile, key_field=0, val_field=1, skip=0):
     skip : int, default=0 (no header)
         Number of non-comment lines to skip (header)
 
+    key_type : type, default=str
+        Type to convert keys to (str, int, float)
+    
+    val_type : type, default=str
+        Type to convert values to (str, int, float)
+
     Returns
     -------
     d : dict
         Dictionary from file contents
-
     '''
     import re
 
     d = {}
-    info = open(infile).read().splitlines()  # open and read input file
+    info = open(infile).read().splitlines()
     for i in range(len(info)):
-        if i > skip - 1:  # because of zero indexing
+        if i > skip - 1:
             items = re.split(';|,|\*|\n|\t', info[i])
-            key, values = items[key_field], items[val_field]
-            d[key] = values
+            try:
+                key = key_type(items[key_field])
+                values = val_type(items[val_field])
+                d[key] = values
+            except (ValueError, IndexError) as e:
+                print(f"Warning: Could not convert line {i+1}: {e}")
+                continue
     return d

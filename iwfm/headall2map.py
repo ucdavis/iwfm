@@ -1,6 +1,6 @@
 # headall2map.py
 # Read headall.out file and nodal coordinates file and produce head maps
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ def headall2map(heads_file, pre_file, bnds_file, out_date, basename, label='Head
     strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
     strat = np.array([np.array(i) for i in strat])    # strat to numpy array
 
-    bnds_d = iwfm.file2dict_int(bnds_file)
+    bnds_d = iwfm.file2dict(bnds_file,val_type=int)
     bounding_poly = iwfm.bnds2mask(bnds_d, node_coords)
 
     # -- get heads

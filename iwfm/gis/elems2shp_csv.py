@@ -42,8 +42,9 @@ def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910
         nothing
     '''
 
-    import fiona
-    from shapely.geometry import mapping, Polygon
+    import shapefile
+    import pyproj
+    from shapely.geometry import Polygon  # mapping no longer needed
 
     # Create list of element polygons
     polygons = []
@@ -59,35 +60,36 @@ def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910
         )  # close the polygon with the first node
         polygons.append(coords)
 
-    # Define the polygon feature geometry
-    schema = {
-        'geometry': 'Polygon',
-        'properties': {'elem_id': 'int', 'node1': 'int', 'node2': 'int', 'node3': 'int', 'node4': 'int'},
-    }
+    # Create a new shapefile writer object
+    shapename = shapename.replace('.shp', '')  # remove extension if present
+    w = shapefile.Writer(shapename, shapeType=shapefile.POLYGON)
+    
+    # Define fields
+    w.field('elem_id', 'N', 10, 0)
+    w.field('node1', 'N', 10, 0)
+    w.field('node2', 'N', 10, 0)
+    w.field('node3', 'N', 10, 0)
+    w.field('node4', 'N', 10, 0)
 
-    # Write a new element shapefile
-    with fiona.open(
-            shapename,
-            'w',
-            crs=f'epsg:{epsg}',      #depricated: crs=fiona.crs.from_epsg(epsg),
-            driver='ESRI Shapefile',
-            schema=schema,
-        ) as out:
-        for i in range(len(polygons)):
-            poly = Polygon(polygons[i])
-            out.write(
-                {
-                    'geometry': mapping(poly),
-                    'properties': {
-                        'elem_id': elem_nodes[i][0],
-                        'node1':   elem_nodes[i][1],
-                        'node2':   elem_nodes[i][2],
-                        'node3':   elem_nodes[i][3],
-                        'node4':   elem_nodes[i][4],
-                    },
-                }
-            )
-    if verbose: print(f'  Wrote shapefile {shapename}')
+    # Write features
+    for i in range(len(polygons)):
+        w.poly([polygons[i]])  # Add geometry
+        w.record(              # Add attributes
+            elem_nodes[i][0],  # elem_id
+            elem_nodes[i][1],  # node1
+            elem_nodes[i][2],  # node2
+            elem_nodes[i][3],  # node3
+            elem_nodes[i][4]   # node4
+        )
+    
+    # Write projection file
+    prj = open(f"{shapename}.prj", "w")
+    epsg = f'EPSG:{epsg}'
+    prj.write(pyproj.CRS(epsg).to_wkt())
+    prj.close()
+    
+    w.close()
+    if verbose: print(f'  Wrote shapefile {shapename}.shp')
 
 
 if __name__ == "__main__":

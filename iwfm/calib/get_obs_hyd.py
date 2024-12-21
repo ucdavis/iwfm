@@ -1,6 +1,6 @@
 # get_obs_hyd.py
 # Extract one column from a VIC file to another file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -43,18 +43,25 @@ def get_obs_hyd(obs_file,start_date):
 
     import iwfm as iwfm
   
-    obs_lines = open(obs_file).read().splitlines()                      # obs_lines has observations to match
+    obs_lines = open(obs_file).read().splitlines()                         # obs_lines has observations to match
+
     obs_data, obs_sites = [], []
-    for line in obs_lines:
+    for count, line in enumerate(obs_lines):
         item = line.split()
+
+        if len(item) < 2:                                                  # error
+            print(f'\n * Error at line {count:,} of {obs_file}: ')         # error
+            print(f' * "{line}"\n\n')                                      # error
+            import sys                                                     # error
+            sys.exit()                                                     # error
+
         if item[0] not in obs_sites:
             obs_sites.append(item[0])
-        days = iwfm.dts2days(iwfm.str2datetime(item[1]), start_date)                # days since start_date
-        obs_data.append([item[0],days,iwfm.str2datetime(item[1])])             # site, days since start, date as datetime object
+
+        days = iwfm.dts2days(iwfm.str2datetime(item[1]), start_date)       # days since start_date
+        obs_data.append([item[0],days,iwfm.str2datetime(item[1])])         # site, days since start, date as datetime object
 
     obs_data.sort( key = lambda l: (l[0], l[1]))
     obs_sites.sort( key = lambda l: (l[0]))
-
-    #print(f'\n==> {obs_sites=}\n {obs_data=}\n')
 
     return obs_sites, obs_data 

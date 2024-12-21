@@ -2,7 +2,7 @@
 # Read IWFM hydrograph output files and corresponding observation smp files,
 # interpolate simulated values to the observation times ('simulated equivalents'),
 # and save them in an smp file, optionally writing a paired instruction file.
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2024 University of California
 # Based on a PEST utility written by Matt Tonkin
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -39,7 +39,7 @@ def iwfm2obs(verbose=False):
     nothing
 
     '''
-    import os,sys
+    import sys
     import iwfm as iwfm
     import iwfm.calib as calib
     import numpy as np
@@ -57,7 +57,7 @@ def iwfm2obs(verbose=False):
 
     start_date = iwfm.str2datetime(start_date[0:10])                         # starting data as datetime
     end_date   = iwfm.str2datetime(end_date[0:10])                           # ending date as datetime
-    latest     = iwfm.dts2days(end_date,start_date)                          # number of days between start and end
+    no_days    = iwfm.dts2days(end_date,start_date)                          # number of days between start and end
     time_step  = time_step.lower()
 
     sim_file_d = iwfm.iwfm_read_sim(sim_file)                                # get package file names from simulation file
@@ -114,10 +114,10 @@ def iwfm2obs(verbose=False):
         if file_dict[nt][0] != 'none'and file_dict[nt][5] == True:
             if verbose: print(f'\n  Reading {nt} Main File {file_dict[nt][0]}')
             hyd_file, hyd_names = calib.get_hyd_info(nt,file_dict)
-            if verbose: print(f'    Read {len(hyd_names)} {nt.lower()} hydrograph locations')
+            if verbose: print(f'    Read {len(hyd_names):,} {nt.lower()} hydrograph locations')
             if nt == 'Groundwater' and headdiffs == True:
                 hdiff_sites, hdiff_pairs, hdiff_link = calib.headdiff_read(hdiffile)
-                if verbose: print(f'    Read {len(hdiff_sites)} vertical well pairs')
+                if verbose: print(f'    Read {len(hdiff_sites):,} vertical well pairs')
         else:
             hyd_file = 'none'
             hyd_names = []
@@ -142,22 +142,22 @@ def iwfm2obs(verbose=False):
     for nt in nametype:
         if file_dict[nt][0] != 'none'and file_dict[nt][5] == True:
             if verbose: print(f'\n  Processing {nt.lower()} hydrographs')
-            sim_sites = hyd_dict[nt][1]
+            sim_sites = hyd_dict[nt][1]                                           # list of site names from Streams.dat file
+
             sim_hyd, sim_dates = calib.get_sim_hyd(nt,hyd_dict[nt][0],start_date) # read simulated hydrograph values into lists
 
             # set up function to interpolate time step from date
             time_steps = [x+1 for x in list(range(len(sim_dates)))]
+
             ts = pd.DataFrame({ 'sim_dates': sim_dates, 'time_steps':  np.array(time_steps)}) # time steps to pandas dataframe
             ts.set_index('sim_dates')['time_steps']                               # dataframe index for function
             ts_func = interp1d(ts.sim_dates,ts.time_steps,kind='linear')          # scipy interpolation function uses dataframe
 
             obs_file = file_dict[nt][1]
-            obs_sites, obs_data = calib.get_obs_hyd(obs_file,start_date)           # get the observation sites and dates
+            obs_sites, obs_data = calib.get_obs_hyd(obs_file,start_date)          # get the observation sites and dates
 
             sim_miss, sim_both = calib.compare(sim_sites,obs_sites)               # how many obs_sites not in sim_sites?
             calib.write_missing(sim_miss,obs_file,fname=missing_file)
-
-            if verbose: print(f'    Read {len(sim_hyd[0])} simulated {nt.lower()} hydrographs')
 
             # -- interpolate simulated values to observation dates and put into smp- and ins-format strings
             obs_data.sort( key = lambda l: (l[0], l[1]))                          # sort by site then by date
@@ -168,15 +168,17 @@ def iwfm2obs(verbose=False):
                     if obs_site[i] != old_site:                                   # set up interpolation function for new site
                         old_site = obs_site[i]
                         col_id = sim_sites.index(obs_site[i])
+
                         sim = []
                         for j in range(0,len(sim_hyd)):
                             sim.append(sim_hyd[j][col_id])
+
                         # set up function to interpolate simulated values to obs dates
                         df = pd.DataFrame({ 'dates': sim_dates, 'sim_vals':  np.array(sim)}) # sim values to pandas dataframe
                         df.set_index('dates')['sim_vals']                         # dataframe index for function
                         sim_func = interp1d(df.dates,df.sim_vals,kind='linear')   # scipy interpolation function uses dataframe
 
-                    if obs_date[i] < latest:                                      # should latest be end_date?
+                    if obs_date[i] <= no_days:                                      # should latest be end_date?
                         obs_val = float(sim_func(obs_date[i]))                    # use interpolation function
                         ts = ceil(float(ts_func(obs_date[i])))                    # use interpolation function
 

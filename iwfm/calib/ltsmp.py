@@ -1,6 +1,6 @@
 # ltsmp.py
 # Read a PEST SMP file, and log-transform the observation values
-# Copyright (C) 2018-2020 University of California
+# Copyright (C) 2018-2024 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -51,11 +51,12 @@ def ltsmp(input_file, output_file, zero_offset=36, neg_val=0.001):
           i -= 1
         while line[i] != ' ':
           i -= 1
+        while line[i] == ' ':
+          i -= 1
+        i += 1
         head = line[0:i]
         q = float(line[i:])
-
-        out = head + iwfm.print_to_string(iwfm.logtrans(q, zero_offset, neg_val))[:-1]
-
+        out = f'{head}               {iwfm.logtrans(q, zero_offset, neg_val):.4f}'
         out_lines.append(iwfm.pad_back(out, length))
     
     with open(output_file, 'w') as out_file:
@@ -64,11 +65,13 @@ def ltsmp(input_file, output_file, zero_offset=36, neg_val=0.001):
 
 
 
+
 if __name__ == "__main__":
     ''' Run ltsmp() from command line '''
     import sys
     import iwfm as iwfm
     import iwfm.debug as idb
+    from pathlib import Path
   
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file  = sys.argv[1]
@@ -82,8 +85,7 @@ if __name__ == "__main__":
         neg_val      = float(input("Value to replace negative no.: "))
 
     iwfm.file_test(input_file)
-
-    # TODO: validate path of budget_file for any OS
+    iwfm.file_validate_path(output_file)
 
     idb.exe_time()  # initialize timer
     ltsmp(input_file, output_file, zero_offset, neg_val)

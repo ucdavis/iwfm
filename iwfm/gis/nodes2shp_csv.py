@@ -39,40 +39,39 @@ def nodes2shp_csv(node_coord_dict, shapename='nodes.shp', epsg=26910, verbose=Fa
         
         '''
 
-    import fiona
-    from shapely.geometry import mapping, Point
+    import shapefile
+    import pyproj
 
     # convert node_coord_dict to a list of node ids and coordinates
     node_coords = [(key, value) for key, value in node_coord_dict.items()]
 
-    # Define the node feature geometry
-    schema = {
-        'geometry': 'Point',
-        'properties': {'node_id': 'int', 'x': 'float', 'y': 'float'},
-    }
+    # Create a new shapefile writer object
+    shapename = shapename.replace('.shp', '')  # remove extension if present
+    w = shapefile.Writer(shapename, shapeType=shapefile.POINT)
+    
+    # Define fields
+    w.field('node_id', 'N', 10, 0)  # Integer
+    w.field('x', 'F', 15, 6)        # Float with 6 decimals
+    w.field('y', 'F', 15, 6)        # Float with 6 decimals
 
-    # Write a new node shapefile
-    with fiona.open(
-            shapename,
-            'w',
-            crs=f'epsg:{epsg}',
-            driver='ESRI Shapefile',
-            schema=schema,
-        ) as out:
-        for i in range(len(node_coords)):
-            x, y = float(node_coords[i][1][0]),float(node_coords[i][1][1])
-            point = Point(x,y)
-            out.write(
-                {
-                    'geometry': mapping(point),
-                    'properties': {
-                        'node_id':  int(node_coords[i][0]),
-                        'x':        x,
-                        'y':        y,
-                    },
-                }
-            )
-    if verbose: print(f'  Wrote shapefile {shapename}')
+    # Write features
+    for i in range(len(node_coords)):
+        x, y = float(node_coords[i][1][0]), float(node_coords[i][1][1])
+        w.point(x, y)  # Add geometry
+        w.record(      # Add attributes
+            int(node_coords[i][0]),  # node_id
+            x,                       # x
+            y                        # y
+        )
+    
+    # Write projection file
+    prj = open(f"{shapename}.prj", "w")
+    epsg = f'EPSG:{epsg}'
+    prj.write(pyproj.CRS(epsg).to_wkt())
+    prj.close()
+    
+    w.close()
+    if verbose: print(f'  Wrote shapefile {shapename}.shp')
 
 
 if __name__ == "__main__":

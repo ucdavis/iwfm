@@ -18,15 +18,8 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_pp_stream_file(
-    stream_file,
-    new_stream_file,
-    snode_dict,
-    reach_info,
-    rattab_dict,
-    rating_header,
-    stream_aq,
-):
+def sub_pp_stream_file(stream_file, new_stream_file, snode_dict, reach_info,
+    rattab_dict, rating_header, stream_aq):
     ''' sub_pp_stream_file() - Copy the original stream specification file 
         and replace the contents with those of the new model, and write
         out the new file
@@ -83,22 +76,18 @@ def sub_pp_stream_file(
 
     # -- write stream reach and rating table information
     if stream_type == '4.0':
-        # placeholder for add_streams_40()
+        # TODO - add add_streams_40()
+         # placeholder for add_streams_40()
         # sub_stream_lines = add_streams_40(sub_stream_lines, reach_info, snode_dict, rattab_dict, rating_header, stream_aq)
         exit_now(stream_type)
     elif stream_type == '4.1':
+        # TODO - add add_streams_41()
         # placeholder for add_streams_41()
         # sub_stream_lines = add_streams_41(sub_stream_lines, reach_info, snode_dict, rattab_dict, rating_header, stream_aq)
         exit_now(stream_type)
     elif stream_type == '4.2':
-        sub_stream_lines = add_streams_42(
-            sub_stream_lines,
-            reach_info,
-            snode_dict,
-            rattab_dict,
-            rating_header,
-            stream_aq,
-        )
+        sub_stream_lines = add_streams_42( sub_stream_lines, reach_info, snode_dict, rattab_dict,
+            rating_header, stream_aq)
     else:
         exit_now(stream_type)
 
@@ -110,9 +99,7 @@ def sub_pp_stream_file(
     return
 
 
-def add_streams_42(
-    sub_stream_lines, reach_info, snode_dict, rattab_dict, rating_header, stream_aq
-):
+def add_streams_42(sub_stream_lines, reach_info, snode_dict, rattab_dict, rating_header, stream_aq):
     ''' add_streams_42()  - adds the reach and rating table info in the format of
         stream file type 4.2
     

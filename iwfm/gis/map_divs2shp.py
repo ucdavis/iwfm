@@ -55,7 +55,7 @@ def map_divs2shp(div_ids, div_areas, elem_shp_name, out_shp_name, verbose=False)
     count = 0
 
     for div_id, div_area in zip(div_ids, div_areas):
-        field_name = f'Div_{div_id}'                                        # add a field to the shapefile's dbf for the diversion area
+        field_name = f'DelAr_{div_id}'                                        # add a field to the shapefile's dbf for the diversion area
 
         div_elems = [1 if elem in div_area else 0 for elem in elem_ids]     # create a list of 1's and 0's for the diversion area
 
