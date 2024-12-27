@@ -35,6 +35,7 @@ from iwfm.gis.elems2shp_csv import elems2shp_csv
 
 # -- GIS and input files -----------------------------------
 from iwfm.gis.map_divs2shp import map_divs2shp
+from iwfm.gis.map_rchg2shp import map_rchg2shp
 from iwfm.gis.map_param2shp_nodes import map_param2shp_nodes
 from iwfm.gis.map_param2shp_elems import map_param2shp_elems
 from iwfm.gis.map_param2shp_rz import map_param2shp_rz

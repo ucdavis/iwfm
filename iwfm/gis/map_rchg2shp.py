@@ -1,7 +1,8 @@
-# map_divs2shp.py
-# Read a shapefile of IWFM model elements and an IWFM diversion specification
+# map_rchg2shp.py
+# Read a shapefile of IWFM model elements and an IWFM diversion specification,
 # make a deep copy of the elements files, and  add a field to the shapefile 
-# for each delivery area, setting element value to 1 if in the delivery area else 0
+# for each diversion, setting element value to 1 if in the diversion's recharge area
+# else 0
 # Copyright (C) 2020-2024 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -19,16 +20,16 @@
 # -----------------------------------------------------------------------------
 
 
-def map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=False):
-    ''' map_divs2shp() - Add diversion areas to shapefile of IWFM model elements
+def map_rchg2shp(div_ids, rchg_areas, elem_shp_name, out_shp_name, verbose=False):
+    ''' map_rchg2shp() - Add diversion recharge areas to shapefile of IWFM model elements
     
     Parameters
     ----------
-    deliv_area_ids : list
-        IWFM delivery area numbers
+    div_ids : list
+        IWFM diversion numbers
 
-    deliv_areas : list of lists
-        List of elements in each IWFM delivery area
+    rchg_areas : list of lists
+        List of elements in recharge area of each IWFM diversion area
     
     elem_shp_name : shapefile name
         IWFM Elements shapefile
@@ -54,12 +55,13 @@ def map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbo
     elem_ids = gdf['elem_id'].tolist()                                      # copy geopandas dataframe field ELEM_ID to a list
     count = 0
 
-    for deliv_id, div_area in zip(deliv_area_ids, deliv_areas):
-        field_name = f'DelAr_{deliv_id}'                                    # add a field to the shapefile's dbf for the diversion area
+    for div_id, rchg_area in zip(div_ids, rchg_areas):
+        if div_id < 5: print(f' ==> {div_id=}\{rchg_area=}')
+        field_name = f'RchAr_{div_id}'                                       # add a field to the shapefile's dbf for the recharge area
 
-        div_elems = [1 if elem in div_area else 0 for elem in elem_ids]     # create a list of 1's and 0's for the diversion area
+        div_elems = [1 if elem in rchg_area else 0 for elem in elem_ids]     # create a list of 1's and 0's for the diversion area
 
-        gdf[field_name] = div_elems                                         # add a field to the geopandas dataframe for the diversion area
+        gdf[field_name] = div_elems                                          # add a field to the geopandas dataframe for the recharge area
 
         # to avoid fragmentation, make a deep copy every 50 fields
         count += 1
@@ -67,24 +69,23 @@ def map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbo
             gdf = gdf.copy()
             count = 0
 
-    # create a diversion specification shapefile name
-    divareas_shp_base = os.path.basename(out_shp_name).split('.')[0]
+    # create a recharge areas shapefile name
+    rchgarea_shp_base = os.path.basename(out_shp_name).split('.')[0]
 
-    divareas_shp_name = divareas_shp_base+'.shp'
+    rchgarea_shp_name = rchgarea_shp_base+'.shp'
 
     # write the geopandas dataframe to a shapefile
-    gdf.to_file(divareas_shp_name)
+    gdf.to_file(rchgarea_shp_name)
 
-    if verbose: print(f'  Created diversion areas shapefile {divareas_shp_name}')
+    if verbose: print(f'  Created diversion recharge areas shapefile {rchgarea_shp_name}')
 
     return 
 
 
 if __name__ == "__main__":
-    ''' Run map_divs2shp() from command line '''
+    ''' Run map_rchg2shp() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm.gis as igis
     import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -99,16 +100,16 @@ if __name__ == "__main__":
     iwfm.file_test(divspec_file_name)
     iwfm.file_test(elem_shp_name)
 
-    idb.exe_time()                                                                          # initialize timer
+    idb.exe_time()                                                                              # initialize timer
 
     deliv_area_ids, deliv_areas, div_ids, rchg_areas = iwfm.iwfm_read_div_areas(divspec_file_name)  # Read diversion specification file
 
-    out_shp_name = out_shp_root + '_DelivArea'
+    out_shp_name = out_shp_root + '_DivArea' 
 
-    map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=True)    # Add diversion areas to shapefile of IWFM model elements
+    iwfm.map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=True)   # Add diversion areas to shapefile of IWFM model elements
 
     out_shp_name = out_shp_root + '_RchgArea'
 
-    igis.map_rchg2shp(div_ids, rchg_areas, elem_shp_name, out_shp_name, verbose=True)       # Add recharge areas to shapefile of IWFM model elements
+    map_rchg2shp(div_ids, rchg_areas, elem_shp_name, out_shp_name, verbose=True)                # Add recharge areas to shapefile of IWFM model elements
 
-    idb.exe_time()                                          # print elapsed time
+    idb.exe_time()                                                                              # print elapsed time

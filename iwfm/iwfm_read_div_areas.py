@@ -38,32 +38,52 @@ def iwfm_read_div_areas(divspec_file_name):
 
     # read diversion specification file
     with open(divspec_file_name, 'r') as f:
-        divs = f.readlines()
-    line_index = iwfm.skip_ahead(0, divs, skip=0)
-    ndivs = int(divs[line_index].split()[0])
+        div_file_lines = f.readlines()
+    line_index = iwfm.skip_ahead(0, div_file_lines, skip=0)
 
-    # skip ndiv lines to get to the first diversion area
-    line_index = iwfm.skip_ahead(line_index+1, divs, skip=ndivs)
-    ngroup = int(divs[line_index].split()[0])
+    ndivs = int(div_file_lines[line_index].split()[0])
 
-    div_ids, div_areas = [], []
-    # read the element groups for each diversion and add a field to the shapefile
-    for i in range(ngroup):
-        # the first line of a group has 3 items: group number, number of elements, and diversion number
-        line_index = iwfm.skip_ahead(line_index+1, divs, skip=0)
-        div = int(divs[line_index].split()[0])
-        div_ids.append(div)
-        n_elems = int(divs[line_index].split()[1])
+    # skip ndiv lines and comment ines to get to the first delivery area
+    line_index = iwfm.skip_ahead(line_index+1, div_file_lines, skip=ndivs)
+    n_delivs = int(div_file_lines[line_index].split()[0])
+
+    deliv_area_ids, deliv_areas = [], []
+    # read the element groups for each delivery
+    for i in range(n_delivs):
+        # the first line of a group has 3 items: deliv_area_id, number of elements, and first element number
+        line_index = iwfm.skip_ahead(line_index+1, div_file_lines, skip=0)
+        deliv_area_id = int(div_file_lines[line_index].split()[0])
+        deliv_area_ids.append(deliv_area_id)
+        n_elems = int(div_file_lines[line_index].split()[1])
 
         elems = []
-        elems.append(int(divs[line_index].split()[2]))
+        elems.append(int(div_file_lines[line_index].split()[2]))
         # read each element in the rest of the diversion area
         for j in range(n_elems-1):
-            line_index = iwfm.skip_ahead(line_index+1, divs, skip=0)
-            elem = int(divs[line_index].split()[0])
+            line_index = iwfm.skip_ahead(line_index+1, div_file_lines, skip=0)
+            elem = int(div_file_lines[line_index].split()[0])
             elems.append(elem)
 
-        div_areas.append(elems)
+        deliv_areas.append(elems)
 
-    return div_ids, div_areas
+    div_ids, rchg_areas = [], []
+    # read the element groups for each diversion recharge aree
+    for i in range(n_delivs):
+        # the first line of a group has 4 items: diversion id, number of elements, element number and factor
+        line_index = iwfm.skip_ahead(line_index+1, div_file_lines, skip=0)
+        div_id = int(div_file_lines[line_index].split()[0])
+        div_ids.append(div_id)
+        n_elems = int(div_file_lines[line_index].split()[1])
+
+        elems = []
+        elems.append(int(div_file_lines[line_index].split()[2]))
+        # read each element in the rest of the diversion area
+        for j in range(n_elems-1):
+            line_index = iwfm.skip_ahead(line_index+1, div_file_lines, skip=0)
+            elem = int(div_file_lines[line_index].split()[0])
+            elems.append(elem)
+
+        rchg_areas.append(elems)
+
+    return deliv_area_ids, deliv_areas, div_ids, rchg_areas
 
