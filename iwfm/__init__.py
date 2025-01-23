@@ -109,6 +109,8 @@ from iwfm.write_results import write_results
 from iwfm.simhyd_obs import simhyd_obs
 from iwfm.wdl_meas_stats import wdl_meas_stats
 from iwfm.wdl_ts_4_wells import wdl_ts_4_wells
+from iwfm.read_hyd_dict import read_hyd_dict
+from iwfm.read_sim_hyds import read_sim_hyds
 
 # --- plotting methods --for IWFM output ------------------
 from iwfm.read_obs_smp import read_obs_smp
@@ -203,6 +205,7 @@ from iwfm.file_2_bak import file_2_bak
 from iwfm.file_type_error import file_type_error
 from iwfm.file_get_path import file_get_path
 from iwfm.file_validate_path import file_validate_path
+
 # -- unit conversion --------------------------------------
 from iwfm.cfs2afd import cfs2afd
 

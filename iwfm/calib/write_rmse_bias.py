@@ -1,6 +1,6 @@
 # write_rmse_bias.py
 # write RMSE and bias values to a text file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2025 University of California
 # Based on a PEST utility written by John Doherty
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@ def write_rmse_bias(output_filename, well_dict, well_names, rmse, bias, count):
         
     '''
     with open(output_filename, 'w') as o:
-        o.write('Order\tWell_Name\tX\tY\tLayer\tRMSE\tBias\tCount\n')
+        o.write('ID\tWell Name\tX\tY\tLayer\tRMSE\tBias\tCount\n')
         for i in range(0, len(well_names)):
             if well_dict.get(well_names[i]) is not None:
                 info = well_dict.get(well_names[i])

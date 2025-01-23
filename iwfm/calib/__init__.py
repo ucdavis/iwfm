@@ -32,6 +32,7 @@ from iwfm.calib.krige import krige
 from iwfm.calib.ltbud import ltbud
 from iwfm.calib.ltsmp import ltsmp
 from iwfm.calib.setrot import setrot
+from iwfm.calib.find_nearest_index import find_nearest_index
 
 # -- PEST SMP files ---------------------------------------
 from iwfm.calib.smp_read import smp_read
@@ -49,6 +50,7 @@ from iwfm.calib.interp_val import interp_val
 from iwfm.calib.res_stats import res_stats
 from iwfm.calib.rmse_calc import rmse_calc
 from iwfm.calib.pest_res_stats import pest_res_stats
+from iwfm.calib.sim_equiv import sim_equiv
 
 # -- data functions ---------------------------------------
 from iwfm.calib.get_hyd_fname import get_hyd_fname

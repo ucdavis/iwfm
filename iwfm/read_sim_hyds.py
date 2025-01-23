@@ -1,6 +1,6 @@
 # read_sim_hyds.py
 # Read simulated hydrographs from IWFM hydrograph.out file
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 def read_sim_hyds(gwhyd_files):
     ''' read_sim_hyds() - Read simulated values from multiple IWFM output 
-        hydrograph files
+        hydrograph files into numpy arrays
 
     Parameters
     ----------
@@ -32,6 +32,8 @@ def read_sim_hyds(gwhyd_files):
         list with one item of hydrograph values for each input hydrograph file
 
     '''
+    import numpy as np
+    import datetime
     gwhyd_sim = []
 
     for k in range(0, len(gwhyd_files)):
@@ -41,10 +43,10 @@ def read_sim_hyds(gwhyd_files):
         temp_sim = []
         for j in range(9, len(gwhyd_lines)):
             items= gwhyd_lines[j].split()
-            temp = [items.pop(0)]                   # date
+            temp = [datetime.datetime.strptime(items.pop(0),'%m/%d/%Y')]                   # date
             alist = [float(x) for x in items]       # values to floats
             temp.extend(alist)
             temp_sim.append(temp)
-        gwhyd_sim.append(temp_sim)
+        gwhyd_sim.append(np.array(temp_sim))
 
     return gwhyd_sim
