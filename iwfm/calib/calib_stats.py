@@ -130,7 +130,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
     sim_all.append(sim_head)    
     
     # move through the head observations
-    j = 1
+    j, final = 1, 1
     while j < len(head_obs):
         new_name = head_obs[j][0]
         if new_name != name:  # new well name, finalize info for the last well
@@ -152,7 +152,12 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
             # find next well from head_obs that is in hyd_dict
             while new_name not in hyd_dict:
                 j += 1
+                if j >= len(head_obs):
+                    final = 0   # no more wells in hyd_dict, stats for last already calculated
+                    break
                 new_name = head_obs[j][0]
+            if j >= len(head_obs):
+                break
             name = new_name
             simhyd_col = (hyd_dict.get(name)[0])
     
@@ -174,13 +179,14 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         j += 1
 
     # calculate final one
-    rmse = ical.rmse_calc(sim, meas)
-    bias = ical.bias_calc(sim, meas)
+    if final:   # stats for final well not calculated yet
+        rmse = ical.rmse_calc(sim, meas)
+        bias = ical.bias_calc(sim, meas)
 
-    rmse_values.append(rmse)
-    bias_values.append(bias)
-    well_names.append(name)
-    count.append(len(meas))
+        rmse_values.append(rmse)
+        bias_values.append(bias)
+        well_names.append(name)
+        count.append(len(meas))
 
     # write all simulated and measured values to a file
     out_file = gwhyd_file.replace('.out','_sim_obs.txt')
