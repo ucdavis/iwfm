@@ -28,7 +28,7 @@ setup(
         name="iwfm", 
         version=VERSION,
         author="Charles Brush",
-        author_email="<charles.brush@hydrolytics-llc.com>",
+        author_email="<cfbrush@ucdavis.edu>",
         license='GNU',
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
