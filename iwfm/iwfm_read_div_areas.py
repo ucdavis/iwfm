@@ -66,15 +66,14 @@ def iwfm_read_div_areas(divspec_file_name):
 
         deliv_areas.append(elems)
 
-    div_ids, rchg_areas = [], []
+    rchg_ids, rchg_areas = [], []
     # read the element groups for each diversion recharge aree
-    for i in range(n_delivs):
+    for i in range(ndivs):
         # the first line of a group has 4 items: diversion id, number of elements, element number and factor
         line_index = iwfm.skip_ahead(line_index+1, div_file_lines, skip=0)
-        div_id = int(div_file_lines[line_index].split()[0])
-        div_ids.append(div_id)
+        rchg_id = int(div_file_lines[line_index].split()[0])
+        rchg_ids.append(rchg_id)
         n_elems = int(div_file_lines[line_index].split()[1])
-
         elems = []
         elems.append(int(div_file_lines[line_index].split()[2]))
         # read each element in the rest of the diversion area
@@ -85,5 +84,5 @@ def iwfm_read_div_areas(divspec_file_name):
 
         rchg_areas.append(elems)
 
-    return deliv_area_ids, deliv_areas, div_ids, rchg_areas
+    return deliv_area_ids, deliv_areas, rchg_ids, rchg_areas
 

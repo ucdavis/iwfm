@@ -56,7 +56,6 @@ def map_rchg2shp(div_ids, rchg_areas, elem_shp_name, out_shp_name, verbose=False
     count = 0
 
     for div_id, rchg_area in zip(div_ids, rchg_areas):
-        if div_id < 5: print(f' ==> {div_id=}\{rchg_area=}')
         field_name = f'RchAr_{div_id}'                                       # add a field to the shapefile's dbf for the recharge area
 
         div_elems = [1 if elem in rchg_area else 0 for elem in elem_ids]     # create a list of 1's and 0's for the diversion area
@@ -86,6 +85,7 @@ if __name__ == "__main__":
     ''' Run map_rchg2shp() from command line '''
     import sys
     import iwfm.debug as idb
+    import iwfm.gis as igis
     import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -103,10 +103,6 @@ if __name__ == "__main__":
     idb.exe_time()                                                                              # initialize timer
 
     deliv_area_ids, deliv_areas, div_ids, rchg_areas = iwfm.iwfm_read_div_areas(divspec_file_name)  # Read diversion specification file
-
-    out_shp_name = out_shp_root + '_DivArea' 
-
-    iwfm.map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=True)   # Add diversion areas to shapefile of IWFM model elements
 
     out_shp_name = out_shp_root + '_RchgArea'
 
