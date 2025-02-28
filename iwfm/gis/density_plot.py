@@ -1,6 +1,6 @@
 # density_plot.py
 # Reads a shapefile and writes it as an image
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ def density_plot(infile,fieldname,iwidth=600,iheight=400,
     iwidth : int, default=600
         image width in pixels
     
-    iheight : str, default=400
+    iheight : int, default=400
         image height in pixels
     
     denrat : int, default=100
@@ -50,6 +50,7 @@ def density_plot(infile,fieldname,iwidth=600,iheight=400,
     import pngcanvas as pngcanvas
     import world2screen
     import random
+    from shapefile import point_in_poly
 
     inShp = shapefile.Reader(infile)
 

@@ -1,7 +1,7 @@
 # geocode_ex.py
 # Example - finds the lat-lon of a street address and then
 #     reverses to use the lat-lon to get the address information
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ def geocode_ex(address, verbose=False):
     
     Parameters
     ----------
-    adddress : str
+    address : str
         address
     
     verbose : bool, default=False
@@ -32,19 +32,21 @@ def geocode_ex(address, verbose=False):
 
     Returns
     -------
-    rev : str
-        reversed address
-    
-    location.raw : str
-        geocode of address
+    result : tuple
+        A tuple containing the reversed address (str) and the geocode of the address (str)
 
     '''
     from geopy.geocoders import Nominatim
 
-    g = Nominatim()
+    g = Nominatim(user_agent="geoapiExercises")
     location = g.geocode(address)
+    if location is None:
+        raise ValueError(f"Address '{address}' could not be geocoded.")
+    
     rev = g.reverse(f'{location.latitude},{location.longitude}')
-    if verbose: 
-        print(f'    Reversed address:  {rev}')
+    if rev is None:
+        raise ValueError(f"Coordinates '{location.latitude},{location.longitude}' could not be reverse geocoded.")
+    if verbose:
+        print(f'    Reversed address:  {rev.address}')
         print(f'    Geocode: {location.raw}')
     return rev, location.raw

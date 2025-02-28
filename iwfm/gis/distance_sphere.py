@@ -1,6 +1,6 @@
 # distance_sphere.py
 # Distance between two lat-lon points on a sphere
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ def distance_sphere(p1, p2, units='km'):
     ''' distance_sphere() - Uses the Haversine formula to calculate the
         distance between two (lat,lon) points on a sphere.
         p1 = [lat1,lon1], p2 = [lat2,lon2] in degrees
-        units = 
+        units = 'km' (default), 'mi' for miles, or 'ft' for feet
 
     Parameters
     ----------
@@ -46,13 +46,11 @@ def distance_sphere(p1, p2, units='km'):
     lon1 = p1[1]
     lat2 = p2[0]
     lon2 = p2[1]
-    lat_dist = math.radians(lat1 - lat2)
-    lon_dist = math.radians(lon1 - lon2)
-    lon1_rad = math.radians(lat1)
-    lon2_rad = math.radians(lat2)
-    a = math.sin(lon_dist / 2) ** 2 + math.sin(lat_dist / 2) ** 2 * math.cos(
-        lon1_rad
-    ) * math.cos(lon2_rad)
+    lat_dist = math.radians(lat2 - lat1)
+    lon_dist = math.radians(lon2 - lon1)
+    lat1_rad = math.radians(lat1)
+    lat2_rad = math.radians(lat2)
+    a = math.sin(lat_dist / 2) ** 2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(lon_dist / 2) ** 2
     c = 2 * math.asin(math.sqrt(a))
     if units == 'ft':
         return c * 2.0902e7

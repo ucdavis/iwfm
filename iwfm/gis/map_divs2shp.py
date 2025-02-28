@@ -107,8 +107,4 @@ if __name__ == "__main__":
 
     map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=True)    # Add diversion areas to shapefile of IWFM model elements
 
-#    out_shp_name = out_shp_root + '_RchgArea'
-
-#    igis.map_rchg2shp(div_ids, rchg_areas, elem_shp_name, out_shp_name, verbose=True)       # Add recharge areas to shapefile of IWFM model elements
-
     idb.exe_time()                                          # print elapsed time

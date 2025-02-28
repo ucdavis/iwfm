@@ -1,6 +1,6 @@
 # choropleth.py
 # Reads a shapefile and writes a chloropleth image
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-
 def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     iheight=400,denrat=80.0,savename=None):
     ''' choropleth() - Read a shapefile and write a chloropleth image
@@ -30,16 +29,16 @@ def choropleth(infile,fieldname1,fieldname2,iwidth=600,
         name of field for shading
     
     fieldname2 : str
-        name for field for shading
+        name of field for normalization
     
     iwidth : int, default=600
         image width in pixels
     
-    iheight : str
+    iheight : int
         image height in pixels
     
     denrat : float, default=80.0
-        density retio
+        density ratio
     
     savename : str, default=None
         image destination file name (None = not saved)
@@ -52,6 +51,7 @@ def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     import shapefile  # pyshp
     from PIL import Image, ImageDraw, ImageOps
     import iwfm as iwfm
+    import math
 
     inShp = shapefile.Reader(infile)
 

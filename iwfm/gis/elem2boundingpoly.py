@@ -1,6 +1,6 @@
 # elem2boundingpoly.py
 # Create shapely Polygon of boundary for an IWFM model
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -59,7 +59,16 @@ def elem2boundingpoly(elem_nodes, node_coords, verbose=False):
     poly_union = unary_union(polys)
 
     # create bounding_polygon
-    bounding_polygon = Polygon(poly_union.exterior.coords)
+    if poly_union.is_empty:
+        bounding_polygon = Polygon()
+    elif poly_union.geom_type == 'Polygon':
+        bounding_polygon = Polygon(poly_union.exterior.coords)
+    else:
+        bounding_polygon = Polygon()
+        for geom in poly_union.geoms:
+            if geom.geom_type == 'Polygon':
+                bounding_polygon = Polygon(geom.exterior.coords)
+                break
 
     if verbose: print('  Created bounding polygon for model')
 

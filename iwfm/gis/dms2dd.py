@@ -1,6 +1,6 @@
 # dd2dms.py
 # Converts from degree-minute-second to decimal degrees
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@ def dms2dd(lat, lon):
     
     Parameters
     ----------
-    lat : float
-        Latitude
+    lat : str
+        Latitude in DMS format (e.g., "34°3'30\"N")
 
-    lon : float
-        Longitude
+    lon : str
+        Longitude in DMS format (e.g., "118°15'0\"W")
 
     Return
     ------
@@ -36,8 +36,11 @@ def dms2dd(lat, lon):
     '''
     import re
 
-    lat_deg, lat_min, lat_sec, lat_dir = re.split('[^\d\.A-Z]+', lat)
-    lon_deg, lon_min, lon_sec, lon_dir = re.split('[^\d\.A-Z]+', lon)
+    try:
+        lat_deg, lat_min, lat_sec, lat_dir = re.split('[^\d\.A-Z]+', lat)
+        lon_deg, lon_min, lon_sec, lon_dir = re.split('[^\d\.A-Z]+', lon)
+    except ValueError:
+        raise ValueError("Invalid input format for latitude or longitude")
     lat_dd = float(lat_deg) + float(lat_min) / 60 + float(lat_sec) / (60 * 60)
     lon_dd = float(lon_deg) + float(lon_min) / 60 + float(lon_sec) / (60 * 60)
     if lat_dir == 'S':

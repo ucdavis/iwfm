@@ -1,6 +1,6 @@
 # elem2shp.py
 # Create elements shapefile for an IWFM model
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
-def elem2shp(elem_ids,elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_name,
-    epsg=26910, verbose=False):
+def elem2shp(elem_ids, elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_name,
+             epsg=26910, verbose=False):
     ''' elem2shp() - Creates an IWFM element shapefile 
 
     Parameters
@@ -73,7 +73,7 @@ def elem2shp(elem_ids,elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_n
     for i in range(len(polygons)):
         poly = polygons[i]  # Already in the correct format for PyShp
         lake_no = 0
-        if lake_elems > 0:
+        if len(lake_elems) > 0:
             for j in range(len(lake_elems)):
                 if lake_elems[j][1] == i + 1:  # lake on this element
                     lake_no = lake_elems[j][0]

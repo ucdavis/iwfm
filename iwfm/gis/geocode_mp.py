@@ -1,6 +1,6 @@
 # geocode_mp.py
 # Multiprocessing to find multiple geocodes
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -31,8 +31,9 @@ def geocode_mp(cities):
         geocodes for the input cities
     
     '''
-    import mp
+    import multiprocessing as mp
     from geocode import geocode
 
-    pool = mp.Pool(processes=mp.cpu_count())  # allocate a pool of processors
-    return pool.map(geocode, cities)
+    with mp.Pool(processes=mp.cpu_count()) as pool:  # allocate a pool of processors
+        results = pool.map(geocode, cities)
+    return results

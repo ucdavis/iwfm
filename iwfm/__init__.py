@@ -1,7 +1,7 @@
 # __init__.py for iwfm package
 # Classes and methods to read, write and modify IWFM and IGSM files and
 # associated data files
-# Copyright (C) 2018-2023 University of California
+# Copyright (C) 2018-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ from iwfm.iwfm_read_rz_nr import iwfm_read_rz_nr
 from iwfm.iwfm_read_uz import iwfm_read_uz
 from iwfm.iwfm_read_gw import iwfm_read_gw
 from iwfm.iwfm_read_div_areas import iwfm_read_div_areas
+from iwfm.iwfm_read_elempump import iwfm_read_elempump
 
 # -- IWFM simulation parameterss -------------------------------
 from iwfm.iwfm_read_param_table_ints import iwfm_read_param_table_ints

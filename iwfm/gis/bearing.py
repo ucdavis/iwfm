@@ -1,6 +1,6 @@
 # bearing.py
 # Bearing between two lat-lon points
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -38,11 +38,11 @@ def bearing(p1, p2):
     '''
     import math
 
-    lat1, lon1 = p1[0], p1[1]
-    lat2, lon2 = p2[0], p2[1]
-    angle = math.atan2(
-        math.cos(lat1) * math.sin(lat2)
-        - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1),
-        math.sin(lon2 - lon1) * math.cos(lat2),
-    )
+    lat1, lon1 = math.radians(p1[0]), math.radians(p1[1])
+    lat2, lon2 = math.radians(p2[0]), math.radians(p2[1])
+    dlon = lon2 - lon1
+    x = math.sin(dlon) * math.cos(lat2)
+    y = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
+    angle = math.atan2(x, y)
     return (math.degrees(angle) + 360) % 360
+

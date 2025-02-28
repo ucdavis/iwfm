@@ -1,6 +1,6 @@
 # distance_ellipse.py
 # Distance between two lat-lon points on an ellipse
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,6 +41,9 @@ def distance_ellipse(p1, p2, units='m'):
     '''
     import math
 
+    if not (isinstance(p1, list) and isinstance(p2, list) and len(p1) == 2 and len(p2) == 2):
+        raise ValueError("Both p1 and p2 must be lists with two elements each [latitude, longitude]")
+    
     lat1, lon1 = p1[0], p1[1]
     lat2, lon2 = p2[0], p2[1]
     distance = None

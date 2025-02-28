@@ -1,6 +1,6 @@
 # geocode_json.py
 # Return the lat-lon of a street address
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ def geocode_json(address, verbose=False):
     '''
     import geocoder
 
-    g = geocoder.google(address)
+    g = geocoder.osm(address)
     if verbose:
         print(f'  Geocode of {address} in geojson: {g.geojson}')
     return g.geojson

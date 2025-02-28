@@ -1,7 +1,7 @@
 # elems2shp_csv.py
 # Read csv files of elements and nodes and create a shapefile of the elements
 # with no information other than the element id and the node ids
-# Copyright (C) 2024 University of California
+# Copyright (C) 2024-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910
     import shapefile
     import pyproj
     from shapely.geometry import Polygon  # mapping no longer needed
+    from pyproj import CRS
 
     # Create list of element polygons
     polygons = []
@@ -66,27 +67,21 @@ def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910
     
     # Define fields
     w.field('elem_id', 'N', 10, 0)
-    w.field('node1', 'N', 10, 0)
-    w.field('node2', 'N', 10, 0)
-    w.field('node3', 'N', 10, 0)
-    w.field('node4', 'N', 10, 0)
+    max_nodes = max(len(elem) - 1 for elem in elem_nodes)
+    for i in range(1, max_nodes + 1):
+        w.field(f'node{i}', 'N', 10, 0)
 
     # Write features
     for i in range(len(polygons)):
         w.poly([polygons[i]])  # Add geometry
         w.record(              # Add attributes
-            elem_nodes[i][0],  # elem_id
-            elem_nodes[i][1],  # node1
-            elem_nodes[i][2],  # node2
-            elem_nodes[i][3],  # node3
-            elem_nodes[i][4]   # node4
+            *([elem_nodes[i][0]] + elem_nodes[i][1:] + [0] * (max_nodes - len(elem_nodes[i]) + 1))
         )
-    
     # Write projection file
     prj = open(f"{shapename}.prj", "w")
     epsg = f'EPSG:{epsg}'
-    prj.write(pyproj.CRS(epsg).to_wkt())
-    prj.close()
+    prj.write(pyproj.CRS(epsg).to_wkt(pyproj.enums.WktVersion.WKT2))
+    prj.write(CRS.from_epsg(int(epsg.split(':')[1])).to_wkt())
     
     w.close()
     if verbose: print(f'  Wrote shapefile {shapename}.shp')
