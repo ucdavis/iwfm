@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import math
 
 def distance_ellipse(p1, p2, units='m'):
     ''' distance_ellipse() - Uses the Vincenty formula to calculate the
@@ -39,7 +40,6 @@ def distance_ellipse(p1, p2, units='m'):
         distance between p1 and p2
     
     '''
-    import math
 
     if not (isinstance(p1, list) and isinstance(p2, list) and len(p1) == 2 and len(p2) == 2):
         raise ValueError("Both p1 and p2 must be lists with two elements each [latitude, longitude]")

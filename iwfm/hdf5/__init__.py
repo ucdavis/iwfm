@@ -25,5 +25,7 @@ from iwfm.hdf5.get_zbudget_data import get_zbudget_data
 from iwfm.hdf5.hdfbud2csv import hdfbud2csv
 from iwfm.hdf5.cropbud2csv import cropbud2csv
 
+from iwfm.hdf5.get_zbudget_elem_vals import get_zbudget_elem_vals
+
 
 #from iwfm.hdf5.hdfbud2xl import hdfbud2xl

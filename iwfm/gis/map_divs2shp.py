@@ -2,7 +2,7 @@
 # Read a shapefile of IWFM model elements and an IWFM diversion specification
 # make a deep copy of the elements files, and  add a field to the shapefile 
 # for each delivery area, setting element value to 1 if in the delivery area else 0
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

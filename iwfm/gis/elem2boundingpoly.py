@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import iwfm as iwfm
+from shapely.geometry import Polygon
+from shapely.ops import unary_union
 
 def elem2boundingpoly(elem_nodes, node_coords, verbose=False):
     ''' elem2boundingpoly() - Creates a shapely Polygon of the boundary of an IWFM model
@@ -37,10 +40,6 @@ def elem2boundingpoly(elem_nodes, node_coords, verbose=False):
         Model boundary polygon
 
     '''
-    import iwfm as iwfm
-    from shapely.geometry import Point, Polygon
-    from shapely.ops import unary_union
-
     # create dictionary of nodal coordinates
     d_nodes = {}
     for node in node_coords:

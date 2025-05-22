@@ -62,9 +62,9 @@ def get_rz_params_npc(node_file_name, elem_file_name, rz_npc_file_name, verbose=
     return elem_centroids, boundary_coords, crops_np, param_vals_np, param_types_np
 
 
-def map_rz_params_npc(node_file_name, elem_file_name, out_name, rz_npc_file_name, 
+def map_params_rz_npc(node_file_name, elem_file_name, out_name, rz_npc_file_name, 
                   format='tiff', point_width=100, verbose=False):
-    ''' map_rz_params_npc() -Create a colored image map representing non-ponded-crop rootzone parameters
+    ''' map_params_rz_npc() -Create a colored image map representing non-ponded-crop rootzone parameters
 
     Parameters
     ----------
@@ -228,7 +228,7 @@ if __name__ == "__main__":
 
     verbose = True
 
-    count = map_rz_params_npc(node_file_name, elem_file_name, out_name, rz_npc_file_name, 
+    count = map_params_rz_npc(node_file_name, elem_file_name, out_name, rz_npc_file_name, 
                         format=format, point_width=point_width, verbose=verbose)
     
     print(f'  Wrote {count:,} {format.upper()} images')

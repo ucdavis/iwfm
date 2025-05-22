@@ -97,7 +97,15 @@ def gw_hyd_obs_draw(sim_well_name, sim_hyd_data, obs_dates, obs_meas, well_info,
         ymin = min(ymin,  min(sim_vals))
         ymax = max(ymax,  max(sim_vals))
 
-    years = mdates.YearLocator()
+    date_diff = sim_hyd_data[j][-1][0] - sim_hyd_data[j][0][0]
+    if date_diff.days < 365*10:
+        years = 1
+    elif date_diff.days < 365*20:
+        years = 2
+    elif date_diff.days < 365*70:
+        years = 5
+    else:
+        years = 10
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
     with PdfPages(f"{sim_well_name}_{iwfm.pad_front(col, 4, '0')}.pdf") as pdf:
@@ -107,7 +115,8 @@ def gw_hyd_obs_draw(sim_well_name, sim_hyd_data, obs_dates, obs_meas, well_info,
         plt.grid(linestyle='dashed')
         ax.yaxis.grid(True)
         ax.xaxis.grid(True)
-        ax.xaxis.set_minor_locator(years)
+        ax.xaxis.set_major_locator(mdates.YearLocator(years))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
         plt.xlabel('Date')
         plt.ylabel('Head (ft msl)')
         plt.title(f'{title_words}: {sim_well_name.upper()} Layer {str(well_info[3])}')

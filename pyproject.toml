@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iwfm"
+version = "0.0.1"
+author="Charles Brush"
+author_email="<cfbrush@ucdavis.edu>"
+license='GNU'
+description='IWFM Python package'
+long_description='Classes, methods and functions to read, write and modify IWFM files'
+python_requires='~=3.8'
+classifiers= [
+            "Development Status :: 3 - Alpha",
+            "Intended Audience :: Groundwater Modelers",
+            "Programming Language :: Python :: 3.8",
+            "Operating System :: Microsoft :: Windows",
+            "Operating System :: POSIX :: Linux",
+            "Operating System :: MacOS :: MacOS X",
+        ]

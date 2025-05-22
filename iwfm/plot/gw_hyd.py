@@ -1,6 +1,6 @@
 # gw_hyd.py
 # Assemble groundwater hydrograph info and call fns to draw individual plots
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ def gw_hyd(gwhyd_info_file, gwhyd_files, sim_hyd_names, yaxis_width, titlewords,
 
     # have observed values (no else necessary)
     obs = iwfm.read_obs_smp(obs_file)
+
     return iplot.gw_hyd_obs(well_list, obs, gwhyd_sim, sim_hyd_names, well_dict, titlewords, yaxis_width)
 
 
@@ -92,7 +93,7 @@ if __name__ == '__main__':
         titlewords      = input('Graph title: ')
         obs_file        = input('Observed values file name (smp format) or \'none\'): ')
         gwhyd_info_file = input('IWFM Groundwater.dat file name: ')
-        yaxis_width     = input('Minimum y-axis scale (-1 to autoscale): ')
+        yaxis_width     = int(input('Minimum y-axis scale (-1 to autoscale): '))
         no_hyds         = int(input('Number of hydrographs to plot: '))
         for i in range(no_hyds):
             filename    = input(f'  IWFM Groundwater Hydrograph {i+1} file name: ')

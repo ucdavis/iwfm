@@ -29,7 +29,7 @@ def gw_hyd_noobs_draw(sim_well_name, sim_hyd_data, well_info, sim_hyd_names, tit
     sim_well_name : str
         simulated hydrograph well name, often state well number
     
-    sim_hyd_data : numpy array
+    sim_hyd_data : list
         simulated IWFM groundwater hydrographs for one well, multiple model runs
 
     well_info : list
@@ -88,7 +88,15 @@ def gw_hyd_noobs_draw(sim_well_name, sim_hyd_data, well_info, sim_hyd_names, tit
         ymin = min(ymin,  min(sim_vals))
         ymax = max(ymax,  max(sim_vals))
 
-    years = mdates.YearLocator()
+    date_diff = sim_hyd_data[j][-1][0] - sim_hyd_data[j][0][0]
+    if date_diff.days < 365*10:
+        years = 1
+    elif date_diff.days < 365*20:
+        years = 2
+    elif date_diff.days < 365*70:
+        years = 5
+    else:
+        years = 10
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
     with PdfPages(f"{sim_well_name}_{iwfm.pad_front(col, 4, '0')}.pdf") as pdf:
@@ -98,7 +106,8 @@ def gw_hyd_noobs_draw(sim_well_name, sim_hyd_data, well_info, sim_hyd_names, tit
         plt.grid(linestyle='dashed')
         ax.yaxis.grid(True)
         ax.xaxis.grid(True)
-        ax.xaxis.set_minor_locator(years)
+        ax.xaxis.set_major_locator(mdates.YearLocator(years))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
         plt.xlabel('Date')
         plt.ylabel('Head (ft msl)')
         plt.title(f'{title_words}: {sim_well_name.upper()} Layer {str(well_info[3])}')
@@ -109,7 +118,7 @@ def gw_hyd_noobs_draw(sim_well_name, sim_hyd_data, well_info, sim_hyd_names, tit
             plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
 
         for j in range(no_hyds):
-            sim_dates = [datetime.datetime.strptime(sim_hyd_data[j][i][0], '%m/%d/%Y') for i in range(len(sim_hyd_data[j]))]
+            sim_dates = [sim_hyd_data[j][i][0] for i in range(len(sim_hyd_data[j]))]
             sim_data  = [float(sim_hyd_data[j][i][1]) for i in range(len(sim_hyd_data[j]))]
             plt.plot(sim_dates, sim_data, line_colors[j], label=sim_hyd_names[j])
 

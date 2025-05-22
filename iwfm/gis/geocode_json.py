@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import geocoder
 
 def geocode_json(address, verbose=False):
     ''' geocode_json() - Return the lat-lon of a street address
@@ -33,7 +34,6 @@ def geocode_json(address, verbose=False):
     geocode of address : geojson format
     
     '''
-    import geocoder
 
     g = geocoder.osm(address)
     if verbose:

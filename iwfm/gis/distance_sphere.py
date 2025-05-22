@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import math
 
 def distance_sphere(p1, p2, units='km'):
     ''' distance_sphere() - Uses the Haversine formula to calculate the
@@ -40,7 +41,6 @@ def distance_sphere(p1, p2, units='km'):
         distance between p1 and p2
 
     '''
-    import math
 
     lat1 = p1[0]
     lon1 = p1[1]

@@ -1,6 +1,6 @@
 # iwfm2shp.py
 # Create shapefiles for an IWFM model
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -67,14 +67,14 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
         print(f'  Read stratigraphy for {len(node_strat):,} nodes from {pre_dict["strat_file"]}')
 
     if have_lake:
-        lake_elems, lakes = iwfm.iwfm_read_lake(pre_dict['lake_file'])  
+        n_lake_elems, lakes = iwfm.iwfm_read_lake(pre_dict['lake_file'])  
         if verbose:
             if len(lakes) > 1:
                 print(f'  Read info for {len(lakes):,} lakes from {pre_dict["lake_file"]}')
             elif len(lakes) == 1:
                 print(f'  Read info for {len(lakes):,} lake from {pre_dict["lake_file"]}')
     else:
-        lake_elems, lakes = 0, [0]
+        n_lake_elems, lakes = 0, None
         if verbose:
             print('  No lakes file')
 
@@ -86,7 +86,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
         print(' ')
 
     # == Create element shapefile
-    igis.elem2shp(elem_ids,elem_nodes,node_coord_dict,elem_sub,lake_elems,shape_name,epsg=epsg,verbose=verbose)
+    igis.elem2shp(elem_ids,elem_nodes,node_coord_dict,elem_sub,lakes,shape_name,epsg=epsg,verbose=verbose)
 
     # == Create node shapefile
     igis.nodes2shp(node_coords, shape_name,epsg=epsg,verbose=verbose)

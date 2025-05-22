@@ -22,6 +22,12 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import geopandas as gpd
+import sys
+import iwfm.debug as idb
+import iwfm.gis as igis
+import iwfm as iwfm
+
 def map_to_shp(param_table, header, gdf, out_shp_name, verbose=False):
     ''' map_to_shp() - Map a parameter table to a shapefile
     
@@ -83,8 +89,6 @@ def map_elempump(elempump_file_name, elem_shp_name, out_shp_root, verbose=False)
     nothing
     
     '''
-    import geopandas as gpd
-    import os
 
     gdf = gpd.read_file(elem_shp_name)                                      # read elements shapefile into geopandas dataframe
 
@@ -108,38 +112,9 @@ def map_elempump(elempump_file_name, elem_shp_name, out_shp_root, verbose=False)
     if verbose: print(f'  Created elemental pumping shapefile {out_shp_name}')
 
 
-#    for deliv_id, div_area in zip(deliv_area_ids, deliv_areas):
-#        field_name = f'DelAr_{deliv_id}'                                    # add a field to the shapefile's dbf for the diversion area
-#
-#        div_elems = [1 if elem in div_area else 0 for elem in elem_ids]     # create a list of 1's and 0's for the diversion area
-#
-#        gdf[field_name] = div_elems                                         # add a field to the geopandas dataframe for the diversion area
-#
-#        # to avoid fragmentation, make a deep copy every 50 fields
-#        count += 1
-#        if count >= 50:
-#            gdf = gdf.copy()
-#            count = 0
-#
-#    # create a diversion specification shapefile name
-#    divareas_shp_base = os.path.basename(out_shp_name).split('.')[0]
-#
-#    divareas_shp_name = divareas_shp_base+'.shp'
-#
-#    # write the geopandas dataframe to a shapefile
-#    gdf.to_file(divareas_shp_name)
-
-#    if verbose: print(f'  Created diversion delivery areas shapefile {divareas_shp_name}')
-
-    return 
-
 
 if __name__ == "__main__":
     ''' Run mam_elempump() from command line '''
-    import sys
-    import iwfm.debug as idb
-    import iwfm.gis as igis
-    import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         elempump_file_name = sys.argv[1]

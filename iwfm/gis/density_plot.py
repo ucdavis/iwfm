@@ -16,6 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import shapefile  # pyshp
+from shapefile import point_in_poly
+import pngcanvas as pngcanvas
+import world2screen
+import random
 
 def density_plot(infile,fieldname,iwidth=600,iheight=400,
     denrat=100,savename=None):
@@ -46,11 +51,6 @@ def density_plot(infile,fieldname,iwidth=600,iheight=400,
     nothing
 
     '''
-    import shapefile  # pyshp
-    import pngcanvas as pngcanvas
-    import world2screen
-    import random
-    from shapefile import point_in_poly
 
     inShp = shapefile.Reader(infile)
 
@@ -90,4 +90,4 @@ def density_plot(infile,fieldname,iwidth=600,iheight=400,
     if savename:
         with open(savename, 'wb') as img:
             img.write(canvas.dump())
-    return
+

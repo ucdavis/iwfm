@@ -18,6 +18,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import geopandas as gpd
+import re
+import sys
+import iwfm.debug as idb
+import iwfm as iwfm
 
 def map_lu(land_use_file, elem_shp_name, out_shp_basename, verbose=False):
     '''map_lu() - Copy IWFM model elements shapefile, and create one shapefile of total area 
@@ -43,8 +48,6 @@ def map_lu(land_use_file, elem_shp_name, out_shp_basename, verbose=False):
     nothing
 
     '''
-    import geopandas as gpd
-    import re
     
     gdf = gpd.read_file(elem_shp_name)                          # read elements shapefile into geopandas dataframe
 
@@ -124,9 +127,6 @@ if __name__ == '__main__':
     ''' Run map_lu() from command line 
 
     '''
-    import sys
-    import iwfm.debug as idb
-    import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         land_use_file = sys.argv[1]

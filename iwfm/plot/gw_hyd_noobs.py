@@ -52,14 +52,11 @@ def gw_hyd_noobs(sim_well_list,gwhyd_sim,sim_hyd_names,sim_well_dict,title_words
     
     '''
     import iwfm.plot as iplot
-    import numpy as np
-    import matplotlib          
-    import matplotlib.dates as mdates
-    import datetime
+#    import matplotlib.dates as mdates
 
     no_sim_hyds = len(gwhyd_sim)  # number of simulation time series to be graphed
 
-    print(f'\n     Processing {len(sim_well_list):,} wells,  {no_sim_hyds} simulation(s),  observation data for {len(obs_well_list):,} wells\n')
+    print(f'\n     Processing {len(sim_well_list):,} wells,  {no_sim_hyds} simulation(s)\n')
 
     # compile simulated hydrographs for each well
     count = 0

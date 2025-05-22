@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import math
 
 def bearing(p1, p2):
     ''' bearing() - Return the bearing between two (lat,lon) points
@@ -36,8 +37,7 @@ def bearing(p1, p2):
         angle between p1 and p2    
     
     '''
-    import math
-
+    
     lat1, lon1 = math.radians(p1[0]), math.radians(p1[1])
     lat2, lon2 = math.radians(p2[0]), math.radians(p2[1])
     dlon = lon2 - lon1

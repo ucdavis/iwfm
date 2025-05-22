@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import geocoder
 
 def geocode_wkt(address, verbose=False):
     '''geocode_wkt() - Return the lat-lon of a street address in WKT format
@@ -34,7 +35,7 @@ def geocode_wkt(address, verbose=False):
     nothing
     
     '''
-    import geocoder
+
     g = geocoder.osm(address)
     if verbose:
         print(f'  Geocode of {address} in WKT: {g.wkt}')

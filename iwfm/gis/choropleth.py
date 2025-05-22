@@ -16,6 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import shapefile  # pyshp
+from PIL import Image, ImageDraw, ImageOps
+import iwfm as iwfm
+import math
+
 def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     iheight=400,denrat=80.0,savename=None):
     ''' choropleth() - Read a shapefile and write a chloropleth image
@@ -48,10 +53,6 @@ def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     nothing
 
     '''
-    import shapefile  # pyshp
-    from PIL import Image, ImageDraw, ImageOps
-    import iwfm as iwfm
-    import math
 
     inShp = shapefile.Reader(infile)
 
@@ -76,5 +77,5 @@ def choropleth(infile,fieldname1,fieldname2,iwidth=600,
         draw.polygon(pixels, outline=(255, 255, 255), fill=(R, G, B))
     if savename:
         img.save(savename)
-    return
+
     

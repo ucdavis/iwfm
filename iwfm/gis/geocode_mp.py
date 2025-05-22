@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import multiprocessing as mp
+from geocode import geocode
 
 def geocode_mp(cities):
     ''' geo_code() - Use multiprocessing to find and return multiple geocodes
@@ -31,8 +33,6 @@ def geocode_mp(cities):
         geocodes for the input cities
     
     '''
-    import multiprocessing as mp
-    from geocode import geocode
 
     with mp.Pool(processes=mp.cpu_count()) as pool:  # allocate a pool of processors
         results = pool.map(geocode, cities)

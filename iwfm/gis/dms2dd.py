@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import re
 
 def dms2dd(lat, lon):
     ''' dms2dd() - Converts from degree-minute-second to decimal degrees
@@ -34,7 +35,6 @@ def dms2dd(lat, lon):
         Decimal latitude and longitude values
 
     '''
-    import re
 
     try:
         lat_deg, lat_min, lat_sec, lat_dir = re.split('[^\d\.A-Z]+', lat)

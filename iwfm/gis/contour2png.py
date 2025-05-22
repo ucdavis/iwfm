@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import shapefile  # pyshp
+import pngcanvas as pngcanvas
 
 def contour2png(source, target, iwidth=800, iheight=600):
     ''' contour2png() - Draw an entire contour shapefile to a pngcanvas image
@@ -39,8 +41,6 @@ def contour2png(source, target, iwidth=800, iheight=600):
     nothing
 
     '''
-    import shapefile  # pyshp
-    import pngcanvas as pngcanvas
 
     if source[-4:] != '.shp':
         source += '.shp'
@@ -78,4 +78,4 @@ def contour2png(source, target, iwidth=800, iheight=600):
         canvas.polyline(c)
     with open(target, 'wb') as f:
         f.write(canvas.dump())
-    return
+

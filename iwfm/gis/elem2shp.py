@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def elem2shp(elem_ids, elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_name,
+def elem2shp(elem_ids, elem_nodes, node_coord_dict, elem_sub, lakes, shape_name,
              epsg=26910, verbose=False):
     ''' elem2shp() - Creates an IWFM element shapefile 
 
@@ -35,7 +35,7 @@ def elem2shp(elem_ids, elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_
     elem_sub : list
         list of elements and associated subregions
     
-    lake_elems : list
+    lakes : list
         list of lakes and associated elements
     
     shape_name : str
@@ -73,10 +73,10 @@ def elem2shp(elem_ids, elem_nodes, node_coord_dict, elem_sub, lake_elems, shape_
     for i in range(len(polygons)):
         poly = polygons[i]  # Already in the correct format for PyShp
         lake_no = 0
-        if len(lake_elems) > 0:
-            for j in range(len(lake_elems)):
-                if lake_elems[j][1] == i + 1:  # lake on this element
-                    lake_no = lake_elems[j][0]
+        if lakes:
+            for j in range(len(lakes)):
+                if lakes[j][1] == i + 1:  # lake on this element
+                    lake_no = lakes[j][0]
         
         # Add geometry and attributes
         w.poly([poly])

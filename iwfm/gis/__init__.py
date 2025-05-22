@@ -38,6 +38,7 @@ from iwfm.gis.map_divs2shp import map_divs2shp
 from iwfm.gis.map_rchg2shp import map_rchg2shp
 from iwfm.gis.map_lu import map_lu
 from iwfm.gis.map_elempump import map_elempump
+from iwfm.gis.map_elempump2shp import map_elempump2shp
 
 
 # --- map parameters to shapefiles -------------------------
@@ -177,7 +178,7 @@ from iwfm.gis.point_in_poly import point_in_poly
 from iwfm.gis.world2screen import world2screen
 from iwfm.gis.world2pixel import world2pixel
 from iwfm.gis.image2Array import image2Array
-from iwfm.gis.density_plot import density_plot
+#from iwfm.gis.density_plot import density_plot
 from iwfm.gis.choropleth import choropleth
 from iwfm.gis.heatmap import heatmap
 

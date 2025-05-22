@@ -48,7 +48,7 @@ def pdf_combine(start_dir, save_dir, save_name):
         if filename.endswith('.pdf'):
             mergelist.append(filename)
 
-    pdfWriter = PyPDF2.PdfFileWriter()
+    pdfWriter = PyPDF2.PdfWriter()
 
     # loop through all PDFs
     for filename in mergelist:
@@ -65,25 +65,49 @@ def pdf_combine(start_dir, save_dir, save_name):
     pdfOutput.close()  
     return count
 
-if __name__ == '__main__':
-    ' Run pdf_combine() from command line '
-    import sys
-    import iwfm as iwfm
-    import iwfm.debug as idb
+if __name__ == "__main__":
+  " Run from command line "
+  import sys, os
+  import iwfm.debug as idb
 
-    # read arguments from command line
-    if len(sys.argv) > 1:  # arguments are listed on the command line
-        start_dir = sys.argv[1]         # Name of directory with PDF files to combine
-        save_dir  = sys.argv[2]         # Name of output directory
-        save_name = sys.argv[3]         # Name of output file
+  start_dir = os.getcwd()   
 
-    else:  # get everything form the command line
-        start_dir = input('Directory with individual PDF files: ')
-        save_dir  = input('Output directory: ')
-        save_name = input('Output file mname: ')
+  if len(sys.argv) > 1:                                # arguments listed on the command line
+    save_dir  = sys.argv[1]    
+    save_name = sys.argv[2]   
+
+  else:                                                # get everything from the command line
+    save_dir  = input('  Path to folder with PDFs to combine: ') 
+    save_name = input('  Output file name: ') 
+
+  if save_name[:4].lower() != '.pdf':
+    save_name = save_name + '.pdf'
+
+  idb.exe_time()  # initialize timer
+  count = pdf_combine(start_dir,save_dir,save_name)
+  print(f'  Combined {count:,} PDF files into {save_name}')  
+  idb.exe_time()  # print elapsed time
 
 
-    idb.exe_time()  # initialize timer
-    count = pdf_combine(start_dir, save_dir, save_name)
-    print(f'  Combined {count} PDF files')  # update cli
-    idb.exe_time()  # print elapsed time
+#if __name__ == '__main__':
+#    ' Run pdf_combine() from command line '
+#    import sys
+#    import iwfm as iwfm
+#    import iwfm.debug as idb
+#
+#    # read arguments from command line
+#    if len(sys.argv) > 1:  # arguments are listed on the command line
+#        start_dir = sys.argv[1]         # Name of directory with PDF files to combine
+#        save_dir  = sys.argv[2]         # Name of output directory
+#        save_name = sys.argv[3]         # Name of output file
+#
+#    else:  # get everything form the command line
+#        start_dir = input('Directory with individual PDF files: ')
+#        save_dir  = input('Output directory: ')
+#        save_name = input('Output file mname: ')
+#
+#
+#    idb.exe_time()  # initialize timer
+#    count = pdf_combine(start_dir, save_dir, save_name)
+#    print(f'  Combined {count} PDF files')  # update cli
+#    idb.exe_time()  # print elapsed time
