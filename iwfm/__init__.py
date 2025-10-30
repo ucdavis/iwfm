@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 # -- IWFM model class -------------------------------------
-from iwfm.iwfm_model import iwfm_model
+from iwfm.iwfm_model import iwfm_model, IWFMModelError
 from iwfm.gw_well_lay_elev import gw_well_lay_elev
 
 # -- IWFM model file ---------------------------------------

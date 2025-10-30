@@ -49,6 +49,6 @@ def skip_ahead(line_index, all_lines, skip=0):
         line_index += 1
     while all_lines[line_index][0] in comments:  # skip
         line_index += 1
-        if line_index > len(all_lines):
+        if line_index >= len(all_lines):
             return -1
     return line_index

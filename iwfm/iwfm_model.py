@@ -18,7 +18,13 @@
 
 import iwfm as iwfm
 import re
+from pathlib import Path
 from shapely.geometry import Point, Polygon
+
+
+class IWFMModelError(Exception):
+    """Custom exception for IWFM model operations"""
+    pass
 
 
 class iwfm_model:
@@ -136,15 +142,15 @@ class iwfm_model:
 
         # -- read input file names and create a dictionary 
         self.sim_files_dict = {}
-        preout = iwfm.get_path(sim_lines[line_index].split()[0])  
+        preout = iwfm.file_get_path(sim_lines[line_index].split()[0])  
         self.sim_files_dict['preout'] = preout
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
-        gw_file = iwfm.get_path(sim_lines[line_index].split()[0]) 
+        gw_file = iwfm.file_get_path(sim_lines[line_index].split()[0]) 
         self.sim_files_dict['gw'] = gw_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
-        stream_file = iwfm.get_path(sim_lines[line_index].split()[0])  
+        stream_file = iwfm.file_get_path(sim_lines[line_index].split()[0])  
         self.sim_files_dict['stream'] = stream_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
@@ -152,27 +158,27 @@ class iwfm_model:
         if temp[0] == '/':
             lake_file = ''
         else:
-            lake_file = iwfm.get_path(temp)  
+            lake_file = iwfm.file_get_path(temp)  
         self.sim_files_dict['lake'] = lake_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        rz_file = iwfm.get_path(sim_lines[line_index].split()[0])  
+        rz_file = iwfm.file_get_path(sim_lines[line_index].split()[0])  
         self.sim_files_dict['rootzone'] = rz_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-        sw_file = iwfm.get_path(sim_lines[line_index].split()[0])
+        sw_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
         self.sim_files_dict['smallwatershed'] = sw_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        us_file = iwfm.get_path(sim_lines[line_index].split()[0])
+        us_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
         self.sim_files_dict['unsat'] = us_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-        if_file = iwfm.get_path(sim_lines[line_index].split()[0])
+        if_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
         self.sim_files_dict['irrfrac'] = if_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        sa_file = iwfm.get_path(sim_lines[line_index].split()[0])
+        sa_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
         self.sim_files_dict['supplyadj'] = sa_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
@@ -180,7 +186,7 @@ class iwfm_model:
         self.sim_files_dict['precip'] = pc_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        et_file = iwfm.get_path(sim_lines[line_index].split()[0]) 
+        et_file = iwfm.file_get_path(sim_lines[line_index].split()[0]) 
         self.sim_files_dict['et'] = et_file
 
         # -- starting date
@@ -210,7 +216,7 @@ class iwfm_model:
         line_index = 0  # start at the top
         line_index = iwfm.skip_ahead(line_index, node_lines, 0)  # skip comments
 
-        self.inodes = int(re.findall('\d+', node_lines[line_index])[0]) 
+        self.inodes = int(re.findall(r'\d+', node_lines[line_index])[0]) 
 
         line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  # skip comments
 
@@ -238,11 +244,11 @@ class iwfm_model:
         line_index = 0  
         line_index = iwfm.skip_ahead(line_index, elem_lines, 0)  
 
-        self.elements = int(re.findall('\d+', elem_lines[line_index])[0]) 
+        self.elements = int(re.findall(r'\d+', elem_lines[line_index])[0]) 
 
         line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
 
-        subregions = int(re.findall('\d+', elem_lines[line_index])[0])
+        subregions = int(re.findall(r'\d+', elem_lines[line_index])[0])
 
         line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
         line_index = iwfm.skip_ahead(line_index + 1, elem_lines, subregions - 1)
@@ -387,10 +393,10 @@ class iwfm_model:
 
         line_index = 0  # start at the top
         line_index = iwfm.skip_ahead(line_index, strat_lines, 0)  # skip comments
-        layers = int(re.findall('\d+', strat_lines[line_index])[0])  # read no. layers
+        layers = int(re.findall(r'\d+', strat_lines[line_index])[0])  # read no. layers
 
         line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
-        factor = float(re.findall('\d+', strat_lines[line_index])[0])  # read factor
+        factor = float(re.findall(r'\d+', strat_lines[line_index])[0])  # read factor
 
         line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
         self.strat = []  # initialize list

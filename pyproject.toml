@@ -7,7 +7,7 @@ name = "iwfm"
 version = "0.0.1"
 author="Charles Brush"
 author_email="<cfbrush@ucdavis.edu>"
-license='GNU'
+license="GNU"
 description='IWFM Python package'
 long_description='Classes, methods and functions to read, write and modify IWFM files'
 python_requires='~=3.8'
