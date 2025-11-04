@@ -3,7 +3,7 @@
 # make a deep copy of the elements files, and  add a field to the shapefile 
 # for each diversion, setting element value to 1 if in the diversion's recharge area
 # else 0
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -102,10 +102,10 @@ if __name__ == "__main__":
 
     idb.exe_time()                                                                              # initialize timer
 
-    deliv_area_ids, deliv_areas, div_ids, rchg_areas = iwfm.iwfm_read_div_areas(divspec_file_name)  # Read diversion specification file
+    deliv_area_ids, deliv_areas, rchg_area_ids, rchg_areas = iwfm.iwfm_read_div_areas(divspec_file_name)  # Read diversion specification file
 
     out_shp_name = out_shp_root + '_RchgArea'
 
-    map_rchg2shp(div_ids, rchg_areas, elem_shp_name, out_shp_name, verbose=True)                # Add recharge areas to shapefile of IWFM model elements
+    map_rchg2shp(rchg_area_ids, rchg_areas, elem_shp_name, out_shp_name, verbose=True)                # Add recharge areas to shapefile of IWFM model elements
 
     idb.exe_time()                                                                              # print elapsed time

@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
     idb.exe_time()                                                                          # initialize timer
 
-    deliv_area_ids, deliv_areas, div_ids, rchg_areas = iwfm.iwfm_read_div_areas(divspec_file_name)  # Read diversion specification file
+    deliv_area_ids, deliv_areas, rchg_area_ids, rchg_areas = iwfm.iwfm_read_div_areas(divspec_file_name)  # Read diversion specification file
 
     out_shp_name = out_shp_root + '_DelivArea'
 

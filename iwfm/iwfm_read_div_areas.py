@@ -1,6 +1,6 @@
 # iwfm_read_div_areas.py
 # Read diversion areas from an IWFM Diversion Specification File
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,6 +32,12 @@ def iwfm_read_div_areas(divspec_file_name):
 
     div_areas : list of lists
         List of elements in each IWFM diversion area
+
+    rchg_area_ids : list
+        IWFM recharge numbers
+    
+    rchg_areas : list of lists
+        List of elements in each IWFM recharge area
     
     '''
     import iwfm as iwfm
@@ -66,13 +72,13 @@ def iwfm_read_div_areas(divspec_file_name):
 
         deliv_areas.append(elems)
 
-    rchg_ids, rchg_areas = [], []
+    rchg_area_ids, rchg_areas = [], []
     # read the element groups for each diversion recharge aree
     for i in range(ndivs):
         # the first line of a group has 4 items: diversion id, number of elements, element number and factor
         line_index = iwfm.skip_ahead(line_index+1, div_file_lines, skip=0)
         rchg_id = int(div_file_lines[line_index].split()[0])
-        rchg_ids.append(rchg_id)
+        rchg_area_ids.append(rchg_id)
         n_elems = int(div_file_lines[line_index].split()[1])
         elems = []
         elems.append(int(div_file_lines[line_index].split()[2]))
@@ -84,5 +90,5 @@ def iwfm_read_div_areas(divspec_file_name):
 
         rchg_areas.append(elems)
 
-    return deliv_area_ids, deliv_areas, rchg_ids, rchg_areas
+    return deliv_area_ids, deliv_areas, rchg_area_ids, rchg_areas
 
