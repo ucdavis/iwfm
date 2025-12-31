@@ -1,6 +1,6 @@
 # index_date.py
 # Returns no days between two dates
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,32 +33,16 @@ def index_date(in_date, start_date='10/01/1984'):
     days            (int):   Number of days between two dates
     
     '''
-    import iwfm as iwfm
-
-    ys, ms, ds = iwfm.year(start_date), iwfm.month(start_date), iwfm.day(start_date)
-    yi, mi, di = iwfm.year(in_date), iwfm.month(in_date), iwfm.day(in_date)
-
-    # special case: in_date == start_date
-    if ys == yi and ms == mi and ds == di:
-        return 0
-
-    mdays = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-
-    # days from start_date to end of year
-    ds = mdays[ms - 1] - ds  # days to end of month
-    if int(ys / 4) > 0 and ms > 1:  # leap year
-        ds += 1
-    for m in range(ms, 12):
-        ds += mdays[m]
-
-    # days from beginning of year to in_date
-    if mi > 1:
-        for m in range(0, mi - 1):  # omits leap years
-            di += mdays[m]  # mi=0 points to Jan, etc.
-
-    years = yi - ys
-    if yi >= ys:
-        years -= 1
-
-    days = ds + di + years * 365 + int(years / 4)
-    return days
+    from datetime import datetime
+    
+    # Parse dates in MM/DD/YYYY format
+    start_month, start_day, start_year = map(int, start_date.split('/'))
+    in_month, in_day, in_year = map(int, in_date.split('/'))
+    
+    # Create datetime objects
+    start_dt = datetime(start_year, start_month, start_day)
+    in_dt = datetime(in_year, in_month, in_day)
+    
+    # Calculate difference in days
+    diff = in_dt - start_dt
+    return diff.days

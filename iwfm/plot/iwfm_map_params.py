@@ -386,9 +386,10 @@ if __name__ == "__main__":
 
     # Read elements from elements file
     elem_filename = Path(pre_filename).parent / pre_dict['elem_file'].replace('\\', '/')
+    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(elem_filename)
 
     # calculate element centroids
-    elem_centroids = iwfm.elem_centroids(node_filename, elem_filename)
+    elem_centroids = iwfm.get_elem_centroids(elem_ids, elem_nodes, node_coord)
 
 
     boundary_coords = iwfm.iwfm_boundary_coords(node_filename, elem_filename)

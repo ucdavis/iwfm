@@ -102,4 +102,4 @@ if __name__ == '__main__':
 
     idb.exe_time()  # print elapsed time
 
-    print(f' Wrote {count} surfer output files.')
+    print(f' Read {len(dates)} time steps with {layers} layers and {nodes} nodes.')

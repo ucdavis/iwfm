@@ -22,35 +22,31 @@ def utm_2_wgs84(zone, easting, northing):
 
     Parameters
     ----------
-    zone : str
+    zone : int or str
         UTM Zone
-    
+
     easting : float
         Easting in UTM
-    
+
     northing : float
-        Notrhing in UTM
-    
+        Northing in UTM
+
     Return
     ------
-    (lon, lat, altitude)
-    
+    (lon, lat, altitude) : tuple
+        Longitude, Latitude, and altitude (0)
+
     '''
-    import osr as osr
+    import utm
 
-    utm_coordinate_system = osr.SpatialReference()
+    # Ensure zone is an integer
+    zone = int(zone)
 
-    # Set geographic coordinate system to handle lat/lon
-    utm_coordinate_system.SetWellKnownGeogCS('WGS84') 
-    is_northern = northing > 0
-    utm_coordinate_system.SetUTM(zone, is_northern)
+    # Determine hemisphere from northing value
+    band = 'N' if northing >= 0 else 'M'
 
-    # Clone ONLY the geographic coordinate system
-    wgs84_coordinate_system=(utm_coordinate_system.CloneGeogCS())
+    # Convert UTM to lat/lon (returns lat, lon)
+    lat, lon = utm.to_latlon(northing, easting, zone, band)
 
-    # create transform component
-    utm_to_wgs84_transform = osr.CoordinateTransformation(
-        utm_coordinate_system, wgs84_coordinate_system
-    )  # (<from>, <to>)
-
-    return utm_to_wgs84_transform.TransformPoint(easting, northing, 0)
+    # Return in original format: (lon, lat, altitude)
+    return (lon, lat, 0)

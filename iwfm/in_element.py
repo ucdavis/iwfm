@@ -1,7 +1,7 @@
 # in_element.py
 # Return number of element containing (x,y) point or 0 if none
 # the nearest node to each (x,y) point
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ def in_element(e_nodes, e_nos, d_nodexy, x, y):
     Integer element number of element containing point, or 0 if none
     
     '''
-    from shapely.geometry import Polygon, Points
+    from shapely.geometry import Polygon, Point
 
     point = Point(x, y)
 

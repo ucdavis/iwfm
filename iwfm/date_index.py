@@ -1,6 +1,6 @@
 # date_index.py
 # Returns date inval dates from start_date
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ def date_index(inval, start_date):
     y = iwfm.year(start_date)
     m = iwfm.month(start_date)
     d = iwfm.day(start_date)
-    for i in range(1, int(inval)):
+    for i in range(int(inval)):
         if m == 12:
             y += 1
             m = 1

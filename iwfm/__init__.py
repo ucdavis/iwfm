@@ -144,7 +144,6 @@ from iwfm.iwfm_nearest_node import iwfm_nearest_node
 from iwfm.nearest_node import nearest_node
 from iwfm.nearest import nearest
 from iwfm.in_element import in_element
-from iwfm.elem_centroids import elem_centroids
 from iwfm.get_elem_centroids import get_elem_centroids
 
 # -- text file methods -------------------------------------
@@ -159,7 +158,6 @@ from iwfm.print_to_string import print_to_string
 from iwfm.file_2_list import file_2_list
 
 # -- date and time methods --------------------------------
-from iwfm.diff_dates import diff_dates
 from iwfm.dss_date import dss_date
 from iwfm.month import month
 from iwfm.day import day
@@ -213,7 +211,6 @@ from iwfm.cfs2afd import cfs2afd
 # -- math -------------------------------------------------
 from iwfm.distance import distance
 from iwfm.logtrans import logtrans
-from iwfm.round import round
 from iwfm.column_sum import column_sum
 
 # -- data file methods ------------------------------------

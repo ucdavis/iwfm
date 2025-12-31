@@ -66,15 +66,15 @@ def tables2lu(header, template_lines, initial_acreage, factor_tables, output_fil
             for line in template_lines:
                 fp.write(f'{line}\n')
 
-        for i in range(1, len(input_tables[0][0])):
-            year = input_tables[0][0][i]            # get the year
-            if year != start_year:                  # skip becuse we already wrote the initial acreage
-                date = month_day + '/' + str(input_tables[0][0][i]) + '_24:00'
+        for i in range(len(factor_tables)):
+            year = start_year + i + 1               # calculate the year from start_year
+            if year != start_year:                  # skip because we already wrote the initial acreage
+                date = month_day + '/' + str(year) + '_24:00'
 
                 # multiply initial_acreage by factor_tables[i]
                 new_acreage = []
                 for row in range(0, len(initial_acreage)):
-                    new_acreage.append([round(initial_acreage[row][j] * factor_tables[i-1][row][j],2) for j in range(0,len(initial_acreage[row]))])
+                    new_acreage.append([round(initial_acreage[row][j] * factor_tables[i][row][j],2) for j in range(0,len(initial_acreage[row]))])
 
                 for j in range(0, len(new_acreage)):
                     if j == 0:
@@ -110,7 +110,8 @@ if __name__ == '__main__':
     idb.exe_time()  # initialize timer
 
     # open and read template file
-    template_lines = open(template_file_name).read().splitlines()
+    with open(template_file_name) as f:
+        template_lines = f.read().splitlines()
 
     # copy header to variable with the same name
     t_line = 0
@@ -138,11 +139,13 @@ if __name__ == '__main__':
         initial_acreage.append(ac)
 
     # open and read factor files listed in input file
-    input_files = open(input_file).read().splitlines()
+    with open(input_file) as f:
+        input_files = f.read().splitlines()
     input_tables = []
     for file in input_files:
         iwfm.file_test(file)
-        in_lines = open(file).read().splitlines()
+        with open(file) as f:
+            in_lines = f.read().splitlines()
         table = []
         for line in in_lines:
             new_line = line.split(',')

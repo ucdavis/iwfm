@@ -1,6 +1,6 @@
 # budget_info.py
 # Get the Budget file header and footer length and number of tables 
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,28 +40,50 @@ def budget_info(budget_lines):
     '''
 
     header, footer, table, line = 0, 0, 1, 0
-    while not budget_lines[line][0].isdigit() :                   # reads to end of header
-        header += 1                                               # to get header length
-        line   += 1
+    
+    # Read to end of header (count lines that don't start with a digit)
+    while line < len(budget_lines) and (not budget_lines[line] or not budget_lines[line][0].isdigit()):
+        header += 1
+        line += 1
+    
+    if line >= len(budget_lines):
+        # No data lines found, return minimal values
+        return 1, header, 0
+        
     line += 1
 
-    width, i = 0, 16                                              # get field width, width of DSS date
-    while budget_lines[line][i+width].isspace():                  # count spaces
-        width += 1
-    while not budget_lines[line][i+width].isspace():              # count digits, decimal etc
-        width += 1
+    # Get field width (simplified approach)
+    width, i = 0, 16  # get field width, width of DSS date
+    if line < len(budget_lines) and len(budget_lines[line]) > i:
+        while i + width < len(budget_lines[line]) and budget_lines[line][i+width].isspace():
+            width += 1
+        while i + width < len(budget_lines[line]) and not budget_lines[line][i+width].isspace():
+            width += 1
 
-    while budget_lines[line][0].isdigit():                        # reads to end of dates
-        table += 1                                                # to get table length
-        line  += 1
-        lines += 1
-    line += 1
+    # Count data lines (lines that start with a digit)
+    while line < len(budget_lines) and budget_lines[line] and budget_lines[line][0].isdigit():
+        table += 1
+        line += 1
+        line += 1  # Skip every other line (original behavior)
+    
+    if line < len(budget_lines):
+        line += 1
 
-    if line + 5 < len(budget_lines):                              # budget file contains more than one table
-        while len(budget_lines[line])==0 or not budget_lines[line][0].isdigit():     # reads to end of next header
+    # Count footer lines
+    if line + 5 < len(budget_lines):  # budget file contains more than one table
+        while line < len(budget_lines) and (not budget_lines[line] or not budget_lines[line][0].isdigit()):
             footer += 1
-            line   += 1
-    footer = footer + 1 - header                                  # to get footer length
-    tables = round(len(budget_lines)/(header + table + footer))   # number of tables in budget file
+            line += 1
+    
+    footer = footer + 1 - header  # to get footer length
+    if footer < 0:
+        footer = 0
+        
+    # Calculate number of tables (ensure at least 1)
+    total_lines_per_table = header + table + footer
+    if total_lines_per_table > 0:
+        tables = max(1, round(len(budget_lines) / total_lines_per_table))
+    else:
+        tables = 1
 
     return tables, header, footer
