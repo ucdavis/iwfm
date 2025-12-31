@@ -72,18 +72,32 @@ if __name__ == '__main__':
             filelines.append(row)
 
     # remove header line
+    if not filelines:
+        print(f'  Error: {infile} is empty or contains only a header line')
+        sys.exit(1)
     header = filelines.pop(0)
 
     # convert first column to string array and assign to id
     try:
         id = [line[0] for line in filelines]
-    except:
-        print(f'  Error: {infile} format: "ID, Latitude, Longitude" with header line')
-        sys.exit()
+    except IndexError as e:
+        print(f'  Error: {infile} has incomplete rows. Expected format: "ID, Latitude, Longitude" with header line')
+        print(f'  Details: {e}')
+        sys.exit(1)
+
     # convert second and third columns to float and assign to lat lon
-    for i in range(len(filelines)):
-        filelines[i][1] = float(filelines[i][1])
-        filelines[i][2] = float(filelines[i][2])
+    try:
+        for i in range(len(filelines)):
+            filelines[i][1] = float(filelines[i][1])
+            filelines[i][2] = float(filelines[i][2])
+    except IndexError as e:
+        print(f'  Error: {infile} row {i+2} is missing columns. Expected format: "ID, Latitude, Longitude"')
+        print(f'  Details: {e}')
+        sys.exit(1)
+    except ValueError as e:
+        print(f'  Error: {infile} row {i+2} has invalid numeric values for Latitude or Longitude')
+        print(f'  Details: {e}')
+        sys.exit(1)
 
     # convert second column to float array and assign to lat
     lat = [line[1] for line in filelines]

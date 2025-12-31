@@ -1,3 +1,26 @@
+# get_cdec.py
+# Save a data table from a California Data Exchange Center (CDEC) website 
+# into a csv file. Prints status
+# Copyright (C) 2023-2025 University of California
+# -----------------------------------------------------------------------------
+# This information is free; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This work is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# For a copy of the GNU General Public License, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# -----------------------------------------------------------------------------
+
+import pandas as pd
+import os
+from bs4 import BeautifulSoup
+import requests
 
 
 def save_table_as_csv(name, table):
@@ -15,14 +38,29 @@ def save_table_as_csv(name, table):
     -------
     nothing
     """
-    import pandas as pd
 
     try:
         df = pd.read_html(str(table))[0]
+    except ValueError as e:
+        print(f"Failed to parse HTML table for '{name}': No valid table data found")
+        print(f"Details: {e}")
+        return
+    except IndexError:
+        print(f"Failed to parse HTML table for '{name}': Table is empty or malformed")
+        return
+
+    try:
         df.to_csv(f"{name}", index=False)
-        print(f"Data table saved to {name}")
-    except Exception as e:
-        print(f"Failed to save table '{name}': {e}")
+    except PermissionError as e:
+        print(f"Failed to save '{name}': Permission denied")
+        print(f"Details: {e}")
+        return
+    except OSError as e:
+        print(f"Failed to save '{name}': File system error")
+        print(f"Details: {e}")
+        return
+
+    print(f"Data table saved to {name}")
     
 
 def download_data_table(files):
@@ -38,8 +76,6 @@ def download_data_table(files):
     info : list
         List of information about the saved files in the form [Name, Data Source]
     """
-    import requests
-    from bs4 import BeautifulSoup
 
 
     info = []
@@ -52,7 +88,25 @@ def download_data_table(files):
         info.append([name, data_source])
 
         #  Access url
-        response = requests.get(url)
+        try:
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+        except requests.exceptions.Timeout:
+            print(f"Failed to download '{name}': Request to {url} timed out")
+            continue
+        except requests.exceptions.ConnectionError as e:
+            print(f"Failed to download '{name}': Connection error for {url}")
+            print(f"Details: {e}")
+            continue
+        except requests.exceptions.HTTPError as e:
+            print(f"Failed to download '{name}': HTTP error {response.status_code} for {url}")
+            print(f"Details: {e}")
+            continue
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to download '{name}': Request failed for {url}")
+            print(f"Details: {e}")
+            continue
+
         soup = BeautifulSoup(response.content, "html.parser")
 
         #  Extract all the data tables from the webpage
@@ -97,11 +151,13 @@ def format_file(info):
                 # Write the header to the new CSV file
                 csv_writer.writerow(["Date", " Data", " Units", " Data Source"])
 
+                units = "Unknown"  # Default value for units
                 for line_number, line in enumerate(csv_reader, start=0):
                     # Get units from the first line
                     if line_number == 0:
                         labels = line[1].split()
-                        units = labels[1]
+                        if len(labels) > 1:
+                            units = labels[1]
 
                     # Process data starting from the fourth line
                     if line_number >= 1:

@@ -1,6 +1,6 @@
 # ftp_fetch.py
 # download a file using FTP
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2025 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,13 +40,45 @@ def ftp_fetch(server, dir, filename='download.txt', verbose=False):
     nothing
         
     '''
-    import ftp
+    import ftplib
+    import socket
 
-    ftp = ftplib.FTP(server)
-    ftp.login()  # anonymous login
-    ftp.cwd(dir)
-    with open(filename, 'wb') as out:
-        ftp.retrbinary('RETR ' + filename, out.write)
+    try:
+        ftp = ftplib.FTP(server)
+    except socket.gaierror as e:
+        raise ConnectionError(f'Failed to resolve FTP server address: {server}') from e
+    except socket.timeout as e:
+        raise ConnectionError(f'Connection to FTP server {server} timed out') from e
+    except OSError as e:
+        raise ConnectionError(f'Failed to connect to FTP server {server}: {e}') from e
+
+    try:
+        ftp.login()  # anonymous login
+    except ftplib.error_perm as e:
+        ftp.quit()
+        raise PermissionError(f'FTP login failed for {server}: {e}') from e
+
+    try:
+        ftp.cwd(dir)
+    except ftplib.error_perm as e:
+        ftp.quit()
+        raise FileNotFoundError(f'FTP directory not found: {dir} on {server}') from e
+
+    try:
+        with open(filename, 'wb') as out:
+            ftp.retrbinary('RETR ' + filename, out.write)
+    except ftplib.error_perm as e:
+        ftp.quit()
+        raise FileNotFoundError(f'FTP file not found: {filename} in {dir} on {server}') from e
+    except OSError as e:
+        ftp.quit()
+        raise IOError(f'Failed to write file {filename}: {e}') from e
+    finally:
+        try:
+            ftp.quit()
+        except:
+            pass
+
     if verbose:
         print(f'  Downloaded \'{filename}\' ')
-     
+
