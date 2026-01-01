@@ -91,10 +91,9 @@ def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
         )
     
     # Write projection file
-    prj = open(f"{elem_shapename}.prj", "w")
-    epsg = f'EPSG:{epsg}'
-    prj.write(pyproj.CRS(epsg).to_wkt())
-    prj.close()
+    with open(f"{elem_shapename}.prj", "w") as prj:
+        epsg = f'EPSG:{epsg}'
+        prj.write(pyproj.CRS(epsg).to_wkt())
     
     w.close()
     if verbose:

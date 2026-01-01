@@ -1,7 +1,7 @@
 # read_wells.py
 # Reads from Groundwater.dat file and builds a dictionary of groundwater hydrograph
 # info and gwhyd_sim columns, and returns the dictionary
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,7 +35,8 @@ def read_wells(infile):
     '''
     import iwfm as iwfm
 
-    gwhyd_info = open(infile).read().splitlines() 
+    with open(infile) as f:
+        gwhyd_info = f.read().splitlines() 
 
     # skip to NOUTH, number of hydrographs
     line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  

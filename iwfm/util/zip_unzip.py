@@ -35,13 +35,11 @@ def zip_unzip(filename, verbose=False):
     '''
     import zipfile
 
-    zip = open(filename, 'rb')
-    zipList = zipfile.ZipFile(zip)
-    for name in zipList.namelist()[1:]:
-        out = open(name, 'wb')
-        out.write(zipList.read(name))
-        out.close()
+    with open(filename, 'rb') as zip:
+        zipList = zipfile.ZipFile(zip)
+        for name in zipList.namelist()[1:]:
+            with open(name, 'wb') as out:
+                out.write(zipList.read(name))
     if verbose:
-        print(f'  Unzipped \'{filename}\' ')
-    zip.close() 
+        print(f'  Unzipped \'{filename}\' ') 
 

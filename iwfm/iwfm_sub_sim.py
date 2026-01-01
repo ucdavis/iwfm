@@ -1,7 +1,7 @@
 # iwfm_sub_sim.py  - Read in a list of element pairs for a submodel.
 # Use existing model Elements, Nodes, Stream specification and stratigraphy files
 # to produce new preprocessor files for the submodel and a list of model node pairs
-# Copyright (C) 2018-2021 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -69,17 +69,24 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
 
     # ** TODO: test for pickle files, read info from source if not present, error if no source
     # read information from previous dump
-    elem_list =   pickle.load(open(out_base_name + '_elems.bin', 'rb'))  
-    node_list =   pickle.load(open(out_base_name + '_nodes.bin', 'rb'))  
-    elem_nodes =  pickle.load(open(out_base_name + '_elemnodes.bin', 'rb')) 
-    node_coords = pickle.load(open(out_base_name + '_node_coords.bin', 'rb'))  
-    snode_dict =  pickle.load(open(out_base_name + '_snodes.bin', 'rb'))
-    sub_snodes =  pickle.load(open(out_base_name + '_sub_snodes.bin', 'rb'))
+    with open(out_base_name + '_elems.bin', 'rb') as f:
+        elem_list = pickle.load(f)
+    with open(out_base_name + '_nodes.bin', 'rb') as f:
+        node_list = pickle.load(f)
+    with open(out_base_name + '_elemnodes.bin', 'rb') as f:
+        elem_nodes = pickle.load(f)
+    with open(out_base_name + '_node_coords.bin', 'rb') as f:
+        node_coords = pickle.load(f)
+    with open(out_base_name + '_snodes.bin', 'rb') as f:
+        snode_dict = pickle.load(f)
+    with open(out_base_name + '_sub_snodes.bin', 'rb') as f:
+        sub_snodes = pickle.load(f)
     if verbose:
         print('  Read model elements, nodes, node coordinates and stream nodes')
 
     if have_lake:
-        lake_info = pickle.load(open(out_base_name + '_lakes.bin', 'rb'))  
+        with open(out_base_name + '_lakes.bin', 'rb') as f:
+            lake_info = pickle.load(f)
         if verbose:
             print('  Read model lakes')
 

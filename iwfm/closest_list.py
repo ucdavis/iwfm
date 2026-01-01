@@ -1,7 +1,7 @@
 # closest_list.py
 # Given two lists A[] and B[] of form (ID, X, Y), returns a list of len(A)
 # with the item of B closest to each item in A
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -108,12 +108,14 @@ if __name__ == "__main__":
         outfile = input('Output file name: ')
 
     iwfm.file_test(inpfile_1)
-    file_lines = open(inpfile_1).read().splitlines()
+    with open(inpfile_1) as f:
+        file_lines = f.read().splitlines()
     header = file_lines[0][1:]
     A = file_lines[1:]  # split off header
 
     iwfm.file_test(inpfile_2)
-    file_lines = open(inpfile_2).read().splitlines()
+    with open(inpfile_2) as f:
+        file_lines = f.read().splitlines()
     header = ','.join([header, file_lines[0][1:]])
     B = file_lines[1:]  # split off header
 

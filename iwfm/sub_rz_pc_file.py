@@ -2,7 +2,7 @@
 # Copy the rootzone ponded crops main file and replace the contents 
 # with those of the new submodel, write out the new file, and 
 # process the other non-ponded crop files
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -48,7 +48,8 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, verbose=False):
     comments = ['C','c','*','#']
     ncrop = 5
 
-    pc_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        pc_lines = f.read().splitlines()
     pc_lines.append('')
 
     line_index = iwfm.skip_ahead(0, pc_lines, 0)                # skip initial comments

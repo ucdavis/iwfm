@@ -1,7 +1,7 @@
 # read_obs.py
 # Reads observed values smp file into array obs, including observation data
 # hydrographs as lines, with observed values vs time as dots, saved as the well_name.pdf
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,11 +34,16 @@ def read_obs(file):
     
     '''
 
-    file_lines = open(file).read().splitlines() 
+    with open(file) as f:
+        file_lines = f.read().splitlines()
     file_lines = [word.replace('_', ' ') for word in file_lines]
 
     obs = []
     for item in file_lines:
         item = item.split()
         obs.append([item[0], item[1], item[2], float(item[3])])
+
+    # sort the list by first column then second then third column
+    obs.sort(key=lambda x: (x[0], x[1], x[2]))
+
     return obs

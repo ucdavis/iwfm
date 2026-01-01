@@ -1,7 +1,7 @@
 # sub_pp_stream_file.py
 # Copies the old stream file and replaces the contents with those of the new
 # submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -54,7 +54,8 @@ def sub_pp_stream_file(stream_file, new_stream_file, snode_dict, reach_info,
     '''
     import iwfm as iwfm
 
-    stream_lines = open(stream_file).read().splitlines()
+    with open(stream_file) as f:
+        stream_lines = f.read().splitlines()
 
     stream_type = stream_lines[0][1:]
 

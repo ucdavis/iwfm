@@ -37,7 +37,8 @@ def headdiff_read(headdiff_file):
         list of head difference links
 
       '''
-    hd_lines = open(headdiff_file).read().splitlines()          # open and read input file
+    with open(headdiff_file) as f:
+        hd_lines = f.read().splitlines()          # open and read input file
     hdiff_pairs, hdiff_sites, hdiff_link = [], [], []
 
     for line in hd_lines:

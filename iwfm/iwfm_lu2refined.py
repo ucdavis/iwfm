@@ -1,6 +1,6 @@
 # iwfm_lu2refined.py
 # Modify IWFM land use files for a scenario
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,16 +41,12 @@ def iwfm_lu2refined(in_lu_file,lu_factors,verbose=False):
 
 
     # read the original IWFM Land Use file
-    lu_lines = open(in_lu_file).read().splitlines()  # open and read input file
+    with open(in_lu_file) as f:
+        lu_lines = f.read().splitlines()  # open and read input file
     line_index = iwfm.skip_ahead(0, lu_lines, 4)  # skip comments and header
 
     # open the output land use file
     out_lu_file_name = os.path.basename(in_lu_file).split('.')[0]+'_refined.dat'
-    out_lu_file = open(out_lu_file_name, 'w')
-
-    # write the header to the new land use file
-    for line in range(line_index):
-        out_lu_file.write(lu_lines[line]+'\n')
 
     # get number of time periods in the original land use file
     ntimes = 0
@@ -63,44 +59,46 @@ def iwfm_lu2refined(in_lu_file,lu_factors,verbose=False):
     # get the number of lines per time period
     nlines = int((len(lu_lines) - line_index) / ntimes)
 
+    with open(out_lu_file_name, 'w') as out_lu_file:
+        # write the header to the new land use file
+        for line in range(line_index):
+            out_lu_file.write(lu_lines[line]+'\n')
 
-    # step through time periods, reading the original land use file and writing the new land use file
-    for time_period in range(0,ntimes):
-        orig_land_use = {}
-        # get date from the first line of the time period
-        for line in range(0,nlines):
-            this_line = lu_lines[line_index].split()
+        # step through time periods, reading the original land use file and writing the new land use file
+        for time_period in range(0,ntimes):
+            orig_land_use = {}
+            # get date from the first line of the time period
+            for line in range(0,nlines):
+                this_line = lu_lines[line_index].split()
 
-            if len(orig_land_use) == 0:                 # first line contains date
-                this_date = this_line.pop(0)
-                if verbose: print(f'  Processing {this_date}')
+                if len(orig_land_use) == 0:                 # first line contains date
+                    this_date = this_line.pop(0)
+                    if verbose: print(f'  Processing {this_date}')
 
-            key = int(this_line[0])
-            vals = []
-            for item in this_line[1:]:
-                vals.append(float(item))
-            orig_land_use[key] = vals
-            line_index += 1
+                key = int(this_line[0])
+                vals = []
+                for item in this_line[1:]:
+                    vals.append(float(item))
+                orig_land_use[key] = vals
+                line_index += 1
 
-        # write one time period of land use data to the new land use file
-        count = 0
-        for factor in lu_factors:
-            refined_elem, orig_elem, area_mult = factor[0], factor[1], factor[2]
+            # write one time period of land use data to the new land use file
+            count = 0
+            for factor in lu_factors:
+                refined_elem, orig_elem, area_mult = factor[0], factor[1], factor[2]
 
-            orig_areas = orig_land_use[orig_elem]
-            new_areas = [round(orig_areas[i]*area_mult,3) for i in range(0,len(orig_areas))]
+                orig_areas = orig_land_use[orig_elem]
+                new_areas = [round(orig_areas[i]*area_mult,3) for i in range(0,len(orig_areas))]
 
-            new_areas_txt = '\t'.join([str(i) for i in new_areas])
+                new_areas_txt = '\t'.join([str(i) for i in new_areas])
 
-            if count == 0:  # first element -> add date
-                new_areas_txt = this_date + '\t' + str(refined_elem) + '\t' + new_areas_txt
-            else:
-                new_areas_txt = '\t' + str(refined_elem) + '\t' + new_areas_txt
+                if count == 0:  # first element -> add date
+                    new_areas_txt = this_date + '\t' + str(refined_elem) + '\t' + new_areas_txt
+                else:
+                    new_areas_txt = '\t' + str(refined_elem) + '\t' + new_areas_txt
 
-            out_lu_file.write(f'{new_areas_txt}\n')
-            count += 1
-
-    out_lu_file.close()
+                out_lu_file.write(f'{new_areas_txt}\n')
+                count += 1
 
     if verbose: print(f'  Wrote {ntimes} time periods of land use data to {out_lu_file_name}')
 

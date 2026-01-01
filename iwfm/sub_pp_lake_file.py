@@ -1,7 +1,7 @@
 # sub_pp_lake_file.py
 # Copies the old lake file and replaces the contents with those of the new
 # submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ def sub_pp_lake_file(lake_file, new_lake_file, lake_info):
     '''
     import iwfm as iwfm
 
-    lake_lines = open(lake_file).read().splitlines()  # open and read input file
+    with open(lake_file) as f:
+        lake_lines = f.read().splitlines()  # open and read input file
 
     line_index = iwfm.skip_ahead(0, lake_lines, 0)  # skip comments
     lake_lines[line_index] = iwfm.pad_both(str(len(lake_info)), f=4, b=35) + ' '.join(

@@ -1,7 +1,7 @@
 # headall2surfer.py
 # Read headall.out file and write out a surfer-formated file for all layers for
 # the specified time steps
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -88,7 +88,8 @@ if __name__ == '__main__':
     data, layers, dates, nodes = iwfm.headall_read(heads_file)
 
     # read dates to create ooutput files for
-    date_lines = open(out_dates_file).read().splitlines() 
+    with open(out_dates_file) as f:
+        date_lines = f.read().splitlines() 
     out_dates = [line for line in date_lines]
 
     # get preprocessor file names

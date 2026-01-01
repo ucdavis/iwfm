@@ -1,7 +1,7 @@
 # read_lu_change_factors.py
 # When changing IWFM land use for a scenario, read the change factors
 # for each change zone
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,7 +35,8 @@ def read_lu_change_factors(in_chg_file):
     '''
     import re
 
-    temp = open(in_chg_file).read().splitlines()
+    with open(in_chg_file) as f:
+        temp = f.read().splitlines()
     change_table = []
     for i in range(0, len(temp)):
         item = re.split(';|,|\*|\n|\t', temp[i])

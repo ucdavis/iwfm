@@ -1,6 +1,6 @@
 # iwfm_lu4scenario.py
 # Modify IWFM land use files for a scenario
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -63,7 +63,8 @@ def iwfm_lu4scenario(
     comments = 'Cc*#'
 
     # -- Non-Ponded Area file
-    npag_data = open(in_npag_file).read().splitlines()
+    with open(in_npag_file) as f:
+        npag_data = f.read().splitlines()
     if verbose:
         print(f'   Read {len(npag_data):,} lines from {in_npag_file}')
 
@@ -91,8 +92,9 @@ def iwfm_lu4scenario(
         npag_table.append(line)
         npag_index += 1
 
-    # -- Ponded Area file 
-    pag_data = open(in_ponded_file).read().splitlines() 
+    # -- Ponded Area file
+    with open(in_ponded_file) as f:
+        pag_data = f.read().splitlines() 
     if verbose:
         print(f'   Read {len(pag_data):,} lines from {in_ponded_file}')
 
@@ -120,8 +122,9 @@ def iwfm_lu4scenario(
         pag_table.append(line)
         pag_index += 1
 
-    # -- Urban Area file 
-    urb_data = open(in_urban_file).read().splitlines() 
+    # -- Urban Area file
+    with open(in_urban_file) as f:
+        urb_data = f.read().splitlines() 
     if verbose:
         print(f'   Read {len(urb_data):,} lines from {in_urban_file}')
 
@@ -150,7 +153,8 @@ def iwfm_lu4scenario(
         urb_index += 1
 
     # -- Native and Riparian Area file
-    nvrv_data = open(in_nvrv_file).read().splitlines()
+    with open(in_nvrv_file) as f:
+        nvrv_data = f.read().splitlines()
     if verbose:
         print(f'   Read {len(nvrv_data):,} lines from {in_nvrv_file}')
 
@@ -198,15 +202,14 @@ def iwfm_lu4scenario(
 
     # -- write to file
     outFileName = out_base_name + '_Landuse.dat'
-    outFile = open(outFileName, 'w', newline='')
-    outFile.write(f'# Date: {date}\n')
-    outFile.write(
-        '# Elem\tNPA1\tNPA2\tNPA3\tNPA4\tNPA5\tNPA6\tNPA7\tNPA8\tNPA9\tNPA10\tNPA11\tNPA12\tNPA13\tNPA14\tNPA15\tNPA16\tNPA17\tNPA18\tNPA19\tNPA20\tPA1\tPA2\tPA3\tPA4\tPA5\tNV\tRV\tUrb\n'
-    )
-    for i in range(0, len(npag_table)):
-        outFile.write('\t'.join(land_use[i]))
-        outFile.write('\n')
-    outFile.close
+    with open(outFileName, 'w', newline='') as outFile:
+        outFile.write(f'# Date: {date}\n')
+        outFile.write(
+            '# Elem\tNPA1\tNPA2\tNPA3\tNPA4\tNPA5\tNPA6\tNPA7\tNPA8\tNPA9\tNPA10\tNPA11\tNPA12\tNPA13\tNPA14\tNPA15\tNPA16\tNPA17\tNPA18\tNPA19\tNPA20\tPA1\tPA2\tPA3\tPA4\tPA5\tNV\tRV\tUrb\n'
+        )
+        for i in range(0, len(npag_table)):
+            outFile.write('\t'.join(land_use[i]))
+            outFile.write('\n')
     if verbose:
         print(f'   Wrote land use data for {date} to {outFileName}')
     return

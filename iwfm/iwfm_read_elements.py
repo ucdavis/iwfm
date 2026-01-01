@@ -1,6 +1,6 @@
 # iwfm_read_elements.py
 # read IWFM preprocessor elements file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -43,7 +43,8 @@ def iwfm_read_elements(elem_file, verbose=False):
 
     iwfm.file_test(elem_file)
 
-    elem_lines = open(elem_file).read().splitlines()  
+    with open(elem_file) as f:
+        elem_lines = f.read().splitlines()  
     line_index = iwfm.skip_ahead(0, elem_lines, 0) 
 
     elements = int(elem_lines[line_index].split()[0])  

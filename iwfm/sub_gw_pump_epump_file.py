@@ -1,7 +1,7 @@
 # sub_gw_pump_epump_file.py
 # Copies the old element pumping file and replaces the contents with those 
 # of the new submodel, and writes out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,7 +46,8 @@ def sub_gw_pump_epump_file(old_filename, new_filename, elems, verbose=False):
 
     comments = ['C','c','*','#']
 
-    epump_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        epump_lines = f.read().splitlines()
     epump_lines.append('')
 
     line_index = iwfm.skip_ahead(0, epump_lines, 0)           # skip factors and comments

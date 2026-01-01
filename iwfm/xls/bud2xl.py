@@ -46,7 +46,8 @@ def bud2xl(budget_file, excel_file, verbose=False, row = 6):
     cwd = os.getcwd()
 
     # -- read the Budget file into array file_lines
-    file_lines = open(budget_file).read().splitlines() 
+    with open(budget_file) as f:
+        file_lines = f.read().splitlines() 
     file_lines = [word.replace('_24:00', ' ') for word in file_lines]
 
     # -- Get the Budget file header and footer info

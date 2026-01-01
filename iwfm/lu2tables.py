@@ -1,6 +1,6 @@
 # lu2tables.py
 # Read IWFM land use file and write to a separate file for each land use type
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -65,7 +65,8 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
     if verbose:
         print(f'  Creating land use area tables from {land_use_file}')  
 
-    file_lines = open(land_use_file).read().splitlines()  # open input file
+    with open(land_use_file) as f:
+        file_lines = f.read().splitlines()  # open input file
 
     # determine how many data lines per time step
     # Check lines starting at the bottom, find first line with length > 5

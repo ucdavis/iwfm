@@ -45,7 +45,8 @@ def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
     output_file = station_file_base + '_TS.out'
 
     # -- read stations into a dictionary
-    file_lines = open(station_file).read().splitlines() 
+    with open(station_file) as f:
+        file_lines = f.read().splitlines() 
     if verbose:
         print(f'Read {len(file_lines):,} stations from {station_file}')
 

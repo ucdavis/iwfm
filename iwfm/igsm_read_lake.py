@@ -1,6 +1,6 @@
 # igsm_read_lake.py
 # Read an IGSM pre-processor lakes file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ def igsm_read_lake(lake_file):
     '''
     import iwfm as iwfm
 
-    lake_lines = open(lake_file).read().splitlines()  # open and read input file
+    with open(lake_file) as f:
+        lake_lines = f.read().splitlines()  # open and read input file
     lake_index = 0  # start at the top
     lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  # skip comments
     nlakes = int(lake_lines[lake_index].split()[0])

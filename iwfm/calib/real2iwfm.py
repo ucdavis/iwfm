@@ -147,7 +147,8 @@ def read_overwrite_file(overwrite_file, nnodes, nlay, param_types, verbose=False
     '''
     import iwfm as iwfm
 
-    in_lines = open(overwrite_file).read().splitlines()               # open and read input file
+    with open(overwrite_file) as f:
+        in_lines = f.read().splitlines()               # open and read input file
 
     line_index = 0
     line_index = iwfm.skip_ahead(line_index,in_lines,0)               # skip comments 
@@ -246,7 +247,8 @@ def real2iwfm(verbose=False):
 
                 else:
                     iwfm.file_test(param_file)
-                    file_lines = open(param_file).read().splitlines()
+                    with open(param_file) as f:
+                        file_lines = f.read().splitlines()
                     for line in file_lines:
                         text = line.split()
                         layer_nodes.append(int(text[1]))

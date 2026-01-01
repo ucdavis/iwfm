@@ -2,7 +2,7 @@
 # Copy the rootzone urban main file and replace the contents 
 # with those of the new submodel, write out the new file, and 
 # process the other non-ponded crop files
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ def sub_rz_urban_file(old_filename, sim_dict_new, elems, verbose=False):
 
     comments = ['C','c','*','#']
 
-    ur_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        ur_lines = f.read().splitlines()
     ur_lines.append('')
 
     line_index = iwfm.skip_ahead(0, ur_lines, 0)                # skip initial comments

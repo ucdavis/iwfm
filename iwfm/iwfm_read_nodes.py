@@ -1,6 +1,6 @@
 # iwfm_read_nodes.py
 # read IWFM preprocessor nodes file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@ def iwfm_read_nodes(node_file, factor=0.0):
 
     iwfm.file_test(node_file)
 
-    node_lines = open(node_file).read().splitlines()  
+    with open(node_file) as f:
+        node_lines = f.read().splitlines()  
 
     line_index = iwfm.skip_ahead(0, node_lines, 0)  
 

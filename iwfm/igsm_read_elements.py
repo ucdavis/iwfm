@@ -1,6 +1,6 @@
 # igsm_read_elements.py
 # Read an IGSM pre-processor element file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -38,7 +38,8 @@ def igsm_read_elements(elem_file):
     import iwfm as iwfm
 
     # -- read the Element file into array file_lines
-    elem_lines = open(elem_file).read().splitlines()  # open and read input file
+    with open(elem_file) as f:
+        elem_lines = f.read().splitlines()  # open and read input file
 
     line_index = 0  # start at the top
     line_index = iwfm.skip_ahead(line_index, elem_lines, 0)  # skip comments

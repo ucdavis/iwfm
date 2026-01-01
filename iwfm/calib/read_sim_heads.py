@@ -32,9 +32,10 @@ def read_sim_heads(gwhyd_file):
     dates : list
         list of dates corresponding to simulated values
     '''
-    from datetime import datetime  
+    from datetime import datetime
 
-    gwhyd_lines = open(gwhyd_file).read().splitlines()       # open and read input file
+    with open(gwhyd_file) as f:
+        gwhyd_lines = f.read().splitlines()       # open and read input file
     gwhyd_lines = [word.replace('_24:00',' ') for word in gwhyd_lines]
 
     dates = []

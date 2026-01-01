@@ -1,7 +1,7 @@
 # sub_pp_strat_file.py
 # Copies the old strat file and replaces the contents with those of the new
 # submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ def sub_pp_strat_file(strat_file, new_strat_file, node_list):
     '''
     import iwfm as iwfm
 
-    strat_lines = open(strat_file).read().splitlines() 
+    with open(strat_file) as f:
+        strat_lines = f.read().splitlines() 
 
     while len(strat_lines[-1]) < 2:
         strat_lines.pop()

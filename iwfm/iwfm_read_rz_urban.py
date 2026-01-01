@@ -1,6 +1,6 @@
 # iwfm_read_rz_urban.py
 # Read urban parameter data from a file and organize them into lists
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ def iwfm_read_rz_urban(file):
     import iwfm as iwfm
     import numpy as np
 
-    ur_lines = open(file).read().splitlines()                   # open and read input file
+    with open(file) as f:
+        ur_lines = f.read().splitlines()                   # open and read input file
 
     line_index = iwfm.skip_ahead(0, ur_lines, 0)                # skip to number of crop types
     ur_area_file = ur_lines[line_index].split()[0]

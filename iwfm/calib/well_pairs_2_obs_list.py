@@ -59,10 +59,12 @@ def well_pairs_2_obs_list(well_pair_file, obs_file, days=15, verbose=False):
       '''
     import datetime
 
-    well_lines = open(well_pair_file).read().splitlines()         # open and read input file
+    with open(well_pair_file) as f:
+        well_lines = f.read().splitlines()         # open and read input file
     well_lines.pop(0)                                             # remove first line of well_lines (header)
 
-    obs_lines =  open(obs_file).read().splitlines()               # open and read input file
+    with open(obs_file) as f:
+        obs_lines =  f.read().splitlines()               # open and read input file
     obs_lines.pop(0)                                              # remove first line of obs_lines (header)
 
     # Convert second column of obs_lines to datetime objects

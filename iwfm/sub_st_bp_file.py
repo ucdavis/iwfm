@@ -1,7 +1,7 @@
 # sub_st_bp_file.py
 # Copy the stream bypass specification file and replace the contents with
 # those of the new submodel, and write out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -55,7 +55,8 @@ def sub_st_bp_file(old_filename, new_filename, elem_list, snode_list, verbose=Fa
         elems.append(int(e[0]))
 
 
-    bp_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        bp_lines = f.read().splitlines()
     bp_lines.append('\n\n\n\n\n')
 
     line_index = iwfm.skip_ahead(0, bp_lines, 0)                # skip initial comments

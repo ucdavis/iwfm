@@ -40,7 +40,8 @@ def igsm2shp(main_file, shape_name, verbose=False):
     import iwfm.gis as gis
 
     # read main_file for file names
-    main_lines = open(main_file).read().splitlines()
+    with open(main_file) as f:
+        main_lines = f.read().splitlines()
     line_index = iwfm.skip_ahead(0, main_lines, 6)
     elem_file = main_lines[line_index].split()[0]
     line_index += 1

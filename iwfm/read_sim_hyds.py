@@ -1,6 +1,6 @@
 # read_sim_hyds.py
 # Read simulated hydrographs from IWFM hydrograph.out file
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ def read_sim_hyds(gwhyd_files):
     gwhyd_sim = []
 
     for k in range(0, len(gwhyd_files)):
-        gwhyd_lines = (open(gwhyd_files[k]).read().splitlines())
+        with open(gwhyd_files[k]) as f:
+            gwhyd_lines = (f.read().splitlines())
         gwhyd_lines = [word.replace('_24:00', ' ') for word in gwhyd_lines]
 
         temp_sim = []

@@ -1,7 +1,7 @@
 # read_hyd_dict.py
 # R Read hydrograph info from Groundwater.dat file and build a dictionary of 
 # groundwater hydrograph info
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@ def read_hyd_dict(gw_dat_file):
     import iwfm as iwfm
 
     well_dict = {}
-    gwhyd_info = open(gw_dat_file).read().splitlines()  # open and read input file
+    with open(gw_dat_file) as f:
+        gwhyd_info = f.read().splitlines()  # open and read input file
 
     # skip to NOUTH, number of hydrographs
     line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  

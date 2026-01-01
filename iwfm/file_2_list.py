@@ -1,6 +1,6 @@
 # file_2_list.py
 # Converts a portion of a text file to a list of file lines
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ def file_2_list(filename, slice_end=0, slice_start=0, skip=0):
     outlist : list of strings
 
         '''
-    lines = open(filename).read().splitlines()
+    with open(filename) as f:
+        lines = f.read().splitlines()
 
     out_list, i = [], skip 
     if slice_end < slice_start:

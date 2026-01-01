@@ -1,6 +1,6 @@
 # iwfm_read_et_vals.py 
 # Read evapotranspiration values from a file and organize them into lists
-# Copyright (C) 2023-2024 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -112,7 +112,8 @@ def iwfm_read_et_vals(file, verbose=False):
 
     if verbose: print(f"Entered iwfm_read_et_vals() with {file}")
 
-    et_lines = open(file).read().splitlines()                   # open and read input file
+    with open(file) as f:
+        et_lines = f.read().splitlines()                   # open and read input file
 
     line_index = iwfm.skip_ahead(0, et_lines, 0)                # skip to next value line
     nevap = int(et_lines[line_index].split()[0])                # number of columns

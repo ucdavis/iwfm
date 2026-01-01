@@ -1,6 +1,6 @@
 # dicu2table.py
 # Read DICU file and write out to text file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,9 +41,10 @@ def dicu2table(data_file, verbose=False):
     data_file_ext = data_file[data_file.find('.') + 1 : len(data_file) + 1]
 
     if verbose:
-        print(f'  Creating data table from {data_file}') 
+        print(f'  Creating data table from {data_file}')
 
-    file_lines = open(data_file).read().splitlines() 
+    with open(data_file) as f:
+        file_lines = f.read().splitlines() 
 
     # how many lines per data set?
     set_lines = 1

@@ -1,6 +1,6 @@
 # igsm_read_streams.py
 # Read an IGSM pre-processor streams file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ def igsm_read_streams(stream_file):
     '''
     import iwfm as iwfm
 
-    stream_lines = open(stream_file).read().splitlines() 
+    with open(stream_file) as f:
+        stream_lines = f.read().splitlines() 
     stream_index = 0  # start at the top
     stream_index = iwfm.skip_ahead(stream_index, stream_lines, 0)  
     nreach = int(stream_lines[stream_index].split()[0])

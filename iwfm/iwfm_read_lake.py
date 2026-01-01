@@ -1,6 +1,6 @@
 # iwfm_read_lake.py
 # read IWFM preprocessor lakes file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,7 +46,8 @@ def iwfm_read_lake(lake_file):
     import iwfm as iwfm
 
     iwfm.file_test(lake_file)
-    lake_lines = open(lake_file).read().splitlines()  
+    with open(lake_file) as f:
+        lake_lines = f.read().splitlines()  
 
     lake_index = iwfm.skip_ahead(0, lake_lines, 0)  
     nlakes = int(lake_lines[lake_index].split()[0])

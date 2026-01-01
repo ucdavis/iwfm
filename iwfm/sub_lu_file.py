@@ -1,7 +1,7 @@
 # sub_lu_file.py
 # Copy original land use input file, remove the elements that are not in the
 # submodel, and write out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@ def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     import iwfm as iwfm
 
     # -- read the land use file into array lu_lines
-    lu_lines = open(in_filename).read().splitlines()  # open and read input file
+    with open(in_filename) as f:
+        lu_lines = f.read().splitlines()  # open and read input file
 
     line_index = iwfm.skip_ahead(0, lu_lines, 4)  # skip comments
 

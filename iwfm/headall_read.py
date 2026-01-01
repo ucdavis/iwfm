@@ -1,6 +1,6 @@
 # headall_read.py
 # Read headall.out file and return as lists
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -48,8 +48,9 @@ def headall_read(input_file, skip=5, verbose=False):
         model nodes corresponding to data columns
 
     '''
-    
-    file_lines = open(input_file).read().splitlines() 
+
+    with open(input_file) as f:
+        file_lines = f.read().splitlines() 
 
     line = skip
     nodes = file_lines[line].split()  

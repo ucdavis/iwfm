@@ -1,7 +1,7 @@
 # sub_gw_pump_file.py
 # Copies the old groundwater pumping main file and replaces the contents 
 # with those of the new submodel, and writes out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -52,7 +52,8 @@ def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, verbose=F
 
     comments = ['C','c','*','#']
 
-    pump_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        pump_lines = f.read().splitlines()
     pump_lines.append('')
 
     line_index = iwfm.skip_ahead(1, pump_lines, 0)                # skip initial comments

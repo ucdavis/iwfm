@@ -1,6 +1,6 @@
 # sub_pp_nodes.py
 # Reads the element file and returns a list of the nodes in the submodel
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -42,7 +42,8 @@ def sub_pp_nodes(elem_file, elem_list):
     for e in elem_list:
         elems.append(int(e[0]))
 
-    elem_lines = open(elem_file).read().splitlines()  # open and read input file
+    with open(elem_file) as f:
+        elem_lines = f.read().splitlines()  # open and read input file
 
     line_index = iwfm.skip_ahead(0, elem_lines, 0)  # skip comments
     # -- skip to number of subregions

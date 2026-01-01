@@ -42,8 +42,9 @@ def get_obs_hyd(obs_file,start_date):
     '''
 
     import iwfm as iwfm
-  
-    obs_lines = open(obs_file).read().splitlines()                         # obs_lines has observations to match
+
+    with open(obs_file) as f:
+        obs_lines = f.read().splitlines()                         # obs_lines has observations to match
 
     obs_data, obs_sites = [], []
     for count, line in enumerate(obs_lines):

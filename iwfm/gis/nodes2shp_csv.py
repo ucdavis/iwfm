@@ -65,10 +65,9 @@ def nodes2shp_csv(node_coord_dict, shapename='nodes.shp', epsg=26910, verbose=Fa
         )
     
     # Write projection file
-    prj = open(f"{shapename}.prj", "w")
-    epsg = f'EPSG:{epsg}'
-    prj.write(pyproj.CRS(epsg).to_wkt())
-    prj.close()
+    with open(f"{shapename}.prj", "w") as prj:
+        epsg = f'EPSG:{epsg}'
+        prj.write(pyproj.CRS(epsg).to_wkt())
     
     w.close()
     if verbose: print(f'  Wrote shapefile {shapename}.shp')

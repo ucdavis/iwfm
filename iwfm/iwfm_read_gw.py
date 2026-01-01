@@ -1,6 +1,6 @@
 # iwfm_read_gw.py
 # read IWFM simulation groundwater file for file names
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -96,7 +96,8 @@ def iwfm_read_gw(gw_file, verbose=False):
 
     comments, gw_dict = 'Cc*#', {}
 
-    file_lines = open(gw_file).read().splitlines()  
+    with open(gw_file) as f:
+        file_lines = f.read().splitlines()  
 
     # get sub-process file names (or 'none' if not present)
     line_index = iwfm.skip_ahead(1, file_lines, 0) 

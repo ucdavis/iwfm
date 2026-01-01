@@ -56,7 +56,8 @@ def read_settings(in_file='settings.fig'):
         return datespec, headerspec, idate, iheader
 
     # == read the file into array file_lines
-    file_lines = open(in_file).read().splitlines()          # open and read input file
+    with open(in_file) as f:
+        file_lines = f.read().splitlines()          # open and read input file
 
     for cline in file_lines:
         cline = cline.lower().lstrip()  # convert to lower case and remove leading whitespace

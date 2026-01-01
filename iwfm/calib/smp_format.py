@@ -42,7 +42,8 @@ def smp_format( infile, nwidth=20, verbose=False):
 
     iwfm.file_test(infile)
 
-    smp_lines = open(infile).read().splitlines()
+    with open(infile) as f:
+        smp_lines = f.read().splitlines()
     if verbose: print(f'\n  Read {len(smp_lines):,} lines from {infile}')
 
     out_lines = []

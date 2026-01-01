@@ -1,7 +1,7 @@
 # sub_gw_pump_well_file.py
 # Copies the old well pumping file and replaces the contents with those 
 # of the new submodel, and writes out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -50,7 +50,8 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
 
     comments = ['C','c','*','#']
 
-    well_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        well_lines = f.read().splitlines()
     well_lines.append('')
 
     line_index = iwfm.skip_ahead(0, well_lines, 0)           # skip factors and comments

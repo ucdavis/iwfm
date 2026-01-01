@@ -83,10 +83,9 @@ def elem2shp(elem_ids, elem_nodes, node_coord_dict, elem_sub, lakes, shape_name,
         w.record(elem_id=elem_ids[i], subregion=elem_sub[i], lake_no=lake_no)
     
     # Create .prj file for spatial reference
-    prj = open(f"{shapename[:-4]}.prj", "w")
-    epsg = pyproj.CRS.from_epsg(epsg)
-    prj.write(epsg.to_wkt())
-    prj.close()
+    with open(f"{shapename[:-4]}.prj", "w") as prj:
+        epsg = pyproj.CRS.from_epsg(epsg)
+        prj.write(epsg.to_wkt())
     
     # Save and close the shapefile
     w.close()

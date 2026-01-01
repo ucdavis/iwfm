@@ -1,6 +1,6 @@
 # write_flows.py
 # Write flow data frm table to csv file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,19 +46,19 @@ def write_flows(data_file_base, file_type, table, site_info, verbose=False):
     import numpy as np
 
     outFileName = os.path.splitext(data_file_base)[0] + file_type + '.csv'
-    outFile = open(outFileName, 'w', newline='')
-    outWriter = csv.writer(outFile)
 
-    # write header info
-    out_sites = np.array(site_info).T  # transpose
-    for i in range(0, len(out_sites)):
-        outWriter.writerow(out_sites[i])
+    with open(outFileName, 'w', newline='') as outFile:
+        outWriter = csv.writer(outFile)
 
-    # write out_table
-    out_table = np.array(table).T  # transpose
-    for i in range(0, len(out_table)):
-        outWriter.writerow(out_table[i])
-    outFile.close()
+        # write header info
+        out_sites = np.array(site_info).T  # transpose
+        for i in range(0, len(out_sites)):
+            outWriter.writerow(out_sites[i])
+
+        # write out_table
+        out_table = np.array(table).T  # transpose
+        for i in range(0, len(out_table)):
+            outWriter.writerow(out_table[i])
 
     if verbose:
         print(f'  Wrote {len(table)} cols x {len(table[0])} rows to {outFileName}')

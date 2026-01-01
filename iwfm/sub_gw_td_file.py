@@ -1,7 +1,7 @@
 # sub_gw_td_file.py
 # Copies the groundwater tile drain file and replaces the contents with those of the new
 # submodel, and writes out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -49,7 +49,8 @@ def sub_gw_td_file(old_filename, new_filename, node_list, verbose=False):
     for n in node_list:
         nodes.append(n)
 
-    td_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        td_lines = f.read().splitlines()
     td_lines.append('')
 
     line_index = iwfm.skip_ahead(0, td_lines, 0)                # skip initial comments

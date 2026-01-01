@@ -30,9 +30,10 @@ def smp_read(smp_file_name):
     obs : list
         list of lists of observed values
     '''
-    from datetime import datetime  
+    from datetime import datetime
 
-    file_lines = open(smp_file_name).read().splitlines()       # open and read input file
+    with open(smp_file_name) as f:
+        file_lines = f.read().splitlines()       # open and read input file
 
     # convert smp formatted observations to list of lists
     obs = []

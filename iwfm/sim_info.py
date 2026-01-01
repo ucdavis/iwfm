@@ -1,6 +1,6 @@
 # sim_info.py
 # Read IWFM Simulation main file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ def sim_info(in_file):
 
     import iwfm as iwfm
 
-    sim_lines = open(in_file).read().splitlines()          # open and read input file
+    with open(in_file) as f:
+        sim_lines = f.read().splitlines()          # open and read input file
 
     in_index = iwfm.skip_ahead(0,sim_lines,skip=14)
     start_date = sim_lines[in_index].split()[0]

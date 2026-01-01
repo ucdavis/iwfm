@@ -41,7 +41,8 @@ def ltsmp(input_file, output_file, zero_offset=36, neg_val=0.001):
 
     '''
 
-    file_lines = open(input_file).read().splitlines()          # open and read input file
+    with open(input_file) as f:
+        file_lines = f.read().splitlines()          # open and read input file
 
     out_lines = []
     for line in file_lines:

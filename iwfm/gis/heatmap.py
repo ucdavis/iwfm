@@ -40,8 +40,8 @@ def heatmap(infile, outfile, title):
     import folium
     from folium.plugins import HeatMap
 
-    f = open(infile, "r")
-    lines = f.readlines()
+    with open(infile, "r") as f:
+        lines = f.readlines()
     lines.pop(0)
     data = []
     incidents = [list(map(float, l.strip().split(","))) for l in lines]

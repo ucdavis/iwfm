@@ -1,6 +1,6 @@
 # read_sim_wells.py
 # Read observation well information from IWFM Groundater.dat file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ def read_sim_wells(gw_file):
     import iwfm as iwfm
 
     well_dict, well_list = {}, []
-    gwhyd_info = open(gw_file).read().splitlines() 
+    with open(gw_file) as f:
+        gwhyd_info = f.read().splitlines() 
 
     line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  # skip to NOUTH
     nouth = int(gwhyd_info[line_index].split()[0])

@@ -1,6 +1,6 @@
 # iwfm_read_elempump.py
 # read IWFM Simulation Element Pumping file
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -67,7 +67,8 @@ def iwfm_read_elempump(elempump_file_name, elem_ids, ag=1, ur=2, comment=0, verb
 
     iwfm.file_test(elempump_file_name)
 
-    elempump_lines = open(elempump_file_name).read().splitlines()
+    with open(elempump_file_name) as f:
+        elempump_lines = f.read().splitlines()
     line_index = iwfm.skip_ahead(0, elempump_lines, 0)
 
     pump_lines = int(elempump_lines[line_index].split()[0])                 # number of lines of pumping data

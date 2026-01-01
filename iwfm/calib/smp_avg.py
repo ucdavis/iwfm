@@ -43,7 +43,8 @@ def smp_avg( smp_file, verbose=False):
 
     iwfm.file_test(smp_file)
 
-    smp_lines = open(smp_file).read().splitlines()
+    with open(smp_file) as f:
+        smp_lines = f.read().splitlines()
     if verbose: print(f'\n  Read {len(smp_lines):,} lines from {smp_file}')
 
     sites = []

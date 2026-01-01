@@ -45,7 +45,8 @@ def get_hyd_info(ftype,file_dict):
     colid     = file_dict[ftype][8]   # col no of observation site name
     skips     = file_dict[ftype][9]   # lines to skip, different for each ftype
 
-    in_lines = open(main_file).read().splitlines()                      # open and read input file
+    with open(main_file) as f:
+        in_lines = f.read().splitlines()                      # open and read input file
     line_index = 5  # skip first few lines
 
     if ftype == 'Tile drains':

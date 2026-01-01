@@ -55,7 +55,8 @@ def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0, rhigh=1000000, em
         print(' pilot point values contained in a pilot points file.')
     
     iwfm.file_test(pp_file_name)
-    pp_file_lines = open(pp_file_name).read().splitlines()
+    with open(pp_file_name) as f:
+        pp_file_lines = f.read().splitlines()
     if verbose: print(f'\n Read {pp_file_name}')
  
     no_nodes = int(pp_file_lines[1])            # number of model nodes
@@ -67,7 +68,8 @@ def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0, rhigh=1000000, em
 
     # read parameter values at pilot points into a dictionary
     iwfm.file_test(param_file_name)
-    param_file_lines = open(param_file_name).read().splitlines()
+    with open(param_file_name) as f:
+        param_file_lines = f.read().splitlines()
     if verbose: print(f' Read {param_file_name}')
     pp_params, i = {}, 0
     for line in param_file_lines:

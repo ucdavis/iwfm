@@ -1,7 +1,7 @@
 # sub_st_inflow_file.py
 # Copy the stream inflow file and replace the contents with those of the new
 # submodel, and write out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -45,7 +45,8 @@ def sub_st_inflow_file(old_filename, new_filename, snode_list, verbose=False):
 
     comments = ['C','c','*','#']
 
-    inflow_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        inflow_lines = f.read().splitlines()
     inflow_lines.append('')
 
     line_index = iwfm.skip_ahead(0, inflow_lines, 0)                # skip initial comments

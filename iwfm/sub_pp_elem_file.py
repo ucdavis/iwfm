@@ -1,7 +1,7 @@
 # sub_pp_elem_file.py
 # Copies the old element file and replaces the contents with those of the new
 # submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -51,7 +51,8 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
     for e in elem_list:
         elems.append(e[0])
 
-    elem_lines = open(elem_file).read().splitlines()  # open and read input file
+    with open(elem_file) as f:
+        elem_lines = f.read().splitlines()  # open and read input file
 
     line_index = iwfm.skip_ahead(0, elem_lines, 0)  # skip comments
     elem_lines[line_index] = iwfm.pad_both(str(len(elem_list)), f=4, b=35) + ' '.join(

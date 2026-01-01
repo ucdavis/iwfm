@@ -1,6 +1,6 @@
 # iwfm_model.py
 # Python class for IWFM model information
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -75,36 +75,37 @@ class iwfm_model:
 
 
     # -- functions to return information
-    def nlayers(self):
-        return self.nlayers
+    def get_nlayers(self):
+        return self._nlayers
 
-    def lse(self):
-        return self.lse
+    def get_lse(self):
+        return getattr(self, '_lse', None)
 
     def aquifer_thickness(self):
-        return self.aquifer_thick
+        return getattr(self, 'aquifer_thick', None)
 
-    def aquifer_top(self):
-        return self.aquifer_top
+    def get_aquifer_top(self):
+        return getattr(self, '_aquifer_top', None)
 
-    def aquifer_bottom(self):
-        return self.aquifer_bottom
+    def get_aquifer_bottom(self):
+        return getattr(self, '_aquifer_bottom', None)
 
     def aquitard_thickness(self):
-        return self.aquitard_thick
+        return getattr(self, 'aquitard_thick', None)
 
-    def aquitard_top(self):
-        return self.aquitard_top
+    def get_aquitard_top(self):
+        return getattr(self, '_aquitard_top', None)
 
-    def aquitard_bottom(self):
-        return self.aquitard_bottom
+    def get_aquitard_bottom(self):
+        return getattr(self, '_aquitard_bottom', None)
 
     # -- the functions that do the work 
     def read_preproc(self, pre_file):
-        ''' read_prepcoc() - Read an IWFM Preprocessor main input file, and 
+        ''' read_prepcoc() - Read an IWFM Preprocessor main input file, and
             return a list of the files called and some settings.'''
         # -- read the preprocessor file into array file_lines
-        pre_lines = open(pre_file).read().splitlines()  # open and read input file
+        with open(pre_file) as f:
+            pre_lines = f.read().splitlines()
 
         line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments
 
@@ -136,7 +137,8 @@ class iwfm_model:
         ''' read_sim() - Read an IWFM Simulation main input file, and return
             a dictionary with the files called and some settings.'''
 
-        sim_lines = open(sim_file).read().splitlines()  # open and read input file
+        with open(sim_file) as f:
+            sim_lines = f.read().splitlines()
 
         line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments
 
@@ -207,11 +209,12 @@ class iwfm_model:
 
 
     def read_nodes(self, node_file):
-        ''' read_nodes() - Read an IWFM Node file, and return a list of the 
+        ''' read_nodes() - Read an IWFM Node file, and return a list of the
             nodes and their coordinates.'''
 
         # -- read the Node file into array file_lines
-        node_lines = open(node_file).read().splitlines()  
+        with open(node_file) as f:
+            node_lines = f.read().splitlines()  
 
         line_index = 0  # start at the top
         line_index = iwfm.skip_ahead(line_index, node_lines, 0)  # skip comments
@@ -236,10 +239,11 @@ class iwfm_model:
 
 
     def read_elements(self, elem_file):
-        ''' read_elements() - Read an IWFM Element file, and return a list of 
+        ''' read_elements() - Read an IWFM Element file, and return a list of
             the nodes making up each element.'''
         # -- read the Element file into array file_lines
-        elem_lines = open(elem_file).read().splitlines()  # open and read input file
+        with open(elem_file) as f:
+            elem_lines = f.read().splitlines()
 
         line_index = 0  
         line_index = iwfm.skip_ahead(line_index, elem_lines, 0)  
@@ -273,7 +277,8 @@ class iwfm_model:
         ''' read_chars() - Read an IWFM Element Characteristics file and return
             a list of characteristics for each element.'''
 
-        char_lines = open(char_file).read().splitlines()  # open and read input file
+        with open(char_file) as f:
+            char_lines = f.read().splitlines()
 
         char_index = 0  # start at the top
         char_index = iwfm.skip_ahead(char_index, char_lines, 0)  # skip comments
@@ -293,9 +298,10 @@ class iwfm_model:
 
 
     def read_lake_pre(self, lake_file):
-        ''' read_lake() - Read an IWFM Lake file and return (a) a list of 
+        ''' read_lake() - Read an IWFM Lake file and return (a) a list of
             elements and (b) a list of properties for each lake.'''
-        lake_lines = open(lake_file).read().splitlines()  # open and read input file
+        with open(lake_file) as f:
+            lake_lines = f.read().splitlines()
         lake_index = 0  # start at the top
         lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  # skip comments
         self.nlakes = int(lake_lines[lake_index].split()[0])
@@ -324,7 +330,8 @@ class iwfm_model:
         ''' read_streams() - Read an IWFM Stream Geometry file and compile
             a list of stream reaches and (b) a dictionary of stream nodes,
             and return the number of stream nodes.'''
-        stream_lines = open(stream_file).read().splitlines()  # open and read input file
+        with open(stream_file) as f:
+            stream_lines = f.read().splitlines()
 
         stream_index = 0  # start at the top
         stream_index = iwfm.skip_ahead(stream_index, stream_lines, 0)
@@ -389,14 +396,15 @@ class iwfm_model:
 
     def read_strat(self, strat_file):
 
-        strat_lines = open(strat_file).read().splitlines()  # open and read input file
+        with open(strat_file) as f:
+            strat_lines = f.read().splitlines()
 
         line_index = 0  # start at the top
         line_index = iwfm.skip_ahead(line_index, strat_lines, 0)  # skip comments
         layers = int(re.findall(r'\d+', strat_lines[line_index])[0])  # read no. layers
 
         line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
-        factor = float(re.findall(r'\d+', strat_lines[line_index])[0])  # read factor
+        factor = float(re.findall(r'[-+]?\d*\.?\d+', strat_lines[line_index])[0])  # read factor
 
         line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
         self.strat = []  # initialize list
@@ -408,7 +416,7 @@ class iwfm_model:
                 s.append(factor * float(l.pop(0)))  # lse, etc as floats
             self.strat.append(s)
 
-        self.nlayers = int((len(self.strat[0]) - 1) / 2)
+        self._nlayers = int((len(self.strat[0]) - 1) / 2)
         self.elevation = [i[0] for i in self.strat]
 
         self.d_nodeelev = {}
@@ -421,7 +429,7 @@ class iwfm_model:
             depth = 0
             n_strat = []
             n_strat.append(lse)
-            for j in range(0, self.nlayers):  # cycle through layers for each node
+            for j in range(0, self._nlayers):  # cycle through layers for each node
                 t = l.pop(0)  # thickness of aquitard
                 depth += t  # add to total depth
                 n_strat.append(lse - depth)  # bottom of aquitard/top of aquifer

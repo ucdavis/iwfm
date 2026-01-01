@@ -1,6 +1,6 @@
 # igsm_read_strat.py
 # Read an IGSM pre-processor stratigraphy file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ def igsm_read_strat(strat_file, node_coords):
     '''
     import iwfm as iwfm
 
-    strat_lines = open(strat_file).read().splitlines() 
+    with open(strat_file) as f:
+        strat_lines = f.read().splitlines() 
 
     strat_index = iwfm.skip_ahead(0, strat_lines, 0)  # skip comments
     layers = strat_lines[strat_index].split()[0]

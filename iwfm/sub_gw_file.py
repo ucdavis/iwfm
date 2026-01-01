@@ -2,7 +2,7 @@
 # Copies the old groundwater main file and replaces the contents with those of the new
 # submodel, and writes out the new file, then calls methods to modify the other 
 # groundwater component files
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -61,7 +61,8 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
     for e in elem_list:
         elems.append(int(e[0]))
 
-    gw_lines = open(sim_dict['gw_file']).read().splitlines()  
+    with open(sim_dict['gw_file']) as f:
+        gw_lines = f.read().splitlines()
     gw_lines.append('')
 
     line_index = iwfm.skip_ahead(0, gw_lines, 0)                # skip initial comments

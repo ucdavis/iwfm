@@ -50,14 +50,13 @@ def write_2_surfer(outfile_name, x_y_locs, data, date):
         header += f",'Layer {str(i)}'"
 
     # write the output file
-    f = open(outfile_name, 'w')
-    f.write(f'{header}\n')                             # header
+    with open(outfile_name, 'w') as f:
+        f.write(f'{header}\n')                             # header
 
-    for i in range(0, len(x_y_locs)):
-        f.write(f'{x_y_locs[i][0]},{x_y_locs[i][1]},{x_y_locs[i][2]}')  # NodeID, X, Y
-        for j in range(0,len(data[i])):
-            f.write(f',{data[i][j]}')
-        f.write('\n')
-    f.close
+        for i in range(0, len(x_y_locs)):
+            f.write(f'{x_y_locs[i][0]},{x_y_locs[i][1]},{x_y_locs[i][2]}')  # NodeID, X, Y
+            for j in range(0,len(data[i])):
+                f.write(f',{data[i][j]}')
+            f.write('\n')
 
     return

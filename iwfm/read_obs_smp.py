@@ -1,6 +1,6 @@
 # read_obs_smp.py
 # Read observations from an smp file (PEST observation file)
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -30,9 +30,10 @@ def read_obs_smp(smp_file):
     -------
     obs : list
         data file contents
-    
+
     '''
-    file_lines = open(smp_file).read().splitlines() 
+    with open(smp_file) as f:
+        file_lines = f.read().splitlines() 
     file_lines = [word.replace("_", " ") for word in file_lines]
 
     obs = []

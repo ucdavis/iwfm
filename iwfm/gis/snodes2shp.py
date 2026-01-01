@@ -71,10 +71,9 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
             w.record(snode_id, gw_node, reach)  # Add attributes
     
     # Write projection file
-    prj = open(f"{shapename}.prj", "w")
-    epsg = f'EPSG:{epsg}'
-    prj.write(pyproj.CRS(epsg).to_wkt())
-    prj.close()
+    with open(f"{shapename}.prj", "w") as prj:
+        epsg = f'EPSG:{epsg}'
+        prj.write(pyproj.CRS(epsg).to_wkt())
     
     w.close()
     if verbose:

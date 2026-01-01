@@ -1,6 +1,6 @@
 # iwfm_read_bud.py
 # Read IWFM Budget main file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@ def iwfm_read_bud(bud_file, verbose=False):
     '''
     import iwfm as iwfm
 
-    bud_lines = open(bud_file).read().splitlines()
+    with open(bud_file) as f:
+        bud_lines = f.read().splitlines()
 
     line_index = iwfm.skip_ahead(0, bud_lines, 0)  # skip comments
 

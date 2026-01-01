@@ -45,7 +45,8 @@ def get_sim_hyd(nt,file_name,start_date):
     import iwfm as iwfm
     import numpy as np
 
-    hyd_lines = open(file_name).read().splitlines()
+    with open(file_name) as f:
+        hyd_lines = f.read().splitlines()
     hyd_index, dates, sim_hyd = 1, [], []
 
     while hyd_lines[hyd_index][0].isdigit() != True:                    # skip to the dates

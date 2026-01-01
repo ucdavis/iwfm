@@ -38,7 +38,8 @@ def gw_hyd_monthly(gwhyd_file):
     out_name = gwhyd_file.split('.')[0] + '_monthly.' + gwhyd_file.split('.')[1]
     
     # read simulated heads from multiple IWFM groundwater hydrograph files
-    gwhyd_lines = open(gwhyd_file).read().splitlines()  
+    with open(gwhyd_file) as f:
+        gwhyd_lines = f.read().splitlines()  
 
     line_index = iwfm.skip_ahead(0, gwhyd_lines, 0)  
     start_index = line_index

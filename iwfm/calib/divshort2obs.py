@@ -38,7 +38,8 @@ def process_budget(budget_file, cwidth=12):
     """
     import numpy as np
 
-    budget_lines = open(budget_file).read().splitlines()
+    with open(budget_file) as f:
+        budget_lines = f.read().splitlines()
 
     # How many lines per table? ----------------------------------
     table_len, header_lines, dates = 0, [], []
@@ -108,7 +109,8 @@ def read_reaches(reach_file):
             Observation names and associates stream reaches
     """
 
-    reach_list = open(reach_file).read().splitlines()
+    with open(reach_file) as f:
+        reach_list = f.read().splitlines()
 
     reaches = []
     for line in reach_list[1:]: # skip header lines

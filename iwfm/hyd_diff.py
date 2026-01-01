@@ -1,6 +1,6 @@
 # hyd_diff.py
 # Subtract the values in one hydrograph file from another
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -39,8 +39,10 @@ def hyd_diff(gwhyd_file_1, gwhyd_file_2, outname):
 
     import iwfm.pad_back as pad
 
-    gwhyd_lines_1 = (open(gwhyd_file_1).read().splitlines())
-    gwhyd_lines_2 = (open(gwhyd_file_2).read().splitlines())
+    with open(gwhyd_file_1) as f:
+        gwhyd_lines_1 = (f.read().splitlines())
+    with open(gwhyd_file_2) as f:
+        gwhyd_lines_2 = (f.read().splitlines())
 
     gwhyd_lines_out = gwhyd_lines_1[0:9]
 

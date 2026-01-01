@@ -57,7 +57,8 @@ def map_lu(land_use_file, elem_shp_name, out_shp_basename, verbose=False):
     
     #gdf['area'] = gdf['geometry'].area                          # calculate area of each element in shapefile - not used here
 
-    file_lines = open(land_use_file).read().splitlines()        # open input file
+    with open(land_use_file) as f:
+        file_lines = f.read().splitlines()        # open input file
 
     line_index = iwfm.skip_ahead(0, file_lines, 0)              # skip to next value line
 

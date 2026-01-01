@@ -2,7 +2,7 @@
 # Read in a list of element pairs for a submodel. Use existing model Elements, 
 # Nodes, Stream specification and stratigraphy files to produce new 
 # preprocessor files for the submodel and a list of model node pairs
-# Copyright (C) 2018-2021 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -79,13 +79,15 @@ def iwfm_sub_preproc(
 
     # -- read submodel elements
     sub_elem_list, new_srs, elem_dict, rev_elem_dict = iwfm.get_elem_list(elem_pairs_file)
-    pickle.dump(sub_elem_list, open(out_base_name + '_elems.bin', 'wb'))  # dump sub_elem_list to file
+    with open(out_base_name + '_elems.bin', 'wb') as f:
+        pickle.dump(sub_elem_list, f)  # dump sub_elem_list to file
     if verbose:
         print(f'  Read submodel element pairs file {elem_pairs_file}')
 
     # -- determine submodel nodes
     sub_node_list = iwfm.sub_pp_nodes(pre_dict['elem_file'], sub_elem_list)
-    pickle.dump(sub_node_list, open(out_base_name + '_nodes.bin', 'wb'))  # dump sub_node_list to file
+    with open(out_base_name + '_nodes.bin', 'wb') as f:
+        pickle.dump(sub_node_list, f)  # dump sub_node_list to file
     if verbose:
         print('  Compiled list of submodel nodes')
 
@@ -98,8 +100,9 @@ def iwfm_sub_preproc(
             del(node_coord[i])
         else:
             i += 1
- 
-    pickle.dump(node_coord, open(out_base_name + '_node_coords.bin', 'wb'))  # dump node_coords to file
+
+    with open(out_base_name + '_node_coords.bin', 'wb') as f:
+        pickle.dump(node_coord, f)  # dump node_coords to file
     if verbose:
         print('  Compiled list of submodel nodal coordinates')
 
@@ -109,10 +112,12 @@ def iwfm_sub_preproc(
     )
 
     # dump sub_nodes to file
-    pickle.dump(sub_snodes, open(out_base_name + '_sub_snodes.bin', 'wb'))  
+    with open(out_base_name + '_sub_snodes.bin', 'wb') as f:
+        pickle.dump(sub_snodes, f)
 
     # dump snode_dict to file
-    pickle.dump(snode_dict, open(out_base_name + '_snodes.bin', 'wb'))  
+    with open(out_base_name + '_snodes.bin', 'wb') as f:
+        pickle.dump(snode_dict, f)  
 
     if verbose:
         print('  Compiled list of submodel stream nodes')
@@ -121,7 +126,8 @@ def iwfm_sub_preproc(
     if have_lake:
         lake_info, have_lake = iwfm.sub_pp_lakes(pre_dict['lake_file'], sub_elem_list)
         # dump lake_info to file
-        pickle.dump(lake_info, open(out_base_name + '_lakes.bin', 'wb'))  
+        with open(out_base_name + '_lakes.bin', 'wb') as f:
+            pickle.dump(lake_info, f)
         if have_lake and verbose:
             print('  Compiled list of submodel lakes')
 
@@ -147,7 +153,8 @@ def iwfm_sub_preproc(
     elem_nodes = iwfm.sub_pp_elem_file(
         pre_dict['elem_file'], pre_dict_new['elem_file'], sub_elem_list, new_srs
     )
-    pickle.dump(elem_nodes, open(out_base_name + '_elemnodes.bin', 'wb'))  
+    with open(out_base_name + '_elemnodes.bin', 'wb') as f:
+        pickle.dump(elem_nodes, f)
     if verbose:
         print(f'  Wrote submodel element file {pre_dict_new["elem_file"]}')
 

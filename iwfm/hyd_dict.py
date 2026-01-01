@@ -1,6 +1,6 @@
 # hyd_dict.py
 # Read Groundwater.dat file and return dictionary of well info
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,7 +35,8 @@ def hyd_dict(gwhyd_info_file):
     import iwfm as iwfm
 
     well_dict = {}
-    gwhyd_info = open(gwhyd_info_file).read().splitlines()  # open and read input file
+    with open(gwhyd_info_file) as f:
+        gwhyd_info = f.read().splitlines()  # open and read input file
 
     # skip to NOUTH, number of hydrographs
     line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  

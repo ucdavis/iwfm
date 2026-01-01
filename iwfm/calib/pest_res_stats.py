@@ -39,7 +39,8 @@ def pest_res_stats(pest_res_file, verbose=False):
     import iwfm as iwfm
 
     # read pest results file
-    pest_res = open(pest_res_file).read().splitlines()
+    with open(pest_res_file) as f:
+        pest_res = f.read().splitlines()
     
     header = pest_res.pop(0)                 # remove the first line
 

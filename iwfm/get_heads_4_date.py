@@ -1,6 +1,6 @@
 # get_heads_4_date.py
 # Read headall.out file and return heads for a specific date
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -43,7 +43,8 @@ def get_heads_4_date(heads_file, out_date, start=5):
     out_day = iwfm.day(out_date)
     out_year = iwfm.year(out_date)
 
-    file_lines = open(heads_file).read().splitlines()  # open and read input file
+    with open(heads_file) as f:
+        file_lines = f.read().splitlines()  # open and read input file
 
     line_index = start
     nodes = file_lines[line_index].split()  # read line w/node nos

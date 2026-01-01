@@ -1,6 +1,6 @@
 # read_lu_file.py
 # Read IWFM land use file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ def read_lu_file(filename, skip=4):
     '''
     comments = 'Cc*#'
 
-    data = open(filename).read().splitlines()
+    with open(filename) as f:
+        data = f.read().splitlines()
 
     # -- find the file line with the first element's data
     index = 0

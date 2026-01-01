@@ -1,7 +1,7 @@
 # pdf_combine.py
 # Combines all of the PDF files in a folder into one PDF file
 # info and gwhyd_sim columns, and returns the dictionary
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,28 +41,26 @@ def pdf_combine(start_dir, save_dir, save_name):
     '''
     import os, PyPDF2
 
-    os.chdir(save_dir)  # change to PDFs folder
     count = 0
     mergelist = []
-    for filename in os.listdir('.'):
+    for filename in os.listdir(save_dir):
         if filename.endswith('.pdf'):
-            mergelist.append(filename)
+            mergelist.append(os.path.join(save_dir, filename))
 
     pdfWriter = PyPDF2.PdfWriter()
 
     # loop through all PDFs
-    for filename in mergelist:
+    for filepath in mergelist:
         count += 1
-        pdfFileObj = open(filename, 'rb')
-        pdfReader = PyPDF2.PdfReader(pdfFileObj)
-        for pageNum in range(len(pdfReader.pages)):  
-            pageObj = pdfReader.pages[pageNum]
-            pdfWriter.add_page(pageObj)
+        with open(filepath, 'rb') as pdfFileObj:
+            pdfReader = PyPDF2.PdfReader(pdfFileObj)
+            for pageNum in range(len(pdfReader.pages)):
+                pageObj = pdfReader.pages[pageNum]
+                pdfWriter.add_page(pageObj)
 
-    os.chdir(start_dir) 
-    pdfOutput = open(save_name, 'wb') 
-    pdfWriter.write(pdfOutput) 
-    pdfOutput.close()  
+    output_path = os.path.join(start_dir, save_name)
+    with open(output_path, 'wb') as pdfOutput:
+        pdfWriter.write(pdfOutput)
     return count
 
 if __name__ == "__main__":

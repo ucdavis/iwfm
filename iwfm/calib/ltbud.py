@@ -44,7 +44,8 @@ def ltbud(budget_file, output_file, zero_offset=2, neg_val=1e-7):
 
     import iwfm as iwfm
 
-    file_lines = open(budget_file).read().splitlines()                # open and read input file
+    with open(budget_file) as f:
+        file_lines = f.read().splitlines()                # open and read input file
 
     # -- Get the Budget file header and footer lengths, number of budget tables
     header, footer, table, line, width, i = 0, 0, 1, 0, 0, 16

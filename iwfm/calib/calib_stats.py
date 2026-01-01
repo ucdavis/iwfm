@@ -35,7 +35,8 @@ def read_sim_hyd(gwhyd_file):
     import numpy as np
     import datetime
 
-    gwhyd_lines = (open(gwhyd_file).read().splitlines())
+    with open(gwhyd_file) as f:
+        gwhyd_lines = (f.read().splitlines())
     gwhyd_lines = [word.replace('_24:00', ' ') for word in gwhyd_lines]
 
     gwhyd_sim = []
@@ -84,7 +85,8 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         print(f'  gwhyd_file:   \t{gwhyd_file}\n')
     
     # == read pest observation file into array obs
-    head_obs = open(pest_smp_file).read().splitlines()
+    with open(pest_smp_file) as f:
+        head_obs = f.read().splitlines()
     for i in range(0,len(head_obs)):
         head_obs[i] = head_obs[i].split()
         head_obs[i][0] = head_obs[i][0]

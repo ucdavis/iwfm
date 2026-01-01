@@ -1,6 +1,6 @@
 # igsm_read_chars.py
 # Read an IGSM pre-processor element characteristics file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ def igsm_read_chars(char_file, elem_nodes):
     '''
     import iwfm as iwfm
 
-    char_lines = open(char_file).read().splitlines()  # open and read input file
+    with open(char_file) as f:
+        char_lines = f.read().splitlines()  # open and read input file
     char_index = iwfm.skip_ahead(0, char_lines, 0)  # skip comments
     elem_char = []
     for i in range(0, len(elem_nodes)):

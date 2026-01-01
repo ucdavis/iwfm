@@ -1,6 +1,6 @@
 # iwfm_read_rz_pc.py
 # Read ponded crop data from a file and organize them into lists
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ def iwfm_read_rz_pc(file, verbose=False):
 
     if verbose: print(f"Entered iwfm_read_rz_pc() with {file}")
 
-    pc_lines = open(file).read().splitlines()                   # open and read input file
+    with open(file) as f:
+        pc_lines = f.read().splitlines()                   # open and read input file
 
     line_index = iwfm.skip_ahead(0, pc_lines, 0)                # skip to number of crop types
     pc_area_file = pc_lines[line_index].split()[0]

@@ -1,7 +1,7 @@
 # sub_pp_streams.py
 # Reads the stream specification file and returns stream reach and
 # rating table info
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -55,7 +55,8 @@ def sub_pp_streams(stream_file, node_list):
     for n in node_list:
         nodes.append(int(n))
 
-    stream_lines = open(stream_file).read().splitlines()
+    with open(stream_file) as f:
+        stream_lines = f.read().splitlines()
 
     stream_type = stream_lines[0][1:]
 

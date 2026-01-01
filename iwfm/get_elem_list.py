@@ -1,7 +1,7 @@
 # get_elem_list.py
 # Reads the submodel elements and returns a dictionary of old to new elements
 # and a dictionary of new to old elements
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -45,7 +45,8 @@ def get_elem_list(elem_pairs_file):
     import iwfm as iwfm
     import re
 
-    elem_pairs = open(elem_pairs_file).read().splitlines()  # open and read input file
+    with open(elem_pairs_file) as f:
+        elem_pairs = f.read().splitlines()  # open and read input file
 
     elem_list = []
     for line in elem_pairs:  # cycle through the lines

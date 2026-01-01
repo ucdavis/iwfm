@@ -2,7 +2,7 @@
 # Copies the old Simulation streams main file and replaces the contents with 
 # those of the new submodel, and writes out the new file, then calls methods 
 # to modify the other Simulation stream component files
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -50,7 +50,8 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fals
 
     comments = ['C','c','*','#']
 
-    stream_lines = open(sim_dict['stream_file']).read().splitlines()  
+    with open(sim_dict['stream_file']) as f:
+        stream_lines = f.read().splitlines()
     stream_lines.append('')
 
     line_index = iwfm.skip_ahead(1, stream_lines, 0)                # skip initial comments

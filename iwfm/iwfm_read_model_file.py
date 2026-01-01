@@ -1,6 +1,6 @@
 # iwfm_read_model_file.py
 # read IWFM model file and return ordered list of file names
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@ def iwfm_read_model_file(iwfm_file):
 
     '''
 
-    lines = open(iwfm_file).read().splitlines()
+    with open(iwfm_file) as f:
+        lines = f.read().splitlines()
 
     files_list = []
     for i, line in enumerate(lines):

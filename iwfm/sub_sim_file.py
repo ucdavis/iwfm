@@ -1,7 +1,7 @@
 # sub_sim_file.py
 # Copies the old simulation input file, replaces the file names with
 # those of the new submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ def sub_sim_file(in_sim_file, sim_dict_new, has_lake=False):
     import iwfm as iwfm
 
     # -- read the simprocessor file into array sim_lines
-    sim_lines = open(in_sim_file).read().splitlines()  # open and read input file
+    with open(in_sim_file) as f:
+        sim_lines = f.read().splitlines()  # open and read input file
 
     line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments and three header lines
 

@@ -1,7 +1,7 @@
 # iwfm_lu2sub.py
 # Read IWFM element file and land use files for a submodel and write out
 # new land use files for the submodel
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -59,7 +59,8 @@ def iwfm_lu2sub(
     elem_ids, _, _ = iwfm.iwfm_read_elements(elem_file) 
     elem_ids.sort()
 
-    lu_lines = open(lu_file).read().splitlines()  # open and read input file
+    with open(lu_file) as f:
+        lu_lines = f.read().splitlines()  # open and read input file
     line_index = iwfm.skip_ahead(0, lu_lines, 4) # skip comments
     header = line_index
 

@@ -1,7 +1,7 @@
 # sub_unsat_file.py
 # Copies the old unsaturated zone file and replaces the contents with those 
 # of the new submodel, and writes out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -48,7 +48,8 @@ def sub_unsat_file(old_filename, new_filename, elem_list, verbose=False):
     for e in elem_list:
         elems.append(e[0])
 
-    unsat_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        unsat_lines = f.read().splitlines()
     unsat_lines.append('')
 
     line_index = iwfm.skip_ahead(0, unsat_lines, 9)  # skip factors and comments

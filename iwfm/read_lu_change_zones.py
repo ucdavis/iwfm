@@ -1,7 +1,7 @@
 # read_lu_change_zones.py
 # When changing IWFM land use for a scenario, determine the model elements
 # for each change zone
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,7 +36,8 @@ def read_lu_change_zones(in_zone_file):
 
     import re
     comments = 'Cc*#'
-    temp = open(in_zone_file).read().splitlines()
+    with open(in_zone_file) as f:
+        temp = f.read().splitlines()
     zones = []
     for i in range(0, len(temp)):
         if temp[i][0] not in comments:  # not a comment line

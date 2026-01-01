@@ -1,6 +1,6 @@
 # iwfm_read_sim.py
 # Read IWFM Simulation main file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -50,7 +50,8 @@ def iwfm_read_sim(sim_file):
     import iwfm as iwfm
 
     sim_dict = {}
-    sim_lines = open(sim_file).read().splitlines()
+    with open(sim_file) as f:
+        sim_lines = f.read().splitlines()
 
     line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments
     sim_dict['preout'] = sim_lines[line_index].split()[0]

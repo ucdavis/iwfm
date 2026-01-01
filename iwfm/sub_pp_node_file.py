@@ -1,7 +1,7 @@
 # sub_pp_node_file.py
 # Copies the old node file and replaces the contents with those of the new
 # submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,7 +40,8 @@ def sub_pp_node_file(node_file, new_node_file, node_list):
     '''
     import iwfm as iwfm
 
-    node_lines = open(node_file).read().splitlines()  # open and read input file
+    with open(node_file) as f:
+        node_lines = f.read().splitlines()  # open and read input file
 
     line_index = iwfm.skip_ahead(0, node_lines, 0)  # skip comments
     node_lines[line_index] = iwfm.pad_both(str(len(node_list)), f=4, b=35) + ' '.join(

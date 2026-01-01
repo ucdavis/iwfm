@@ -37,7 +37,8 @@ def read_gw_file(gw_file):
     '''
     import iwfm as iwfm
 
-    gw_data = open(gw_file).read().splitlines() 
+    with open(gw_file) as f:
+        gw_data = f.read().splitlines() 
 
     comments = 'Cc*#'
 
@@ -70,7 +71,8 @@ def read_gw_params(simout_file):
     """
     import iwfm as iwfm
 
-    sim_lines = open(simout_file).read().splitlines() 
+    with open(simout_file) as f:
+        sim_lines = f.read().splitlines() 
 
     #  Find line number
     desired = "   NODE          PKH                       PS                        PN                        PV                        PL"

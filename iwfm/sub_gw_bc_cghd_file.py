@@ -1,7 +1,7 @@
 # sub_gw_bc_cghd_file.py
 # Copies the old groundwater constrained general head boundary condition file,
 # replaces the contents with those of the new submodel, and writes out the new file
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ def sub_gw_bc_cghd_file(old_filename, new_filename, nodes, verbose=False):
 
     comments = ['C','c','*','#']
 
-    cg_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        cg_lines = f.read().splitlines()
     cg_lines.append('')
 
     line_index = iwfm.skip_ahead(0, cg_lines, 0)                # skip initial comments

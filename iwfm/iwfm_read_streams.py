@@ -1,6 +1,6 @@
 # iwfm_read_streams.py
 # read IWFM preprocessor streams file
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ def iwfm_read_streams(stream_file):
     iwfm.file_test(stream_file)
     comments = 'Cc*#'
 
-    stream_lines = open(stream_file).read().splitlines()  
+    with open(stream_file) as f:
+        stream_lines = f.read().splitlines()  
     stream_type = stream_lines[0][1:]
     stream_index = iwfm.skip_ahead(1, stream_lines, 0)  
 

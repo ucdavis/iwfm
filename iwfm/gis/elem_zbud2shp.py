@@ -52,7 +52,8 @@ def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=
     cwd = os.getcwd()
 
     # -- read the Budget file into array file_lines
-    file_lines = open(budget_file).read().splitlines() 
+    with open(budget_file) as f:
+        file_lines = f.read().splitlines() 
     file_lines = [word.replace('_24:00', ' ') for word in file_lines]
 
     # -- Get the Budget file header and footer info
@@ -79,7 +80,8 @@ def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=
         print(f'  Read {tables} tables from {budget_file}')
 
     # read the field names
-    field_lines = open(field_file).read().splitlines() 
+    with open(field_file) as f:
+        field_lines = f.read().splitlines() 
     field_names = []
     for line in field_lines:
         field_names.append(line)

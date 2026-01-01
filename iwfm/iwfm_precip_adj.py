@@ -1,7 +1,7 @@
 # iwfm_precip_adj.py
 # Read IWFM precipitation file, list of VIC cells and VIC adjustment factors
 # and write adjusted precipitation file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -61,7 +61,8 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
 
     # -- read precip column-VIC grid linkage ------------------------
     # data: precip col -> region, VIC ID
-    elem_vic = open(elem_VIC_filemane).read().splitlines()
+    with open(elem_VIC_filemane) as f:
+        elem_vic = f.read().splitlines()
     elem_vic.pop(0)  # remove header lines
     vic_rows = len(elem_vic)
 
@@ -73,7 +74,8 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
         print(f'  Read VIC grid data for {vic_rows:,} precipitation columns')
 
     # -- get the climate factors ------------------------------------
-    factors = open(factors_filename).read().splitlines()  # open and read input file
+    with open(factors_filename) as f:
+        factors = f.read().splitlines()  # open and read input file
     factors.pop(0)  # remove header row
     
     d_factors, vic_years, i = {}, [], 0
@@ -88,7 +90,8 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
         i += 1
 
    # -- replacement years for years without VIC factors ------------
-    rep_years = open(years_filename).read().splitlines()  # open and read input file
+    with open(years_filename) as f:
+        rep_years = f.read().splitlines()  # open and read input file
 
     d_repyr_col = {}  # region name -> column of replacement years file
     rep_list = rep_years[0].split(',') # header
@@ -104,7 +107,8 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
         d_VICyear[item[0]] = item[1:]
 
     # -- read IWFM precipitation file ------------------------------------
-    precip = open(precip_filename).read().splitlines()  # open and read input file
+    with open(precip_filename) as f:
+        precip = f.read().splitlines()  # open and read input file
 
     with open(out_filename, 'w') as of: # open output file for copy of header info
 

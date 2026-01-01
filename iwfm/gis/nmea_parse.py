@@ -32,13 +32,13 @@ def nmea_parse(infile):
     '''
     from pynmea.streamer import NMEAStream
 
-    nmea_file = open(infile)
-    nmea_stream = NMEAStream(stream_obj=nmea_file)
-    next_data = nmea_stream.get_objects()
-    nmea_objects = []
-    while next_data:
-        nmea_objects += next_data
+    with open(infile) as nmea_file:
+        nmea_stream = NMEAStream(stream_obj=nmea_file)
         next_data = nmea_stream.get_objects()
+        nmea_objects = []
+        while next_data:
+            nmea_objects += next_data
+            next_data = nmea_stream.get_objects()
     for nmea_obj in nmea_objects:
         if hasattr(nmea_obj, 'lat'):
             print(f'    Lat/Lon: ({nmea_obj.lat}, {nmea_obj.lon})')

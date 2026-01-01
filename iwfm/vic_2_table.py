@@ -45,7 +45,8 @@ def vic_2_table(
     import sys
     import iwfm as iwfm
 
-    factors = open(factorsFileName).read().splitlines()  # get climate thance gactors
+    with open(factorsFileName) as f:
+        factors = f.read().splitlines()  # get climate thance gactors
     if verbose:
         print(f'  Read {len(factors):,} lines from {factorsFileName}')
 

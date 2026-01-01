@@ -1,6 +1,6 @@
 # detaw_2_table.py
 # Convert DETAW files to tables and write to text files
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,38 +40,39 @@ def detaw_2_table(dir_name, outfile_name, verbose=False):
     import os, csv
 
     input_files = os.listdir(dir_name)
-    out_file = open(outfile_name, 'w', newline='')
-    out_writer = csv.writer(out_file)
 
-    header, data = 0, []
-    for file_name in input_files:
-        if file_name[0] != '.':
-            file_name = os.path.join(dir_name, file_name)
-            file_lines = open(file_name).read().splitlines()  # open and read input file
-            if header == 0:  # first file so get header
-                header = 1
-                out_writer.writerow(file_lines[0].split(','))
-                out_writer.writerow(file_lines[1].split(','))
-            temp = []
-            for line in file_lines[2:]:
-                temp.append(line)
-            data.append(temp)
-    if verbose:
-        print(f'  Read {len(data)} files each with {len(data[0])} data lines')
+    with open(outfile_name, 'w', newline='') as out_file:
+        out_writer = csv.writer(out_file)
 
-    for i in range(0, len(data[0])):
-        for j in range(0, len(data)):
-            temp = data[j][i].split(',')
-            year = temp[0]
-            temp.pop(0)  # remove year
-            temp.insert(0, j + 1)  # add subarea number (adjusted for zero-indexing)
-            if j == 0:
-                ins = year
-            else:
-                ins = ' '
-            temp.insert(0, ins)
-            out_writer.writerow(temp)
-    out_file.close()
+        header, data = 0, []
+        for file_name in input_files:
+            if file_name[0] != '.':
+                file_name = os.path.join(dir_name, file_name)
+                with open(file_name) as f:
+                    file_lines = f.read().splitlines()  # open and read input file
+                if header == 0:  # first file so get header
+                    header = 1
+                    out_writer.writerow(file_lines[0].split(','))
+                    out_writer.writerow(file_lines[1].split(','))
+                temp = []
+                for line in file_lines[2:]:
+                    temp.append(line)
+                data.append(temp)
+        if verbose:
+            print(f'  Read {len(data)} files each with {len(data[0])} data lines')
+
+        for i in range(0, len(data[0])):
+            for j in range(0, len(data)):
+                temp = data[j][i].split(',')
+                year = temp[0]
+                temp.pop(0)  # remove year
+                temp.insert(0, j + 1)  # add subarea number (adjusted for zero-indexing)
+                if j == 0:
+                    ins = year
+                else:
+                    ins = ' '
+                temp.insert(0, ins)
+                out_writer.writerow(temp)
     if verbose:
         print(f'  Wrote crop data to {outfile_name} ')
     return

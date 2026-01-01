@@ -36,8 +36,8 @@ def xml_tracks(filename, verbose=False):
     '''
     from bs4 import BeautifulSoup
 
-    gpx = open(filename)
-    soup = BeautifulSoup(gpx.read(), features='xml')
+    with open(filename) as gpx:
+        soup = BeautifulSoup(gpx.read(), features='xml')
     tracks = soup.findAll('trkpt')  # get all the tracking points from the file
 
     if verbose:

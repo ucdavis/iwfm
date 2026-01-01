@@ -55,15 +55,14 @@ def write_2_csv(file_base_name, data, crop_list, elem_list, no_time_steps, date_
 
     # write the arrays to the output files
     for i in range(0, len(crop_list)):
-        fp = open(files[i], 'w')
-        fp.write('WYr')
-        for j in range(no_time_steps):
-            fp.write(f',{date_list[j].year}')
-        fp.write('\n')
-        for j in range(0, len(elem_list)):
-            fp.write(f'{(elem_list[j])}')
-            for k in range(no_time_steps):
-                fp.write(f',{float(data[i][j][k])}')
+        with open(files[i], 'w') as fp:
+            fp.write('WYr')
+            for j in range(no_time_steps):
+                fp.write(f',{date_list[j].year}')
             fp.write('\n')
-        fp.close
+            for j in range(0, len(elem_list)):
+                fp.write(f'{(elem_list[j])}')
+                for k in range(no_time_steps):
+                    fp.write(f',{float(data[i][j][k])}')
+                fp.write('\n')
     return

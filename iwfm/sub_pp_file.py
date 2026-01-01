@@ -1,7 +1,7 @@
 # sub_pp_file.py
 # Copies the old preprocessor input file, replaces the file names with
 # those of the new submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@ def sub_pp_file(in_pp_file, pre_dict, pre_dict_new, has_lake=False):
     import iwfm as iwfm
 
     # -- read the preprocessor file into array pre_lines
-    pre_lines = open(in_pp_file).read().splitlines()  # open and read input file
+    with open(in_pp_file) as f:
+        pre_lines = f.read().splitlines()  # open and read input file
 
     # -- preproc output file
     line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments

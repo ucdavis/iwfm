@@ -1,6 +1,6 @@
 # iwfm_read_rz_params.py 
 # Read root zone parameters from a file and organize them into lists
-# Copyright (C) 2023-2024 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -38,7 +38,8 @@ def iwfm_read_rz_params(rz_file, verbose=False):
 
     if verbose: print(f"  Entered iwfm_read_rz_params() with {rz_file=}")
 
-    rz_lines = open(rz_file).read().splitlines()                # open and read input file
+    with open(rz_file) as f:
+        rz_lines = f.read().splitlines()                # open and read input file
 
     line_index = iwfm.skip_ahead(0, rz_lines, 18)               # skip four parameters and 15 file names
     factk = float(rz_lines[line_index].split()[0])              # K multiplier

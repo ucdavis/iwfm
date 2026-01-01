@@ -1,6 +1,6 @@
 # iwfm_read_preproc.py
 # read IWFM preprocessor main file and return dictionary of file names
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ def iwfm_read_preproc(pre_file):
     '''
     import iwfm as iwfm
 
-    pre_lines = open(pre_file).read().splitlines()  # open and read input file
+    with open(pre_file) as f:
+        pre_lines = f.read().splitlines()  # open and read input file
 
     pre_dict = {}
 

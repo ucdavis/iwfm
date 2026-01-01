@@ -1,6 +1,6 @@
 # iwfm_read_sim_file.py
 # Read IWFM simulation main file and return dictionary of file names
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,7 +37,8 @@ def iwfm_read_sim_file(sim_file):
     '''
     import iwfm as iwfm
 
-    sim_lines = open(sim_file).read().splitlines()              # open and read input file
+    with open(sim_file) as f:
+        sim_lines = f.read().splitlines()              # open and read input file
     line_index = iwfm.skip_ahead(0, sim_lines, 3)               # skip comments
 
     sim_dict = {}

@@ -1,7 +1,7 @@
 # sub_swhed_file.py
 # Copies the old node file and replaces the contents with those of the new
 # submodel, and writes out the new file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,7 +46,8 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
     '''
     import iwfm as iwfm
 
-    swshwd_lines = open(old_filename).read().splitlines()  
+    with open(old_filename) as f:
+        swshwd_lines = f.read().splitlines()  
 
     line_index = iwfm.skip_ahead(0, swshwd_lines, 2)  # skip output file names and comments
 

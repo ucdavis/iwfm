@@ -2,7 +2,7 @@
 # Copies the old Simulation rootzone main file and replaces the contents with 
 # those of the new submodel, and writes out the new file, then calls methods 
 # to modify the other Simulation rootzone component files
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -54,7 +54,8 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
     for e in elem_list:
         elems.append(int(e[0]))
 
-    rz_lines = open(sim_dict['root_file']).read().splitlines()  
+    with open(sim_dict['root_file']) as f:
+        rz_lines = f.read().splitlines()  
 
     line_index = iwfm.skip_ahead(1, rz_lines, 4)                # skip initial comments and factors
 

@@ -1,6 +1,6 @@
 # sub_pp_lakes.py
 # Reads the lake file and returns information on lakes in the submodel
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -45,9 +45,11 @@ def sub_pp_lakes(lake_file, elem_list):
     #print(f'  ==> elem_list: {elem_list}')
     elems = [int(e[0]) for e in elem_list]
 
-    lake_lines = open(lake_file).read().splitlines()  # open and read input file
+    with open(lake_file) as f:
+        lake_lines = f.read().splitlines()  # open and read input file
 
-    lake_type = lake_lines[0][1:]
+    # Check if first line has at least 2 characters before slicing
+    lake_type = lake_lines[0][1:] if lake_lines and len(lake_lines[0]) > 1 else ''
 
     line_index = iwfm.skip_ahead(0, lake_lines, 0)  # skip comments
     nlakes = int(lake_lines[line_index].split()[0])

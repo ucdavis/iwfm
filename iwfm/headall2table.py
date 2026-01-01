@@ -1,6 +1,6 @@
 # headall2table.py
 # Read headall.out file and write results for one date toa table
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -45,7 +45,8 @@ def headall2table(heads_file, output_file, out_date):
     out_day = iwfm.day(out_date)
     out_year = iwfm.year(out_date)
 
-    file_lines = open(heads_file).read().splitlines()  # open and read input file
+    with open(heads_file) as f:
+        file_lines = f.read().splitlines()  # open and read input file
 
     start = 5  # skip the first 5 lines
     line = start

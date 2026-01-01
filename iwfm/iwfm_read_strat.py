@@ -1,6 +1,6 @@
 # iwfm_read_strat.py
 # read IWFM preprocessor stratigraphy file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -43,13 +43,14 @@ def iwfm_read_strat(strat_file, node_coords):
 
     iwfm.file_test(strat_file)
 
-    strat_lines = open(strat_file).read().splitlines()  
-    line_index = iwfm.skip_ahead(0, strat_lines, 0) 
+    with open(strat_file) as f:
+        strat_lines = f.read().splitlines()
+    line_index = iwfm.skip_ahead(0, strat_lines, 0)
 
-    layers = int(re.findall('\d+', strat_lines[line_index])[0])  
+    layers = int(re.findall(r'\d+', strat_lines[line_index])[0])  
 
-    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0) 
-    factor = float(re.findall('\d+', strat_lines[line_index])[0])
+    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)
+    factor = float(re.findall(r'[-+]?\d*\.?\d+', strat_lines[line_index])[0])
 
     line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0) 
 

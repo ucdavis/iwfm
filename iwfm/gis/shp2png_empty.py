@@ -52,7 +52,6 @@ def shp2png_empty(shape, outname, iwidth=400, iheight=600):
         pixels.append([px, py])
     c = pngcanvas.PNGCanvas(iwidth, iheight)
     c.polyline(pixels)
-    f = open(outname, 'wb')
-    f.write(c.dump())
-    f.close
+    with open(outname, 'wb') as f:
+        f.write(c.dump())
     return
