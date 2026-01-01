@@ -1,7 +1,7 @@
 # get_zbudget_data.py 
 # open an IWFM ZBudget HDF file and Zones file and retreive all of the data
 # using DWR's PyWFM package to interface wth the IWFM DLL
-# Copyright (C) 2018-2024 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ def get_zbudget_data(zbud_file, zone_file, area_units = 'ACRES',
     '''
     
     from pywfm import IWFMZBudget
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(zbud_file)                          # test that input file exists
     iwfm.file_test(zone_file)                          # test that input file exists1

@@ -1,6 +1,6 @@
 # map_params_gw.py
 # Create PNG images of groundwater parameters from an IWFM simulation
-# Copyright (C) 2023-2024 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ def map_params_gw(param_type, param_values, node_coords, layers, bounding_poly, 
 if __name__ == "__main__":
     import sys
     import numpy as np
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as igis
     import iwfm.debug as idb
 

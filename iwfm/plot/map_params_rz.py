@@ -1,6 +1,6 @@
 # map_params_rz.py 
 # Read root zone parameters and create figures of the parameters
-# Copyright (C) 2023-2024 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ def map_params_rz(node_file_name, elem_file_name, out_name, rz_file_name,
     nothing
 
     '''                
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as igis
 
     # Get info from read nodal file 
@@ -398,7 +398,7 @@ if __name__ == "__main__":
     import geopandas as gpd
     import os
     import iwfm.plot as iplot
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
 
     point_width_default = 100

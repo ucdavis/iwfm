@@ -1,7 +1,7 @@
 # buds2xl.py
 # Read information from an IWFM Budget.in file and write output to 
 # an Excel file (perhaps in future also to csv file or other type of file)
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ def buds2xl(bud_file, type='xlsx', verbose=False):
     '''
 
     import os
-    import iwfm as iwfm
+    import iwfm
     import iwfm.hdf5 as hdf5
     import iwfm.xls as xl
         
@@ -90,7 +90,7 @@ def buds2xl(bud_file, type='xlsx', verbose=False):
 if __name__ == '__main__':
     ' Run from command line '
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
  
     if len(sys.argv) > 1:  # arguments are listed on the command line

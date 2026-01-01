@@ -60,7 +60,7 @@ def histogram(data, name, unit, file, method='auto'):
     return hist, bins
 
 if __name__ == "__main__":
-    import iwfm as iwfm
+    import iwfm
     
     #  Groundwater file info / Replace with info of file you want to plot
     gw_file = "C2VSimCG_Groundwater1974.dat"

@@ -1,7 +1,7 @@
 # simout2gw.py
 # Read groundwater parameters from SimulationMessages.out file and write to
 # Groundwater.dat file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ def read_gw_file(gw_file):
         Line number where groundwater parameters are located.
 
     '''
-    import iwfm as iwfm
+    import iwfm
 
     with open(gw_file) as f:
         gw_data = f.read().splitlines() 
@@ -69,7 +69,7 @@ def read_gw_params(simout_file):
         A list containing the groundwater parameters.
 
     """
-    import iwfm as iwfm
+    import iwfm
 
     with open(simout_file) as f:
         sim_lines = f.read().splitlines() 
@@ -107,7 +107,7 @@ def replace_params(gw_params, gw_data, param_line):
         A list containing the groundwater data file contents w/new parameters.
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     param_len = len(gw_params)
 
@@ -158,7 +158,7 @@ if __name__ == "__main__":
     verbose=True
 
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
   
     if len(sys.argv) > 1:  # arguments are listed on the command line

@@ -3,7 +3,7 @@
 # using DWR's PyWFM package to interface wth the IWFM DLL
 # and create a dataframe with the sum of all of the values in each
 # column for all elements
-# Copyright (C) 2018-2025 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     import sys, os
     import pickle
     from pywfm import IWFMZBudget
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
 
     verbose=True

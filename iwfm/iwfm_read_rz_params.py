@@ -34,7 +34,7 @@ def iwfm_read_rz_params(rz_file, verbose=False):
 
     """
 
-    import iwfm as iwfm
+    import iwfm
 
     if verbose: print(f"  Entered iwfm_read_rz_params() with {rz_file=}")
 

@@ -1,6 +1,6 @@
 # gw_hyd_noobs_draw.py - Create a PDF file with a graph of the simulated 
 # data vs time for all hydrographs as lines, saved as the well_name.pdf
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ def gw_hyd_noobs_draw(sim_well_name, sim_hyd_data, well_info, sim_hyd_names, tit
     import datetime
     import matplotlib
     import numpy as np
-    import iwfm as iwfm
+    import iwfm
 
     # Force matplotlib to not use any Xwindows backend.
 #    matplotlib.use('TkAgg')  # Set to TkAgg ...

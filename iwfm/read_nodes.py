@@ -41,7 +41,7 @@ def read_nodes(node_file, factor=0.0):
         Else if factor <> 0.0 use this as the factor
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import re
 
     iwfm.file_test(node_file)

@@ -45,7 +45,7 @@ def get_params(data_filename, param_type, param_values, verbose=False):
     
     import numpy as np
     import pandas as pd
-    import iwfm as iwfm
+    import iwfm
 
     if verbose: 
         print(f"Reading parameter values from {data_filename}")
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     import sys, os
     from pathlib import Path
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
     import iwfm.plot as iplot
     import iwfm.gis as igis
 

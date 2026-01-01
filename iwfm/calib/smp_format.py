@@ -1,6 +1,6 @@
 # smp_format.py
 # Read an smp file and reformat 
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ def smp_format( infile, nwidth=20, verbose=False):
 
     '''
 
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(infile)
 

@@ -1,7 +1,7 @@
 # real2iwfm.py
 # Read parameter values for model nodes and combine into an IWFM
 # overwrite file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # Based on a PEST utility written by Matt Tonkin
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -145,7 +145,7 @@ def read_overwrite_file(overwrite_file, nnodes, nlay, param_types, verbose=False
         each item is one line from the overwrite file
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     with open(overwrite_file) as f:
         in_lines = f.read().splitlines()               # open and read input file
@@ -202,7 +202,7 @@ def real2iwfm(verbose=False):
     '''
 
     import sys
-    import iwfm as iwfm
+    import iwfm
 
     param_types = ['PKH', 'PS', 'PN', 'PV', 'PL', 'SCE', 'SCI']
     

@@ -64,7 +64,7 @@ def iwfm_sub_preproc(
         description of each lake in the submodel
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import pickle
     import pandas as pd
     import geopandas as gpd
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     ''' Run iwfm_sub_preproc() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     verbose = True
 

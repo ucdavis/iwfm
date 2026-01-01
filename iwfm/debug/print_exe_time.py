@@ -1,6 +1,6 @@
 # print_exe_time.py
 # Print difference between two datetime values
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ def print_exe_time(start, end, verbose=1):
              'ss.s seconds'
  
     '''
-    import iwfm as iwfm
+    import iwfm
 
     diff = str(end - start).split(':')
     secs = str(round(float(diff[2]), 1))

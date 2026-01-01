@@ -2,7 +2,7 @@
 # Read IWFM hydrograph output files and corresponding observation smp files,
 # interpolate simulated values to the observation times ('simulated equivalents'),
 # and save them in an smp file, optionally writing a paired instruction file.
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # Based on a PEST utility written by Matt Tonkin
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@ def iwfm2obs(verbose=False):
 
     '''
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.calib as calib
     import numpy as np
     import pandas as pd

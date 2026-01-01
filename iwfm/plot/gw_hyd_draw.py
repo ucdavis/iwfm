@@ -1,6 +1,6 @@
 # gw_hyd_draw.py
 # Draw one groundwater hydrograph plot and save to a PDF file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ def gw_hyd_draw( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name,
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import datetime
     import matplotlib
 

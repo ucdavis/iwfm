@@ -1,6 +1,6 @@
 # read_obs_wells.py
 # Read a PEST-style settings file
-# Copyright (C) 2018-2020 University of California
+# Copyright (C) 2018-2026 University of California
 # Based on a PEST utility written by John Doherty
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@ def read_obs_wells(gw_file):
     well_dict : dict
         dictionary of groundwater hydrograph info and gwhyd_sim columns
     '''
-    import iwfm as iwfm
+    import iwfm
 
     well_dict = {}
     with open(gw_file) as f:

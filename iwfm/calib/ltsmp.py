@@ -1,6 +1,6 @@
 # ltsmp.py
 # Read a PEST SMP file, and log-transform the observation values
-# Copyright (C) 2018-2024 University of California
+# Copyright (C) 2018-2026 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ def ltsmp(input_file, output_file, zero_offset=36, neg_val=0.001):
 if __name__ == "__main__":
     ''' Run ltsmp() from command line '''
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
     from pathlib import Path
   

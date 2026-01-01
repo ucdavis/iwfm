@@ -37,7 +37,7 @@ def read_param_table_ints(file_lines, line_index, lines):
         A list of parameters
     """
 
-    import iwfm as iwfm 
+    import iwfm 
 
     params = []
     if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
@@ -71,7 +71,7 @@ def read_param_table_floats(file_lines, line_index, lines):
         A list of parameters
     """
 
-    import iwfm as iwfm 
+    import iwfm 
 
     params = []
     if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
@@ -108,7 +108,7 @@ def iwfm_read_precip_vals(file, verbose=False):
         A list of precipitation values
 
     """
-    import iwfm as iwfm
+    import iwfm
 
     if verbose: print(f"Entered iwfm_read_precip_vals() with {file}")
 

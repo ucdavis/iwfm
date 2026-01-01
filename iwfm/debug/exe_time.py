@@ -1,7 +1,7 @@
 # exe_time.py
 # Print difference between two datetime values
 # First call stores start time, subsequent calls print elapsed time
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ def exe_time():
 
     '''
     import datetime
-    import iwfm as iwfm
+    import iwfm
 
     if not hasattr(exe_time, 'start'):
         exe_time.start = datetime.datetime.now()

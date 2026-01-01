@@ -1,6 +1,6 @@
 # gw_hyd_annual.py
 # Reduce daily or monthly IWFM groundwater hydrograph to annual
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ def gw_hyd_annual(gwhyd_file):
     
     '''
     
-    import iwfm as iwfm
+    import iwfm
 
     # create outname 
     out_name = gwhyd_file.split('.')[0] + '_annual.' + gwhyd_file.split('.')[1]
@@ -71,7 +71,7 @@ def gw_hyd_annual(gwhyd_file):
 if __name__ == '__main__':
     ' Run gw_hyd_reduce() from command line '
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
 
     args = sys.argv

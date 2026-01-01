@@ -2,7 +2,7 @@
 # Read (1) IWFM Groundwater file, (2) a PEST .smp file with observed values, 
 # and (3) an IWFM hydrograph output file with simulated values,
 # Print a table of well IDs, dates, observed and simulated values and differences
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ def sim_obs_list(obs, well_dict, gwhyd_sim, dates):
 if __name__ == '__main__':
     ' Run sim_obs_list() from command line '
     import sys, os
-    import iwfm as iwfm
+    import iwfm
     import iwfm.calib as ical
     import iwfm.debug as idbg
 

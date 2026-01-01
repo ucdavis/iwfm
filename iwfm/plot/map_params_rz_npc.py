@@ -1,6 +1,6 @@
 # map_rz_params_npc.py
 # Create colored maps  representing non-ponded-crop rootzone parameters
-# Copyright (C) 2023-2024 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ def get_rz_params_npc(node_file_name, elem_file_name, rz_npc_file_name, verbose=
     nothing
 
     '''                
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as igis
 
     # Get info from read nodal file 
@@ -94,7 +94,7 @@ def map_params_rz_npc(node_file_name, elem_file_name, out_name, rz_npc_file_name
     nothing
 
     '''                
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as igis
 
     elem_centroids, boundary_coords, crops_np, param_vals_np, param_types_np = get_rz_params_npc(node_file_name, 
@@ -188,7 +188,7 @@ def map_params_rz_npc(node_file_name, elem_file_name, out_name, rz_npc_file_name
 # Run map_rz_params_npc() from command line
 if __name__ == "__main__":
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.plot as iplot
     import iwfm.debug as idb
 

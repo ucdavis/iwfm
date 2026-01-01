@@ -1,6 +1,6 @@
 # gw_hyd_obs_draw.py
 # Draw one groundwater hydrograph plot and save to a PDF file
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ def gw_hyd_obs_draw(sim_well_name, sim_hyd_data, obs_dates, obs_meas, well_info,
     import datetime
     import matplotlib
     import numpy as np
-    import iwfm as iwfm
+    import iwfm
 
     # Force matplotlib to not use any Xwindows backend.
 #    matplotlib.use('TkAgg')  # Set to TkAgg ...

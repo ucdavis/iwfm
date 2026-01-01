@@ -1,6 +1,6 @@
 # iwfm_read_uz_params.py 
 # Read unsaturated zone parameters from a file and organize them into lists
-# Copyright (C) 2023-2024 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ def iwfm_read_uz_params(uz_file, verbose=False):
         A list containing parameter values. It consists of 6 sublists, each representing a different parameter.
           
     '''
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(uz_file)
 

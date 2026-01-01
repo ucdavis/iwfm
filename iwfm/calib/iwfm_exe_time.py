@@ -1,7 +1,7 @@
 # iwfm_exe_time.py
 # Extract the simulation time from SimulationMessages.out and write to
 # a file as the number of seconds to execute the model
-# Copyright (C) 2018-2023 University of California
+# Copyright (C) 2018-2026 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ def iwfm_exe_time(infile='SimulationMessages.out',outfile='exe_time.smp'):
         number of seconds to execute the model
 
     '''
-    import iwfm as iwfm 
+    import iwfm 
     iwfm.file_test(infile)
 
     # read infile

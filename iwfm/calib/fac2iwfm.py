@@ -1,6 +1,6 @@
 # fac2iwfm.py
 # Transfer parameter values from pilot points to model nodes
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # from fac2reali.f90 by M Tonkin, SSPA
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@ def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0, rhigh=1000000, em
 
     '''
 
-    import iwfm as iwfm
+    import iwfm
     if verbose:
         print('\n FAC2IWFM carries out spatial parameter interpolation to IWFM 2015 node')
         print(' locations using interpolation factors calculated by PPK2FACI and ')

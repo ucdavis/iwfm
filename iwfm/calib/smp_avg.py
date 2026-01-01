@@ -3,7 +3,7 @@
 # each observation ID, then write out with the average value
 # replacing the original observation value
 # Based on getaverages.f90 from PEST-IEFM Tools
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ def smp_avg( smp_file, verbose=False):
 
     '''
 
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(smp_file)
 

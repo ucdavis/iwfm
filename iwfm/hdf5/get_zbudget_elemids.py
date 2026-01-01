@@ -1,7 +1,7 @@
 # get_zbudget_elemids.py 
 # open an IWFM ZBudget HDF file and retreive all of the data
 # using DWR's PyWFM package to interface wth the IWFM DLL
-# Copyright (C) 2018-2023 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ def get_zbudget_elemids(zbud, zones_file, area_conversion_factor=0.0000229568411
     '''
     
     from pywfm import IWFMZBudget
-    import iwfm as iwfm
+    import iwfm
 
     zbud.generate_zone_list_from_file(zone_definition_file=zones_file)
 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     ' Run get_zbudget_elemids() from command line '
     import sys
     import os
-    import iwfm as iwfm
+    import iwfm
     from pywfm import IWFMZBudget
 #    import iwfm.hdf5 as ihdf
     import iwfm.debug as idb

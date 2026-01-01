@@ -1,6 +1,6 @@
 # gw_hyd.py
 # Assemble groundwater hydrograph info and call fns to draw individual plots
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ def gw_hyd(gwhyd_info_file, gwhyd_files, sim_hyd_names, yaxis_width, titlewords,
     
     '''
     
-    import iwfm as iwfm
+    import iwfm
     import iwfm.plot as iplot 
 
     # read gw hydrograph information from IWFM Groundwater.dat file
@@ -71,7 +71,7 @@ def gw_hyd(gwhyd_info_file, gwhyd_files, sim_hyd_names, yaxis_width, titlewords,
 if __name__ == '__main__':
     ' Run gw_hyd() from command line '
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
 
     args = sys.argv

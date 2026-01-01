@@ -32,7 +32,7 @@ def iwfm_read_rz(rz_file):
     
     """
 
-    import iwfm as iwfm
+    import iwfm
 
     with open(rz_file) as f:
         rz_lines = f.read().splitlines()                # open and read input file

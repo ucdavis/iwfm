@@ -1,7 +1,7 @@
 # ppk2fac.py
 # Use inverse-distance weighting to calculate factors to translate parameter values 
 # from pilot points to model nodes, and write to a file for use by PEST.
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -151,7 +151,7 @@ def write_factors(factors_outfile, pp_file, pp_list, node_list, ppoints, weights
     count : int
         Number of factors written to output file.
         """
-    import iwfm as iwfm
+    import iwfm
 
     count = 0
 
@@ -184,7 +184,7 @@ if __name__ == '__main__':
     ''' Run ppk2fac_idw2() from command line '''
 
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
 
     verbose = True

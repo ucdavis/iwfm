@@ -1,6 +1,6 @@
 # read_settings.py
 # Read a PEST-style settings file
-# Copyright (C) 2018-2020 University of California
+# Copyright (C) 2018-2026 University of California
 # Based on a PEST utility written by John Doherty
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ def read_settings(in_file='settings.fig'):
 
     '''
     import os
-    import iwfm as iwfm
+    import iwfm
 
     idate, iheader, datespec, headerspec = 0, 0, 0, ' '
 

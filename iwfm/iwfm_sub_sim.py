@@ -55,7 +55,7 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
       - process Lake files
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as gis
     import pickle
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     ''' Run iwfm_sub_sim() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     verbose = True
 

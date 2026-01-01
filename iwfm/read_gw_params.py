@@ -1,6 +1,6 @@
 # read_gw_params.py
 # Read groundwater parameters from a file and organize them into lists
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ def read_gw_params(file):
         It follows the same structure as `kh`.
 
     """
-    import iwfm as iwfm
+    import iwfm
 
 
     #  Fild line number
