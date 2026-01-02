@@ -1,7 +1,7 @@
 # get_cdec.py
-# Save a data table from a California Data Exchange Center (CDEC) website 
+# Save a data table from a California Data Exchange Center (CDEC) website
 # into a csv file. Prints status
-# Copyright (C) 2023-2025 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -122,50 +122,82 @@ def download_data_table(files):
 
 
 def format_file(info):
-    """ download_data_table() - Save a data table from a website into a csv file. Prints status.
+    ''' format_file() - Save a data table from a website into a csv file. Prints status.
 
     Parameters
     ----------
     info : list
         List of information about the files to access in the form [Name, Data Source]
-    
+
     Returns
     -------
     nothing
-    """
+
+    Raises
+    ------
+    FileNotFoundError
+        If raw data file doesn't exist
+    IOError
+        If file operations fail
+    '''
     import csv
     import os
+    from pathlib import Path
 
     #  Access each file separately
     for file, data_source in info:
         name = file.replace('raw', 'data')
 
-        #  Read file contents
-        with open(file, 'r') as raw:
-            csv_reader = csv.reader(raw)
+        #  Read file contents with error handling
+        try:
+            with open(file, 'r') as raw:
+                csv_reader = csv.reader(raw)
 
-            #  Write to new file
-            with open(name, 'w', newline='') as new_file:
-                csv_writer = csv.writer(new_file)
+                #  Write to new file
+                with open(name, 'w', newline='') as new_file:
+                    csv_writer = csv.writer(new_file)
 
-                # Write the header to the new CSV file
-                csv_writer.writerow(["Date", " Data", " Units", " Data Source"])
+                    # Write the header to the new CSV file
+                    csv_writer.writerow(["Date", " Data", " Units", " Data Source"])
 
-                units = "Unknown"  # Default value for units
-                for line_number, line in enumerate(csv_reader, start=0):
-                    # Get units from the first line
-                    if line_number == 0:
-                        labels = line[1].split()
-                        if len(labels) > 1:
-                            units = labels[1]
+                    units = "Unknown"  # Default value for units
+                    for line_number, line in enumerate(csv_reader, start=0):
+                        try:
+                            # Get units from the first line
+                            if line_number == 0:
+                                if len(line) > 1:
+                                    labels = line[1].split()
+                                    if len(labels) > 1:
+                                        units = labels[1]
 
-                    # Process data starting from the fourth line
-                    if line_number >= 1:
-                        year, data = line[0:2]
-                        csv_writer.writerow([year, data, units, data_source])
+                            # Process data starting from the second line
+                            if line_number >= 1:
+                                if len(line) >= 2:
+                                    year, data = line[0:2]
+                                    csv_writer.writerow([year, data, units, data_source])
+                                else:
+                                    print(f"Warning: Line {line_number+1} has insufficient columns in '{file}', skipping")
 
-        #  Delete old file of website table data
-        os.remove(file)
+                        except (ValueError, IndexError) as e:
+                            print(f"Warning: Error processing line {line_number+1} in '{file}': {str(e)}")
+                            continue
+
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Raw data file not found: '{file}'"
+            ) from None
+        except IOError as e:
+            raise IOError(
+                f"Failed to read or write file '{file}': {str(e)}"
+            ) from e
+
+        #  Delete old file of website table data with error handling
+        try:
+            if Path(file).exists():
+                os.remove(file)
+        except OSError as e:
+            print(f"Warning: Could not delete raw file '{file}': {str(e)}")
+
         print(f"Data saved to {name}")
 
 

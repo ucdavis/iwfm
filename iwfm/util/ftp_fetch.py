@@ -1,6 +1,6 @@
 # ftp_fetch.py
 # download a file using FTP
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -21,24 +21,49 @@ def ftp_fetch(server, dir, filename='download.txt', verbose=False):
     ''' ftp_fetch() - Download a file from a server and save to
         the specified directory and file name
 
+    This function uses anonymous FTP login to access the server.
+    Anonymous FTP allows public access without requiring a username
+    or password. The connection is made using the 'anonymous' username
+    with an empty password (or optionally an email address as password).
+
     Parameters
     ----------
     server : str
-        URL or INET address of FTP server
+        URL or INET address of FTP server (must support anonymous access)
 
     dir : str
-        Download directory name
+        Download directory name on the FTP server
 
     filename : str, default='download.txt'
-        Download file name
-      
+        Download file name (same name used on server and locally)
+
     verbose : bool, default=False
         True = command-line output on
-    
-    Return
+
+    Returns
+    -------
+    None
+        File is saved to the current working directory
+
+    Raises
     ------
-    nothing
-        
+    ConnectionError
+        If unable to connect to FTP server
+    PermissionError
+        If anonymous login is denied
+    FileNotFoundError
+        If directory or file not found on server
+    IOError
+        If unable to write file locally
+
+    Notes
+    -----
+    Anonymous FTP Login:
+    - Uses username: 'anonymous' (implicit in ftplib.FTP.login())
+    - Uses password: '' (empty) or email address
+    - Requires server to allow anonymous access
+    - Common for public data repositories and archives
+
     '''
     import ftplib
     import socket
@@ -53,7 +78,9 @@ def ftp_fetch(server, dir, filename='download.txt', verbose=False):
         raise ConnectionError(f'Failed to connect to FTP server {server}: {e}') from e
 
     try:
-        ftp.login()  # anonymous login
+        # Anonymous FTP login: uses 'anonymous' username with empty password
+        # This is the standard method for public FTP access
+        ftp.login()
     except ftplib.error_perm as e:
         ftp.quit()
         raise PermissionError(f'FTP login failed for {server}: {e}') from e

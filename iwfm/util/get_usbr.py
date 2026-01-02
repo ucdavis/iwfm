@@ -1,6 +1,6 @@
 # get_usbr.py
 # Save a data table from a USBR website into a csv file. Prints status
-# Copyright (C) 2023 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,71 +17,181 @@
 # -----------------------------------------------------------------------------
 
 def get_usbr(year, pdf_url, excel_filename='temp.xlsx'):
-    """ get_usbr() - Save a data table from a USBR website into a csv file
+    ''' get_usbr() - Save a data table from a USBR website into a csv file
 
     Parameters
     ----------
-    year : int
-        Year of the data to be extracted.
+    year : int or str
+        Year of the data to be extracted (must be 4-digit year)
 
     pdf_url : str
-        The URL of the online PDF containing tables.
+        The URL of the online PDF containing tables
 
-    excel_filename : str
-        The name of the Excel file to save the extracted tables.
-    
+    excel_filename : str, default='temp.xlsx'
+        The name of the Excel file to save the extracted tables
+
     Returns
     -------
     nothing
-    """
+
+    Raises
+    ------
+    ValueError
+        If year or pdf_url is invalid
+    RuntimeError
+        If PDF extraction or data processing fails
+    '''
     import os
+    from pathlib import Path
 
-    #  Extract tables from pdf and save to Excel file
-    pdf_to_excel(pdf_url, excel_filename)
+    # Input validation
+    year_str = str(year)
+    if not year_str.isdigit() or len(year_str) != 4:
+        raise ValueError(
+            f"year must be a 4-digit year, got '{year}'"
+        )
 
-    #  Create a csv file for each table in the pdf (4 total)
-    extract_data_to_csv(excel_filename)
+    if not isinstance(pdf_url, str) or not pdf_url.strip():
+        raise ValueError(
+            f"pdf_url must be a non-empty string, got '{pdf_url}'"
+        )
 
-    #  Delete created excel file
-    os.remove(excel_filename)
+    if not pdf_url.startswith(('http://', 'https://')):
+        raise ValueError(
+            f"pdf_url must start with 'http://' or 'https://', got '{pdf_url}'"
+        )
+
+    if not isinstance(excel_filename, str) or not excel_filename.strip():
+        raise ValueError(
+            f"excel_filename must be a non-empty string, got '{excel_filename}'"
+        )
+
+    temp_file_created = False
+
+    try:
+        #  Extract tables from pdf and save to Excel file
+        pdf_to_excel(pdf_url, excel_filename)
+        temp_file_created = True
+
+        #  Create a csv file for each table in the pdf (4 total)
+        extract_data_to_csv(excel_filename)
+
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to process USBR data for year {year}: {str(e)}"
+        ) from e
+
+    finally:
+        #  Delete created excel file (cleanup)
+        if temp_file_created and Path(excel_filename).exists():
+            try:
+                os.remove(excel_filename)
+            except OSError as e:
+                print(f"Warning: Could not delete temporary file '{excel_filename}': {str(e)}")
 
 
 # Function to read tables from an online PDF and save to Excel
-def pdf_to_excel(pdf_url, excel_filename):
-    """pdf_to_excel() - Read tables from an online PDF and save them to an Excel file.
+def pdf_to_excel(pdf_url, excel_filename, timeout=60):
+    '''pdf_to_excel() - Read tables from an online PDF and save them to an Excel file.
 
     Parameters
     ----------
     pdf_url : str
-        The URL of the online PDF containing tables.
+        The URL of the online PDF containing tables
 
     excel_filename : str
-        The name of the Excel file to save the extracted tables.
+        The name of the Excel file to save the extracted tables
+
+    timeout : int, default=60
+        Timeout for PDF download in seconds
 
     Returns
     -------
     nothing
-    """
 
+    Raises
+    ------
+    ValueError
+        If PDF contains no tables or tables are invalid
+    RuntimeError
+        If PDF download or parsing fails
+    IOError
+        If Excel file cannot be written
+    '''
     import tabula
     import pandas as pd
+    import requests
+
+    # Download PDF with timeout first to provide better error messages
+    try:
+        print(f"Downloading PDF from {pdf_url}...")
+        response = requests.get(pdf_url, timeout=timeout)
+        response.raise_for_status()
+    except requests.exceptions.Timeout:
+        raise RuntimeError(
+            f"PDF download from {pdf_url} timed out after {timeout} seconds"
+        ) from None
+    except requests.exceptions.ConnectionError as e:
+        raise RuntimeError(
+            f"Failed to connect to {pdf_url}: Check your network connection"
+        ) from e
+    except requests.exceptions.HTTPError as e:
+        raise RuntimeError(
+            f"HTTP {response.status_code} error downloading PDF from {pdf_url}"
+        ) from e
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(
+            f"Failed to download PDF from {pdf_url}: {str(e)}"
+        ) from e
 
     # Read tables from the online PDF
-    tables = tabula.read_pdf(pdf_url, pages='all', multiple_tables=True)
-    
-    # Initialize an Excel writer
-    excel_writer = pd.ExcelWriter(excel_filename, engine='xlsxwriter')
-    
-    # Loop through each table and save it to the Excel file
-    for i, table in enumerate(tables):
-        sheet_name = f'Table_{i+1}'
-        table_df = pd.DataFrame(table)
-        table_df.to_excel(excel_writer, sheet_name=sheet_name, index=False)
-        
-    # Close the Excel writer
-    excel_writer.close()
-    
-    print(f"Tables from {pdf_url} have been extracted and saved to {excel_filename}.")
+    try:
+        print(f"Parsing PDF tables...")
+        tables = tabula.read_pdf(pdf_url, pages='all', multiple_tables=True)
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to parse tables from PDF at {pdf_url}: {str(e)}"
+        ) from e
+
+    # Validate tables were found
+    if not tables:
+        raise ValueError(
+            f"No tables found in PDF at {pdf_url}"
+        )
+
+    print(f"Found {len(tables)} table(s) in PDF")
+
+    # Initialize an Excel writer with try-finally for guaranteed cleanup
+    excel_writer = None
+    try:
+        excel_writer = pd.ExcelWriter(excel_filename, engine='xlsxwriter')
+
+        # Loop through each table and save it to the Excel file
+        for i, table in enumerate(tables):
+            sheet_name = f'Table_{i+1}'
+
+            # Validate table is not empty
+            if table is None or (isinstance(table, pd.DataFrame) and table.empty):
+                print(f"Warning: Table {i+1} is empty, skipping")
+                continue
+
+            table_df = pd.DataFrame(table)
+            table_df.to_excel(excel_writer, sheet_name=sheet_name, index=False)
+
+        print(f"Tables from {pdf_url} have been extracted and saved to {excel_filename}.")
+
+    except Exception as e:
+        raise IOError(
+            f"Failed to write tables to Excel file '{excel_filename}': {str(e)}"
+        ) from e
+
+    finally:
+        # Ensure Excel writer is always closed
+        if excel_writer is not None:
+            try:
+                excel_writer.close()
+            except Exception as e:
+                print(f"Warning: Error closing Excel writer: {str(e)}")
 
 def is_year_in_list(year, string_list):
     """is_year_in_list() - Check if a given year is present in any of the strings in a list.
@@ -221,52 +331,134 @@ def get_names(df, table_number, year):
 
 
 def extract_data_to_csv(excel_file):
-    """extract_data_to_csv() - Extract data from an Excel file and save it into 4 separate csv files.
+    '''extract_data_to_csv() - Extract data from an Excel file and save it into 4 separate csv files.
 
     Parameters
     ----------
     excel_file : str
-        The path to the Excel file from which data needs to be extracted.
+        The path to the Excel file from which data needs to be extracted
 
     Returns
     -------
     nothing
-    """
-    #  Get year
-    year = excel_file[-9:-5]
+
+    Raises
+    ------
+    FileNotFoundError
+        If Excel file doesn't exist
+    ValueError
+        If year cannot be extracted or data format is invalid
+    IOError
+        If CSV files cannot be written
+    '''
+    import pandas as pd
+    import re
+    from pathlib import Path
+
+    # Validate file exists
+    if not Path(excel_file).exists():
+        raise FileNotFoundError(
+            f"Excel file not found: '{excel_file}'"
+        )
+
+    #  Get year with validation
+    # Try to extract 4-digit year from filename
+    year_match = re.search(r'(\d{4})', excel_file)
+    if not year_match:
+        raise ValueError(
+            f"Could not extract year from filename '{excel_file}'. "
+            f"Expected filename to contain a 4-digit year"
+        )
+    year = year_match.group(1)
 
     #  Units for tables 1-4
-    units = ["Cubic Feet/Second", "Thousands of Acre-Feet", "Thousands of Acre-Feet", "Inches", "IDK"]
-    
+    units = [
+        "Cubic Feet/Second",
+        "Thousands of Acre-Feet",
+        "Thousands of Acre-Feet",
+        "Inches"
+    ]
+
     #  Titles for tables 1-4
-    titles = ["Reservoir Releases", "Storage in Major Resevoirs", "Accumulated Inflow", "Accumulated Precipitation"]
+    titles = [
+        "Reservoir Releases",
+        "Storage in Major Resevoirs",
+        "Accumulated Inflow",
+        "Accumulated Precipitation"
+    ]
 
     # Read all sheets of the Excel file into a dictionary of DataFrames
-    xls = pd.read_excel(excel_file, sheet_name=None)
+    try:
+        xls = pd.read_excel(excel_file, sheet_name=None)
+    except FileNotFoundError:
+        raise FileNotFoundError(
+            f"Excel file not found: '{excel_file}'"
+        ) from None
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to read Excel file '{excel_file}': {str(e)}"
+        ) from e
+
+    # Validate sheets were found
+    if not xls:
+        raise ValueError(
+            f"No sheets found in Excel file '{excel_file}'"
+        )
 
     #  Create list of formatted file names
     file_names = []
     for title in titles:
         file_names.append(f"{title.replace(' ', '_').lower()}_{year}_uwbr.csv")
-        
+
     #  Go through each DataFrame, one per table
     i = 0
-    for _, df in xls.items():
-        #  Open the corresponding file
-        with open(file_names[i], 'w') as f:
-            #  Write header
-            f.write("Date, Data, Units, Data Source Location\n")
+    sheets_processed = 0
 
-            #  Get names and dates
-            names = get_names(df, i, year)
-            datas = get_data(df, i, year)
+    for sheet_name, df in xls.items():
+        if i >= len(titles):
+            print(f"Warning: More sheets than expected. Skipping sheet '{sheet_name}'")
+            break
 
-            #  Write formatted information to file        
-            for n, dat in enumerate(datas):
-                f.write(f"{year}, {dat}, {units[i]}, {names[n]}\n")      
-        print(f"{title} data saved into {file_names[i]}")
+        #  Open the corresponding file with error handling
+        try:
+            with open(file_names[i], 'w') as f:
+                #  Write header
+                f.write("Date, Data, Units, Data Source Location\n")
+
+                #  Get names and dates with error handling
+                try:
+                    names = get_names(df, i, year)
+                    datas = get_data(df, i, year)
+                except Exception as e:
+                    raise ValueError(
+                        f"Failed to extract data from table {i+1} (sheet '{sheet_name}'): {str(e)}"
+                    ) from e
+
+                # Validate data consistency
+                if len(names) != len(datas):
+                    raise ValueError(
+                        f"Data mismatch in table {i+1}: {len(names)} names but {len(datas)} data values"
+                    )
+
+                #  Write formatted information to file
+                for n, dat in enumerate(datas):
+                    f.write(f"{year}, {dat}, {units[i]}, {names[n]}\n")
+
+            print(f"{titles[i]} data saved into {file_names[i]}")
+            sheets_processed += 1
+
+        except IOError as e:
+            raise IOError(
+                f"Failed to write CSV file '{file_names[i]}': {str(e)}"
+            ) from e
+
         #  Increment to keep track of table number
         i += 1
+
+    if sheets_processed == 0:
+        raise ValueError(
+            f"No data was extracted from '{excel_file}'"
+        )
 
 
 if __name__ == "__main__":

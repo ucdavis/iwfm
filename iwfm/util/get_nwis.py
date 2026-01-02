@@ -1,6 +1,6 @@
 # get_nwis.py
 # Save a data table from an NWIS website into a csv file. Prints status
-# Copyright (C) 2023 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,34 +17,85 @@
 # -----------------------------------------------------------------------------
 
 
-def get_nwis(files):
-    """ get_nwis() - Save a data table from an NWIS website into a csv file. Prints status.
+def get_nwis(files, timeout=30):
+    ''' get_nwis() - Save a data table from an NWIS website into a csv file. Prints status.
 
     Parameters
     ----------
     files : list
         List of information about each file in the form [Name, Data Source, url]
-    
+
+    timeout : int, default=30
+        Request timeout in seconds
+
     Returns
     -------
     info : list
         List of information about the saved files in the form [Name, Data Source]
-    """
+
+    Raises
+    ------
+    ValueError
+        If files list is invalid or empty
+    '''
     import requests
     from bs4 import BeautifulSoup
-    
+
+    # Validate input
+    if not isinstance(files, list) or not files:
+        raise ValueError(
+            f"files must be a non-empty list, got {type(files).__name__}"
+        )
+
     info = []
+    failed_urls = []
 
     #  Iterate through provided list
-    for name, data_source, url in files:
+    for file_info in files:
+        # Validate file_info structure
+        if not isinstance(file_info, (list, tuple)) or len(file_info) != 3:
+            print(f"Warning: Skipping invalid file_info: {file_info}. "
+                  f"Expected [name, data_source, url]")
+            continue
+
+        name, data_source, url = file_info
 
         #  Form file name
         name = name.replace(' ', '_').lower() + '_raw.csv'
         info.append([name, data_source])
 
-        #  Access url
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, "html.parser")
+        try:
+            #  Access url with timeout and error handling
+            response = requests.get(url, timeout=timeout)
+            response.raise_for_status()
+
+        except requests.exceptions.Timeout:
+            print(f"Failed to download '{name}': Request to {url} timed out after {timeout}s")
+            failed_urls.append((name, url, "timeout"))
+            continue
+
+        except requests.exceptions.ConnectionError as e:
+            print(f"Failed to download '{name}': Connection error for {url}")
+            failed_urls.append((name, url, "connection_error"))
+            continue
+
+        except requests.exceptions.HTTPError as e:
+            print(f"Failed to download '{name}': HTTP {response.status_code} error for {url}")
+            failed_urls.append((name, url, f"http_{response.status_code}"))
+            continue
+
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to download '{name}': Unexpected error for {url}: {str(e)}")
+            failed_urls.append((name, url, "unknown_error"))
+            continue
+
+        # Parse HTML
+        try:
+            soup = BeautifulSoup(response.content, "html.parser")
+        except Exception as e:
+            print(f"Failed to parse HTML from {url}: {str(e)}")
+            failed_urls.append((name, url, "parse_error"))
+            continue
 
         #  Extract all the data tables from the webpage
         tables = soup.find_all("table")
@@ -55,79 +106,153 @@ def get_nwis(files):
             save_table_as_csv(name, last_table)
         else:
             print(f"No tables found on {url}")
+            failed_urls.append((name, url, "no_tables"))
+
+    # Report failures if any
+    if failed_urls:
+        print(f"\n⚠️  Warning: {len(failed_urls)} URL(s) failed to download:")
+        for name, url, reason in failed_urls:
+            print(f"  - {name}: {reason}")
 
     return info
 
 def save_table_as_csv(name, table):
-    """ save_table_as_csv() - Save a data table from a website into a csv file. Prints status.
+    ''' save_table_as_csv() - Save a data table from a website into a csv file. Prints status.
 
     Parameters
     ----------
-    name : string
-        Name for new csv file.
-    
-    table : html
-        Table collected from website.
-    
+    name : str
+        Name for new csv file
+
+    table : bs4.element.Tag
+        HTML table element collected from website
+
     Returns
     -------
     nothing
-    """
+
+    Raises
+    ------
+    ValueError
+        If table cannot be parsed or contains no data
+    IOError
+        If file cannot be written
+    '''
     import pandas as pd
 
     try:
+        # Parse HTML table
         df = pd.read_html(str(table))[0]
-        df.to_csv(f"{name}", index=False)
-        print(f"Data table saved to {name}")
+
+        # Validate parsed data
+        if df.empty:
+            raise ValueError(f"Table '{name}' contains no data")
+
+    except ValueError as e:
+        raise ValueError(
+            f"Failed to parse HTML table for '{name}': {str(e)}"
+        ) from e
+    except IndexError:
+        raise ValueError(
+            f"No valid table found in HTML for '{name}'"
+        ) from None
+
+    # Write to CSV with error handling
+    try:
+        df.to_csv(name, index=False)
+        print(f"Data table saved to {name} ({len(df)} rows)")
+    except IOError as e:
+        raise IOError(
+            f"Failed to write CSV file '{name}': {str(e)}"
+        ) from e
     except Exception as e:
-        print(f"Failed to save table '{name}': {e}")
+        raise RuntimeError(
+            f"Unexpected error saving table to '{name}': {str(e)}"
+        ) from e
     
 
 def format_file(info):
-    """ format_file() - Save a data table from a website into a csv file. Prints status.
+    ''' format_file() - Save a data table from a website into a csv file. Prints status.
 
     Parameters
     ----------
     info : list
         List of information about the files to access in the form [Name, Data Source]
-    
+
     Returns
     -------
     nothing
-    """
+
+    Raises
+    ------
+    FileNotFoundError
+        If raw data file doesn't exist
+    ValueError
+        If file format is invalid
+    IOError
+        If file operations fail
+    '''
     import csv
     import os
+    from pathlib import Path
 
     #  Access each file separately
     for file, data_source in info:
         name = file.replace('raw', 'data')
 
-        #  Read file contents
-        with open(file, 'r') as raw:
-            csv_reader = csv.reader(raw)
-            next(csv_reader)  # Skip the first line (header)
+        #  Read file contents with error handling
+        try:
+            with open(file, 'r') as raw:
+                csv_reader = csv.reader(raw)
+                next(csv_reader)  # Skip the first line (header)
 
-            #  Write to new file
-            with open(name, 'w', newline='') as new_file:
-                csv_writer = csv.writer(new_file)
+                #  Write to new file
+                with open(name, 'w', newline='') as new_file:
+                    csv_writer = csv.writer(new_file)
 
-                # Write the header to the new CSV file
-                csv_writer.writerow(["Date", "Data", "Units", "Data Source"])
+                    # Write the header to the new CSV file
+                    csv_writer.writerow(["Date", "Data", "Units", "Data Source"])
 
-                for line_number, line in enumerate(csv_reader, start=1):
-                    # Get units from the second line
-                    if line_number == 1:
-                        index = line[1].index("Monthly mean in ") + 16
-                        units = line[1][index:].split()[0]
+                    for line_number, line in enumerate(csv_reader, start=1):
+                        try:
+                            # Get units from the second line
+                            if line_number == 1:
+                                if len(line) < 2:
+                                    raise ValueError(f"Line 2 has insufficient columns: {len(line)}")
+                                if "Monthly mean in " not in line[1]:
+                                    raise ValueError(f"Line 2 does not contain expected 'Monthly mean in' text")
+                                index = line[1].index("Monthly mean in ") + 16
+                                units = line[1][index:].split()[0]
 
-                    # Process data starting from the fourth line
-                    if line_number >= 4:
-                        year = line[0]
-                        for i, data in enumerate(line[1:13], start=1):
-                            csv_writer.writerow([f"{i}/{year}", data, units, data_source])
+                            # Process data starting from the fourth line
+                            if line_number >= 4:
+                                if len(line) < 13:
+                                    print(f"Warning: Line {line_number+1} has fewer than 13 columns, skipping")
+                                    continue
+                                year = line[0]
+                                for i, data in enumerate(line[1:13], start=1):
+                                    csv_writer.writerow([f"{i}/{year}", data, units, data_source])
 
-        #  Delete old file of website table data
-        os.remove(file)
+                        except (ValueError, IndexError) as e:
+                            print(f"Warning: Error processing line {line_number+1} in '{file}': {str(e)}")
+                            continue
+
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Raw data file not found: '{file}'"
+            ) from None
+        except IOError as e:
+            raise IOError(
+                f"Failed to read or write file '{file}': {str(e)}"
+            ) from e
+
+        #  Delete old file of website table data with error handling
+        try:
+            if Path(file).exists():
+                os.remove(file)
+        except OSError as e:
+            print(f"Warning: Could not delete raw file '{file}': {str(e)}")
+
         print(f"Data saved to {name}")
 
 

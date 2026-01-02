@@ -1,6 +1,6 @@
 # get_usacoe.py
 # Save a data table from a USACOE website into a csv file
-# Copyright (C) 2023 University of California
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,19 +17,43 @@
 # -----------------------------------------------------------------------------
 
 def get_usacoe(files):
-    """ get_usacoe() - Save a data table from a USACOE website into a csv file
+    ''' get_usacoe() - Save a data table from a USACOE website into a csv file
 
     Parameters
     ----------
     files : list
         List of information about each file in the form [Name, Data Source, url]
-    
+
     Returns
     -------
     nothing
-    """
-    info = text_to_csv(files)
-    format_file(info)
+
+    Raises
+    ------
+    ValueError
+        If files list is invalid
+    RuntimeError
+        If data extraction or formatting fails
+    '''
+    # Validate input
+    if not isinstance(files, list) or not files:
+        raise ValueError(
+            f"files must be a non-empty list, got {type(files).__name__}"
+        )
+
+    try:
+        info = text_to_csv(files)
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to extract text from websites: {str(e)}"
+        ) from e
+
+    try:
+        format_file(info)
+    except Exception as e:
+        raise RuntimeError(
+            f"Failed to format extracted data: {str(e)}"
+        ) from e
 
 
 def add_data(lines, start, year):
@@ -97,12 +121,12 @@ def add_data(lines, start, year):
     return months[start:start+6]
 
 def format_file(info):
-    """ format_file() - Read raw data file and write formatted data to new file.
+    ''' format_file() - Read raw data file and write formatted data to new file.
 
     Parameters
     ----------
     info : list of tuples
-        A list of tuples where each tuple contains two elements: 
+        A list of tuples where each tuple contains two elements:
         - file : str
             The file name of the raw data file extracted from the website table.
         - data_source : str
@@ -112,8 +136,17 @@ def format_file(info):
     -------
     nothing
 
-    """
+    Raises
+    ------
+    FileNotFoundError
+        If raw data file doesn't exist
+    ValueError
+        If file format is invalid or cannot be parsed
+    IOError
+        If file operations fail
+    '''
     import os
+    from pathlib import Path
 
     #  Access each file separately
     for file, data_source in info:
@@ -121,40 +154,84 @@ def format_file(info):
         #  Create new file name for formatted data
         name = file.replace('raw', 'data')
 
-        #  Read file contents
-        with open(file, 'r') as raw:
-            lines = raw.read().splitlines()
-        
-        #  Extract units, year, and data sets from file
-        units = lines[3].split()[-1]
-        year = lines[5].split()[2]
+        #  Read file contents with error handling
+        try:
+            with open(file, 'r') as raw:
+                lines = raw.read().splitlines()
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Raw data file not found: '{file}'"
+            ) from None
+        except IOError as e:
+            raise IOError(
+                f"Failed to read raw data file '{file}': {str(e)}"
+            ) from e
+
+        # Validate file has minimum required lines
+        required_lines = 107
+        if len(lines) < required_lines:
+            raise ValueError(
+                f"Invalid file format for '{file}': "
+                f"Expected at least {required_lines} lines, got {len(lines)}"
+            )
+
+        #  Extract units, year, and data sets from file with validation
+        try:
+            units_parts = lines[3].split()
+            if not units_parts:
+                raise ValueError("Line 4 (units) is empty")
+            units = units_parts[-1]
+
+            year_parts = lines[5].split()
+            if len(year_parts) < 3:
+                raise ValueError(f"Line 6 (year) has insufficient parts: {len(year_parts)}")
+            year = year_parts[2]
+
+            # Validate year is numeric
+            if not year.isdigit() or len(year) != 4:
+                raise ValueError(f"Invalid year format: '{year}'")
+
+        except (IndexError, ValueError) as e:
+            raise ValueError(
+                f"Failed to parse header from '{file}': {str(e)}"
+            ) from e
+
         line1 = lines[9:46]
         line2 = lines[70:107]
-        
-        #  Write to new file
-        with open(name, 'w') as new_file:
-                
-            #  Header
-            new_file.write("Date, Data, Units, Data Source\n")
-            
-            #  First 6 months (Oct - Mar)
-            months1 = add_data(line1, 0, year)
-            
-            #  Second 6 months (Apr - Sep)
-            months2 = add_data(line2, 6, year)
 
-            #  Concatonate data into one list
-            months = months1 + months2
+        #  Write to new file with error handling
+        try:
+            with open(name, 'w') as new_file:
 
-            #  Write formatted data from months list into the new file in order of months (Oct - Sep)
-            for list in months:
-                month = list[0]
-                for i, num in enumerate(list[1:]):
-                    new_file.write(f"{month}/{i+1}/{year}, {num}, {units}, {data_source}\n")
+                #  Header
+                new_file.write("Date, Data, Units, Data Source\n")
 
+                #  First 6 months (Oct - Mar)
+                months1 = add_data(line1, 0, year)
 
-        #  Delete old file of website table data
-        os.remove(file)
+                #  Second 6 months (Apr - Sep)
+                months2 = add_data(line2, 6, year)
+
+                #  Concatenate data into one list
+                months = months1 + months2
+
+                #  Write formatted data from months list into the new file in order of months (Oct - Sep)
+                for list in months:
+                    month = list[0]
+                    for i, num in enumerate(list[1:]):
+                        new_file.write(f"{month}/{i+1}/{year}, {num}, {units}, {data_source}\n")
+
+        except IOError as e:
+            raise IOError(
+                f"Failed to write formatted data to '{name}': {str(e)}"
+            ) from e
+
+        #  Delete old file of website table data with error handling
+        try:
+            if Path(file).exists():
+                os.remove(file)
+        except OSError as e:
+            print(f"Warning: Could not delete raw file '{file}': {str(e)}")
 
         print(f"Data saved to {name}")
 
@@ -181,8 +258,8 @@ def is_leap_year(year):
         return True
     return False
 
-def text_to_csv(files):
-    """ text_to_csv() - Extract text from web pages and save as CSV files.
+def text_to_csv(files, timeout=30):
+    ''' text_to_csv() - Extract text from web pages and save as CSV files.
 
     Parameters
     ----------
@@ -192,6 +269,9 @@ def text_to_csv(files):
         - Data source information (string).
         - URL of the web page from which text is to be extracted (string).
 
+    timeout : int, default=30
+        Request timeout in seconds
+
     Returns
     -------
     info : list of lists
@@ -199,23 +279,32 @@ def text_to_csv(files):
         - File name of the saved CSV file (string).
         - Data source information (string).
 
+    Raises
+    ------
+    ValueError
+        If files list is invalid
+    requests.exceptions.RequestException
+        If network request fails
+
     Notes
     -----
-    - The function may not work properly if the website structure changes or if the 'content' class is not found in the
-      web page HTML.
-    - The function uses the 'requests' library to fetch web pages. Ensure that the required library is installed in the
-      Python environment.
-    - The 'verify=False' parameter is used in the requests.get() method to bypass SSL certificate verification. This 
-      may lead to potential security risks, and it's recommended to use the proper SSL certificate verification for 
-      secure web pages.
-    """
+    - The function uses requests.get() with SSL certificate verification enabled
+    - The function will skip URLs that fail and continue processing remaining URLs
+    - Failed URLs are reported at the end
+    '''
     import requests
     from bs4 import BeautifulSoup as bs4
     import csv
 
     #  List to store the file information for each processed web page
     info = []
+    failed_urls = []
+
     for file in files:
+        # Validate file structure
+        if not isinstance(file, (list, tuple)) or len(file) < 3:
+            print(f"Warning: Skipping invalid file entry: {file}")
+            continue
 
         #  Get url and create new file name, add (file name, data source) to info
         url = file[2]
@@ -223,27 +312,64 @@ def text_to_csv(files):
         info.append([name, file[1]])
 
         #  Send a GET request to the URL and fetch the web page content
-        response = requests.get(url, verify = False)
-        
-        #  Check if the response status code is 200 (successful)
-        if response.status_code == 200:
-            #  Parse the HTML
-            soup = bs4(response.text, 'html.parser')
+        try:
+            response = requests.get(url, timeout=timeout, verify=True)
+            response.raise_for_status()
 
-            #  Find the element with 'content' class in the HTML
-            content_element = soup.find('div', class_='content')
-            
-            #  Write the extracted text to a new CSV file
-            if content_element:
-                extracted_text = content_element.get_text(strip=True)
+        except requests.exceptions.Timeout:
+            print(f"Failed to fetch {url}: Request timed out after {timeout}s")
+            failed_urls.append((name, url, "timeout"))
+            continue
+
+        except requests.exceptions.ConnectionError as e:
+            print(f"Failed to fetch {url}: Connection error")
+            failed_urls.append((name, url, "connection_error"))
+            continue
+
+        except requests.exceptions.HTTPError as e:
+            print(f"Failed to fetch {url}: HTTP {response.status_code} error")
+            failed_urls.append((name, url, f"http_{response.status_code}"))
+            continue
+
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to fetch {url}: {str(e)}")
+            failed_urls.append((name, url, "request_error"))
+            continue
+
+        #  Parse the HTML
+        try:
+            soup = bs4(response.text, 'html.parser')
+        except Exception as e:
+            print(f"Failed to parse HTML from {url}: {str(e)}")
+            failed_urls.append((name, url, "parse_error"))
+            continue
+
+        #  Find the element with 'content' class in the HTML
+        content_element = soup.find('div', class_='content')
+
+        #  Write the extracted text to a new CSV file
+        if content_element:
+            extracted_text = content_element.get_text(strip=True)
+
+            try:
                 with open(name, 'w', newline='', encoding='utf-8') as csv_file:
                     writer = csv.writer(csv_file)
                     writer.writerow([extracted_text])
                 print(f"Text extracted and saved to {name}")
-            else:
-                print("No 'content' class found on the webpage.")
+            except IOError as e:
+                print(f"Failed to write file {name}: {str(e)}")
+                failed_urls.append((name, url, "file_write_error"))
+                continue
         else:
-            print(f"Failed to fetch URL: {url}")
+            print(f"No 'content' class found on {url}")
+            failed_urls.append((name, url, "no_content_div"))
+
+    # Report failures
+    if failed_urls:
+        print(f"\n⚠️  Warning: {len(failed_urls)} URL(s) failed:")
+        for name, url, reason in failed_urls:
+            print(f"  - {name}: {reason}")
+
     return info
 
 if __name__ == "__main__":

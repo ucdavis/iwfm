@@ -50,9 +50,9 @@ def file2dict(infile, key_field=0, val_field=1, skip=0, key_type=str, val_type=s
     d = {}
     with open(infile) as f:
         info = f.read().splitlines()
-    for i in range(len(info)):
+    for i, line in enumerate(info):
         if i > skip - 1:
-            items = re.split(';|,|\*|\n|\t', info[i])
+            items = re.split(';|,|\*|\n|\t', line)
             try:
                 key = key_type(items[key_field])
                 values = val_type(items[val_field])
