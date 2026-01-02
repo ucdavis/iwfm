@@ -62,21 +62,28 @@ def iwfm_read_rz_urban(file):
     ur_spec_file = ur_lines[line_index].split()[0]
 
     # how many elements?
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)           # skip to next value line
-    ne = 0
-    while ur_lines[line_index+(ne)].split()[0] != 'C':
-        ne += 1
-    ne -= 1                                                             # one to convert to zero index
+    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
+    n_elems = 0
+    while (line_index + n_elems < len(ur_lines) and
+           ur_lines[line_index+(n_elems)].split()[0] != 'C'):
+        n_elems += 1
+
+    if line_index + n_elems >= len(ur_lines):
+        raise ValueError(
+            f"'C' marker not found while counting urban elements at line {line_index}"
+        )
+
+    n_elems -= 1                                                # subtract one to convert to zero index
 
     # parameters = ['perv','cnurb','icpopul', 'icwtruse', 'fracdm', 'iceturb', ,icrtfurb', 'icrufurb', 'icurbspec.']
-    params, line_index = iwfm.iwfm_read_param_table_floats(ur_lines, line_index, ne)
+    params, line_index = iwfm.iwfm_read_param_table_floats(ur_lines, line_index, n_elems)
 
     params = np.array(params)
 
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)           # skip to next value line
+    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
 
     # initial condition
-    ic, line_index = iwfm.iwfm_read_param_table_floats(ur_lines, line_index, ne)
+    ic, line_index = iwfm.iwfm_read_param_table_floats(ur_lines, line_index, n_elems)
 
     ic = np.array(ic)
 

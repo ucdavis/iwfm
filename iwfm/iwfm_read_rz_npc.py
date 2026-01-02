@@ -92,8 +92,15 @@ def iwfm_read_rz_npc(file, verbose=False):
     # how many elements?
     line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
     ne = 0
-    while npc_lines[line_index+(ne)].split()[0] != 'C':
+    while (line_index + ne < len(npc_lines) and
+           npc_lines[line_index+(ne)].split()[0] != 'C'):
         ne += 1
+
+    if line_index + ne >= len(npc_lines):
+        raise ValueError(
+            f"'C' marker not found while counting non-ponded crop elements at line {line_index}"
+        )
+
     ne -= 2                                             # one to convert to zero index, one is extra
 
     # curve numbers

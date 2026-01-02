@@ -179,9 +179,15 @@ def iwfm_read_gw(gw_file, verbose=False):
         len2 = len(file_lines[line_index+1].split())                        # does not include node number unless one layer
         if len2 == len1:
             layers = 1
-        else: 
-            while len(file_lines[line_index+layers].split()) < len1:
+        else:
+            while (line_index + layers < len(file_lines) and
+                   len(file_lines[line_index+layers].split()) < len1):
                 layers += 1
+
+            if line_index + layers >= len(file_lines):
+                raise ValueError(
+                    f"Unexpected end of file while determining layers at line {line_index}"
+                )
 
         if verbose: print(f' ==> {layers=}')
         if verbose: print(f' ==> {nodes=}')
@@ -218,14 +224,27 @@ def iwfm_read_gw(gw_file, verbose=False):
         len2 = len(file_lines[line_index+1].split())                    # does not include node number unless one layer
         if len2 == len1:
             layers = 1
-        else: 
-            while len(file_lines[line_index+layers].split()) < len1:
+        else:
+            while (line_index + layers < len(file_lines) and
+                   len(file_lines[line_index+layers].split()) < len1):
                 layers += 1
+
+            if line_index + layers >= len(file_lines):
+                raise ValueError(
+                    f"Unexpected end of file while determining layers at line {line_index}"
+                )
 
         # how many nodes?
         nodes = 0
-        while file_lines[line_index+(nodes*layers)].split()[0] != 'C':
+        while (line_index + (nodes * layers) < len(file_lines) and
+               file_lines[line_index+(nodes*layers)].split()[0] != 'C'):
             nodes += 1
+
+        if line_index + (nodes * layers) >= len(file_lines):
+            raise ValueError(
+                f"'C' marker not found while counting nodes at line {line_index}"
+            )
+
         nodes -= 1
 
         # initialize parameter arrays

@@ -78,8 +78,15 @@ def iwfm_read_rz_pc(file, verbose=False):
     # how many elements?
     line_index = iwfm.skip_ahead(line_index + 1, pc_lines, 0)           # skip to next value line
     ne = 0
-    while pc_lines[line_index+(ne)].split()[0] != 'C':
+    while (line_index + ne < len(pc_lines) and
+           pc_lines[line_index+(ne)].split()[0] != 'C'):
         ne += 1
+
+    if line_index + ne >= len(pc_lines):
+        raise ValueError(
+            f"'C' marker not found while counting ponded crop elements at line {line_index}"
+        )
+
     ne -= 1                                                             # one to convert to zero index
 
     # curve numbers

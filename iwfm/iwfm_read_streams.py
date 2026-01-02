@@ -87,15 +87,23 @@ def iwfm_read_streams(stream_file):
         oflow = int(l.pop(0))
 
         # read stream node information
+        upper = None
+        lower = None
+
         for j in range(0, snodes):
             stream_index = iwfm.skip_ahead(stream_index, stream_lines, 1)
             l = stream_lines[stream_index].split()
-            t = [int(l[0]), int(l[1]), reach]  
+            t = [int(l[0]), int(l[1]), reach]
             snodes_list.append(t)
             if j == 0:
                 upper = int(l[0])
             else:
                 lower = int(l[0])
+
+        # Handle single-node stream reaches
+        if snodes == 1:
+            lower = upper
+
         reach_list.append([reach, upper, lower, oflow])
 
     stream_index = iwfm.skip_ahead(stream_index + 1, stream_lines, 3) 

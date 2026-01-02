@@ -214,8 +214,14 @@ def iwfm_read_uz(file, verbose=False):
         line_index = iwfm.skip_ahead(line_index, uz_lines, 1)   # skip to next value line
         # how many elements?
         elems = 0
-        while uz_lines[line_index + elems][0] != 'C':
+        while (line_index + elems < len(uz_lines) and
+               uz_lines[line_index + elems][0] != 'C'):
             elems += 1
+
+        if line_index + elems >= len(uz_lines):
+            raise ValueError(
+                f"'C' marker not found while counting elements at line {line_index}"
+            )
 
         # initialize parameter arrays
         elem_id = [0 for row in range(elems)]
@@ -241,9 +247,16 @@ def iwfm_read_uz(file, verbose=False):
     # how many elements?
     line_index = iwfm.skip_ahead(line_index, uz_lines, 0)   # skip to next value line
     ne = 0
-    while len(uz_lines[line_index + ne]) > 2 and uz_lines[line_index + ne][0] != 'C':
+    while (line_index + ne < len(uz_lines) and
+           len(uz_lines[line_index + ne]) > 2 and
+           uz_lines[line_index + ne][0] != 'C'):
         ne += 1
         #print(f' ==> {ne=}\t{uz_lines[line_index + ne]=}\t{len(uz_lines[line_index + ne])=}')
+
+    if line_index + ne >= len(uz_lines):
+        raise ValueError(
+            f"'C' marker not found while reading NE values at line {line_index}"
+        )
 
     # initial condition
     ic, line_index = read_param_table_floats(uz_lines, line_index, ne)

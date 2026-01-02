@@ -66,8 +66,15 @@ def iwfm_read_rz_nr(file, verbose=False):
     # how many elements?
     line_index = iwfm.skip_ahead(line_index + 1, nr_lines, 0)           # skip to next value line
     ne = 0
-    while nr_lines[line_index+(ne)].split()[0] != 'C':
+    while (line_index + ne < len(nr_lines) and
+           nr_lines[line_index+(ne)].split()[0] != 'C'):
         ne += 1
+
+    if line_index + ne >= len(nr_lines):
+        raise ValueError(
+            f"'C' marker not found while counting native riparian elements at line {line_index}"
+        )
+
     ne -= 1                                                             # one to convert to zero index
 
     # read native and riparian parameter table
