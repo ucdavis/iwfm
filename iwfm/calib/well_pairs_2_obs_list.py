@@ -3,7 +3,7 @@
 # and a file of head observations. For each well pair, find matching observations 
 # +/- a specified number of days. For each set of well names, write the matching
 # observations, mean date and head difference.
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -63,13 +63,24 @@ def well_pairs_2_obs_list(well_pair_file, obs_file, days=15, verbose=False):
         well_lines = f.read().splitlines()         # open and read input file
     well_lines.pop(0)                                             # remove first line of well_lines (header)
 
+    import iwfm
+
     with open(obs_file) as f:
         obs_lines =  f.read().splitlines()               # open and read input file
     obs_lines.pop(0)                                              # remove first line of obs_lines (header)
 
     # Convert second column of obs_lines to datetime objects
     obs_lines = [line.split(',') for line in obs_lines]           # split into list of lists
-    obs_lines = [[line[0], datetime.datetime.strptime(line[1], '%m/%d/%Y'), line[2]] for line in obs_lines]  # convert dates to datetime objects
+
+    # Validate and parse dates
+    parsed_obs_lines = []
+    for i, line in enumerate(obs_lines):
+        try:
+            date_dt = iwfm.safe_parse_date(line[1], f'{obs_file} line {i+2}')  # +2 because header was removed
+        except ValueError as e:
+            raise ValueError(f"Error reading {obs_file} line {i+2}: {str(e)}") from e
+        parsed_obs_lines.append([line[0], date_dt, line[2]])
+    obs_lines = parsed_obs_lines
 
     obs_match, well_count, obs_count = [], 0, 0
 

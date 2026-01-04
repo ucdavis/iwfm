@@ -170,6 +170,7 @@ from iwfm.str2datetime import str2datetime
 from iwfm.dts2days import dts2days
 from iwfm.dates_diff import dates_diff
 from iwfm.secs_between import secs_between
+from iwfm.date_util import validate_date_format, safe_parse_date, validate_dss_date_format
 from iwfm.Unbuffered import Unbuffered
 
 # -- dictionary methods -----------------------------------

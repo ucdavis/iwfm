@@ -1,7 +1,7 @@
 # calib_stats.py
 # Read a PEST .smp file, IWFM groundwater hydrograph file, and IWFM groundwater.dat 
 # file, and print a text file with the RMSE and bias of each well and of all observations
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ def read_sim_hyd(gwhyd_file):
 
     '''
     import numpy as np
-    import datetime
+    import iwfm
 
     with open(gwhyd_file) as f:
         gwhyd_lines = (f.read().splitlines())
@@ -42,7 +42,12 @@ def read_sim_hyd(gwhyd_file):
     gwhyd_sim = []
     for j in range(9, len(gwhyd_lines)):
         items= gwhyd_lines[j].split()
-        temp = [datetime.datetime.strptime(items.pop(0),'%m/%d/%Y')]                   # date
+        date_str = items.pop(0)
+        try:
+            date_dt = iwfm.safe_parse_date(date_str, f'{gwhyd_file} line {j+1}')
+        except ValueError as e:
+            raise ValueError(f"Error reading {gwhyd_file} line {j+1}: {str(e)}") from e
+        temp = [date_dt]                   # date
         alist = [float(x) for x in items]       # values to floats
         temp.extend(alist)
         gwhyd_sim.append(temp)
@@ -90,7 +95,11 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
     for i in range(0,len(head_obs)):
         head_obs[i] = head_obs[i].split()
         head_obs[i][0] = head_obs[i][0]
-        head_obs[i][1] = datetime.datetime.strptime(head_obs[i][1],'%m/%d/%Y')
+        date_str = head_obs[i][1]
+        try:
+            head_obs[i][1] = iwfm.safe_parse_date(date_str, f'{pest_smp_file} line {i+1}')
+        except ValueError as e:
+            raise ValueError(f"Error reading {pest_smp_file} line {i+1}: {str(e)}") from e
         head_obs[i][3] = float(head_obs[i][3])
     if verbose:
         print(f'  Read {len(head_obs):,} observations from {pest_smp_file}')

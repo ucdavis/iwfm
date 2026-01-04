@@ -1,7 +1,7 @@
 # gw_hyd_obs.py
 # Create PDF files for simulated data vs time for all hydrographs
 #  as lines, with observed values vs time as dots
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -77,13 +77,24 @@ def gw_hyd_obs(sim_well_list,obs,gwhyd_sim,sim_hyd_names,sim_well_dict,title_wor
             print(f' ==> Processing well {sim_well_name}, {col+1} of {len(sim_well_list)}')
 
         # get observed data for this well
+        import iwfm
+
         obs_dates = []
         obs_meas = []
         for j in range(0, len(obs)):
             if obs[j][0] == sim_well_name:
                 obs_dates.append(obs[j][1])
                 obs_meas.append(obs[j][3])
-        obs_dates = np.array([datetime.datetime.strptime(obs_dates[i], '%m/%d/%Y') for i in range(0, len(obs_dates))])
+
+        # Validate and parse dates
+        parsed_dates = []
+        for i in range(0, len(obs_dates)):
+            try:
+                date_dt = iwfm.safe_parse_date(obs_dates[i], f'obs_dates[{i}]')
+            except ValueError as e:
+                raise ValueError(f"Error parsing date for well {sim_well_name}, obs_dates[{i}]: {str(e)}") from e
+            parsed_dates.append(date_dt)
+        obs_dates = np.array(parsed_dates)
         obs_meas = np.array(obs_meas)
         if verbose:
             print(f'     {len(obs_dates):,} observations for well {sim_well_name}')

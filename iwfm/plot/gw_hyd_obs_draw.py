@@ -128,8 +128,16 @@ def gw_hyd_obs_draw(sim_well_name, sim_hyd_data, obs_dates, obs_meas, well_info,
             center = (ymax - ymin) / 2 + ymin
             plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
 
+        import iwfm
+
         for j in range(no_hyds):
-            sim_dates = [datetime.datetime.strptime(sim_hyd_data[j][i][0], '%m/%d/%Y') for i in range(len(sim_hyd_data[j]))]
+            sim_dates = []
+            for i in range(len(sim_hyd_data[j])):
+                try:
+                    date_dt = iwfm.safe_parse_date(sim_hyd_data[j][i][0], f'sim_hyd_data[{j}][{i}][0]')
+                except ValueError as e:
+                    raise ValueError(f"Error parsing date in sim_hyd_data[{j}][{i}]: {str(e)}") from e
+                sim_dates.append(date_dt)
             sim_data  = [float(sim_hyd_data[j][i][1]) for i in range(len(sim_hyd_data[j]))]
             plt.plot(sim_dates, sim_data, line_colors[j], label=sim_hyd_names[j])
 

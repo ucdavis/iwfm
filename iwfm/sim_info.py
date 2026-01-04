@@ -47,10 +47,22 @@ def sim_info(in_file):
     in_index = iwfm.skip_ahead(0,sim_lines,skip=14)
     start_date = sim_lines[in_index].split()[0]
 
+    # Validate start_date format
+    try:
+        iwfm.validate_date_format(start_date, f'{in_file} line {in_index+1} start_date')
+    except ValueError as e:
+        raise ValueError(f"Error reading start date from {in_file} line {in_index+1}: {str(e)}") from e
+
     in_index = iwfm.skip_ahead(in_index,sim_lines,skip=2)
     time_step = sim_lines[in_index].split()[0]
 
     in_index += 1
     end_date = sim_lines[in_index].split()[0]
+
+    # Validate end_date format
+    try:
+        iwfm.validate_date_format(end_date, f'{in_file} line {in_index+1} end_date')
+    except ValueError as e:
+        raise ValueError(f"Error reading end date from {in_file} line {in_index+1}: {str(e)}") from e
 
     return start_date, end_date, time_step

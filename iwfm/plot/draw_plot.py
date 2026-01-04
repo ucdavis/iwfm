@@ -1,7 +1,7 @@
 # draw_plot.py
 # Creates a PDF file with a graph of the simulated data vs time for all
 # hydrographs as lines, with observed values vs time as dots, saved as the well_name.pdf
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -104,12 +104,18 @@ def draw_plot( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name, well_info,
     # each hydrograph in gwhyd_obs has dates in the first column
     # convert the observed values and each set of simulated values to a pair of
     # lists, with 'date, meas' format.
+    import iwfm
+
     ymin, ymax = 1e6, -1e6
     sim_heads, sim_dates = [], []
     for j in range(0, no_hyds):
         date_temp, sim_temp = [], []
         for i in range(0, len(gwhyd_obs[j])):
-            date_temp.append(datetime.datetime.strptime(gwhyd_obs[j][i][0], '%m/%d/%Y'))
+            try:
+                date_dt = iwfm.safe_parse_date(gwhyd_obs[j][i][0], f'gwhyd_obs[{j}][{i}][0]')
+            except ValueError as e:
+                raise ValueError(f"Error parsing date in gwhyd_obs[{j}][{i}]: {str(e)}") from e
+            date_temp.append(date_dt)
             sim_temp.append(gwhyd_obs[j][i][col])
             ymin = min(ymin, gwhyd_obs[j][i][col])
             ymax = max(ymax, gwhyd_obs[j][i][col])
@@ -122,7 +128,11 @@ def draw_plot( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name, well_info,
 
     meas_dates = []
     for i in range(0, len(date)):
-        meas_dates.append(datetime.datetime.strptime(date[i], '%m/%d/%Y'))
+        try:
+            date_dt = iwfm.safe_parse_date(date[i], f'date[{i}]')
+        except ValueError as e:
+            raise ValueError(f"Error parsing date[{i}]: {str(e)}") from e
+        meas_dates.append(date_dt)
 
     years = mdates.YearLocator()
     months = mdates.MonthLocator()

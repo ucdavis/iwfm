@@ -1,6 +1,6 @@
 # read_sim_heads.py
 # reads simulated values from one IWFM output hydrograph files
-# Copyright (C) 2018-2024 University of California
+# Copyright (C) 2018-2026 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -28,11 +28,11 @@ def read_sim_heads(gwhyd_file):
     -------
     gwhyd_sim : list
         list of lists of simulated values
-    
+
     dates : list
         list of dates corresponding to simulated values
     '''
-    from datetime import datetime
+    import iwfm
 
     with open(gwhyd_file) as f:
         gwhyd_lines = f.read().splitlines()       # open and read input file
@@ -41,9 +41,14 @@ def read_sim_heads(gwhyd_file):
     dates = []
     gwhyd_sim = []
 
-    for j in range(9,len(gwhyd_lines)):     # process each libe
+    for j in range(9,len(gwhyd_lines)):     # process each line
         line = gwhyd_lines[j].split()
-        dates.append(datetime.strptime(line[0], "%m/%d/%Y"))
+        date_str = line[0]
+        try:
+            date_dt = iwfm.safe_parse_date(date_str, f'{gwhyd_file} line {j+1}')
+        except ValueError as e:
+            raise ValueError(f"Error reading {gwhyd_file} line {j+1}: {str(e)}") from e
+        dates.append(date_dt)
         line = list(map(float, line[1:]))
         gwhyd_sim.append(line)
 

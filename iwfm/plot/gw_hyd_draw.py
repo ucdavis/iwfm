@@ -104,11 +104,17 @@ def gw_hyd_draw( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name,
     # convert the observed values and each set of simulated values to a pair of 
     # lists, with date, meas format.
 
+    import iwfm
+
     ymin, ymax, sim_heads, sim_dates = float('inf'), float('-inf'), [], []
     for j in range(no_hyds):
         date_temp, sim_temp = [], []
-        for obs in gwhyd_obs[j]:
-            date_temp.append(datetime.datetime.strptime(obs[0], '%m/%d/%Y'))
+        for obs_idx, obs in enumerate(gwhyd_obs[j]):
+            try:
+                date_dt = iwfm.safe_parse_date(obs[0], f'gwhyd_obs[{j}][{obs_idx}]')
+            except ValueError as e:
+                raise ValueError(f"Error parsing date in gwhyd_obs[{j}][{obs_idx}]: {str(e)}") from e
+            date_temp.append(date_dt)
             sim_temp.append(obs[col])
             ymin = min(ymin, obs[col])
             ymax = max(ymax, obs[col])
@@ -119,7 +125,13 @@ def gw_hyd_draw( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name,
         ymin = min(ymin, meas[i])
         ymax = max(ymax, meas[i])
 
-    meas_dates = [datetime.datetime.strptime(d, '%m/%d/%Y') for d in date]
+    meas_dates = []
+    for i, d in enumerate(date):
+        try:
+            date_dt = iwfm.safe_parse_date(d, f'date[{i}]')
+        except ValueError as e:
+            raise ValueError(f"Error parsing date[{i}]: {str(e)}") from e
+        meas_dates.append(date_dt)
 
     years = mdates.YearLocator()
     months = mdates.MonthLocator()
