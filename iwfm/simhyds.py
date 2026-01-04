@@ -18,18 +18,24 @@
 
 # ** Incomplete **
 import datetime, bisect
+import iwfm
 
 class simhyds:
-    
+
     def __init__(self, filename):
         self.sim_vals, self.sim_dates = [], []
+        self.filename = filename
         with open(filename, 'r') as inputfile:
             lines = inputfile.read().splitlines()
         lines = [word.replace('_24:00', ' ') for word in lines]
 
         for j in range(9, len(lines)):
             line = lines[j].split()
-            line[0]=datetime.datetime.strptime(line[0],'%m/%d/%Y')
+            date_str = line[0]
+            try:
+                line[0] = iwfm.safe_parse_date(date_str, f'{filename} line {j+1}')
+            except ValueError as e:
+                raise ValueError(f"Error reading {filename} line {j+1}: {str(e)}") from e
             self.sim_dates.append(line[0])
             for i in range(1, len(line)):
                 line[i] = float(line[i])
@@ -39,7 +45,10 @@ class simhyds:
         print(f' ==> self.sim_dates[0:3]: {self.sim_dates[0:3]} ')
 
     def sim_head(self, date, col):
-        dt = datetime.datetime.strptime(date,'%m/%d/%Y')
+        try:
+            dt = iwfm.safe_parse_date(date, 'date parameter')
+        except ValueError as e:
+            raise ValueError(f"Invalid date parameter in sim_head: {str(e)}") from e
         closest = min(self.sim_dates, key=lambda d: abs(d - dt))
         after  = bisect.bisect_left(self.sim_dates,dt)
         
