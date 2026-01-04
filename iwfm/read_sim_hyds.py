@@ -18,7 +18,7 @@
 
 
 def read_sim_hyds(gwhyd_files):
-    ''' read_sim_hyds() - Read simulated values from multiple IWFM output 
+    ''' read_sim_hyds() - Read simulated values from multiple IWFM output
         hydrograph files into numpy arrays
 
     Parameters
@@ -33,7 +33,8 @@ def read_sim_hyds(gwhyd_files):
 
     '''
     import numpy as np
-    import datetime
+    import iwfm
+
     gwhyd_sim = []
 
     for k in range(0, len(gwhyd_files)):
@@ -44,7 +45,12 @@ def read_sim_hyds(gwhyd_files):
         temp_sim = []
         for j in range(9, len(gwhyd_lines)):
             items= gwhyd_lines[j].split()
-            temp = [datetime.datetime.strptime(items.pop(0),'%m/%d/%Y')]                   # date
+            date_str = items.pop(0)
+            try:
+                date_dt = iwfm.safe_parse_date(date_str, f'{gwhyd_files[k]} line {j+1}')
+            except ValueError as e:
+                raise ValueError(f"Error reading {gwhyd_files[k]} line {j+1}: {str(e)}") from e
+            temp = [date_dt]                   # date
             alist = [float(x) for x in items]       # values to floats
             temp.extend(alist)
             temp_sim.append(temp)
