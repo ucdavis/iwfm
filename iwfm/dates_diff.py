@@ -1,6 +1,6 @@
 # dates_diff.py
 # Days between two dates
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ if __name__ == "__main__":
     " Run vic_2_table() from command line "
     import sys
     from dateutil.parser import parse
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         date1 = sys.argv[1]
@@ -50,8 +51,32 @@ if __name__ == "__main__":
         date1 = input('First date: ')
         date2 = input('Second date: ')
 
-    date_1 = parse(date1)
-    date_2 = parse(date2)
+    # Validate and parse dates
+    try:
+        # Try to validate as MM/DD/YYYY format first
+        try:
+            iwfm.validate_date_format(date1, 'date1')
+            date_1 = parse(date1)
+        except ValueError:
+            # If not MM/DD/YYYY, try dateutil's flexible parser
+            try:
+                date_1 = parse(date1)
+            except Exception as e:
+                raise ValueError(f"Invalid date1 '{date1}': {str(e)}") from e
+
+        try:
+            iwfm.validate_date_format(date2, 'date2')
+            date_2 = parse(date2)
+        except ValueError:
+            # If not MM/DD/YYYY, try dateutil's flexible parser
+            try:
+                date_2 = parse(date2)
+            except Exception as e:
+                raise ValueError(f"Invalid date2 '{date2}': {str(e)}") from e
+
+    except ValueError as e:
+        print(f"Error: {str(e)}")
+        sys.exit(1)
 
     diff = dates_diff(date_1, date_2)
 

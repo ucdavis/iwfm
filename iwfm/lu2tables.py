@@ -113,11 +113,18 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
         while ts_line_index < no_elems:  # iterate through each element
             this_line = file_lines[line_index].split()  # line to list
             if (ts_line_index == 0):  # first line has an extra item, the date in DSS format
+                import iwfm
                 date = this_line.pop(0)  # Get the date
-                hr = int(date[11:13])  # DSS midnight = '24', datetime midnight = 0
+                try:
+                    month, day, year, hr, minute = iwfm.validate_dss_date_format(date, f'line {line_index+1} date')
+                except ValueError as e:
+                    raise ValueError(f"Error parsing DSS date at line {line_index+1}: {str(e)}") from e
+
+                # DSS midnight = '24', datetime midnight = 0
                 if hr == 24:
                     hr = 0
-                dates[ts_index] = datetime.datetime(int(date[6:10]),int(date[0:2]),int(date[3:5]),hr,int(date[14:16]))
+
+                dates[ts_index] = datetime.datetime(year, month, day, hr, minute)
             elem = int(this_line.pop(0))  # pop the element number
             for crop in range(0, no_crops):
                 data[crop][ts_line_index][ts_index] = this_line[crop]  # assign values to data array
