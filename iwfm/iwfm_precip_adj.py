@@ -165,7 +165,8 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
                 for e in range(1, len(items)):  # cycle through precip columns
                     try:
                         vic_id = vic_cols[e][0]  # precip column -> VIC_ID
-                    except:  # no VIC ID for this column == no change
+                    except (KeyError, IndexError):
+                        # No VIC ID for this column - use factor of 1.0 (no change)
                         f.append(1.0)  # factor of precip column
                         ex.append(e)
                     else:

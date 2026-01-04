@@ -103,7 +103,8 @@ def ftp_fetch(server, dir, filename='download.txt', verbose=False):
     finally:
         try:
             ftp.quit()
-        except:
+        except (ftplib.error_perm, ftplib.error_temp, OSError, EOFError):
+            # Silently ignore errors during cleanup - connection may already be closed
             pass
 
     if verbose:
