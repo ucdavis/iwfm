@@ -44,27 +44,38 @@ def iwfm_exe_time(infile='SimulationMessages.out',outfile='exe_time.smp'):
         lines = f.readlines()
 
     # find the line containing 'TOTAL RUN TIME'
-    for line in lines:
-        if 'TOTAL RUN TIME' in line:
+    line = None
+    for current_line in lines:
+        if 'TOTAL RUN TIME' in current_line:
+            line = current_line
             break
 
-    # parse the line
-    line = line.split()[3:]
+    # check if the line was found
+    if line is None:
+        outline = f"'TOTAL RUN TIME' not found in {infile}\n"
+        time = -999.0
 
-    # convert the time to seconds
-    time = 0
-    if line[1] == 'HOURS':
-        time += float(line[0]) * 3600
-        line = line[2:]
-    if line[1] == 'MINUTES':
-        time += float(line[0]) * 60
-        line = line[2:]
-    if line[1] == 'SECONDS':
-        time += float(line[0])
+    else: 
+        # parse the line
+        line = line.split()[3:]
+
+        # convert the time to seconds
+        time = 0
+        if line[1] == 'HOURS':
+            time += float(line[0]) * 3600
+            line = line[2:]
+        if line[1] == 'MINUTES':
+            time += float(line[0]) * 60
+            line = line[2:]
+        if line[1] == 'SECONDS':
+            time += float(line[0])
+
+        outline = f' EXETIME          10/31/1985   00:00:00            {time}           \n'
 
     # write the time to the output smp-format file
     with open(outfile, 'w') as f:
-        f.write(f' EXETIME          10/31/1985   00:00:00            {time}           \n')
+        f.write(f'{outline}')
+
     return time
 
 if __name__ == "__main__":

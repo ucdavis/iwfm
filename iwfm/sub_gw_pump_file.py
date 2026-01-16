@@ -18,9 +18,9 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, verbose=False):
-    '''sub_gw_bc_file() - Read the original groundwater main pumping file, 
-        determine which boundary conditions are in the submodel, and write out a new 
+def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, base_path=None, verbose=False):
+    '''sub_gw_bc_file() - Read the original groundwater main pumping file,
+        determine which boundary conditions are in the submodel, and write out a new
         file
 
     Parameters
@@ -40,6 +40,9 @@ def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, verbose=F
     bounding_poly : shapely.geometry Polygon
         submodel boundary form model nodes
 
+    base_path : Path, optional
+        base path for resolving relative file paths
+
     verbose : bool, default=False
         turn command-line output on or off
 
@@ -49,8 +52,12 @@ def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, verbose=F
 
     '''
     import iwfm as iwfm
+    from pathlib import Path
 
     comments = ['C','c','*','#']
+
+    # Check if pumping file exists using iwfm utility
+    iwfm.file_test(old_filename)
 
     with open(old_filename) as f:
         pump_lines = f.read().splitlines()
@@ -66,10 +73,13 @@ def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, verbose=F
     if well_file[0] == '/':
         have_well = False
     else:
-        well_file = well_file.replace('\\', ' ').split()[1]     
+        well_file = well_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            well_file = str(base_path / well_file)
         pump_lines[line_index] = '   ' + sim_dict_new['well_file'] + '.dat		        / WELLFL'
     well_index = line_index # in case no wells in submodel, return and set blank file name
-    line_index = iwfm.skip_ahead(line_index, pump_lines, 1)                
+    line_index = iwfm.skip_ahead(line_index, pump_lines, 1)
 
     # element pumping file
     epump_file = pump_lines[line_index].split()[0]  # specified head conditions file
@@ -77,10 +87,13 @@ def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, verbose=F
     if epump_file[0] == '/':
         have_epump = False
     else:
-        epump_file = epump_file.replace('\\', ' ').split()[1]     
+        epump_file = epump_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            epump_file = str(base_path / epump_file)
         pump_lines[line_index] = '   ' + sim_dict_new['epump_file'] + '.dat		        / ELEMPUMPFL'
     epump_index = line_index # in case no element pumping in submodel, return and set blank file name
-    line_index = iwfm.skip_ahead(line_index, pump_lines, 1)                
+    line_index = iwfm.skip_ahead(line_index, pump_lines, 1)
 
     # pumping rates file
     prate_file = pump_lines[line_index].split()[0]  # general head boundary conditions file
@@ -88,7 +101,10 @@ def sub_gw_pump_file(old_filename, sim_dict_new, elems, bounding_poly, verbose=F
     if prate_file[0] == '/':
         have_rates = False
     else:
-        prate_file = prate_file.replace('\\', ' ').split()[1]     
+        prate_file = prate_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            prate_file = str(base_path / prate_file)
         pump_lines[line_index] = '   ' + sim_dict_new['prate_file'] + '.dat		        / PUMPFL'
 
 

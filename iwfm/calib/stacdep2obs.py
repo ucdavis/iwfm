@@ -2,7 +2,7 @@
 # Convert IWFM Stream Reach Budget to the SMP file format for 
 # use by PEST.
 # Based on STACDEP2OBS.F90 by Matt Tonkin, SSPA with routines by John Doherty
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -127,8 +127,9 @@ def read_reaches(reach_file):
     reaches = []
     for line in reach_list[3:]: # skip header lines
         if len(line) > 2:
-            temp = line.split()
-        reaches.append([temp[0],[int(n) for n in temp[2].split(',')]])
+           temp = line.split()
+           reaches.append([temp[0],[int(n) for n in temp[2].split(',')]])
+    # return error when len(line) <= 2?
     return reaches
 
 

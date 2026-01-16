@@ -1,7 +1,7 @@
 # wdl_meas_stats.py
 # Calculate water level statistics and write out to a file
 # info and gwhyd_sim columns, and return the dictionary
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ def wdl_meas_stats(input_file, verbose=False):
 
     '''
     import statistics
+    from iwfm import text_date
 
     output_file = input_file[0 : input_file.find('.')] + '_stats.out'
 

@@ -57,13 +57,23 @@ def map_param2shp_rz_urban(param_types, param_vals, elem_shp_name, out_shp_name=
 
     gdf_new = gdf.copy()                                                # make a copy of the geopandas dataframe
 
-    for j in range(len(param_types)):
-        field_name = f'{param_types[j]}'                                # create the field name
-    
-        if verbose: 
-            print(f'  Mapping parameter {param_types[j]} to elements')
+    # Filter out 'ic' from param_types as it's handled separately below
+    param_types_main = [p for p in param_types if p != 'ic']
 
-        data = param_vals[:,j]                                          # compile data for the field
+    for j in range(len(param_types_main)):
+        field_name = f'{param_types_main[j]}'                                # create the field name
+
+        if verbose:
+            print(f'  Mapping parameter {param_types_main[j]} to elements')
+
+        try:
+            data = param_vals[:,j]                                          # compile data for the field
+        except IndexError as e:
+            print(f'\n*** Error: Cannot access parameter index {j} (param: {param_types_main[j]})')
+            print(f'*** param_types_main has {len(param_types_main)} items: {param_types_main}')
+            print(f'*** param_vals shape: {param_vals.shape}')
+            print(f'*** Index {j} is out of bounds for axis 1 with size {param_vals.shape[1]}')
+            raise
 
         gdf_new[field_name] = data                                      # add a field to the geopandas dataframe
 

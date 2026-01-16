@@ -41,7 +41,7 @@ def read_sim_hyd(gwhyd_file):
 
     gwhyd_sim = []
     for j in range(9, len(gwhyd_lines)):
-        items= gwhyd_lines[j].split()
+        items = gwhyd_lines[j].split()
         date_str = items.pop(0)
         try:
             date_dt = iwfm.safe_parse_date(date_str, f'{gwhyd_file} line {j+1}')
@@ -81,7 +81,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
     '''
 
     import datetime
-    import iwfm as iwfm
+    import iwfm
     import iwfm.calib as ical
 
     if verbose:
@@ -94,7 +94,6 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         head_obs = f.read().splitlines()
     for i in range(0,len(head_obs)):
         head_obs[i] = head_obs[i].split()
-        head_obs[i][0] = head_obs[i][0]
         date_str = head_obs[i][1]
         try:
             head_obs[i][1] = iwfm.safe_parse_date(date_str, f'{pest_smp_file} line {i+1}')
@@ -106,10 +105,10 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         print(f'  head_obs[0]: {head_obs[0]}\n')
 
     # groundwater hydrograph info to dictionary of groundwater hydrograph info
-    hyd_dict = iwfm.read_hyd_dict(gwhyd_info_file)
+    gw_hyd_dict = iwfm.read_hyd_dict(gwhyd_info_file)
     if verbose:
-        print(f'  Read information for {len(hyd_dict):,} observation wells from {gwhyd_info_file}')
-        print(f'  Test: hyd_dict[{head_obs[0][0]}] {hyd_dict[head_obs[0][0]]}\n')
+        print(f'  Read information for {len(gw_hyd_dict):,} observation wells from {gwhyd_info_file}')
+        print(f'  Test: hyd_dict[{head_obs[0][0]}] {gw_hyd_dict[head_obs[0][0]]}\n')
 
     # read simulated values
     simhyd = read_sim_hyd(gwhyd_file)
@@ -133,7 +132,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
     meas_all.append(measured)
 
     # use hyd_dict to find the column no for this obs well in simhyd_obs
-    simhyd_col = int(hyd_dict.get(name)[0])
+    simhyd_col = int(gw_hyd_dict.get(name)[0])
 
     # calculate the simulated value for this observation
     sim_head = ical.sim_equiv(simhyd, date, simhyd_col)
@@ -161,7 +160,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
             dates, meas, sim = [], [], [] # re-initialize for next observation well
 
             # find next well from head_obs that is in hyd_dict
-            while new_name not in hyd_dict:
+            while new_name not in gw_hyd_dict:
                 j += 1
                 if j >= len(head_obs):
                     final = 0   # no more wells in hyd_dict, stats for last already calculated
@@ -170,7 +169,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
             if j >= len(head_obs):
                 break
             name = new_name
-            simhyd_col = (hyd_dict.get(name)[0])
+            simhyd_col = int(gw_hyd_dict.get(name)[0])
     
         names_all.append(name)
 
@@ -209,7 +208,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
 
     # write out results for each well
     out_file = gwhyd_file.replace('.out','_rmse.txt')
-    ical.write_rmse_bias(out_file,hyd_dict,well_names,rmse_values,bias_values,count)
+    ical.write_rmse_bias(out_file,gw_hyd_dict,well_names,rmse_values,bias_values,count)
     print(f'  Wrote results for each well to {out_file}')
 
 
@@ -228,7 +227,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
 if __name__ == '__main__':
     ' Run calib_stats() from command line '
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
 
     if len(sys.argv) > 1:  # arguments are listed on the command line

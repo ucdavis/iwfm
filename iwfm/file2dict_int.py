@@ -49,7 +49,7 @@ def file2dict_int(infile, key_field=0, val_field=1, skip=0):
         info = f.read().splitlines()  # open and read input file
     for i in range(len(info)):
         if i > skip:
-            items = re.split(';|,|\*|\n|\t', info[i])
+            items = re.split(r';|,|\*|\n|\t', info[i])
             key, values = int(items[key_field]), int(items[val_field])
             d[key] = values
     return d

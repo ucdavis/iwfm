@@ -100,8 +100,17 @@ def get_params(data_filename, param_type, param_values, verbose=False):
     else:
         print(f"Parameter type {param_type} not found in input_dict")
         sys.exit()
-        
+
     if verbose: print(f"Read parameter values")
+
+    # Flatten multi-dimensional data (e.g., when data has multiple layers)
+    # Check if data is 2D (nodes x layers) and convert to 1D by averaging or taking first layer
+    if isinstance(data, np.ndarray) and len(data.shape) == 2:
+        if verbose: print(f"Data has {data.shape[1]} layers. Using layer 1 (first layer).")
+        data = data[:, 0]  # Take first layer
+    elif isinstance(data, list) and len(data) > 0 and isinstance(data[0], (list, np.ndarray)):
+        if verbose: print(f"Data has multiple values per location. Using first value.")
+        data = [d[0] if isinstance(d, (list, np.ndarray)) and len(d) > 0 else d for d in data]
 
     return data, format
 
@@ -162,8 +171,10 @@ def iwfm_map_params(dataset, bounding_poly, image_basename, cmap='rainbow', titl
 
     # create a regular grid for interpolation
     ratio = (X.max() - X.min()) / (Y.max() - Y.min())
-    xi = np.linspace(X.min(), X.max(), int(len(X) * ratio * 0.5 ))
-    yi = np.linspace(Y.min(), Y.max(), int(len(Y) / ratio * 0.5 ))
+    # Use a fixed grid resolution instead of scaling by data length
+    grid_res = 200  # number of points in each dimension
+    xi = np.linspace(X.min(), X.max(), int(grid_res * ratio))
+    yi = np.linspace(Y.min(), Y.max(), grid_res)
     Xi, Yi = np.meshgrid(xi, yi)
 
     # interpolate the irregular data onto the regular grid
@@ -173,7 +184,14 @@ def iwfm_map_params(dataset, bounding_poly, image_basename, cmap='rainbow', titl
     fig, ax = plt.subplots(figsize=(10, 8))
 
     # create path from boundary polygon
-    path = Path(bounding_poly)
+    # Extract coordinates from shapely Polygon if needed
+    if hasattr(bounding_poly, 'exterior'):
+        # It's a shapely Polygon, extract coordinates
+        boundary_coords = list(bounding_poly.exterior.coords)
+        path = Path(boundary_coords)
+    else:
+        # It's already a list of coordinates
+        path = Path(bounding_poly)
 
     # create a mask from the path
     mask = path.contains_points(np.column_stack((Xi.ravel(),Yi.ravel()))).reshape(Xi.shape)
@@ -213,6 +231,7 @@ if __name__ == "__main__":
     ''' Run iwfm_map_params() from command line '''
     import sys, os
     from pathlib import Path
+    from shapely import geometry
     import iwfm.debug as idb
     import iwfm
     import iwfm.plot as iplot
@@ -302,22 +321,14 @@ if __name__ == "__main__":
          'pr'     : [ 'Precip',      'Precipitation values' ],
         }   
 
-    print(f" ==> {sim_filename=}")
-    print(f" ==> {pre_filename=}")
-    print(f" ==> {param_type=}")
-#    print(f"{image_basename=}\n")
-
     if param_type in input_dict:
         param_values = input_dict[param_type]
-#        print(f"Parameter type {param_type}: {param_values} found in input_dict")
-#        print(f'param_values[0]: {param_values[0]}\n')
     else:
         print(f" ** Parameter type {param_type} is invalid **")
         print(f"Valid parameter types are:")
         print(input_dict.keys())                        # TODO: develop a better way to print the valid parameter types
         print(f'Exiting...')
         sys.exit()
-#    print(f"{param_values=}\n")
 
     idb.exe_time()                                          # initialize timer
 
@@ -344,8 +355,6 @@ if __name__ == "__main__":
         print(f"Parameter type {param_type} not found in input_dict")
         sys.exit()
 
-#    print(f"data_filetype: {data_filetype}\n")
-
     # get file names from preprocessor file
     pre_dict, have_lake = iwfm.iwfm_read_preproc(pre_filename)
 
@@ -354,7 +363,6 @@ if __name__ == "__main__":
 
     # get path to preprocessor main file
     pre_file = Path(pre_filename)
-    print(f' ==> Path of {pre_file.name} is {pre_file.parent}')
 
 
     if data_filetype == 'root_file':        # get rootzone file names
@@ -375,7 +383,6 @@ if __name__ == "__main__":
         data_filename = sim_dict[data_filetype].replace('\\', '/')
 
     data_filename = Path(sim_filename).parent / data_filename
-#    print(f'data file name: {data_filename}\n')
     iwfm.file_test(data_filename)
 
     data, format = get_params(data_filename, param_type, param_values)    # Get the parameter values from the data file
@@ -391,11 +398,9 @@ if __name__ == "__main__":
     # calculate element centroids
     elem_centroids = iwfm.get_elem_centroids(elem_ids, elem_nodes, node_coord)
 
-
     boundary_coords = iwfm.iwfm_boundary_coords(node_filename, elem_filename)
 
     if format == 'nodes':
-        print(' ==> nodal data')
         dataset = []
         for i in range(len(node_list)):
             dataset.append([node_coord[i][1], node_coord[i][2], data[i]])
@@ -407,14 +412,12 @@ if __name__ == "__main__":
         Y_max = max([x[2] for x in node_coord])
 
         point_list = [(X_min, Y_min), (X_max, Y_min), (X_max, Y_max), (X_min, Y_max), (X_min, Y_min)]
-        from shapely import geometry
 
         bounding_poly = geometry.Polygon([(p[0], p[1]) for p in point_list])
 
-        iplot.map_to_nodes_contour(dataset, image_basename + '_' + param_type, verbose=True)    # Create a contour map representing nodal values such as groundwater data.
+        iplot.map_to_nodes_contour(dataset, bounding_poly, image_basename + '_' + param_type, verbose=True)    # Create a contour map representing nodal values such as groundwater data.
 
     elif format == 'elements':
-        print(' ==> element data')
         dataset = []
         for i in range(len(elem_centroids)):
             dataset.append([elem_centroids[i][1], elem_centroids[i][2], data[i]])

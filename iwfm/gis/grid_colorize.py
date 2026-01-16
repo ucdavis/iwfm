@@ -1,6 +1,6 @@
 # grid_colorize.py
 # Convert an ASCII DEM to an image and colorize using a heat-map color ramp
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,11 +16,19 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import colorsys
+import numpy as np
+from PIL import Image, ImageDraw, ImageOps  # pillow
+try:
+    from osgeo import gdal_array
+except ImportError:
+    gdal_array = None  # GDAL not available
+
 
 def grid_colorize(source, target):
     ''' grid_colorize() - Convert an ASCII DEM to an image and colorize
         using a heat-map color ramp
-    
+
     Parameters
     ----------
     source : str
@@ -32,10 +40,8 @@ def grid_colorize(source, target):
     Returns
     -------
     nothing
-    
+
     '''
-    import numpy as np
-    from PIL import Image, ImageDraw, ImageOps  # pillow
 
     arr = np.loadtxt(source, skiprows=6)  # Load the ASCII DEM into a numpy array
     im = Image.fromarray(arr).convert("L")  # Convert the numpy array to a PIL image

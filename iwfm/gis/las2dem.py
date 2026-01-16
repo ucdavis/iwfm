@@ -1,6 +1,6 @@
 # las2dem.py
 # Converts a LIDAR LAS file to an ASCII DEM
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import numpy as np
+from laspy.file import File
+
 
 def las2dem(source, target, cell=1.0, NODATA=0):
     ''' las2dem() - Convert a LIDAR LAS file to an ASCII DEM.
@@ -25,22 +28,21 @@ def las2dem(source, target, cell=1.0, NODATA=0):
     ----------
     source : str
         input LIDAR LAS file name
-    
+
     target : str
         output ASCII DEM file name
-    
+
     cell : float, default=1.0
         interpolation distance
-    
+
     NODATA : int, default=0
         value to use for blank areas
-    
+
     Return
     ------
     nothing
-    
+
     '''
-    import numpy as np
 
     if source[-4:] != '.las':
         source += '.las'

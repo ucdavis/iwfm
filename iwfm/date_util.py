@@ -20,10 +20,13 @@
 def validate_date_format(date_str, param_name='date'):
     """Validate that a date string is in MM/DD/YYYY format.
 
+    Accepts dates with optional time component (e.g., '09/30/1973_24:00').
+    The time component is stripped before validation.
+
     Parameters
     ----------
     date_str : str
-        Date string to validate
+        Date string to validate (may include optional time after underscore)
     param_name : str, default='date'
         Name of parameter for error messages
 
@@ -47,7 +50,10 @@ def validate_date_format(date_str, param_name='date'):
             f"{param_name} cannot be empty"
         )
 
-    parts = date_str.strip().split('/')
+    # Strip time component if present (e.g., '09/30/1973_24:00' -> '09/30/1973')
+    date_only = date_str.strip().split('_')[0]
+
+    parts = date_only.split('/')
     if len(parts) != 3:
         raise ValueError(
             f"{param_name} must be in MM/DD/YYYY format (e.g., '01/15/2020'), got '{date_str}'. "
@@ -58,24 +64,24 @@ def validate_date_format(date_str, param_name='date'):
         month, day, year = map(int, parts)
     except ValueError as e:
         raise ValueError(
-            f"{param_name} contains non-numeric values: '{date_str}'. "
+            f"{param_name} contains non-numeric values in date part: '{date_only}' (from '{date_str}'). "
             f"All parts must be integers (MM/DD/YYYY)"
         ) from e
 
     # Validate ranges
     if not (1 <= month <= 12):
         raise ValueError(
-            f"{param_name} has invalid month {month} in '{date_str}', must be 1-12"
+            f"{param_name} has invalid month {month} in date '{date_only}' (from '{date_str}'), must be 1-12"
         )
 
     if not (1 <= day <= 31):
         raise ValueError(
-            f"{param_name} has invalid day {day} in '{date_str}', must be 1-31"
+            f"{param_name} has invalid day {day} in date '{date_only}' (from '{date_str}'), must be 1-31"
         )
 
     if year < 1800 or year > 5000:
         raise ValueError(
-            f"{param_name} has invalid year {year} in '{date_str}', must be 1800-2200"
+            f"{param_name} has invalid year {year} in date '{date_only}' (from '{date_str}'), must be 1800-2200"
         )
 
     return month, day, year

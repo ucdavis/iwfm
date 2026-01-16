@@ -43,6 +43,9 @@ def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     '''
     import iwfm as iwfm
 
+    # Use iwfm utility for file validation
+    iwfm.file_test(in_filename)
+
     # -- read the land use file into array lu_lines
     with open(in_filename) as f:
         lu_lines = f.read().splitlines()  # open and read input file

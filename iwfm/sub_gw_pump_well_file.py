@@ -50,6 +50,9 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
 
     comments = ['C','c','*','#']
 
+    # Check if well file exists using iwfm utility
+    iwfm.file_test(old_filename)
+
     with open(old_filename) as f:
         well_lines = f.read().splitlines()
     well_lines.append('')
@@ -70,6 +73,7 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
             del well_lines[line_index]
         else:
             keep_wells.append(id)
+            new_nwells += 1
             line_index += 1
 
     well_lines[nwells_line] = '         ' + str(new_nwells) + '                       / NWELL'
@@ -77,7 +81,7 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
 
     for l in range(0, nwells):
         t = well_lines[line_index].split()
-        if t[0] not in keep_wells:
+        if int(t[0]) not in keep_wells:
             del well_lines[line_index]
         else:
             line_index += 1
@@ -93,7 +97,32 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
     line_index = iwfm.skip_ahead(line_index, well_lines, 1)  # skip comments
     for id in range(0, ngrp):
         grp_line, ielems = line_index, []
-        grp_id, nelem, ielem, *z = [int(e) for e in well_lines[line_index].split()]
+
+        # Parse element group line with error checking
+        line_data = well_lines[line_index].split()
+        if len(line_data) < 3:
+            import sys
+            print(f'\n*** ERROR: Malformed well file while processing element groups')
+            print(f'    File: {old_filename}')
+            print(f'    Processing group {id + 1} of {ngrp}')
+            print(f'    Current line {line_index + 1}: "{well_lines[line_index]}"')
+            print(f'\n    Expected format for group header line:')
+            print(f'      group_id num_elements first_element [additional_data]')
+            print(f'    Found {len(line_data)} value(s) but expected at least 3')
+            print('\n    Well file format:')
+            print('      - Each group starts with: <ID> <NELEM> <first_element>')
+            print('      - Followed by NELEM-1 lines with one element ID each')
+            print('\n    This error may occur if:')
+            print('      1. The number of element groups (NGRP) is wrong')
+            print('      2. The number of elements (NELEM) in a previous group was incorrect')
+            print('      3. There is a bug in the line deletion logic when filtering groups')
+            print('\n    Please verify:')
+            print('      - The NGRP value matches the actual number of groups in the file')
+            print('      - Each group header has the correct NELEM value')
+            print(f'      - Check the format around line {line_index + 1} in the original file')
+            sys.exit(1)
+
+        grp_id, nelem, ielem, *z = [int(e) for e in line_data]
         if ielem in elems:  # keep the item
             ielems.append(ielem)
         line_index += 1
@@ -107,7 +136,7 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
             for j in range(grp_line, line_index):
                 del well_lines[grp_line]
             line_index = grp_line
-        elif len(ielems) > 0: 
+        elif len(ielems) > 0:
             new_ngrp += 1
             well_lines[ngrp_line] = '\t' + str(new_ngrp)
             well_lines[grp_line] = str(id+1) + '\t' + str(len(ielems)) + '\t' + str(ielems[0])
@@ -115,8 +144,12 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
                 for j in range(1,len(ielems)):
                     well_lines[grp_line + j] = '\t\t' + str(ielems[j])
             if len(ielems) < nelem:
-                for j in range(len(ielems), nelem):       
-                    del well_lines[grp_line + len(ielems) + j]
+                # Delete extra lines - always delete at the same position since list shrinks
+                for j in range(len(ielems), nelem):
+                    del well_lines[grp_line + len(ielems)]
+            # line_index was pointing past the old group, adjust to point past the new smaller group
+            # The new group has len(ielems) total lines (1 header + len(ielems)-1 element lines)
+            line_index = grp_line + len(ielems)
 
     well_lines[ngrp_line] = '         ' + str(new_ngrp) + '                       / NGRP'
     well_lines.append('')

@@ -48,11 +48,10 @@ def headall2csv(data, layers, dates, nodes, output_file, verbose=False):
     '''
     import pandas as pd
 
-    for i in range(0, layers): 
-        out_list, index = [], i
-        while index < len(data):
-            out_list.append(data[index])
-            index += layers
+    for i in range(0, layers):
+        out_list = []
+        for time_index in range(len(data)):
+            out_list.append(data[time_index][i])
         out_df = pd.DataFrame(out_list, columns=nodes, index=dates).T
         of = output_file + '_' + str(i + 1) + '.csv'
         out_df.to_csv(of)

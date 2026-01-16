@@ -45,6 +45,9 @@ def sub_st_inflow_file(old_filename, new_filename, snode_list, verbose=False):
 
     comments = ['C','c','*','#']
 
+    # Check if inflow file exists using iwfm utility
+    iwfm.file_test(old_filename)
+
     with open(old_filename) as f:
         inflow_lines = f.read().splitlines()
     inflow_lines.append('')

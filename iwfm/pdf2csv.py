@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-def pdf2csv(input_file, output_file, verbose=False):
+def pdf2csv(input_file, output_file, verbose=False, log_file='pdf2csv.log'):
     ''' pdf2csv() - Read a PDF file and write tables to a csv file
 
     Parameters
@@ -32,14 +32,46 @@ def pdf2csv(input_file, output_file, verbose=False):
     verbose : bool, default=False
         turn command-line output on or off
 
+    log_file : str, default='pdf2csv.log'
+        name of log file for warnings and errors
+
     Returns
     -------
     nothing
 
     '''
     import tabula
+    import warnings
+    import logging
 
-    tabula.convert_into(input_file, output_file, output_format='csv', pages='all')
+    # Set up logging
+    logging.basicConfig(
+        filename=log_file,
+        level=logging.WARNING,
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
+    # Capture warnings
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+
+        try:
+            tabula.convert_into(input_file, output_file, output_format='csv', pages='all')
+
+            # Log any warnings
+            for warning in w:
+                logging.warning(f'{warning.category.__name__}: {warning.message}')
+
+        except ImportError as e:
+            if 'jpype' in str(e):
+                logging.warning(f'JPype import failed: {e}. Falling back to subprocess mode.')
+            else:
+                raise
+        except Exception as e:
+            logging.error(f'Error converting {input_file}: {e}')
+            raise
+
     if verbose:
         print(f'  Wrote table(s) in {input_file} to {output_file}')
     return

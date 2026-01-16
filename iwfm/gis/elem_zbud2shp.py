@@ -1,7 +1,7 @@
 # elem_zbud2shp.py
 # Read IWFM Elemental Z-Budget output file and place the sum of each column into
 # a copy of the elemental hapefile
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,6 +16,11 @@
 # For a copy of the GNU General Public License, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
+
+import os
+import geopandas as gpd
+import numpy as np
+import iwfm
 
 
 def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=False):
@@ -43,12 +48,6 @@ def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=
     -------
     nothing
     '''
-    import os
-    import geopandas as gpd
-    import numpy as np
-    import iwfm as iwfm
-    import win32com.client as win32  # pywin32
-
     cwd = os.getcwd()
 
     # -- read the Budget file into array file_lines
@@ -111,8 +110,9 @@ def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=
         elem_data = np.asarray(elem_data).sum(axis=0).tolist()          # calculate sum of each column
 
         budget_data.append(elem_data)
-        elem_data.clear()  
+        elem_data.clear()
 
+    count = 0  # Initialize counter for deep copy management
     for col, field_name in enumerate(field_names):
 
         col_vals = [elem_data[col][elem] for elem in elem_ids]          # extract zone_data for field
@@ -141,7 +141,7 @@ if __name__ == '__main__':
     ' Run elem_zbud2shp() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     verbose=True
 

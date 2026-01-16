@@ -39,7 +39,7 @@ def read_lu_change_factors(in_chg_file):
         temp = f.read().splitlines()
     change_table = []
     for i in range(0, len(temp)):
-        item = re.split(';|,|\*|\n|\t', temp[i])
+        item = re.split(r';|,|\*|\n|\t', temp[i])
         if i == 0:
             for j in range(1, len(item)):
                 item[j] = int(item[j])

@@ -1,6 +1,6 @@
 # get_hyd_fname.py
 # Get hydrograph file name from IWFM file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ def get_hyd_fname(ftype,file_dict,debug=0):
 
 
     '''
-    import iwfm as iwfm
-    hyd_file, hyd_names = iwfm.get_hyd_info(ftype,file_dict,debug)
+    import iwfm.calib as calib
+
+    hyd_file, hyd_names = calib.get_hyd_info(ftype,file_dict)
+
     return hyd_file

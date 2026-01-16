@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=False):
+def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=None, verbose=False):
     '''sub_streams_file() - Read the original Simulation streams main file, 
         determine which elements are in the submodel, and writes out a new file, 
         then modifies the other Simulation stream component files
@@ -47,10 +47,19 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fals
 
     '''
     import iwfm as iwfm
+    from pathlib import Path
 
     comments = ['C','c','*','#']
 
-    with open(sim_dict['stream_file']) as f:
+    # Check if streams file exists
+    stream_file = sim_dict.get('stream_file')
+    if not stream_file:
+        iwfm.file_missing('streams file', 'Not specified in simulation input file')
+
+    # Use iwfm utility for file validation
+    iwfm.file_test(stream_file)
+
+    with open(stream_file) as f:
         stream_lines = f.read().splitlines()
     stream_lines.append('')
 
@@ -66,12 +75,15 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fals
         have_inflow = False
         stream_lines[line_index] = '                                         / INFLOWFL'
     else:
-        inflow_file = inflow_file.replace('\\', ' ').split()[1]
+        inflow_file = inflow_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            inflow_file = str(base_path / inflow_file)
         stream_lines[line_index] = '   ' + sim_dict_new['stin_file'] + '.dat		        / INFLOWFL'
     st_dict['stin_file'] = inflow_file
 
     # diversion specification file name
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
     divspec_file = stream_lines[line_index].split()[0]                   # tile drain main file
     have_divspec = True
     if divspec_file[0] == '/':
@@ -79,12 +91,15 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fals
         have_divspec = False
         stream_lines[line_index] = '                                         / DIVSPECFL'
     else:
-        divspec_file = divspec_file.replace('\\', ' ').split()[1]
+        divspec_file = divspec_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            divspec_file = str(base_path / divspec_file)
         stream_lines[line_index] = '   ' + sim_dict_new['divspec_file'] + '.dat		        / DIVSPECFL'
     st_dict['divspec_file'] = divspec_file
 
     # bypass specification file name
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
     bp_file = stream_lines[line_index].split()[0]                 # bypass specification file
     bp_line = line_index
     have_bp = True
@@ -93,7 +108,10 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fals
         have_bp = False
         stream_lines[line_index] = '                                         / BYPSPECFL'
     else:
-        bp_file = bp_file.replace('\\', ' ').split()[1]     
+        bp_file = bp_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            bp_file = str(base_path / bp_file)
         stream_lines[line_index] = '   ' + sim_dict_new['bp_file'] + '.dat		        / BYPSPECFL'
     st_dict['bp_file'] = bp_file
 
@@ -106,7 +124,10 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fals
         have_div = False
         stream_lines[line_index] = '                                         / DIVFL'
     else:
-        div_file = div_file.replace('\\', ' ').split()[1]
+        parts = div_file.replace('\\', ' ').split()
+        if len(parts) < 2:
+            raise ValueError(f"{stream_file} line {line_index}: Expected path with backslash for diversion file, got '{div_file}'")
+        div_file = parts[1]
         stream_lines[line_index] = '   ' + sim_dict_new['div_file'] + '.dat		        / DIVFL'
     st_dict['div_file'] = div_file
 
@@ -181,10 +202,10 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fals
           stream_lines[bp_line] = '                                         / BYPSPECFL'
 
     # -- don't modify diversion time series file file --
-
-    with open(sim_dict_new['stream_file'], 'w') as outfile:
+    new_stream_file = sim_dict_new['stream_file']
+    with open(new_stream_file, 'w') as outfile:
         outfile.write('\n'.join(stream_lines))
     if verbose:
-        print(f'  Wrote stream main file {sim_dict_new["stream_file"]}')
+        print(f'  Wrote stream main file {new_stream_file}')
 
     return

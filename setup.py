@@ -1,6 +1,6 @@
 # setup.py for iwfm package
 # Classes, methods and functions to read, write and modify IWFM and IGSM files
-# Copyright (C) 2018-2023 University of California
+# Copyright (C) 2018-2026 University of California
 #-----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

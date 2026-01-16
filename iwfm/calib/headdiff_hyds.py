@@ -1,6 +1,6 @@
 # headdiff_hyds.py
 # calculates vertical head differences
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -15,6 +15,10 @@
 # For a copy of the GNU General Public License, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
+
+from math import ceil
+from iwfm import dts2days
+from iwfm.calib.to_smp_ins import to_smp_ins
 
 
 def headdiff_hyds(hdiff_pairs, hdiff_data, rthresh, ts_func, start_date, verbose=False):
@@ -50,6 +54,7 @@ def headdiff_hyds(hdiff_pairs, hdiff_data, rthresh, ts_func, start_date, verbose
         instructions for reading smp_out data
 
     '''
+    import iwfm.calib as icalib
 
     smp_out, ins_out, temp, data, sites = [], [], [], [], []
     hdiff_data.sort( key = lambda l: (l[0], l[1]))                      # sort by site then by date
@@ -79,8 +84,8 @@ def headdiff_hyds(hdiff_pairs, hdiff_data, rthresh, ts_func, start_date, verbose
                 if abs((d_left - d_right).days) <= rthresh:
                     obs_val = data[left_col][i][1] - data[right_col][i][1]
                     ts = ceil(float(ts_func(dts2days(d_left, start_date))))     # date to time step w/interpolation function
-                    smp, ins = to_smp_ins(site,d_left,obs_val,ts)               # put into smp and ins strings
+                    smp, ins = icalib.to_smp_ins(site,d_left,obs_val,ts)        # put into smp and ins strings
 
-                smp_out.append(smp)                                           # add smp string to smp_out list
-                ins_out.append(ins)                                           # add ins string to ins_out list
+                    smp_out.append(smp)                                           # add smp string to smp_out list
+                    ins_out.append(ins)                                           # add ins string to ins_out list
     return smp_out, ins_out

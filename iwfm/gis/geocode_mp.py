@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import multiprocessing as mp
-from geocode import geocode
+from iwfm.gis.geocode import geocode
 
 def geocode_mp(cities):
     ''' geo_code() - Use multiprocessing to find and return multiple geocodes

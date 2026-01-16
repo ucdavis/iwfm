@@ -19,9 +19,9 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_rz_pc_file(old_filename, sim_dict_new, elems, verbose=False):
-    '''sub_rz_pc_file() - Copy the rootzone ponded crops main file 
-       and replace the contents with those of the new submodel, write out 
+def sub_rz_pc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=False):
+    '''sub_rz_pc_file() - Copy the rootzone ponded crops main file
+       and replace the contents with those of the new submodel, write out
        the new file, and process the other ponded crop files
 
     Parameters
@@ -34,6 +34,9 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, verbose=False):
 
     elems : list of ints
         list of existing model elements in submodel
+
+    base_path : Path, optional
+        base path for resolving relative file paths
 
     verbose : bool, default=False
         turn command-line output on or off
@@ -48,16 +51,22 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, verbose=False):
     comments = ['C','c','*','#']
     ncrop = 5
 
+    # Use iwfm utility for file validation
+    iwfm.file_test(old_filename)
+
     with open(old_filename) as f:
         pc_lines = f.read().splitlines()
     pc_lines.append('')
 
     line_index = iwfm.skip_ahead(0, pc_lines, 0)                # skip initial comments
 
-    # non-ponded crop area file name
+    # ponded crop area file name
     parea_file = pc_lines[line_index].split()[0]               # original crop area file name
-    parea_file = parea_file.replace('\\', ' ').split()[1]      # remove directory name
-    pc_lines[line_index] = '   ' + sim_dict_new['npa_file'] + '.dat		        / LUFLP'
+    parea_file = parea_file.replace('\\', '/')                  # convert backslashes to forward slashes
+    # Resolve relative path from simulation base directory if provided
+    if base_path is not None:
+        parea_file = str(base_path / parea_file)
+    pc_lines[line_index] = '   ' + sim_dict_new['pca_file'] + '.dat		        / LUFLP'
 
     # budget section
     line_index = iwfm.skip_ahead(line_index + 1, pc_lines, 0)       # skip comments

@@ -28,17 +28,17 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
         list of elements and associated nodes
     
     stnodes_dict : dictionary
-        key = stream node ID, values = [groundwater node, reach, elevation]
-    
+        key = stream node ID, values = [gw_node, reach, elevation]
+
     node_coords : list
         list of nodes and associated X and Y coordinates
-    
+
     shape_name : str
         base name for output shapefiles
-    
+
     epsg : int, default=26910 (NAD 83 UTM 10, CA)
         EPSG projection
-    
+
     verbose : bool, default=False
         True = command-line output on
 
@@ -55,13 +55,13 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
 
     # Create a new shapefile writer for lines
     w = shapefile.Writer(shapename, shapeType=shapefile.POLYLINE)
-    
+
     # Define fields
     w.field('reach_id', 'N', 10, 0)
     w.field('flows_to', 'N', 10, 0)
-    
+
     node_coords_dict = iwfm.list2dict(node_coords)
-    
+
     # Write features
     for i in range(len(reach_list)):
         upper, lower = reach_list[i][1], reach_list[i][2]

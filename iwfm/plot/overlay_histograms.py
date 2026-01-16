@@ -1,6 +1,6 @@
 # overlay_histograms.py 
-# Overlay two histograms to visualize the distribution of two datasets.
-# Copyright (C) 2023 University of California
+# Overlay histograms of two parameters to visualize the distribution of two datasets.
+# Copyright (C) 2023-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 
 def overlay_histograms(data1, data2, file_name, label1='Data 1', label2='Data 2', alpha=0.5, bins='auto'):
-    """
+    '''
     Overlay two histograms to visualize the distribution of two datasets.
 
     Parameters
@@ -49,7 +49,7 @@ def overlay_histograms(data1, data2, file_name, label1='Data 1', label2='Data 2'
     Example
     -------
     overlay_histograms(data1, data2, label1='Dataset 1', label2='Dataset 2', alpha=0.5, bins='auto')
-    """
+    '''
     import numpy as np
     import matplotlib.pyplot as plt
 
@@ -70,6 +70,8 @@ def overlay_histograms(data1, data2, file_name, label1='Data 1', label2='Data 2'
 
 if __name__ == "__main__":
 
+    import iwfm
+
     # TODO: Add command line arguments
     
     gw_file = "C2VSimCG_Groundwater1974.dat"
@@ -87,7 +89,7 @@ if __name__ == "__main__":
     image_name = f"histogram_{params[param1]}{layer1}_vs_{params[param2]}{layer2}.png"
 
     #  Read all relevant values from Groundwater.dat
-    values = read_gw(gw_file)
+    values = iwfm.read_gw_params(gw_file)
 
     data1 = values[param1][layer1]
     data2 = values[param2][layer2]

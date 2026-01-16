@@ -1,6 +1,6 @@
 # stretch.py
 # Performs a histogram stretch on a gdal_array array image
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -29,9 +29,10 @@ def stretch(a):
     a : GDAL array object
 
     '''
-    from osgeo import gdal_array as gdal_array
+    import operator
+    from osgeo import gdal_array
     import functools
-    import iwfm as iwfm
+    import iwfm
 
     h = iwfm.histogram_array(a)
     lut = []

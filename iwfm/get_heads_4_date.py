@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import iwfm
+import numpy as np
+
 
 def get_heads_4_date(heads_file, out_date, start=5):
     ''' get_heads_4_date() - Read headall.out file and return heads for a
@@ -34,11 +37,14 @@ def get_heads_4_date(heads_file, out_date, start=5):
 
     Returns
     -------
-    nothing
-    
-    '''
-    import iwfm as iwfm
+    out_table : numpy.ndarray or None
+        2D array of head values, or None if date not found
+    nodes : list
+        List of node names
+    header : list
+        List of header labels (Node + Layer labels)
 
+    '''
     out_mon = iwfm.month(out_date)
     out_day = iwfm.day(out_date)
     out_year = iwfm.year(out_date)
@@ -48,8 +54,7 @@ def get_heads_4_date(heads_file, out_date, start=5):
 
     line_index = start
     nodes = file_lines[line_index].split()  # read line w/node nos
-    nodes.pop(0)  # remove text
-    nodes.pop(0)  # remove text
+    nodes.pop(0)  # remove "Node" text
 
     data = []
 
@@ -58,18 +63,21 @@ def get_heads_4_date(heads_file, out_date, start=5):
     data.append(item)
     end_date = item.pop(0)  # remove the date
 
-    while line_index < len(file_lines) - 1:
-        line_index += 1
+    while True:
+        # Read all layer lines for this timestep
         layer = 1
         header = []
         header.append('Node')
         header.append('Layer ' + str(layer))
-        while file_lines[line_index][0].isspace():  # get all the lines for this time step
+
+        line_index += 1
+        while line_index < len(file_lines) and file_lines[line_index] and file_lines[line_index][0].isspace():  # get all the lines for this time step
             item = file_lines[line_index].split()
             data.append(item)
             layer += 1
             header.append('Layer ' + str(layer))
             line_index += 1
+
         # now check the date
         m = iwfm.month(end_date[0:10])
         d = iwfm.day(end_date[0:10])
@@ -77,11 +85,14 @@ def get_heads_4_date(heads_file, out_date, start=5):
         if m == out_mon and d == out_day and y == out_year:
             out_table = np.asarray(data)
             return out_table, nodes, header
-        else:
-            data = []
-            data.append(nodes)
-            item = file_lines[line_index].split()  # read line w/date
-            data.append(item)
-            end_date = item.pop(0)  # remove the date
 
-    return
+        # Date doesn't match, try next timestep
+        if line_index >= len(file_lines):
+            break
+
+        data = []
+        item = file_lines[line_index].split()  # read line w/date
+        data.append(item)
+        end_date = item.pop(0)  # remove the date
+
+    return None

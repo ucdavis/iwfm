@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0, rhigh=1000000, empty=-999, verbose=False):
+def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0.0, rhigh=1000000.0, empty=-999.0, verbose=False):
     ''' fac2iwfm() - Transfer parameter values from pilot points to model nodes
         from fac2reali.f90 by M Tonkin
 
@@ -50,9 +50,10 @@ def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0, rhigh=1000000, em
 
     import iwfm
     if verbose:
-        print('\n FAC2IWFM carries out spatial parameter interpolation to IWFM 2015 node')
+        print('\n FAC2IWFM carries out spatial parameter interpolation to IWFM node')
         print(' locations using interpolation factors calculated by PPK2FACI and ')
         print(' pilot point values contained in a pilot points file.')
+        print(' From FAC2REALI.F90 by Matt Tonkin, SSPA.')
     
     iwfm.file_test(pp_file_name)
     with open(pp_file_name) as f:

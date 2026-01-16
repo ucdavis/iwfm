@@ -2,7 +2,7 @@
 # Convert Diversion Shortages from IWFM Stream Budget to the SMP file format for 
 # use by PEST.
 # Based on STACDEP2OBS.F90 by Matt Tonkin, SSPA with routines by John Doherty
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -189,6 +189,7 @@ if __name__ == "__main__":
         output_file  = sys.argv[3]
     else:                                                      # ask for file names from terminal
         budget_file   = input("Input Stream Budget file name: ")
+        reach_file    = input("Stream file name: ")
         output_file   = input("Output SMP file name: ")
 
     iwfm.file_test(budget_file)

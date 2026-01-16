@@ -50,11 +50,12 @@ def cdec2monthly(input_file, output_file, verbose=False):
         .replace(r'BRT', np.nan, regex=True)
     )
     flow_data['DATE'] = pd.to_datetime(flow_data['DATE'], errors='coerce')
-    flow_data['FLOW (CFS)'] = flow_data['FLOW (CFS)'].astype(float) 
+    flow_data['FLOW (CFS)'] = flow_data['FLOW (CFS)'].astype(float)
     flow_data['FLOW (AF)'] = (flow_data['FLOW (CFS)'].astype(float) * 1.983)
 
     # -- sometimes get an error with the next line, some values are not numbers?
-    flow_daily = flow_data.resample('D', on='DATE').mean()  # get daily mean value
+    # Drop non-numeric columns before resampling (e.g., TIME column)
+    flow_daily = flow_data.resample('D', on='DATE').mean(numeric_only=True)  # get daily mean value
 
     # the pandas dataframe was doing something weird, so ...
     flow_daily.to_csv('temp.txt')         # write it to a temporary output file ...
@@ -65,7 +66,8 @@ def cdec2monthly(input_file, output_file, verbose=False):
     flow_daily['FLOW (CFS)'] = flow_daily['FLOW (CFS)'].astype(float)
     flow_daily['FLOW (AF)'] = flow_daily['FLOW (AF)'].astype(float)
 
-    flow_monthly = flow_daily.resample('M', on='DATE').sum()
+    # Use 'ME' (month end) instead of deprecated 'M'
+    flow_monthly = flow_daily.resample('ME', on='DATE').sum(numeric_only=True)
 
     # write to output file
     header = ['FLOW (AF)']

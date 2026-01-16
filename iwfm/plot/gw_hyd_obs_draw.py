@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import datetime
+import iwfm
+
 
 def gw_hyd_obs_draw(sim_well_name, sim_hyd_data, obs_dates, obs_meas, well_info,
                         sim_hyd_names, title_words, yaxis_width=-1,verbose=False):
@@ -128,13 +131,15 @@ def gw_hyd_obs_draw(sim_well_name, sim_hyd_data, obs_dates, obs_meas, well_info,
             center = (ymax - ymin) / 2 + ymin
             plt.ylim(center - yaxis_width / 2, center + yaxis_width / 2)
 
-        import iwfm
-
         for j in range(no_hyds):
             sim_dates = []
             for i in range(len(sim_hyd_data[j])):
                 try:
-                    date_dt = iwfm.safe_parse_date(sim_hyd_data[j][i][0], f'sim_hyd_data[{j}][{i}][0]')
+                    # Check if already a datetime object
+                    if isinstance(sim_hyd_data[j][i][0], datetime.datetime):
+                        date_dt = sim_hyd_data[j][i][0]
+                    else:
+                        date_dt = iwfm.safe_parse_date(sim_hyd_data[j][i][0], f'sim_hyd_data[{j}][{i}][0]')
                 except ValueError as e:
                     raise ValueError(f"Error parsing date in sim_hyd_data[{j}][{i}]: {str(e)}") from e
                 sim_dates.append(date_dt)

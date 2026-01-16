@@ -49,15 +49,24 @@ def sub_pp_lakes(lake_file, elem_list):
         lake_lines = f.read().splitlines()  # open and read input file
 
     # Check if first line has at least 2 characters before slicing
-    lake_type = lake_lines[0][1:] if lake_lines and len(lake_lines[0]) > 1 else ''
+    if not lake_lines:
+        raise ValueError("Lake file is empty")
+    lake_type = lake_lines[0][1:] if len(lake_lines[0]) > 1 else ''
 
     line_index = iwfm.skip_ahead(0, lake_lines, 0)  # skip comments
-    nlakes = int(lake_lines[line_index].split()[0])
+    parts = lake_lines[line_index].split()
+    if not parts:
+        raise ValueError(f"{lake_file} line {line_index}: Expected number of lakes, got empty line")
+    nlakes = int(parts[0])
 
     lake_info = []
     for lake in range(0, nlakes):
         line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
         temp = lake_lines[line_index].split()
+        if len(temp) < 5:
+            raise ValueError(
+                f"{lake_file} line {line_index}: Expected at least 5 values for lake {lake}, got {len(temp)}"
+            )
         nelake = int(temp[3])
 
         lake_elems = []
@@ -65,7 +74,10 @@ def sub_pp_lakes(lake_file, elem_list):
             lake_elems.append(int(temp[4]))
         for elem in range(0, nelake - 1):
             line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
-            e = int(lake_lines[line_index].split()[0])
+            parts = lake_lines[line_index].split()
+            if not parts:
+                raise ValueError(f"{lake_file} line {line_index}: Expected lake element ID, got empty line")
+            e = int(parts[0])
             if e in elems:
                 lake_elems.append(e)
         if len(lake_elems) > 0:  # at least one lake element in submodel

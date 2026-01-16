@@ -18,9 +18,9 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, verbose=False):
-    '''sub_gw_bc_file() - Read the original groundwater boundary conditions file, 
-        determine which boundary conditions are in the submodel, and write out a new 
+def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base_path=None, verbose=False):
+    '''sub_gw_bc_file() - Read the original groundwater boundary conditions file,
+        determine which boundary conditions are in the submodel, and write out a new
         file
 
     Parameters
@@ -40,6 +40,9 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, verb
     bounding_poly : shapely.geometry Polygon
         submodel boundary form model nodes
 
+    base_path : Path, optional
+        base path for resolving relative file paths
+
     verbose : bool, default=False
         turn command-line output on or off
 
@@ -50,6 +53,7 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, verb
     '''
     import iwfm as iwfm
     from shapely.geometry import Point, Polygon
+    from pathlib import Path
 
     comments = ['C','c','*','#']
 
@@ -93,14 +97,17 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, verb
         bc_lines[line_index] = '   ' + sim_dict_new['ghd_file'] + '.dat		        / GHBCFL'
 
     line_index = iwfm.skip_ahead(line_index, bc_lines, 1)
-    
+
     # constrained general head boundary conditions file
-    cghd_file = bc_lines[line_index].split()[0]  
+    cghd_file = bc_lines[line_index].split()[0]
     have_cghd = True
     if cghd_file[0] == '/':
         have_cghd = False
     else:
-        cghd_file = cghd_file.replace('\\', ' ').split()[1]     
+        cghd_file = cghd_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            cghd_file = str(base_path / cghd_file)
         bc_lines[line_index] = '   ' + sim_dict_new['cghd_file'] + '.dat		        / CONGHBCFL'
 
     line_index = iwfm.skip_ahead(line_index, bc_lines, 1)

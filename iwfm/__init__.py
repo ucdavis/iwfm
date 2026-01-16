@@ -63,6 +63,7 @@ from iwfm.iwfm_read_elempump import iwfm_read_elempump
 from iwfm.iwfm_read_param_table_ints import iwfm_read_param_table_ints
 from iwfm.iwfm_read_param_table_floats import iwfm_read_param_table_floats
 from iwfm.iwfm_read_rz_params import iwfm_read_rz_params
+from iwfm.iwfm_read_rz_file_names import iwfm_read_rz_file_names
 from iwfm.iwfm_read_uz_params import iwfm_read_uz_params
 from iwfm.iwfm_read_gw_params import iwfm_read_gw_params
 from iwfm.read_gw_params import read_gw_params
@@ -172,6 +173,9 @@ from iwfm.dates_diff import dates_diff
 from iwfm.secs_between import secs_between
 from iwfm.date_util import validate_date_format, safe_parse_date, validate_dss_date_format
 from iwfm.Unbuffered import Unbuffered
+from iwfm.generate_timesteps import generate_timesteps
+from iwfm.generate_datetime_objects import generate_datetime_objects
+from iwfm.parse_iwfm_date import parse_iwfm_date
 
 # -- dictionary methods -----------------------------------
 from iwfm.file2dict import file2dict

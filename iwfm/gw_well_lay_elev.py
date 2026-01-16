@@ -1,6 +1,6 @@
 # gw_well_lay_elev.py
 # Find layer elevation for each observation well
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,15 +17,17 @@
 # -----------------------------------------------------------------------------
 
 # TODO: Incomplete
+# NOTE: This function uses undefined IDW() function which needs to be imported or defined
 
 def gw_well_lay_elev(self, d_wellinfo, debug=0):
-    ''' gw_well_lay_elev() - Find layer elevations at each well using node 
-        elevation data. Inverse Distance Weighting is used to determine the 
+    ''' gw_well_lay_elev() - Find layer elevations at each well using node
+        elevation data. Inverse Distance Weighting is used to determine the
         elevations.
 
     ** INCOMPLETE **
     TODO:
       - Find layer elevations at each well using node elevation data.
+      - Import or define IDW() function (Inverse Distance Weighting)
 
 
     Parameters

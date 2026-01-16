@@ -43,7 +43,6 @@ def read_settings(in_file='settings.fig'):
 
     '''
     import os
-    import iwfm
 
     idate, iheader, datespec, headerspec = 0, 0, 0, ' '
 
@@ -61,7 +60,17 @@ def read_settings(in_file='settings.fig'):
 
     for cline in file_lines:
         cline = cline.lower().lstrip()  # convert to lower case and remove leading whitespace
+
+        # Skip blank lines and comments
+        if not cline or cline.startswith('#'):
+            continue
+
         iequals = cline.find('=')
+
+        # Skip lines without '='
+        if iequals == -1:
+            continue
+
         aline = cline[0:iequals]
 
         if aline == 'date':
@@ -81,10 +90,7 @@ def read_settings(in_file='settings.fig'):
                 headerspec='no'
             else:
                 iheader = 1
-        else:
-            print(f' Error encountered while reading settings file \'{in_file}\'')
-            sys.exit()
-            return 0, 0, 0, 0
+        # Silently skip unrecognized settings
 
     return datespec, headerspec, idate, iheader
     

@@ -59,9 +59,12 @@ def map_param2shp_rz_natrip(param_types, param_vals, elem_shp_name, out_shp_name
 
     gdf_new = gdf.copy()                                                # make a copy of the geopandas dataframe
 
-    for j in range(len(param_types)):
-        field_name = f'{param_types[j]}'                                # create the field name
-    
+    # Filter out 'ic' from param_types as it's handled separately below
+    param_types_main = [p for p in param_types if p != 'ic']
+
+    for j in range(len(param_types_main)):
+        field_name = f'{param_types_main[j]}'                                # create the field name
+
         data = param_vals[:,j]                                          # compile data for the field
 
         gdf_new[field_name] = data                                      # add a field to the geopandas dataframe
@@ -87,3 +90,34 @@ def map_param2shp_rz_natrip(param_types, param_vals, elem_shp_name, out_shp_name
 
     return 
 
+
+
+if __name__ == "__main__":
+    ''' Run map_param2shp_rz_natrip() from command line'''
+    import sys
+    import iwfm.debug as idb
+    import iwfm as iwfm
+
+    args = sys.argv
+
+    if len(args) > 1:  # arguments are listed on the command line
+        rz_file_name       = args[1]
+        elem_shp_name      = args[2]
+        out_shp_name       = args[3]
+    else:  # ask for file names from terminal
+        rz_file_name       = input('IWFM Root Zone Main file name: ')
+        elem_shp_name      = input('IWFM Elements shapefile name: ')
+        out_shp_name       = input('Output shapefile name: ')
+
+    iwfm.file_test(rz_file_name)
+    iwfm.file_test(elem_shp_name)
+
+    idb.exe_time()                                                      # initialize timer
+
+    param_types = ["cnnv", "cnrv", "icetnv", "icetrv", "istrmrv", "ic"]
+
+    crops, param_vals, files = iwfm.iwfm_read_rz_nr(rz_file_name)                 # Read rootzone parameters
+
+    map_param2shp_rz_natrip(param_types, param_vals, elem_shp_name, out_shp_name=out_shp_name, verbose=True)
+
+    idb.exe_time()                                                      # print elapsed time

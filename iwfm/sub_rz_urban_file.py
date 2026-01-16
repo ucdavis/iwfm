@@ -19,9 +19,9 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_rz_urban_file(old_filename, sim_dict_new, elems, verbose=False):
-    '''sub_rz_urban_file() - Copy the rootzone urban main file 
-       and replace the contents with those of the new submodel, write out 
+def sub_rz_urban_file(old_filename, sim_dict_new, elems, base_path=None, verbose=False):
+    '''sub_rz_urban_file() - Copy the rootzone urban main file
+       and replace the contents with those of the new submodel, write out
        the new file, and process the other urban files
 
     Parameters
@@ -35,6 +35,9 @@ def sub_rz_urban_file(old_filename, sim_dict_new, elems, verbose=False):
     elems : list of ints
         list of existing model elements in submodel
 
+    base_path : Path, optional
+        base path for resolving relative file paths
+
     verbose : bool, default=False
         turn command-line output on or off
 
@@ -47,6 +50,9 @@ def sub_rz_urban_file(old_filename, sim_dict_new, elems, verbose=False):
 
     comments = ['C','c','*','#']
 
+    # Use iwfm utility for file validation
+    iwfm.file_test(old_filename)
+
     with open(old_filename) as f:
         ur_lines = f.read().splitlines()
     ur_lines.append('')
@@ -54,7 +60,10 @@ def sub_rz_urban_file(old_filename, sim_dict_new, elems, verbose=False):
     line_index = iwfm.skip_ahead(0, ur_lines, 0)                # skip initial comments
 
     urarea_file = ur_lines[line_index].split()[0]                # original urban area file name
-    urarea_file = urarea_file.replace('\\', ' ').split()[1]      # remove directory name
+    urarea_file = urarea_file.replace('\\', '/')                  # convert backslashes to forward slashes
+    # Resolve relative path from simulation base directory if provided
+    if base_path is not None:
+        urarea_file = str(base_path / urarea_file)
     ur_lines[line_index] =  '   ' + sim_dict_new['ura_file'] + '.dat		        / LUFLU'
 
     line_index = iwfm.skip_ahead(line_index, ur_lines, 3)       # skip comments and two factors

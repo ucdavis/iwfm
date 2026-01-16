@@ -50,11 +50,18 @@ def elem2boundingpoly(elem_nodes, node_coords, verbose=False):
     # create a Polygon for each model element
     polys = []
     for elem in elem_nodes:  # for each element ...
-        points = [ [d_nodes[node][0], d_nodes[node][1]] for node in elem if node > 0 ]
-        poly = Polygon([[p[0], p[1]] for p in points])
-        polys.append(poly)
+        # Only include nodes that exist in d_nodes (skip missing nodes for submodels)
+        points = [ [d_nodes[node][0], d_nodes[node][1]] for node in elem if node > 0 and node in d_nodes ]
+        if len(points) >= 3:  # Need at least 3 points to make a polygon
+            poly = Polygon([[p[0], p[1]] for p in points])
+            # Only add valid polygons (skip invalid geometries)
+            if poly.is_valid and not poly.is_empty:
+                polys.append(poly)
 
     #  create poly_union
+    # Handle case where no valid polygons exist
+    if not polys:
+        return Polygon()
     poly_union = unary_union(polys)
 
     # create bounding_polygon

@@ -65,21 +65,21 @@ def headall2map(heads_file, pre_file, bnds_file, out_date, basename, label='Head
     strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
     strat = np.array([np.array(i) for i in strat])    # strat to numpy array
 
-    bnds_d = iwfm.file2dict(bnds_file,val_type=int)
+    bnds_d = iwfm.file2dict(bnds_file, key_field=0, val_field=1, skip=1, key_type=int, val_type=int)
     bounding_poly = iwfm.bnds2mask(bnds_d, node_coords)
 
     # -- get heads
     data, layers, dates, nodes = iwfm.headall_read(heads_file)
 
     # find index of out_date in dates
-    index = dates.index(out_date) * layers
+    index = dates.index(out_date)
 
     # map heads for each layer for out_date
     for layer in range(layers):
-        heads = data[index + layer]
+        heads = data[index][layer]
 
         plot_data = []
-        for i in range(len(node_coords)):
+        for i in range(len(heads)):
             plot_data.append([node_coords[i][1], node_coords[i][2], heads[i]]) 
 
         #  Produce point map

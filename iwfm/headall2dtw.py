@@ -63,11 +63,19 @@ def headall2dtw(heads_file, pre_file, output_root, verbose=False):
     heads = np.asarray(data)
 
     # -- calculate depth from land surface
+    # heads has shape (timesteps, layers, nodes)
+    # lse has shape (nodes,)
+    # Broadcasting creates dtw with shape (timesteps, layers, nodes)
     dtw = lse - heads
+
+    # -- reshape from (timesteps, layers, nodes) to (timesteps * layers, nodes)
+    # This flattens the first two dimensions while keeping nodes separate
+    timesteps = dtw.shape[0]
+    dtw_reshaped = dtw.reshape(timesteps * layers, -1)
 
     # -- write to csv files
     iwfm.headall2csv(
-        np.around(dtw, 3),
+        np.around(dtw_reshaped, 3),
         layers,
         dates,
         nodes,

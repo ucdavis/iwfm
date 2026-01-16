@@ -1,6 +1,6 @@
 # shp_to_utm_pts.py
 # Reproject a shapefile to UTM with PyShp
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,15 +37,16 @@ def shp_to_utm_pts(shape, outfile, verbose=False):
 
     '''
     import shapefile  # PyShp
-    import utm as utm
+    import utm
+    from urllib.request import urlopen
 
     zone = 0
 
-    with shapefile.Writer(outfile, shapeType=shp.shapeType) as w:
-        w.fields = shp.fields[1:]  # skip Deletion field
-        for s in shp.iterShapeRecords():
+    with shapefile.Writer(outfile, shapeType=shape.shapeType) as w:
+        w.fields = shape.fields[1:]  # skip Deletion field
+        for s in shape.iterShapeRecords():
             w.record(*s.record)
-        for s in shp.iterShapes():  # this reprojects
+        for s in shape.iterShapes():  # this reprojects
             lon, lat = s.points[0]
             x, y, zone, band = utm.from_latlon(lat, lon)
             w.point(x, y)

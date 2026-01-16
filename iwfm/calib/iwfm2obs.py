@@ -78,8 +78,8 @@ def iwfm2obs(verbose=False):
     for nt in nametype:
         main_file  = file_dict[nt][0]
         if main_file != 'none':
-            bprocess, bwriteins, rthresh = False, False, 0
             obs_file, out_file, ins_file, pcf_file = '', '', '', ''
+            bprocess, bwriteins, rthresh = False, False, 0
             if main_file != 'none':
                 iwfm.file_test(main_file)                                      # stop
                 bprocess = True
@@ -102,6 +102,9 @@ def iwfm2obs(verbose=False):
                 else:
                     bwriteins = True
                     pcf_file = ins_file[0:ins_file.find('.')]+'.pcf'                  # replace 'ins' with '.pcf'
+        else:
+            obs_file, out_file, ins_file, pcf_file = '', '', '', ''
+            bprocess, bwriteins, rthresh = False, False, 0
         # replace file_dict place-holders with new info
         old_value = file_dict[nt]
         new_value = [old_value[0],obs_file,out_file,ins_file,pcf_file,bprocess,bwriteins,rthresh,old_value[8],old_value[9]]
@@ -110,6 +113,7 @@ def iwfm2obs(verbose=False):
 
     # == Process hydrographs --------------------------------------------------------
     hyd_info = []
+    hyd_file, hyd_names, hdiff_sites, hdiff_pairs = 'none', [], '', ''
     for nt in nametype:
         if file_dict[nt][0] != 'none'and file_dict[nt][5] == True:
             if verbose: print(f'\n  Reading {nt} Main File {file_dict[nt][0]}')
@@ -118,9 +122,6 @@ def iwfm2obs(verbose=False):
             if nt == 'Groundwater' and headdiffs == True:
                 hdiff_sites, hdiff_pairs, hdiff_link = calib.headdiff_read(hdiffile)
                 if verbose: print(f'    Read {len(hdiff_sites):,} vertical well pairs')
-        else:
-            hyd_file = 'none'
-            hyd_names = []
         hyd_info.append([hyd_file, hyd_names])
 
     hyd_dict = dict(zip(nametype, hyd_info))                                      # put hyd_info into a dictionary for easier access

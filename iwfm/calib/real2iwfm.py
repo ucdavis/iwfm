@@ -150,8 +150,18 @@ def read_overwrite_file(overwrite_file, nnodes, nlay, param_types, verbose=False
     with open(overwrite_file) as f:
         in_lines = f.read().splitlines()               # open and read input file
 
+    if not in_lines:
+        raise ValueError(f'ERROR: Overwrite file "{overwrite_file}" is empty.\n'
+                        f'       This file must contain a valid IWFM overwrite template.\n'
+                        f'       Please provide a valid overwrite file or create a template file.')
+
     line_index = 0
-    line_index = iwfm.skip_ahead(line_index,in_lines,0)               # skip comments 
+    line_index = iwfm.skip_ahead(line_index,in_lines,0)               # skip comments
+
+    if line_index >= len(in_lines):
+        raise ValueError(f'ERROR: Overwrite file "{overwrite_file}" contains only comments or is improperly formatted.\n'
+                        f'       Expected NWRITE value after comment lines but reached end of file.')
+
     nwrite = int(in_lines[line_index].split()[0])                     # no. of parameter lines
 
     line_index = iwfm.skip_ahead(line_index,in_lines,1)               # skip comments

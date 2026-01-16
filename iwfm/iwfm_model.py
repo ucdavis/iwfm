@@ -27,6 +27,36 @@ class IWFMModelError(Exception):
     pass
 
 
+def _safe_get_filename(line, line_num, field_name='filename'):
+    """Safely extract filename from line with validation.
+
+    Parameters
+    ----------
+    line : str
+        Line to parse
+    line_num : int
+        Line number for error messages
+    field_name : str
+        Name of field for error messages
+
+    Returns
+    -------
+    str
+        Filename from line
+
+    Raises
+    ------
+    ValueError
+        If line is empty or contains only whitespace
+    """
+    parts = line.split()
+    if not parts:
+        raise ValueError(
+            f"Line {line_num}: Expected {field_name}, got empty line or whitespace"
+        )
+    return parts[0]
+
+
 class iwfm_model:
     def __init__(self, pre_fpath, sim_file, verbose=False):
         self.mtype = 'IWFM'
@@ -111,22 +141,22 @@ class iwfm_model:
 
         # -- read input file names and create a dictionary ------------------
         self.pre_files_dict = {}
-        self.pre_files_dict['preout'] = pre_lines[line_index].split()[0] 
+        self.pre_files_dict['preout'] = _safe_get_filename(pre_lines[line_index], line_index, 'preout')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  
-        self.pre_files_dict['elem_file'] = pre_lines[line_index].split()[0] 
+        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        self.pre_files_dict['elem_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'elem_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  
-        self.pre_files_dict['node_file'] = pre_lines[line_index].split()[0]  
+        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        self.pre_files_dict['node_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'node_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  
-        self.pre_files_dict['strat_file'] = pre_lines[line_index].split()[0] 
+        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        self.pre_files_dict['strat_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'strat_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0) 
-        self.pre_files_dict['stream_file'] = pre_lines[line_index].split()[0] 
+        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        self.pre_files_dict['stream_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'stream_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)  
-        lake_file = pre_lines[line_index].split()[0]  
+        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        lake_file = _safe_get_filename(pre_lines[line_index], line_index, 'lake_file')  
         if lake_file[0] == '/':
             lake_file = ''
         self.pre_files_dict['lake_file'] = lake_file
@@ -142,68 +172,68 @@ class iwfm_model:
 
         line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments
 
-        # -- read input file names and create a dictionary 
+        # -- read input file names and create a dictionary
         self.sim_files_dict = {}
-        preout = iwfm.file_get_path(sim_lines[line_index].split()[0])  
+        preout = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'preout'))
         self.sim_files_dict['preout'] = preout
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
-        gw_file = iwfm.file_get_path(sim_lines[line_index].split()[0]) 
+        gw_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'gw'))
         self.sim_files_dict['gw'] = gw_file
 
         line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
-        stream_file = iwfm.file_get_path(sim_lines[line_index].split()[0])  
+        stream_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'stream'))
         self.sim_files_dict['stream'] = stream_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        temp = sim_lines[line_index].split()[0]  
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        temp = _safe_get_filename(sim_lines[line_index], line_index, 'lake')
         if temp[0] == '/':
             lake_file = ''
         else:
-            lake_file = iwfm.file_get_path(temp)  
+            lake_file = iwfm.file_get_path(temp)
         self.sim_files_dict['lake'] = lake_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        rz_file = iwfm.file_get_path(sim_lines[line_index].split()[0])  
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        rz_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'rootzone'))
         self.sim_files_dict['rootzone'] = rz_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-        sw_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        sw_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'smallwatershed'))
         self.sim_files_dict['smallwatershed'] = sw_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        us_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        us_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'unsat'))
         self.sim_files_dict['unsat'] = us_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-        if_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        if_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'irrfrac'))
         self.sim_files_dict['irrfrac'] = if_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        sa_file = iwfm.file_get_path(sim_lines[line_index].split()[0])
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        sa_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'supplyadj'))
         self.sim_files_dict['supplyadj'] = sa_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        pc_file = sim_lines[line_index].split()[0] 
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        pc_file = _safe_get_filename(sim_lines[line_index], line_index, 'precip')
         self.sim_files_dict['precip'] = pc_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        et_file = iwfm.file_get_path(sim_lines[line_index].split()[0]) 
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        et_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'et'))
         self.sim_files_dict['et'] = et_file
 
         # -- starting date
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        start = sim_lines[line_index].split()[0]  
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        start = _safe_get_filename(sim_lines[line_index], line_index, 'start')
         self.sim_files_dict['start'] = start
 
         # -- time step
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 1)  
-        step = sim_lines[line_index].split()[0]  
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 1)
+        step = _safe_get_filename(sim_lines[line_index], line_index, 'step')
         self.sim_files_dict['step'] = step
 
         # -- endng date
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)  
-        end = sim_lines[line_index].split()[0]  
+        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        end = _safe_get_filename(sim_lines[line_index], line_index, 'end')  
         self.sim_files_dict['end'] = end
         return
 
@@ -223,7 +253,10 @@ class iwfm_model:
 
         line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  # skip comments
 
-        factor = float(node_lines[line_index].split()[0])  # read factor
+        parts = node_lines[line_index].split()
+        if not parts:
+            raise ValueError(f"{node_file} line {line_index}: Expected factor value, got empty line")
+        factor = float(parts[0])  # read factor
 
         line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  # skip comments
 
@@ -304,7 +337,10 @@ class iwfm_model:
             lake_lines = f.read().splitlines()
         lake_index = 0  # start at the top
         lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  # skip comments
-        self.nlakes = int(lake_lines[lake_index].split()[0])
+        parts = lake_lines[lake_index].split()
+        if not parts:
+            raise ValueError(f"{lake_file} line {lake_index}: Expected number of lakes, got empty line")
+        self.nlakes = int(parts[0])
         self.lakes = []
         self.lake_elems = []
         for i in range(0, self.nlakes):
@@ -335,10 +371,16 @@ class iwfm_model:
 
         stream_index = 0  # start at the top
         stream_index = iwfm.skip_ahead(stream_index, stream_lines, 0)
-        self.nreach = int(stream_lines[stream_index].split()[0])  # no reaches
+        parts = stream_lines[stream_index].split()
+        if not parts:
+            raise ValueError(f"{stream_file} lineine {stream_index}: Expected number of reaches, got empty line")
+        self.nreach = int(parts[0])  # no reaches
 
         stream_index += 1
-        self.n_rating = int(stream_lines[stream_index].split()[0])  
+        parts = stream_lines[stream_index].split()
+        if not parts:
+            raise ValueError(f"{stream_file} line {stream_index}: Expected rating table count, got empty line")
+        self.n_rating = int(parts[0])  
 
         self.sreach_list = []
         snodes_list = []

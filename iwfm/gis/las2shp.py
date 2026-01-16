@@ -1,6 +1,6 @@
 # las2shp.py
 # Convert an LAS LIDAR file to a shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,35 +17,37 @@
 # -----------------------------------------------------------------------------
 
 
-def las2shp(source, target, verbose=0):
+def las2shp(source, target, max_edge_length=3, verbose=0):
     ''' las2shp() - Convert an LAS LIDAR file to a shapefile by creating a
         3D triangle mesh using Delaunay Triangulation
 
-    ** This function isn't working for the example LIDAR file **
-    
     Parameters
     ----------
     source : str
         source LIDAR file name
-    
+
     target : str
         output shapefile name
-    
+
+    max_edge_length : float, default=3
+        maximum edge length for triangles (filters out large triangles
+        along convex hull which are common artifacts in Delaunay triangulation)
+
     verbose : int, default=0
-        level of CLI priniting (0 = none)
+        level of CLI printing (0 = none)
 
     Returns
     -------
     nothing
 
-    
+
     '''
+    import math
+    import time
     import shapefile  # pyshp
-    import pickle
     import numpy as np
     from scipy.spatial import Delaunay
-
-    archive = 'triangles.p'  # Triangles archive
+    import laspy
 
     # class Point:
     #  def __init__(self, x, y):
@@ -56,13 +58,12 @@ def las2shp(source, target, verbose=0):
     #  def y(self):
     #      return self.py
 
-    # The triangle array holds tuples of 3 point indicies used to retrieve the points.
-    # Load it from a pickle file or use the voronoi module to create the triangles.
+    # The triangle array holds tuples of 3 point indices used to retrieve the points.
     triangles = None
-    las = file(source, mode='r')  # Open LIDAR LAS file
+    las = laspy.read(source)  # Open LIDAR LAS file
     if verbose:
         print('    - Assembling points...')
-    points = [[x, y] for x, y in np.nditer((las.x, las.y))]
+    points = np.column_stack((las.x, las.y))
     pts = np.array(points)
     if verbose:
         print(f'        len(points): {len(pts)}')
@@ -71,15 +72,9 @@ def las2shp(source, target, verbose=0):
     if verbose:
         print('    - Composing triangles...')
     # Delaunay Triangulation
-    # triangles = voronoi.computeDelaunayTriangulation(points)
-    # triangles = DelaunayTri(points)             # pyhull.delaunay of list
-    # triangles = DelaunayTri(pts)                # pyhull.delaunay of np.array
-    triangles = Delaunay(pts)  # scipy.spatial.Dalaunay
+    triangles = Delaunay(pts)  # scipy.spatial.Delaunay
     if verbose:
-        print(f'        points: {triangles.simplices}')
-
-    with open(archive, 'wb') as f:
-        pickle.dump(triangles, f, protocol=2)
+        print(f'        number of triangles: {len(triangles.simplices)}')
     if verbose:
         print('    - Creating shapefile...')
     # PolygonZ shapefile (x, y, z, m)
@@ -109,8 +104,7 @@ def las2shp(source, target, verbose=0):
     last_percent = 0
     count = 0
     # Check segments for large triangles along the convex hull which is a common
-    # artificat in Delaunay triangulation
-    max = 3
+    # artifact in Delaunay triangulation
     for i in range(tris):
         # t = triangles[i]
         t = tri[i]
@@ -125,7 +119,7 @@ def las2shp(source, target, verbose=0):
         y1 = las.y[t[0]]
         z1 = las.z[t[0]]
         if verbose:
-            print(f'        x1,y1,z1: {x1},{x2},{x3}')
+            print(f'        x1,y1,z1: {x1},{y1},{z1}')
         x2 = las.x[t[1]]
         y2 = las.y[t[1]]
         z2 = las.z[t[1]]
@@ -136,11 +130,11 @@ def las2shp(source, target, verbose=0):
         z3 = las.z[t[2]]
         if verbose:
             print(f'        x3,y3,z3: {x3},{y3},{z3}')
-        if math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) > max:
+        if math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) > max_edge_length:
             continue
-        if math.sqrt((x3 - x2) ** 2 + (y3 - y2) ** 2) > max:
+        if math.sqrt((x3 - x2) ** 2 + (y3 - y2) ** 2) > max_edge_length:
             continue
-        if math.sqrt((x3 - x1) ** 2 + (y3 - y1) ** 2) > max:
+        if math.sqrt((x3 - x1) ** 2 + (y3 - y1) ** 2) > max_edge_length:
             continue
         part = [[x1, y1, z1, 0], [x2, y2, z2, 0], [x3, y3, z3, 0]]
         if verbose:

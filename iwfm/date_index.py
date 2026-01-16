@@ -41,7 +41,7 @@ def date_index(inval, start_date):
         If inval is not a valid numeric type
 
     '''
-    import iwfm as iwfm
+    import iwfm
 
     # Validate start_date format
     if not isinstance(start_date, str):
@@ -101,7 +101,7 @@ def date_index(inval, start_date):
     m = iwfm.month(start_date)
     d = iwfm.day(start_date)
 
-    # Add months
+    # Add months (inval is the number of months to add)
     for i in range(months_to_add):
         if m == 12:
             y += 1
@@ -115,7 +115,7 @@ def date_index(inval, start_date):
 if __name__ == "__main__":
     " Run date_index() from command line "
     import sys
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         inval = sys.argv[1]

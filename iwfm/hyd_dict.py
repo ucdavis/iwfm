@@ -29,20 +29,20 @@ def hyd_dict(gwhyd_info_file):
     Returns
     -------
     well_dict : dictionary
-        key = well name (i.e. state well ID), value = well information, 
-                                
+        key = well name (i.e. state well ID), value = well information,
+
     '''
-    import iwfm as iwfm
+    import iwfm
 
     well_dict = {}
     with open(gwhyd_info_file) as f:
         gwhyd_info = f.read().splitlines()  # open and read input file
 
     # skip to NOUTH, number of hydrographs
-    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  
+    line_index = iwfm.skip_ahead(1, gwhyd_info, 1)
     nouth = int(gwhyd_info[line_index].split()[0])
 
-    line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph
+    line_index = iwfm.skip_ahead(line_index, gwhyd_info, 1)  # skip to first hydrograph
     for i in range(0, nouth): 
         items = []
         line = gwhyd_info[line_index].split()

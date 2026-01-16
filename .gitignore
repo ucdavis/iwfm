@@ -21,10 +21,22 @@ __pycache__/
 build/
 dist/
 iwfm.egg-info/
+test_logs/
 *.bak
 *.whl
 *.gz
-.bat
+*.bat
+*.sh
+
+# test files
+*.dat
+
+# local notes
+*.txt
+*.log
 
 # sourcery files
 .sourcery.yaml
+
+# aider files
+.aider*

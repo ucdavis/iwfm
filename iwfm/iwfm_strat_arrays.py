@@ -1,6 +1,6 @@
 # iwfm_strat_arrays.py
 # parse IWFM stratigraphy information into arrays
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -47,49 +47,47 @@ def iwfm_strat_arrays(strat):
     
     aquifer_bot : list
         aquifer bottom altitude by model layer and node
-    
+
     '''
+    # Note: Removed broken has_run static variable check - see TODO about converting to class
 
-    if not hasattr(has_run, 'yes'):
-        has_run.yes = True
+    nlayers = int((len(strat[0]) - 1) / 2)
+    elevation = [i[0] for i in strat]
 
-        nlayers = int((len(strat[0]) - 1) / 2)
-        elevation = [i[0] for i in strat]
+    aquitard_thick = []  # initialize arrays
+    aquifer_thick = []
+    aquitard_top = []
+    aquitard_bot = []
+    aquifer_top = []
+    aquifer_bot = []
 
-        aquitard_thick = []  # initialize arrays
-        aquifer_thick = []
-        aquitard_top = []
-        aquitard_bot = []
-        aquifer_top = []
-        aquifer_bot = []
+    for i in range(0, len(strat)):  # cycle through stratigraphy of each node
+        Tthick,Athick,AttElev,AtbElev,AqtElev,AqbElev  = [],[],[],[],[],[]
 
-        for i in range(0, len(strat)):  # cycle through stratigraphy of each node
-            Tthick,Athick,AttElev,AtbElev,AqtElev,AqbElev  = [],[],[],[],[],[]
+        l, depth = strat[i], 0
+        this_node = l.pop(0)
+        lse = float(l.pop(0))
 
-            l, depth = strat[i], 0
-            this_node = l.pop(0)
-            lse = float(l.pop(0))
+        for j in range(0, nlayers):
+            AttElev.append(lse - depth)
 
-            for j in range(0, nlayers): 
-                AttElev.append(lse - depth)
+            t = strat[i][2 * j]
+            Tthick.append(t)
+            depth += t
+            AtbElev.append(lse - depth)
+            AqtElev.append(lse - depth)
 
-                t = strat[i][2 * j]
-                Tthick.append(t)
-                depth += t  
-                AtbElev.append(lse - depth) 
-                AqtElev.append(lse - depth) 
+            a = strat[i][2 * j + 1]
+            Athick.append(a)
+            depth += a
+            AqbElev.append(lse - depth)
 
-                a = strat[i][2 * j + 1] 
-                Athick.append(a)
-                depth += a 
-                AqbElev.append(lse - depth) 
-
-            aquitard_thick.append(Tthick)
-            aquifer_thick.append(Athick) 
-            aquitard_top.append(AttElev) 
-            aquitard_bot.append(AtbElev) 
-            aquifer_top.append(AqtElev)  
-            aquifer_bot.append(AqbElev)  
+        aquitard_thick.append(Tthick)
+        aquifer_thick.append(Athick)
+        aquitard_top.append(AttElev)
+        aquitard_bot.append(AtbElev)
+        aquifer_top.append(AqtElev)
+        aquifer_bot.append(AqbElev)  
 
     return (
         aquitard_thick,

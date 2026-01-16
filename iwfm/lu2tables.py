@@ -73,27 +73,68 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
     # If there's a change something else is at the bottom,
     # then change to either skip_back(n) or test for int
     i = len(file_lines) - 1                         # start at the bottom# last line of file
-    while len(file_lines[i]) < 5:                   # find last line with data (skip empty lines)
+    while i > 0 and len(file_lines[i]) < 5:         # find last line with data (skip empty lines)
         i -= 1
+
+    # Check if we found a valid data line
+    if i <= 0:
+        print(f'\n*** ERROR: Could not find data lines in land use file')
+        print(f'    File: {land_use_file}')
+        print(f'    All lines appear to be empty or too short (< 5 characters)')
+        sys.exit(1)
+
     # the first item on this line is the largest element number
     last_data_line_no = i
 
     # move up the file to a line with a date, counting lines
-    no_elems = 1          # currently pointing to last data line
-    # while file_lines[i].split()[0] does not contain a digit
-    while not any(char.isdigit() for char in file_lines[i][0]):
-        i -= 1
+    no_elems = 0          # will count elements as we go backwards
+    # Count backwards until we find a line with a date (contains '/' and '_')
+    while i > 0:
+        first_field = file_lines[i].split()[0] if len(file_lines[i].split()) > 0 else ''
+        if '/' in first_field and '_' in first_field:
+            # Found a line with a date field (start of this time step)
+            no_elems += 1  # Count this line too
+            break
         no_elems += 1
+        i -= 1
+
+    # Check if we found a valid date line
+    if i <= 0:
+        print(f'\n*** ERROR: Could not find a date line in land use file')
+        print(f'    File: {land_use_file}')
+        print(f'    Searched from line {last_data_line_no} to line {i}')
+        print(f'    Expected to find a line with a date field (MM/DD/YYYY)')
+        sys.exit(1)
 
     # determine number of time steps and crops
-    line_index = iwfm.skip_ahead(0, file_lines, 4)  # skip comment lines
+    # Find the first data line by searching for a line that starts with a date (MM/DD/YYYY_HH:MM)
+    line_index = 0
+    while line_index < len(file_lines):
+        stripped = file_lines[line_index].strip()
+        # Check if line starts with a date pattern (at least 2 slashes and underscore for time)
+        if (len(stripped) > 0 and stripped[0].isdigit() and
+            stripped.count('/') >= 2 and '_' in stripped):
+            # Verify it looks like a date by checking first field
+            first_field = stripped.split()[0] if len(stripped.split()) > 0 else ''
+            if '/' in first_field and '_' in first_field:
+                # Found a line that starts with a date in DSS format
+                break
+        line_index += 1
+
+    if line_index >= len(file_lines):
+        print(f'\n*** ERROR: Could not find the start of data in land use file')
+        print(f'    File: {land_use_file}')
+        print(f'    Expected to find a line starting with a date (MM/DD/YYYY_HH:MM)')
+        sys.exit(1)
+
     no_time_steps = int((last_data_line_no - line_index)/no_elems + 1)
-    no_crops = (len(file_lines[line_index + 3].split()) - 1)  # number of crops/land use types
+    no_crops = (len(file_lines[line_index].split()) - 2)  # number of crops/land use types (subtract date and element number)
 
     dates = ['' for x in range(no_time_steps)]  # empty list
 
     # get list of element numbers
     elem_list, ts_line_index, l_index = [], 0, line_index
+    first_data_line = line_index  # Save the position of the first data line
     while ts_line_index < no_elems:  # iterate through each element
         this_line = file_lines[l_index].split()  # line to list
         if (ts_line_index == 0):  # first line has an extra item, the date in DSS format
@@ -106,6 +147,8 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
     # create empty 3D list for data
     data = [[['0' for z in range(no_time_steps)] for y in range(no_elems)] for x in range(no_crops) ]  # empty array
 
+    # Reset line_index to the start of the data for the main loop
+    line_index = first_data_line
     ts_index = 0
     # fill the data and years arrays
     while ts_index < no_time_steps:  # iterate through each time step

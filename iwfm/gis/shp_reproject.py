@@ -1,6 +1,6 @@
 # shp_reproject.py
 # Reproject a shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ def shp_reproject(srcName, tgtName, epsg=26910):
     '''
 
     import os
+    import shutil
     import osr
     import ogr
 

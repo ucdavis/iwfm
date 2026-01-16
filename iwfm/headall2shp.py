@@ -66,7 +66,7 @@ def headall2shp(heads_file, pre_file, out_date, basename, label='Heads', units='
     data, layers, dates, nodes = iwfm.headall_read(heads_file)
 
     # find index of out_date in dates
-    index = dates.index(out_date) * layers
+    index = dates.index(out_date)
 
     # -- coordinates
     coords = []
@@ -76,7 +76,7 @@ def headall2shp(heads_file, pre_file, out_date, basename, label='Heads', units='
     # get head values for all layers
     heads = []
     for layer in range(layers):
-        heads.append(data[index + layer])
+        heads.append(data[index][layer])
 
     # -- write shapefiles
     out_date_text = out_date.replace('/', '_')

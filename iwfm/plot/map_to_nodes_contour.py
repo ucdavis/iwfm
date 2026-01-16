@@ -74,8 +74,10 @@ def map_to_nodes_contour(dataset, bounding_poly, image_name, cmap='rainbow', tit
 
     # create a regular grid for interpolation
     ratio = (X.max() - X.min()) / (Y.max() - Y.min())
-    xi = np.linspace(X.min(), X.max(), int(len(X) * ratio * 0.5 ))
-    yi = np.linspace(Y.min(), Y.max(), int(len(Y) / ratio * 0.5 ))
+    # Use a fixed grid resolution instead of scaling by data length
+    grid_res = 200  # number of points in each dimension
+    xi = np.linspace(X.min(), X.max(), int(grid_res * ratio))
+    yi = np.linspace(Y.min(), Y.max(), grid_res)
     Xi, Yi = np.meshgrid(xi, yi)
 
     # interpolate the irregular data onto the regular grid
@@ -85,10 +87,19 @@ def map_to_nodes_contour(dataset, bounding_poly, image_name, cmap='rainbow', tit
     fig, ax = plt.subplots(figsize=(10, 8))
 
     # create path from boundary polygon
-    path = Path(bounding_poly)
+    # Extract coordinates from shapely Polygon if needed
+    if hasattr(bounding_poly, 'exterior'):
+        # It's a shapely Polygon, extract coordinates
+        boundary_coords = list(bounding_poly.exterior.coords)
+        path = Path(boundary_coords)
+    else:
+        # It's already a list of coordinates
+        path = Path(bounding_poly)
 
     # create a mask from the path
-    mask = path.contains_points(np.column_stack((Xi.ravel(),Yi.ravel()))).reshape(Xi.shape)
+    # Ensure we're working with the correct shape from Zi (griddata output)
+    points = np.column_stack((Xi.ravel(), Yi.ravel()))
+    mask = path.contains_points(points).reshape(Zi.shape)
 
     # apply the mask to the data
     Zi = np.ma.masked_array(Zi, mask=~mask) 

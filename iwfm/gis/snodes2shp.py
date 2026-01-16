@@ -18,25 +18,26 @@
 
 
 def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbose=False):
-    ''' snodes2shp() - Creates an IWFM stream nodes shapefile 
+    ''' snodes2shp() - Creates an IWFM stream nodes shapefile
 
     Parameters
     ----------
     nsnodes : int
         number of stream nodes
-    
-    snodes_list : list of lists
-        each contains [snode: int, gwnode: int, reach: int]
-    
+
+    snodes_list : list of lists or dictionary
+        if list: each element contains [snode: int, gwnode: int, reach: int]
+        if dictionary: key = snode_id, values = [gw_node, subregion, reach, bottom]
+
     node_coords : list
         stream node coordinates
-    
+
     shape_name : str
         output shapefile name
-    
+
     epsg : int, default=26910 (NAD 83 UTM 10, CA)
         EPSG projection code
-    
+
     verbose : bool, default=False
         True = command-line output on
 
@@ -54,9 +55,16 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
 
     node_coords_dict = iwfm.list2dict(node_coords)
 
+    # Convert snodes_list to list if it's a dictionary
+    # Dictionary format: key = snode_id, values = [gw_node, subregion, reach, bottom]
+    if isinstance(snodes_list, dict):
+        snodes_data = [(snode_id, values[0], values[2]) for snode_id, values in snodes_list.items()]
+    else:
+        snodes_data = snodes_list
+
     # Create a new shapefile writer object
     w = shapefile.Writer(shapename, shapeType=shapefile.POINT)
-    
+
     # Define fields (replaces schema)
     w.field('snode_id', 'N', 10, 0)  # N = numeric, 10 digits, 0 decimals
     w.field('gw_node', 'N', 10, 0)
@@ -64,7 +72,7 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
 
     # Write features
     for i in range(nsnodes):
-        snode_id, gw_node, reach = snodes_list[i]
+        snode_id, gw_node, reach = snodes_data[i]
         if gw_node != 0:
             x, y = node_coords_dict[gw_node][0], node_coords_dict[gw_node][1]
             w.point(x, y)  # Add geometry

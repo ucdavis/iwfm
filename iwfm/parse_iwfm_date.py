@@ -1,6 +1,6 @@
-# do_avgonly.py
-# Calculate average
-# Copyright 2020-2026 University of California
+# parse_iwfm_date.py
+# DSS date to datetime object
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,16 +16,32 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import numpy as np
-from iwfm import read_gw_params
 
-def do_avgonly(smp_in, ins_lines, pcf_lines):
-    smp_out = smp_in
-    
-    # Read the groundwater parameters file to get the number of layers and nodes
-    nlayers, nnodes = read_gw_params(smp_in)
-    
-    # Calculate average values for each node in each layer
-    smp_out[:, 3:] = np.mean(smp_out[:, 3:], axis=1).reshape(-1, 1)
-  
-    return smp_out, ins_lines, pcf_lines
+def parse_iwfm_date(date_str):
+    """
+    Parse IWFM date string format (e.g., '10/31/1973_24:00')
+
+    Parameters
+    ----------
+    date_str : str
+        IWFM format date string
+
+    Returns
+    -------
+    datetime : datetime object
+    """
+    from datetime import datetime, timedelta
+
+    try:
+        # Split date and time
+        date_part, time_part = date_str.split('_')
+        # Handle 24:00 as end of day
+        if time_part == '24:00':
+            dt = datetime.strptime(date_part, '%m/%d/%Y')
+            dt = dt + timedelta(days=1)
+        else:
+            dt = datetime.strptime(f"{date_part} {time_part}", '%m/%d/%Y %H:%M')
+        return dt
+    except:
+        return None
+

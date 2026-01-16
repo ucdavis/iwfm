@@ -2,7 +2,7 @@
 # Read a PEST .smp file, IWFM groundwater hydrograph file, and
 # IWFM groundwater.dat file, and print a text file with
 # the RMSE and bias of each well and of all observations
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -18,36 +18,40 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import os
+import sys
+import csv
+import numpy as np
+import scipy as sci
+import iwfm
+import iwfm.calib as icalib
+from math import sqrt, fabs
+
 
 def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
-    ''' res_stats() - Read a PEST .smp file, IWFM groundwater hydrograph 
-        file, and IWFM groundwater.dat file, and print a text file with the 
+    ''' res_stats() - Read a PEST .smp file, IWFM groundwater hydrograph
+        file, and IWFM groundwater.dat file, and print a text file with the
         RMSE and bias of each well and of all observations
-    
+
     Parameters
     ----------
     pest_smp_file : str
         PEST .smp file name
-    
+
     gwhyd_info_file : str
         IWFM groundwater hydrograph file name
-    
+
     gwhyd_file : str
         IWFM groundwater.dat file name
-    
+
     verbose : bool, default=False
         True = command line updates on
-    
+
     Returns
     -------
     nothing
-    
-    '''
 
-    import os, sys, csv #, datetime
-    import numpy as np
-    import scipy as sci
-    import iwfm as iwfm
+    '''
     
     # == read pest observation file into array obs
     with open(pest_smp_file) as f:
@@ -61,13 +65,13 @@ def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         print(f'  head_obs[0]: {head_obs[0]}\n')
 
     # groundwater hydrograph info to dictionary of groundwater hydrograph info
-    hyd_dict = iwfm.hyd_dict(gwhyd_info_file)
+    hyd_dict = iwfm.hyd_dict(gwhyd_info_file)       # hyd_dict is a dictionary
     if verbose:
         print(f'  Read observation well information from {gwhyd_info_file}')
         print(f'  hyd_dict[{head_obs[0][0]}] {hyd_dict[head_obs[0][0]]}\n')
 
     # read simulated values
-    simhyd = iwfm.simhyds(gwhyd_file)
+    simhyd = iwfm.simhyds(gwhyd_file)               # simhyd is a class
     if verbose:
         print(f'  Read {len(simhyd.sim_vals):,} simulated values from {gwhyd_file}')
         print(f'  simhyd.sim_vals[0][0:3]: {simhyd.sim_vals[0][0:3]}\n')
@@ -99,8 +103,8 @@ def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         if new_name != name:  # new well name, finalize info for the last well
             # calculate rmse and bias
             well_names.append(name)
-            rmse = iwfm.rmse_calc(sim,meas)
-            bias = iwfm.bias_calc(sim,meas)
+            rmse = icalib.rmse_calc(sim,meas)
+            bias = icalib.bias_calc(sim,meas)
             rmse_values.append(rmse)
             bias_values.append(bias)
             count.append(len(meas))
@@ -117,7 +121,7 @@ def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         date = head_obs[j][1]
         dates.append(date)
 
-        simulated = simhyd_obs.sim_head(date,simhyd_col)
+        simulated = simhyd.sim_head(date,simhyd_col)  # Fixed: was simhyd_obs (typo)
         sim.append(simulated)
         sim_all.append(simulated)
 
@@ -128,31 +132,31 @@ def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         j += 1
 
     # calculate final one
-    rmse_values.append(iwfm.rmse_calc(sim,meas))
+    rmse_values.append(icalib.rmse_calc(sim,meas))
     well_names.append(name)
-    bias_values.append(iwfm.bias_calc(sim,meas))
+    bias_values.append(icalib.bias_calc(sim,meas))
     count.append(len(meas))
 
     # write out results
     out_file = gwhyd_file.replace('.out','_rmse.txt')
 
-    iwfm.write_rmse_bias(out_file,hyd_dict,well_names,rmse_values,bias_values,count)
+    icalib.write_rmse_bias(out_file,hyd_dict,well_names,rmse_values,bias_values,count)
     if verbose:
         print(f'  Wrote {out_file}')
 
     out_file = gwhyd_file.replace('.out','_rmse_all.txt')
     with open(out_file,'w') as of:
-        of.write('{}\t{}\t{}\n'.format(out_file,iwfm.rmse_calc(sim_all,meas_all),iwfm.bias_calc(sim_all,meas_all)))
+        of.write('{}\t{}\t{}\n'.format(out_file,icalib.rmse_calc(sim_all,meas_all),icalib.bias_calc(sim_all,meas_all)))
     if verbose:
         print(f'  Wrote {out_file}')
     return
 
 
 if __name__ == '__main__':
-    ' Run pest_res_stats() from command line '
+    ' Run res_stats() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         pest_smp_file = sys.argv[1]
@@ -169,6 +173,6 @@ if __name__ == '__main__':
     iwfm.file_test(gwhyd_file)
 
     idb.exe_time()  # initialize timer
-    pest_res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file,verbose=True)
+    res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file) 
 
     idb.exe_time()  # print elapsed time

@@ -17,24 +17,32 @@
 # -----------------------------------------------------------------------------
 
 
-def file_missing(filename):
+def file_missing(filename, context=None):
     ''' file_missing() - Exit with a message that the file does not exist
 
     Parameters
     ----------
     filename : str
         file name
-    
+
+    context : str, optional
+        additional context message (e.g., "referenced in groundwater file")
+
     Returns
     -------
         nothing
- 
+
     '''
     import sys
+    import os
 
     print('  *****************************************************************')
     print('  * ')
     print(f'  *   File path {filename} does not exist.')
+    if context:
+        print(f'  *   {context}')
+    print(f'  *   ')
+    print(f'  *   Current working directory: {os.getcwd()}')
     print('  *   Quitting.')
     print('  * ')
     print('  *****************************************************************')

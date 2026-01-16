@@ -1,6 +1,6 @@
 # geop_saveplot.py
 # Create and save a plot from a geopandas dataframe
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,22 +16,28 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import matplotlib.pyplot as plt
 
-def geop_saveplot(gdf_frame, outname):
+
+def geop_saveplot(gdf, outname, **kwargs):
     ''' geop_saveplot() - Create and save plot from geopandas dataframe
 
     Parameters
     ----------
-    gdf_frame : geopandas dataframe object
-    
+    gdf : geopandas dataframe object
+
     outname : str
         output file name
+
+    **kwargs : dict, optional
+        Additional keyword arguments to pass to gdf.plot()
+        (e.g., column='name', cmap='viridis', etc.)
 
     Returns
     -------
     nothing
-    
+
     '''
-    gdf_frame.plot()
+    gdf.plot(**kwargs)
     plt.savefig(outname)
     return

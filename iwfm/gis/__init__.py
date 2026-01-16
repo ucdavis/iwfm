@@ -64,12 +64,17 @@ from iwfm.gis.xml_tracks import xml_tracks
 from iwfm.gis.xml_fix import xml_fix
 
 # -- QGIS methods -----------------------------------------
-from iwfm.gis.qgis_init import qgis_init
-from iwfm.gis.qgis_init_paths import qgis_init_paths
-from iwfm.gis.qgis_open_proj import qgis_open_proj
-from iwfm.gis.qgis_layer_names import qgis_layer_names
-from iwfm.gis.qgis_print_geometry import qgis_print_geometry
-from iwfm.gis.qgis_save_project import qgis_save_project
+# QGIS is an optional dependency - only import if available
+try:
+    from iwfm.gis.qgis_init import qgis_init
+    from iwfm.gis.qgis_init_paths import qgis_init_paths
+    from iwfm.gis.qgis_open_proj import qgis_open_proj
+    from iwfm.gis.qgis_layer_names import qgis_layer_names
+    from iwfm.gis.qgis_print_geometry import qgis_print_geometry
+    from iwfm.gis.qgis_save_project import qgis_save_project
+except ImportError:
+    # QGIS not available - these functions won't be accessible
+    pass
 
 # -- shapefile methods ------------------------------------
 from iwfm.gis.shp_get import shp_get

@@ -47,6 +47,9 @@ def sub_gw_bc_cghd_file(old_filename, new_filename, nodes, verbose=False):
 
     comments = ['C','c','*','#']
 
+    # Check if constrained head BC file exists using iwfm utility
+    iwfm.file_test(old_filename)
+
     with open(old_filename) as f:
         cg_lines = f.read().splitlines()
     cg_lines.append('')

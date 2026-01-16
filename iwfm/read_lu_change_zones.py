@@ -41,7 +41,7 @@ def read_lu_change_zones(in_zone_file):
     zones = []
     for i in range(0, len(temp)):
         if temp[i][0] not in comments:  # not a comment line
-            zones.append(re.split(';|,|\*|\n|\t', temp[i]))
+            zones.append(re.split(r';|,|\*|\n|\t', temp[i]))
     for i in range(0, len(zones)):
         for j in range(0, len(zones[i])):
             zones[i][j] = int(zones[i][j])  # convert from string to int

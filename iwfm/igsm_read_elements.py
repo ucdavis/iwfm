@@ -47,7 +47,7 @@ def igsm_read_elements(elem_file):
     import re
 
     elements = int(
-        re.findall('\d+', elem_lines[line_index])[0]
+        re.findall(r'\d+', elem_lines[line_index])[0]
     )  # read number of elements
 
     line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  # skip comments

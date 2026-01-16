@@ -187,6 +187,8 @@ if __name__ == "__main__":
 
         if(len(args) > 4): 
             point_width = int(args[5])  # point width
+        else:
+            point_width = 25
         if point_width < 1: 
             point_width = point_width_default  # default point width
 

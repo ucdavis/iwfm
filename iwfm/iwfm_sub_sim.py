@@ -58,16 +58,77 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
     import iwfm
     import iwfm.gis as gis
     import pickle
+    from pathlib import Path
 
     # -- get list of file names from preprocessor input file
     sim_dict, have_lake = iwfm.iwfm_read_sim_file(in_sim_file)
     if verbose:
         print(f'  Read simulation file {in_sim_file}')
 
+    # -- resolve relative paths in sim_dict to absolute paths
+    sim_base_path = Path(in_sim_file).resolve().parent
+    for key in sim_dict:
+        if isinstance(sim_dict[key], str) and key.endswith('_file'):
+            # Convert Windows backslashes and resolve relative to simulation file directory
+            sim_dict[key] = str(sim_base_path / sim_dict[key].replace('\\', '/'))
+
+    # -- verify that required input files exist
+    import os
+    import sys
+    missing_files = []
+    required_files = ['gw_file', 'swshed_file', 'unsat_file']
+
+    for key in required_files:
+        if key not in sim_dict:
+            missing_files.append(f'  - {key}: Not specified in simulation input file')
+        elif not os.path.exists(sim_dict[key]):
+            missing_files.append(f'  - {key}: {sim_dict[key]}')
+
+    if missing_files:
+        print('\n*** ERROR: Required input file(s) not found:')
+        for msg in missing_files:
+            print(msg)
+        print('\nPlease check:')
+        print('  1. The simulation input file contains correct file paths')
+        print('  2. All referenced files exist at the specified locations')
+        print('  3. File paths are correct relative to the simulation input file location')
+        print(f'\nSimulation file location: {sim_base_path}')
+        sys.exit(1)
+
     # -- create list of new file names
     sim_dict_new = iwfm.new_sim_dict(out_base_name)
 
     # ** TODO: test for pickle files, read info from source if not present, error if no source
+    # Check that required pickle files exist
+    pickle_files = [
+        (out_base_name + '_elems.bin', 'elements'),
+        (out_base_name + '_nodes.bin', 'nodes'),
+        (out_base_name + '_elemnodes.bin', 'element nodes'),
+        (out_base_name + '_node_coords.bin', 'node coordinates'),
+        (out_base_name + '_snodes.bin', 'stream nodes'),
+        (out_base_name + '_sub_snodes.bin', 'submodel stream nodes')
+    ]
+
+    missing_pickle_files = []
+    for filepath, description in pickle_files:
+        if not os.path.exists(filepath):
+            missing_pickle_files.append(f'  - {description}: {filepath}')
+
+    if have_lake:
+        lake_file = out_base_name + '_lakes.bin'
+        if not os.path.exists(lake_file):
+            missing_pickle_files.append(f'  - lake information: {lake_file}')
+
+    if missing_pickle_files:
+        print('\n*** ERROR: Required preprocessed data file(s) not found:')
+        for msg in missing_pickle_files:
+            print(msg)
+        print('\nThese binary files contain preprocessed model data and must be')
+        print('generated before running this script. Please run the preprocessing')
+        print('step that creates these files first.')
+        print(f'\nExpected base name: {out_base_name}')
+        sys.exit(1)
+
     # read information from previous dump
     with open(out_base_name + '_elems.bin', 'rb') as f:
         elem_list = pickle.load(f)
@@ -99,14 +160,14 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
     # -- create submodel Unsaturated Zone file
     iwfm.sub_unsat_file(sim_dict['unsat_file'], sim_dict_new['unsat_file'], elem_list, verbose)
 
-    # -- process submodel Groundwater files 
-    iwfm.sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, verbose=verbose)
+    # -- process submodel Groundwater files
+    iwfm.sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim_base_path, verbose=verbose)
 
     # -- process submodel Streams file
-    iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose)
+    iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, sim_base_path, verbose)
 
     # -- process submodel Rootzone file
-    iwfm.sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose)
+    iwfm.sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, sim_base_path, verbose)
 
     # -- process submodel Lake file
     if have_lake:

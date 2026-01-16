@@ -79,9 +79,15 @@ def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910
         )
     # Write projection file
     with open(f"{shapename}.prj", "w") as prj:
-        epsg = f'EPSG:{epsg}'
-        prj.write(pyproj.CRS(epsg).to_wkt(pyproj.enums.WktVersion.WKT2))
-        prj.write(CRS.from_epsg(int(epsg.split(':')[1])).to_wkt())
+        epsg_code = f'EPSG:{epsg}'
+        crs = CRS.from_epsg(int(epsg))
+        # Use WKT2_2019 if available, otherwise default WKT
+        try:
+            wkt = crs.to_wkt(pyproj.enums.WktVersion.WKT2_2019)
+        except (AttributeError, TypeError):
+            # Fallback for older pyproj versions or if WKT2_2019 not available
+            wkt = crs.to_wkt()
+        prj.write(wkt)
 
     w.close()
     if verbose: print(f'  Wrote shapefile {shapename}.shp')

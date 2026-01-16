@@ -17,7 +17,7 @@
 #-----------------------------------------------------------------------------
 
 
-def ltbud(budget_file, output_file, zero_offset=2, neg_val=1e-7):
+def ltbud(budget_file, output_file, zero_offset=2.0, neg_val=1.0e-7):
     ''' ltbud() - Read an IWFM Budget-format output file, and log-transform the values
 
     Parameters

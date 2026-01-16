@@ -40,7 +40,7 @@ def img_clip(raster, clipshape, outfile):
     import gdal as gdal
     import shapefile  # pyshp
     from PIL import Image, ImageDraw, ImageOps  # pillow
-    import iwfm as iwfm
+    import iwfm.gis as igis
 
     if clipshape[-4:] != '.shp':
         clipshape += '.shp'
@@ -57,8 +57,8 @@ def img_clip(raster, clipshape, outfile):
 
     # Convert the layer extent to image pixel coordinates
     minX,minY,maxX,maxY = r.bbox
-    ulX, ulY = iwfm.world2pixel(geoTrans, minX, maxY)
-    lrX, lrY = iwfm.world2pixel(geoTrans, maxX, minY)
+    ulX, ulY = igis.world2pixel(geoTrans, minX, maxY)
+    lrX, lrY = igis.world2pixel(geoTrans, maxX, minY)
 
     pxWidth = int(lrX - ulX)  # Calculate the pixel size of the new image
     pxHeight = int(lrY - ulY)
@@ -69,13 +69,13 @@ def img_clip(raster, clipshape, outfile):
     geoTrans[0] = minX
     geoTrans[3] = maxY
 
-    pixels = [iwfm.world2pixel(geoTrans, p[0], p[1]) for p in r.shape(0).points]
+    pixels = [igis.world2pixel(geoTrans, p[0], p[1]) for p in r.shape(0).points]
     rasterPoly = Image.new('L', (pxWidth, pxHeight), 1)
 
     # Create a blank image in PIL to draw the polygon.
     rasterize = ImageDraw.Draw(rasterPoly)
     rasterize.polygon(pixels, 0)
-    mask = iwfm.img_2_array(rasterPoly)  # Convert the PIL image to a NumPy array
+    mask = igis.img_2_array(rasterPoly)  # Convert the PIL image to a NumPy array
 
     # Clip the image using the mask
     clip = gdal_array.numpy.choose(mask, (clip, 0)).astype(gdal_array.numpy.uint8)  

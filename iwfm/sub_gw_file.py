@@ -19,9 +19,9 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, verbose=False):
-    '''sub_gw_file() - Read the original groundwater main file, determine 
-        which elements are in the submodel, and write out a new file, then 
+def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim_base_path=None, verbose=False):
+    '''sub_gw_file() - Read the original groundwater main file, determine
+        which elements are in the submodel, and write out a new file, then
         modifies the other groundwater component files
 
     Parameters
@@ -51,6 +51,9 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
     '''
     import iwfm as iwfm
     from shapely.geometry import Point, Polygon
+    from pathlib import Path
+    import os
+    import sys
 
     comments = ['C','c','*','#']
     nodes = []
@@ -60,6 +63,31 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
     elems = []
     for e in elem_list:
         elems.append(int(e[0]))
+
+    # Check if groundwater file exists
+    if 'gw_file' not in sim_dict:
+        print('\n*** ERROR: Groundwater file path not found in simulation dictionary.')
+        print('    Check that the simulation input file specifies a groundwater file.')
+        sys.exit(1)
+
+    gw_file_path = sim_dict['gw_file']
+    if not os.path.exists(gw_file_path):
+        print(f'\n*** ERROR: Groundwater file not found:')
+        print(f'    {gw_file_path}')
+        print('\n    Possible causes:')
+        print('    1. The file path in the simulation input file is incorrect')
+        print('    2. The file does not exist at the specified location')
+        print('    3. The path is relative but the working directory is incorrect')
+        print(f'\n    Current working directory: {os.getcwd()}')
+        sys.exit(1)
+
+    # Determine base path for resolving relative file paths in groundwater file
+    # Paths in groundwater file are relative to the simulation file's directory
+    if sim_base_path is not None:
+        base_path = sim_base_path if isinstance(sim_base_path, Path) else Path(sim_base_path)
+    else:
+        # Fall back to groundwater file's directory for backwards compatibility
+        base_path = Path(gw_file_path).resolve().parent
 
     with open(sim_dict['gw_file']) as f:
         gw_lines = f.read().splitlines()
@@ -72,7 +100,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
 
     # -- file names --
     # boundary condition file
-    line_index = iwfm.skip_ahead(line_index, gw_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index, gw_lines, 0)
     bc_file = gw_lines[line_index].split()[0]                   # boundary condiitons main file
     bc_line = line_index   # if no boundary conditions in submodel, come back and remove file name
     have_bc = True
@@ -81,13 +109,15 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
         have_bc = False
         gw_lines[line_index] = '                                         / BCFL'
     else:
-        bc_file = bc_file.replace('\\', ' ').split()[1]
+        bc_file = bc_file.replace('\\', '/')
+        # Resolve relative path from simulation file directory
+        bc_file = str(base_path / bc_file)
         gw_lines[line_index] = '   ' + sim_dict_new['bc_file'] + '.dat		        / BCFL'
     gw_dict['bc_file'] = bc_file
 
 
     # tile drain file
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0)
     td_file = gw_lines[line_index].split()[0]                   # tile drain main file
     tile_line = line_index   # if no tile drains in submodel, come back and remove file name
     have_td = True
@@ -96,13 +126,15 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
         have_td = False
         gw_lines[line_index] = '                                         / TDFL'
     else:
-        td_file = td_file.replace('\\', ' ').split()[1]
+        td_file = td_file.replace('\\', '/')
+        # Resolve relative path from simulation file directory
+        td_file = str(base_path / td_file)
         gw_lines[line_index] = '   ' + sim_dict_new['drain_file'] + '.dat		        / TDFL'
     gw_dict['drain_file'] = td_file
 
 
     # pumping file
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0)
     pump_file = gw_lines[line_index].split()[0]                 # pumping main file
     pump_line = line_index   # if no pumping in submodel, come back and remove file name
     have_pump = True
@@ -111,13 +143,15 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
         have_pump = False
         gw_lines[line_index] = '                                         / PUMPFL'
     else:
-        pump_file = pump_file.replace('\\', ' ').split()[1]     
+        pump_file = pump_file.replace('\\', '/')
+        # Resolve relative path from simulation file directory
+        pump_file = str(base_path / pump_file)
         gw_lines[line_index] = '   ' + sim_dict_new['pump_file'] + '.dat		        / PUMPFL'
     gw_dict['pump_file'] = pump_file
 
 
     # subsidence file
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0)
     subs_file = gw_lines[line_index].split()[0]           # subsidence main file
     subs_line = line_index   # if no subsidence in submodel, come back and remove file name
     have_subs = True
@@ -126,7 +160,9 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
         have_subs = False
         gw_lines[line_index] = '                                         / SUBSFL'
     else:
-        subs_file = subs_file.replace('\\', ' ').split()[1]
+        subs_file = subs_file.replace('\\', '/')
+        # Resolve relative path from simulation file directory
+        subs_file = str(base_path / subs_file)
         gw_lines[line_index] = '   ' + sim_dict_new['sub_file'] + '.dat		        / SUBSFL'
     gw_dict['subs_file'] = subs_file
 
@@ -220,9 +256,9 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
             line_index += 1
  
 
-    # -- boundary conditions file -- 
+    # -- boundary conditions file --
     if have_bc:
-        iwfm.sub_gw_bc_file(bc_file, sim_dict_new, nodes, elems, bounding_poly, verbose=verbose)
+        iwfm.sub_gw_bc_file(bc_file, sim_dict_new, nodes, elems, bounding_poly, base_path, verbose=verbose)
 
     # -- tile drain file --
     if have_td:
@@ -232,7 +268,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, ver
 
     # -- pumping files --
     if have_pump:
-        iwfm.sub_gw_pump_file(pump_file, sim_dict_new, elems, bounding_poly, verbose=verbose)
+        iwfm.sub_gw_pump_file(pump_file, sim_dict_new, elems, bounding_poly, base_path, verbose=verbose)
 
     # -- subsidence file -- 
     if have_subs:

@@ -18,9 +18,9 @@
 
 ''' Constant definitions'''
 # Windows 10 paths - can they be read?
-PYTHONPATH_W10 = 'C:\Programs\QGIS3.4\python'
-PLUGINSPATH_W10 = 'C:\Programs\QGIS3.4\python\plugins'  # for processing module, etc
-APPPATH_W10 = 'C:\Programs\QGIS3.4'
+PYTHONPATH_W10 = r'C:\Programs\QGIS3.4\python'
+PLUGINSPATH_W10 = r'C:\Programs\QGIS3.4\python\plugins'  # for processing module, etc
+APPPATH_W10 = r'C:\Programs\QGIS3.4'
 
 # Linux paths - can they be read?
 PYTHONPATH_LIN = '--'

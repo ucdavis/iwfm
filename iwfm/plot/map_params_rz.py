@@ -417,10 +417,13 @@ if __name__ == "__main__":
             rz_pc_file_name     = args[7]
             rz_ur_file_name     = args[8]
             rz_nv_file_name     = args[9]
+        else:
+            # Read the file names from the main rootzone file
+            rz_npc_file_name, rz_pc_file_name, rz_ur_file_name, rz_nv_file_name = iwfm.iwfm_read_rz_file_names(rz_file_name)
 
-        if(len(args) > 10): 
+        if(len(args) > 10):
             point_width = int(args[10])  # point width
-        if point_width < 1: 
+        if point_width < 1:
             point_width = point_width_default  # default point width
 
     else:  # get everything form the command line
@@ -430,10 +433,8 @@ if __name__ == "__main__":
         rz_file_name       = input('IWFM Root Zone Main file name: ')
         answer             = input('Do you want to include the crop rootzone parameters? (y/n): ')
         if answer == 'y':
-            rz_npc_file_name   = input('IWFM Non-Ponded file name: ')
-            rz_pc_file_name    = input('IWFM Pondes Crop file name: ')
-            rz_ur_file_name    = input('IWFM Urban Crop file name: ')
-            rz_nv_file_name    = input('IWFM Native & Riparian file name: ')
+            # Read the file names from the main rootzone file
+            rz_npc_file_name, rz_pc_file_name, rz_ur_file_name, rz_nv_file_name = iwfm.iwfm_read_rz_file_names(rz_file_name)
         format    = input('Output file format (pdf, png, tiff): ').lower()
 
     iwfm.file_test(node_file_name)

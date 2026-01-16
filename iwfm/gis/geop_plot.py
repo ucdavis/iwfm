@@ -1,6 +1,6 @@
 # geop_plot.py
 # Create and display a plot from a geopandas dataframe
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,19 +16,25 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import matplotlib.pyplot as plt
 
-def geop_plot(gdf_frame):
+
+def geop_plot(gdf, **kwargs):
     ''' geop_plot() - Create and dislay a plot from a geopandas dataframe
-    
+
     Parameters
     ----------
-    gdf_frame : geopandas dataframe object
+    gdf : geopandas dataframe object
+
+    **kwargs : dict, optional
+        Additional keyword arguments to pass to gdf.plot()
+        (e.g., column='name', cmap='viridis', etc.)
 
     Returns
     -------
     nothing
 
     '''
-    fig = gdf_frame.plot()
+    fig = gdf.plot(**kwargs)
     plt.show()
     return

@@ -19,9 +19,9 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_rz_nv_file(old_filename, sim_dict_new, elems, verbose=False):
-    '''sub_rz_nv_file() - Copy the rootzone native and riparian main file 
-       and replace the contents with those of the new submodel, write out 
+def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=False):
+    '''sub_rz_nv_file() - Copy the rootzone native and riparian main file
+       and replace the contents with those of the new submodel, write out
        the new file, and process the other non-ponded crop files
 
     Parameters
@@ -35,6 +35,9 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, verbose=False):
     elems : list of ints
         list of existing model elements in submodel
 
+    base_path : Path, optional
+        base path for resolving relative file paths
+
     verbose : bool, default=False
         turn command-line output on or off
 
@@ -47,6 +50,9 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, verbose=False):
 
     comments = ['C','c','*','#']
 
+    # Use iwfm utility for file validation
+    iwfm.file_test(old_filename)
+
     with open(old_filename) as f:
         nv_lines = f.read().splitlines()
     nv_lines.append('')
@@ -54,8 +60,11 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, verbose=False):
     line_index = iwfm.skip_ahead(0, nv_lines, 0)                # skip initial comments
 
     # native and riparian vegetation area file name
-    nvarea_file = nv_lines[line_index].split()[0]               # original crop area file name
-    nvarea_file = nvarea_file.replace('\\', ' ').split()[1]      # remove directory name
+    nvarea_file = nv_lines[line_index].split()[0]               # original area file name
+    nvarea_file = nvarea_file.replace('\\', '/')                  # convert backslashes to forward slashes
+    # Resolve relative path from simulation base directory if provided
+    if base_path is not None:
+        nvarea_file = str(base_path / nvarea_file)
     nv_lines[line_index] = '   ' + sim_dict_new['nva_file'] + '.dat		        / LUFLNVRV'
 
     line_index = iwfm.skip_ahead(line_index, nv_lines, 4)       # skip comments and three factors

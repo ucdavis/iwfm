@@ -1,6 +1,6 @@
 # histogram.py
 # Generates and displays the color histogram of an image
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,10 +16,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import numpy as np
+from osgeo import gdal_array
+import iwfm
+
 
 def histogram(infile, scl=True):
     '''histogram() - Generate and display the color histogram of an image
-    
+
     Parameters
     ----------
     infile : str
@@ -33,12 +37,10 @@ def histogram(infile, scl=True):
     nothing
 
     '''
-    from osgeo import gdal_array as gdal_array
-    import iwfm as iwfm
 
     t = None
     arr = gdal_array.LoadFile(infile)
-    histograms = [hist(b) for b in arr]
+    histograms = [np.histogram(b) for b in arr]
     t = iwfm.gis.histogram_draw(histograms, scale=scl)
     t.pen(shown=False)
     t.done()

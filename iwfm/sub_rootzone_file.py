@@ -19,9 +19,9 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=False):
-    '''sub_rootzone_file() - Read the original Simulation rootzone main file, 
-        determine which elements are in the submodel, and writes out a new file, 
+def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=None, verbose=False):
+    '''sub_rootzone_file() - Read the original Simulation rootzone main file,
+        determine which elements are in the submodel, and writes out a new file,
         then modify the other Simulation rootzone component files
 
     Parameters
@@ -38,6 +38,9 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
     sub_snodes : list of ints
         submodel stream nodes
 
+    base_path : Path, optional
+        base path for resolving relative file paths
+
     verbose : bool, default=False
         turn command-line output on or off
 
@@ -47,6 +50,7 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
 
     '''
     import iwfm as iwfm
+    from pathlib import Path
 
     comments = ['C','c','*','#']
 
@@ -54,8 +58,11 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
     for e in elem_list:
         elems.append(int(e[0]))
 
+    # Use iwfm utility for file validation
+    iwfm.file_test(sim_dict['root_file'])
+
     with open(sim_dict['root_file']) as f:
-        rz_lines = f.read().splitlines()  
+        rz_lines = f.read().splitlines()
 
     line_index = iwfm.skip_ahead(1, rz_lines, 4)                # skip initial comments and factors
 
@@ -68,12 +75,15 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
         have_npc = False
     else:
         have_npc = True
-        npc_file = npc_file.replace('\\', ' ').split()[1]
+        npc_file = npc_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            npc_file = str(base_path / npc_file)
         rz_lines[line_index] = '   ' + sim_dict_new['np_file'] + '.dat		        / AGNPFL'
     rz_dict['np_file'] = npc_file
 
     # ponded crop file name
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
     pc_file = rz_lines[line_index].split()[0]                   # ponded crop file
     have_pc = True
     if pc_file[0] == '/':
@@ -81,12 +91,15 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
         have_pc = False
         rz_lines[line_index] = '                                         / PFL'
     else:
-        pc_file = pc_file.replace('\\', ' ').split()[1]
+        pc_file = pc_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            pc_file = str(base_path / pc_file)
         rz_lines[line_index] = '   ' + sim_dict_new['pc_file'] + '.dat		        / PFL'
     rz_dict['pc_file'] = pc_file
 
     # urban file name
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
     urban_file = rz_lines[line_index].split()[0]                 # urban file
     urban_line = line_index
     have_urban = True
@@ -95,12 +108,15 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
         have_urban = False
         rz_lines[line_index] = '                                         / URBFL'
     else:
-        urban_file = urban_file.replace('\\', ' ').split()[1]     
+        urban_file = urban_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            urban_file = str(base_path / urban_file)
         rz_lines[line_index] = '   ' + sim_dict_new['ur_file'] + '.dat		        / URBFL'
     rz_dict['ur_file'] = urban_file
 
     # native veg file
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0) 
+    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
     nv_file = rz_lines[line_index].split()[0]           # native veg file
     have_nv = True
     if nv_file[0] == '/':
@@ -108,7 +124,10 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
         have_nv = False
         rz_lines[line_index] = '                                         / NVRVFL'
     else:
-        nv_file = nv_file.replace('\\', ' ').split()[1]
+        nv_file = nv_file.replace('\\', '/')
+        # Resolve relative path from simulation base directory if provided
+        if base_path is not None:
+            nv_file = str(base_path / nv_file)
         rz_lines[line_index] = '   ' + sim_dict_new['nv_file'] + '.dat		        / NVRVFL'
     rz_dict['nv_file'] = nv_file
 
@@ -129,19 +148,19 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=Fal
 
     # -- non-ponded crop files --
     if have_npc:
-        iwfm.sub_rz_npc_file(npc_file, sim_dict_new, elems, verbose=verbose)
+        iwfm.sub_rz_npc_file(npc_file, sim_dict_new, elems, base_path, verbose=verbose)
 
     # -- ponded crop files --
     if have_pc:
-        iwfm.sub_rz_pc_file(pc_file, sim_dict_new, elems, verbose=verbose)
+        iwfm.sub_rz_pc_file(pc_file, sim_dict_new, elems, base_path, verbose=verbose)
 
     # -- urban files --
     if have_urban:
-        iwfm.sub_rz_urban_file(urban_file, sim_dict_new, elems, verbose=verbose)
+        iwfm.sub_rz_urban_file(urban_file, sim_dict_new, elems, base_path, verbose=verbose)
 
     # -- native & riparian files --
     if have_nv:
-        iwfm.sub_rz_nv_file(nv_file, sim_dict_new, elems, verbose=verbose)
+        iwfm.sub_rz_nv_file(nv_file, sim_dict_new, elems, base_path, verbose=verbose)
 
     # -- write out rootzone main file --
     with open(sim_dict_new['root_file'], 'w') as outfile:

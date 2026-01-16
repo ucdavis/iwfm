@@ -1,6 +1,6 @@
 # choropleth.py
-# Reads a shapefile and writes a chloropleth image
-# Copyright (C) 2020-2025 University of California
+# Reads a shapefile and writes a choropleth image
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@
 # -----------------------------------------------------------------------------
 
 import shapefile  # pyshp
-from PIL import Image, ImageDraw, ImageOps
-import iwfm as iwfm
+from PIL import Image, ImageDraw
+import iwfm
 import math
 
 def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     iheight=400,denrat=80.0,savename=None):
-    ''' choropleth() - Read a shapefile and write a chloropleth image
+    ''' choropleth() - Read a shapefile and write a choropleth image
 
     Parameters
     ----------
@@ -39,7 +39,7 @@ def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     iwidth : int, default=600
         image width in pixels
     
-    iheight : int
+    iheight : int, default=400
         image height in pixels
     
     denrat : float, default=80.0
@@ -60,13 +60,22 @@ def choropleth(infile,fieldname1,fieldname2,iwidth=600,
     draw = ImageDraw.Draw(img)  
 
     val_index1, val_index2 = None, None
-    for i, f in enumerate(inShp.fields):  
-        if f[0] == fieldname1:
+    for i, shape_field in enumerate(inShp.fields):
+        if shape_field[0] == fieldname1:
             val_index1 = i - 1  # Account for the Deletion Flag field
-        elif f[0] == fieldname2:
+        elif shape_field[0] == fieldname2:
             val_index2 = i - 1  # Account for the Deletion Flag field
 
+    # Check if fields were found
+    if val_index1 is None:
+        raise ValueError(f"Field '{fieldname1}' not found in shapefile {infile}")
+    if val_index2 is None:
+        raise ValueError(f"Field '{fieldname2}' not found in shapefile {infile}")
+
     for shp in inShp.shapeRecords():
+        # Skip if denominator is zero
+        if shp.record[val_index2] == 0:
+            continue
         density = shp.record[val_index1] / shp.record[val_index2]
         weight = (min(math.sqrt(density / denrat), 1.0) * 50) 
         R, G, B = int(205 - weight), int(215 - weight), int(245 - weight)

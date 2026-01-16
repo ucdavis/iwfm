@@ -21,7 +21,7 @@
 
 def map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=False):
     ''' map_divs2shp() - Add diversion areas to shapefile of IWFM model elements
-    
+
     Parameters
     ----------
     deliv_area_ids : list
@@ -29,7 +29,7 @@ def map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbo
 
     deliv_areas : list of lists
         List of elements in each IWFM delivery area
-    
+
     elem_shp_name : shapefile name
         IWFM Elements shapefile
 
@@ -37,15 +37,16 @@ def map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbo
         IWFM diversion areas shapefile name
 
     verbose : bool, default = False
-        Print status messages    
+        Print status messages
 
     Return
     ------
     nothing
-    
+
     '''
     import geopandas as gpd
     import os
+    import warnings
 
     gdf = gpd.read_file(elem_shp_name)                                      # read elements shapefile into geopandas dataframe
 
@@ -73,7 +74,10 @@ def map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbo
     divareas_shp_name = divareas_shp_base+'.shp'
 
     # write the geopandas dataframe to a shapefile
-    gdf.to_file(divareas_shp_name)
+    # suppress DBF field limit warning (255 vs 256 fields)
+    with warnings.catch_warnings():
+        warnings.filterwarnings('ignore', message='Creating a 256th field.*', category=RuntimeWarning)
+        gdf.to_file(divareas_shp_name)
 
     if verbose: print(f'  Created diversion delivery areas shapefile {divareas_shp_name}')
 

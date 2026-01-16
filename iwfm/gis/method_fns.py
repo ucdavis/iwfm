@@ -1,6 +1,6 @@
 # method_fns.py
 # Print methods associated with a shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 # For a copy of the GNU General Public License, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
+
+from inspect import getmembers
 
 
 def method_fns(shpfilename, shpfile, verbose=False):

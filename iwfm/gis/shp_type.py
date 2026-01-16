@@ -1,6 +1,6 @@
 # shp_type.py
 # Returns integer shape type for PyShp shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -29,4 +29,4 @@ def shp_type(shp):
     Shape type
 
     '''
-    return sho.shapeType
+    return shp.shapeType 

@@ -87,40 +87,47 @@ def iwfm_read_elempump(elempump_file_name, elem_ids, ag=1, ur=2, comment=0, verb
         header.append(f'fracskl_{i+1}')
 
     for i in range(0, pump_lines):
-        l = elempump_lines[line_index + i].split('\t')
-        params, fracs, temp = [], [], [s for s in l[:-1]]
-        elem_id = int(temp[0])-1
+        try:
+            l = elempump_lines[line_index + i].split('\t')
+            params, fracs, temp = [], [], [s for s in l[:-1]]
+            elem_id = int(temp[0])-1
 
-        params.append(int(temp.pop(0))) # active
-        params.append(int(temp.pop(0))) # icolsk
-        params.append(float(temp.pop(0))) # fracsk
-        if params[2] == 0:
-            params[0]=0
-        else:
-            params[0]=1
-        params.append(int(temp.pop(0))) # ioptsk
+            params.append(int(temp.pop(0))) # active
+            params.append(int(float(temp.pop(0)))) # icolsk
+            params.append(float(temp.pop(0))) # fracsk
+            if params[2] == 0:
+                params[0]=0
+            else:
+                params[0]=1
+            params.append(int(float(temp.pop(0)))) # ioptsk
 
-        for j in range(0, layers):                  # fracskl in middle, collect and move to end
-            fracs.append(float(temp.pop(0)))
+            for j in range(0, layers):                  # fracskl in middle, collect and move to end
+                fracs.append(float(temp.pop(0)))
 
-        params.append(int(temp.pop(0))) # typdstsk
-        params.append(int(temp.pop(0))) # dstsk
-        params.append(int(temp.pop(0))) # icfirigsk
-        params.append(int(temp.pop(0))) # icacjsk
-        params.append(int(temp.pop(0))) # icskmax
-        params.append(float(temp.pop(0))) # fskmax
-        
-        for j in range(0, layers):                  # fracskl at end
-            params.append(fracs.pop(0))
+            params.append(int(float(temp.pop(0)))) # typdstsk
+            params.append(int(float(temp.pop(0)))) # dstsk
+            params.append(int(float(temp.pop(0)))) # icfirigsk
+            params.append(int(float(temp.pop(0)))) # icacjsk
+            params.append(int(float(temp.pop(0)))) # icskmax
+            params.append(float(temp.pop(0))) # fskmax
 
-        ag_ur = params[6]                           # icfirigsk - destination type (1=ag, 2=urban)
+            for j in range(0, layers):                  # fracskl at end
+                params.append(fracs.pop(0))
 
-        if ag_ur == ag:
-            elempump_ag[elem_id] = params
-        elif ag_ur == ur:
-            elempump_ur[elem_id] = params
-        else:
-            elempump_other[elem_id] = params
+            ag_ur = params[6]                           # icfirigsk - destination type (1=ag, 2=urban)
+
+            if ag_ur == ag:
+                elempump_ag[elem_id] = params
+            elif ag_ur == ur:
+                elempump_ur[elem_id] = params
+            else:
+                elempump_other[elem_id] = params
+        except (ValueError, IndexError) as e:
+            print(f'\n*** Error on line {line_index + i + 1} of {elempump_file_name}:')
+            print(f'*** Line content: {elempump_lines[line_index + i]}')
+            print(f'*** Error: {e}')
+            print(f'*** Parsed fields: {l}')
+            raise
 
     return elempump_ag, elempump_ur, elempump_other, header
 

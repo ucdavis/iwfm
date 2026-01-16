@@ -17,24 +17,31 @@
 # -----------------------------------------------------------------------------
 
 
-def elem_poly_coords(elem_nodes, node_coord_dict):
-    ''' elem_poly_coords() - Return a list of element coordinates 
+def elem_poly_coords(elem_nodes, node_coords):
+    ''' elem_poly_coords() - Return a list of element coordinates
         in the form: [[x0,y0],[x1,y1],[x2,y2]<,...>]
 
     Parameters
     ----------
     elem_nodes : list
         list of elements and associated nodes
-    
-    node_coord_dict : dictionary
-        key = node_id, values = associated X and Y coordinates
+
+    node_coords : list or dictionary
+        if list: [[node_id, x, y], ...]
+        if dictionary: key = node_id, values = associated X and Y coordinates
 
     Returns
     -------
     polygons : list
         list of polygon coordinates
-    
+
     '''
+
+    # Convert node_coords to dictionary if it's a list
+    if isinstance(node_coords, list):
+        node_coord_dict = {int(nc[0]): (nc[1], nc[2]) for nc in node_coords}
+    else:
+        node_coord_dict = node_coords
 
     polygons = []
 

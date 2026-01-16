@@ -37,8 +37,8 @@ def dms2dd(lat, lon):
     '''
 
     try:
-        lat_deg, lat_min, lat_sec, lat_dir = re.split('[^\d\.A-Z]+', lat)
-        lon_deg, lon_min, lon_sec, lon_dir = re.split('[^\d\.A-Z]+', lon)
+        lat_deg, lat_min, lat_sec, lat_dir = re.split(r'[^\d\.A-Z]+', lat)
+        lon_deg, lon_min, lon_sec, lon_dir = re.split(r'[^\d\.A-Z]+', lon)
     except ValueError:
         raise ValueError("Invalid input format for latitude or longitude")
     lat_dd = float(lat_deg) + float(lat_min) / 60 + float(lat_sec) / (60 * 60)
