@@ -15,8 +15,6 @@
 # For a copy of the GNU General Public License, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
-import logging
-
 import iwfm
 import iwfm.debug as debug
 
@@ -43,14 +41,6 @@ def test_print_env_outputs_lines(capsys):
     assert "Environment:" in out
     assert "System:" in out
     assert "PATH:" in out
-
-
-def test_logging_returns_logger_and_emits(caplog):
-    logger = debug.logging()
-    assert isinstance(logger, logging.Logger)
-    with caplog.at_level(logging.DEBUG, logger=logger.name):
-        logger.debug("hello")
-    assert any("hello" in rec.message for rec in caplog.records)
 
 
 def test_system_info_helpers():

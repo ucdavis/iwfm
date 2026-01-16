@@ -20,6 +20,7 @@ import pytest
 import numpy as np
 from datetime import datetime, date
 import iwfm.calib as calib
+from iwfm.calib.compare import compare
 
 
 class TestBiasCalc:
@@ -416,3 +417,21 @@ class TestCalibMathFunctions:
         except (ValueError, IndexError):
             # This is also acceptable behavior
             pass
+
+
+def test_compare():
+    """Test the compare function in iwfm.calib."""
+    # Example input data for the test
+    list1 = ["a", "b", "c"]
+    list2 = ["b", "c", "d"]
+
+    # Expected output based on the function's logic
+    expected_missing = ["a"]
+    expected_extra = ["d"]
+
+    # Call the function with the example input
+    missing, extra = compare(list1, list2)
+
+    # Assert the result matches the expected output
+    assert missing == expected_missing, f"Expected missing {expected_missing}, but got {missing}"
+    assert extra == expected_extra, f"Expected extra {expected_extra}, but got {extra}"

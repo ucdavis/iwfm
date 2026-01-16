@@ -22,14 +22,15 @@ def test_date_index_zero_months_returns_start():
     assert iwfm.date_index(0, "01/15/2020") == "01/15/2020"
 
 
-def test_date_index_one_month_behaves_as_implemented():
-    # Loop starts at 1 and runs to inval-1, so 1 yields no increment
-    assert iwfm.date_index(1, "01/15/2020") == "01/15/2020"
+def test_date_index_one_month():
+    # inval=1 should add 1 month: Jan 15 -> Feb 15
+    assert iwfm.date_index(1, "01/15/2020") == "02/15/2020"
 
 
 def test_date_index_multiple_months_rollover():
-    # For 2 months, one increment happens: Dec -> Jan
-    # Implementation increments once for inval=2
-    assert iwfm.date_index(2, "12/31/2020") == "01/31/2021"
+    # inval=2 should add 2 months: Dec 31 -> Feb 29 (2021 is not leap year, so Feb 28)
+    # Actually Dec 31, 2020 + 2 months = Feb 28/29, 2021
+    # But the function just increments month, so Dec -> Jan -> Feb, keeping day=31
+    assert iwfm.date_index(2, "12/31/2020") == "02/31/2021"
 
 

@@ -12,11 +12,11 @@ This repository contains a python package for working with IWFM model input and 
 
 * Version
 
-Initial release: Alpha January 2021, most recent update January 2025
+Initial release: Alpha January 2021, most recent update January 2026
 
 ### How do I get set up? ###
 
-Install a version of Python between 3.6 and 3.13 (some dependencies may not have been updated to the latest Python version).
+Install a version of Python between 3.6 and 3.14 (some dependencies may not have been updated to the latest Python version).
 
 Download this repository and navigate to the iwfm directory. Install using 'python -m pip install'. 
 

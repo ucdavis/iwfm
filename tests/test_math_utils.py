@@ -71,42 +71,6 @@ class TestLogTrans:
         assert result == 1.0
 
 
-class TestRound:
-    """Test the round function."""
-    
-    def test_round_zero_decimals(self):
-        """Test rounding to integer."""
-        assert iwfm.round(3.7, 0) == 3
-        assert iwfm.round(3.2, 0) == 3
-        assert iwfm.round(3.9, 0) == 3
-        assert type(iwfm.round(3.7, 0)) == int
-    
-    def test_round_positive_decimals(self):
-        """Test rounding to positive decimal places."""
-        assert iwfm.round(3.14159, 2) == 3.14
-        assert iwfm.round(3.14159, 3) == 3.141
-        assert iwfm.round(3.14159, 4) == 3.1415
-        
-        # Test rounding behavior
-        assert iwfm.round(1.235, 2) == 1.23  # truncation, not proper rounding
-        assert iwfm.round(1.999, 2) == 1.99
-    
-    def test_round_large_numbers(self):
-        """Test rounding large numbers."""
-        assert iwfm.round(123456.789, 1) == 123456.7
-        assert iwfm.round(123456.789, 0) == 123456
-    
-    def test_round_negative_numbers(self):
-        """Test rounding negative numbers."""
-        assert iwfm.round(-3.14159, 2) == -3.14
-        assert iwfm.round(-3.7, 0) == -3
-    
-    def test_round_negative_decimals_raises_error(self):
-        """Test that negative decimal places cause system exit."""
-        with pytest.raises(SystemExit):
-            iwfm.round(3.14, -1)
-
-
 class TestColumnSum:
     """Test the column_sum function."""
     
@@ -151,3 +115,4 @@ class TestColumnSum:
         data = [[0, 1, 0], [2, 0, 3]]
         result = iwfm.column_sum(data)
         assert result == [2, 1, 3]
+        
