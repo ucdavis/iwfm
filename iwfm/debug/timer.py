@@ -1,6 +1,6 @@
 # timer.py
 # Decorator to display function execution time
-# Copyright (C) 2018-2024 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import time
+from functools import wraps
+
 
 def timer(function):
     ''' timer(functon) -Wrapper to display function execution time
@@ -23,19 +26,17 @@ def timer(function):
     Parameters
     ----------
     function : function object
-    
+
     Return
     ------
     calling function object
 
     '''
-    import time
-
     @wraps(function)
     def wrapper(*args, **kwargs):
         start = time.perf_counter()
         result = function(*args, **kwargs)
         end = time.perf_counter()
-        print(f'[{wrapper.__name__}] executed in {end-start * 1000} ms')
+        print(f'[{wrapper.__name__}] executed in {(end-start) * 1000} ms')
         return result
     return wrapper

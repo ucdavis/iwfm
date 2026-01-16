@@ -26,7 +26,7 @@ from iwfm.debug.print_dict import print_dict
 from iwfm.debug.check_key import check_key
 
 # logging
-from iwfm.debug.logging import logging
+from iwfm.debug.logger_setup import setup_debug_logger
 
 # system and python version information
 from iwfm.debug.this_sys import this_sys

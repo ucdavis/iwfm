@@ -17,30 +17,47 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import datetime
+import iwfm
+
+
+class ExeTimeTracker:
+    """Class to track execution time with a start datetime."""
+    def __init__(self):
+        self.start = datetime.datetime.now()
+
+    def get_start(self):
+        return self.start
+
+
+# Module-level singleton instance
+_exe_time_instance = None
+
 
 def exe_time():
-    ''' print_exe_time() - Tracks the time since the first call, and prints
-        the elapsed time on subsequent calls 
+    ''' exe_time() - Tracks the time since the first call, and prints
+        the elapsed time on subsequent calls
 
     Parameters
     ----------
     nothing
-    
+
     Return
     ------
     nothing
 
     '''
-    import datetime
-    import iwfm
+    global _exe_time_instance
 
-    if not hasattr(exe_time, 'start'):
-        exe_time.start = datetime.datetime.now()
+    if _exe_time_instance is None:
+        # First call - create the tracker instance
+        _exe_time_instance = ExeTimeTracker()
         return
     else:
+        # Subsequent calls - calculate and print elapsed time
         end = datetime.datetime.now()
 
-        diff = str(end - exe_time.start).split(':')
+        diff = str(end - _exe_time_instance.get_start()).split(':')
         secs = str(round(float(diff[2]), 1))
         if int(diff[0]) > 0:
             hours = iwfm.pad_front(str(int(diff[0])), 2, '0') + ':'
