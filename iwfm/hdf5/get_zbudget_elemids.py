@@ -112,6 +112,9 @@ def get_zbudget_elemids(zbud, zones_file, area_conversion_factor=0.0000229568411
     #zone_list       = zbud.get_zone_list()             # get list of zone IDs
     #zone_extent_ids = zbud.get_zone_extent_ids()       # get zone extent IDs
 
+    # TODO: This function is incomplete - elemids is not properly extracted from zbud
+    # Temporary fix to avoid undefined variable error
+    elemids = []  # placeholder - needs proper implementation
     return elemids
 
 if __name__ == '__main__':
@@ -155,4 +158,4 @@ if __name__ == '__main__':
 
 #    print(f'  Created {outfile_name} with {count} worksheets.')
 
-    exe_time()  # print elapsed time
+    idb.exe_time()  # print elapsed time

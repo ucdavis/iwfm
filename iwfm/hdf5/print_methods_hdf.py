@@ -64,7 +64,8 @@ def print_methods_hdf(filename, spacing=20, verbose=False):
 
     return methodList
 
-if __name__ == '__main__':methods_hdf() from command line '
+if __name__ == '__main__':
+    '''methods_hdf() from command line '''
     import sys
     import os
     import iwfm as iwfm
