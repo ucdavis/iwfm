@@ -39,8 +39,11 @@ def read_lu_file(filename, skip=4):
         DSS dates for each time step
     
     '''
+    import iwfm
+
     comments = 'Cc*#'
 
+    iwfm.file_test(filename)
     with open(filename) as f:
         data = f.read().splitlines()
 

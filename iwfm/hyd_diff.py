@@ -37,10 +37,13 @@ def hyd_diff(gwhyd_file_1, gwhyd_file_2, outname):
 
     '''
 
-    import iwfm.pad_back as pad
+    import iwfm
 
+    iwfm.file_test(gwhyd_file_1)
     with open(gwhyd_file_1) as f:
         gwhyd_lines_1 = (f.read().splitlines())
+
+    iwfm.file_test(gwhyd_file_2)
     with open(gwhyd_file_2) as f:
         gwhyd_lines_2 = (f.read().splitlines())
 
@@ -51,7 +54,7 @@ def hyd_diff(gwhyd_file_1, gwhyd_file_2, outname):
       temp2 = gwhyd_lines_2[i].split()
       as_str = temp1[0] + '           '
       for j in range(1,len(temp1)):
-        as_str += pad(round(float(temp1[j]) - float(temp2[j]),4),16)
+        as_str += iwfm.pad_back(round(float(temp1[j]) - float(temp2[j]),4),16)
       gwhyd_lines_out.append(as_str)
 
     with open(outname, 'w') as f:
@@ -63,7 +66,7 @@ def hyd_diff(gwhyd_file_1, gwhyd_file_2, outname):
 if __name__ == '__main__':
     ' Run hyd_diff() from command line '
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
 
     if len(sys.argv) > 1:  # arguments are listed on the command line

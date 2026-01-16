@@ -49,6 +49,7 @@ def get_heads_4_date(heads_file, out_date, start=5):
     out_day = iwfm.day(out_date)
     out_year = iwfm.year(out_date)
 
+    iwfm.file_test(heads_file)
     with open(heads_file) as f:
         file_lines = f.read().splitlines()  # open and read input file
 

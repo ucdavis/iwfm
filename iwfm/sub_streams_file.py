@@ -46,12 +46,12 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
     from pathlib import Path
 
     comments = ['C','c','*','#']
 
-    # Check if streams file exists
+    # Check if streams file is in the model
     stream_file = sim_dict.get('stream_file')
     if not stream_file:
         iwfm.file_missing('streams file', 'Not specified in simulation input file')

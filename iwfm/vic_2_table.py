@@ -17,8 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-def vic_2_table(
-    factorsFileName, outFileName, col, verbose=False):
+def vic_2_table(factorsFileName, outFileName, col, verbose=False):
     ''' vic_2_table() - Extract one column from a file of VIC gridded climate
         change factors and writes to a table, with one column for each VIC
         grid ID and one row for each date
@@ -42,9 +41,9 @@ def vic_2_table(
     nothing
 
     '''
-    import sys
-    import iwfm as iwfm
+    import iwfm
 
+    iwfm.file_test(factorsFileName)
     with open(factorsFileName) as f:
         factors = f.read().splitlines()  # get climate thance gactors
     if verbose:
@@ -121,7 +120,7 @@ if __name__ == "__main__":
     ''' Run vic_2_table() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         factorsFileName = sys.argv[1]

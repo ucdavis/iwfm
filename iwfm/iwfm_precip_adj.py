@@ -55,12 +55,13 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
     '''
     import re, sys
     import numpy as np
-    import iwfm as iwfm
+    import iwfm
 
     skip = 5  # skip 5 non-comment lines before reaching data lines
 
     # -- read precip column-VIC grid linkage ------------------------
     # data: precip col -> region, VIC ID
+    iwfm.file_test(elem_VIC_filemane)
     with open(elem_VIC_filemane) as f:
         elem_vic = f.read().splitlines()
     elem_vic.pop(0)  # remove header lines
@@ -74,6 +75,7 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
         print(f'  Read VIC grid data for {vic_rows:,} precipitation columns')
 
     # -- get the climate factors ------------------------------------
+    iwfm.file_test(factors_filename)
     with open(factors_filename) as f:
         factors = f.read().splitlines()  # open and read input file
     factors.pop(0)  # remove header row
@@ -90,6 +92,7 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
         i += 1
 
    # -- replacement years for years without VIC factors ------------
+    iwfm.file_test(years_filename)
     with open(years_filename) as f:
         rep_years = f.read().splitlines()  # open and read input file
 
@@ -107,6 +110,7 @@ def iwfm_precip_adj(precip_filename,elem_VIC_filemane,factors_filename,
         d_VICyear[item[0]] = item[1:]
 
     # -- read IWFM precipitation file ------------------------------------
+    iwfm.file_test(precip_filename)
     with open(precip_filename) as f:
         precip = f.read().splitlines()  # open and read input file
 

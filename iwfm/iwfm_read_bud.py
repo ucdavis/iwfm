@@ -34,8 +34,9 @@ def iwfm_read_bud(bud_file, verbose=False):
         Input and output file names, times etc
 
     '''
-    import iwfm as iwfm
+    import iwfm
 
+    iwfm.file_test(bud_file)
     with open(bud_file) as f:
         bud_lines = f.read().splitlines()
 

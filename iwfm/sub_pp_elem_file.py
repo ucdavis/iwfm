@@ -43,7 +43,7 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
         list of [element id, nodes and subregion] for each submodel element
 
     '''
-    import iwfm as iwfm
+    import iwfm 
 
     comments = ['C','c','*','#']
 
@@ -51,6 +51,7 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
     for e in elem_list:
         elems.append(e[0])
 
+    iwfm.file_test(elem_file)
     with open(elem_file) as f:
         elem_lines = f.read().splitlines()  # open and read input file
 

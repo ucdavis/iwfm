@@ -37,10 +37,11 @@ def iwfm_lu2refined(in_lu_file,lu_factors,verbose=False):
     '''
     import os
     import re
-    import iwfm as iwfm
+    import iwfm
 
 
     # read the original IWFM Land Use file
+    iwfm.file_test(in_lu_file)
     with open(in_lu_file) as f:
         lu_lines = f.read().splitlines()  # open and read input file
     line_index = iwfm.skip_ahead(0, lu_lines, 4)  # skip comments and header

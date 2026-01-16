@@ -66,7 +66,7 @@ if __name__ == '__main__':
     import sys
     import os
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     args = sys.argv[1:]  # get command line arguments
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -98,6 +98,7 @@ if __name__ == '__main__':
 
     # read preprocessor node file
     node_file = os.path.join(pre_path, pre_dict['node_file'])
+    iwfm.file_test(node_file)
     node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
     # multiply noode_coords X and Y by factor

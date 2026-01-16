@@ -42,10 +42,11 @@ def sub_gw_pump_epump_file(old_filename, new_filename, elems, verbose=False):
         True if there are any wells
 
     '''
-    import iwfm as iwfm
+    import iwfm
 
     comments = ['C','c','*','#']
 
+    iwfm.file_test(old_filename)
     with open(old_filename) as f:
         epump_lines = f.read().splitlines()
     epump_lines.append('')

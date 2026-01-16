@@ -33,9 +33,10 @@ def read_hyd_dict(gw_dat_file):
         key = well name (i.e. state well ID), value = well information, 
                                 
     '''
-    import iwfm as iwfm
+    import iwfm
 
     well_dict = {}
+    iwfm.file_test(gw_dat_file)
     with open(gw_dat_file) as f:
         gwhyd_info = f.read().splitlines()  # open and read input file
 

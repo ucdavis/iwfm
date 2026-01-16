@@ -1,6 +1,6 @@
 # refined_lu_factors.py
 # Calculate land use factors for refined model elements
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,8 +40,10 @@ def refined_lu_factors(orig_areas_file,refined_areas_file,elem2elem_file):
     import csv
     import numpy as np
     import pandas as pd
+    import iwfm
 
     # -- read the original model element areas file
+    iwfm.file_test(orig_areas_file)
     with open(orig_areas_file, 'r') as file:
         orig_areas = list(csv.reader(file))[1:]
     for line in orig_areas:
@@ -49,12 +51,14 @@ def refined_lu_factors(orig_areas_file,refined_areas_file,elem2elem_file):
     orig_areas_d = dict(orig_areas)
 
     # -- read the refined model element areas file
+    iwfm.file_test(refined_areas_file)
     with open(refined_areas_file, 'r') as file:
         refined_areas = list(csv.reader(file))[1:]
     for line in refined_areas:
         line[0], line[1] = int(line[0]), float(line[1])
 
     # -- read the element to element file
+    iwfm.file_test(elem2elem_file)
     with open(elem2elem_file, 'r') as file:
         elem2elem = list(csv.reader(file))[1:]
     for line in elem2elem:

@@ -34,7 +34,9 @@ def read_lu_change_factors(in_chg_file):
     
     '''
     import re
+    import iwfm
 
+    iwfm.file_test(in_chg_file)
     with open(in_chg_file) as f:
         temp = f.read().splitlines()
     change_table = []
