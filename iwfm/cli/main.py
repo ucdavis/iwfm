@@ -34,8 +34,8 @@ from __future__ import annotations
 
 import sys
 import typer
-from typing import Optional
 from iwfm.debug.logger_setup import logger
+from iwfm.cli.context import UserLevel
 
 # Root Typer app
 app = typer.Typer(
@@ -52,8 +52,7 @@ class CLIContext:
     Holds global CLI state shared across commands.
     """
     def __init__(self):
-        self.power: bool = False
-        self.dev: bool = False
+        self.user_level: UserLevel = UserLevel.USER
 
 
 def get_context() -> CLIContext:
@@ -65,13 +64,13 @@ def get_context() -> CLIContext:
 
 # ---- Logging ----------------------------------------------------------------
 
-def configure_logging(power: bool, dev: bool) -> None:
+def configure_logging(user_level: UserLevel) -> None:
     """
     Configure logging once, based on CLI mode using loguru logger.
     """
-    if dev:
+    if user_level.is_dev():
         level = "DEBUG"
-    elif power:
+    elif user_level.is_power():
         level = "INFO"
     else:
         level = "WARNING"
@@ -90,25 +89,21 @@ def configure_logging(power: bool, dev: bool) -> None:
 @app.callback()
 def main(
     ctx: typer.Context,
-    power: bool = typer.Option(
-        False,
-        "--power",
-        help="Enable power-user commands and INFO-level logging",
-    ),
-    dev: bool = typer.Option(
-        False,
-        "--dev",
-        help="Enable developer/debug commands and DEBUG-level logging",
+    level: UserLevel = typer.Option(
+        UserLevel.USER,
+        "--level",
+        "-l",
+        help="User level: user (default), power (INFO logging), or dev (DEBUG logging)",
+        case_sensitive=False,
     ),
 ):
     """
     IWFM unified command-line interface.
     """
     ctx.ensure_object(CLIContext)
-    ctx.obj.power = power
-    ctx.obj.dev = dev
+    ctx.obj.user_level = level
 
-    configure_logging(power=power, dev=dev)  # Use loguru-based logging setup
+    configure_logging(user_level=level)
 
 
 # ---- Subcommand Registration -------------------------------------------------
@@ -128,7 +123,7 @@ def _register_commands():
     app.add_typer(gis.app, name="gis", help="GIS-related utilities")
     app.add_typer(xls.app, name="xls", help="Excel import/export utilities")
     app.add_typer(debug.app, name="debug", help="Developer and diagnostic commands",
-         hidden=not get_context().dev,
+         hidden=not get_context().user_level.is_dev(),
      )
 
 

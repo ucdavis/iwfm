@@ -16,15 +16,41 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-
-
-
+from enum import Enum
 import typer
 
+
+class UserLevel(Enum):
+    """User level for CLI access control."""
+    USER = "user"
+    POWER = "power"
+    DEV = "dev"
+
+    def is_user(self) -> bool:
+        """Check if this is the basic user level."""
+        return self == UserLevel.USER
+
+    def is_power(self) -> bool:
+        """Check if this is the power user level."""
+        return self == UserLevel.POWER
+
+    def is_dev(self) -> bool:
+        """Check if this is the developer level."""
+        return self == UserLevel.DEV
+
+
+def get_user_level() -> UserLevel:
+    """Get the current user level from the CLI context."""
+    return typer.get_current_context().obj.user_level
+
+
 def is_power() -> bool:
-    return bool(typer.get_current_context().obj.power)
+    """Check if current user level is power."""
+    return get_user_level().is_power()
+
 
 def is_dev() -> bool:
-    return bool(typer.get_current_context().obj.dev)
+    """Check if current user level is dev."""
+    return get_user_level().is_dev()
     
     
