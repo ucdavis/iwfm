@@ -35,31 +35,40 @@ def igsm_read_lake(lake_file):
         [lake_id, max_elev, next, nelem] for each lake
 
     '''
-    import iwfm as iwfm
+    import iwfm
 
+    iwfm.file_test(lake_file)
     with open(lake_file) as f:
         lake_lines = f.read().splitlines()  # open and read input file
+
     lake_index = 0  # start at the top
     lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  # skip comments
     nlakes = int(lake_lines[lake_index].split()[0])
     lake_index = iwfm.skip_ahead(lake_index + 1, lake_lines, 0)  # skip comments
+
     lakes = []
     lake_elems = []
-    l = lake_lines[lake_index].split()  # read first line of lake description
-    for i in range(0, nlakes):
+    current_line = lake_index  # track current line being read
+
+    for i in range(nlakes):
+        l = lake_lines[current_line].split()  # read lake header line
         lake_id = int(l.pop(0))
         max_elev = float(l.pop(0))
         next = int(l.pop(0))
         nelem = int(l.pop(0))
         lakes.append([lake_id, max_elev, next, nelem])
-        j = 0
-        while j < nelem:
+
+        # Read elements for this lake
+        for j in range(nelem):
             e = []
             e.append(lake_id)  # lake number
             e.append(int(l.pop(0)))  # element number
             e.append(float(l.pop(0)))  # area
             lake_elems.append(e)
-            j += 1
-            l = lake_lines[lake_index + i + j].split()  # get next line
-        i += j
+
+            # Move to next line (either next element or next lake header)
+            current_line += 1
+            if current_line < len(lake_lines):
+                l = lake_lines[current_line].split()
+
     return lake_elems, lakes

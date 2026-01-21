@@ -1,6 +1,6 @@
-# iwfm_read_rz.py 
+# iwfm_read_uz.py
 # Read unsaturated zone parameters from a file and organize them into lists
-# Copyright (C) 2023-2026 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -139,6 +139,7 @@ def iwfm_read_uz(file, verbose=False):
 
     if verbose: print(f"Entered iwfm_read_uz() with {file}")
 
+    iwfm.file_test(file)
     with open(file) as f:
         uz_lines = f.read().splitlines()                   # open and read input file
     uz_version = uz_lines[0].split()[0]                         # version number
@@ -194,6 +195,9 @@ def iwfm_read_uz(file, verbose=False):
         pi = [[0 for col in range(layers)] for row in range(nodes)]
         pk = [[0 for col in range(layers)] for row in range(nodes)]
         prhc = [[0 for col in range(layers)] for row in range(nodes)]
+
+        # skip to parameter values section
+        line_index = iwfm.skip_ahead(line_index, uz_lines, 0)   # skip to next value line
 
         # read parameter values
         for node in range(nodes):

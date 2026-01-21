@@ -37,8 +37,6 @@ def read_param_table_ints(file_lines, line_index, lines):
         A list of parameters
     """
 
-    import iwfm 
-
     params = []
     if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
         params = [int(e) for e in file_lines[line_index].split()]
@@ -90,12 +88,12 @@ def read_param_table_floats(file_lines, line_index, lines):
     return params, line_index
 
 
-def iwfm_read_precip_vals(file, verbose=False):
+def iwfm_read_precip_vals(precip_file, verbose=False):
     """iwfm_read_precip_vals() - Read precipitation from a file and organize them into lists.
 
     Parameters
     ----------
-    file : str
+    precip_file : str
         The path of the file containing the precipitation data.
   
     verbose : bool, default = False
@@ -110,9 +108,8 @@ def iwfm_read_precip_vals(file, verbose=False):
     """
     import iwfm
 
-    if verbose: print(f"Entered iwfm_read_precip_vals() with {file}")
-
-    with open(file) as f:
+    iwfm.file_test(precip_file)
+    with open(precip_file) as f:
         pr_lines = f.read().splitlines()                   # open and read input file
 
     line_index = iwfm.skip_ahead(0, pr_lines, 0)                # skip to next value line
@@ -143,7 +140,5 @@ def iwfm_read_precip_vals(file, verbose=False):
 
     params = precip
 
-        
-    if verbose: print(f"Leaving iwfm_read_precip_vals()")
 
     return params

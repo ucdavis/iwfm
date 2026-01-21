@@ -1,7 +1,7 @@
 # __init__.py for iwfm package
 # Classes and methods to read, write and modify IWFM and IGSM files and
 # associated data files
-# Copyright (C) 2018-2025 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -152,6 +152,7 @@ from iwfm.write_2_dat import write_2_dat
 from iwfm.write_2_csv import write_2_csv
 from iwfm.write_2_surfer import write_2_surfer
 from iwfm.skip_ahead import skip_ahead
+from iwfm.file_utils import read_next_line_value, read_multiple_line_values, read_line_values_to_dict
 from iwfm.pad_front import pad_front
 from iwfm.pad_back import pad_back
 from iwfm.pad_both import pad_both

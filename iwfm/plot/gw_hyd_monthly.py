@@ -37,13 +37,15 @@ def gw_hyd_monthly(gwhyd_file):
     # create outname 
     out_name = gwhyd_file.split('.')[0] + '_monthly.' + gwhyd_file.split('.')[1]
     
-    # read simulated heads from multiple IWFM groundwater hydrograph files
+    # Read groundwater hydrograph file
+    iwfm.file_test(gwhyd_file)
     with open(gwhyd_file) as f:
-        gwhyd_lines = f.read().splitlines()  
+        gwhyd_lines = f.read().splitlines()
 
-    line_index = iwfm.skip_ahead(0, gwhyd_lines, 0)  
+    # Skip header lines to reach first data line
+    line_index = iwfm.skip_ahead(0, gwhyd_lines, 0)
     start_index = line_index
-    start_len = len(gwhyd_lines) - start_index
+    start_len = len(gwhyd_lines) - start_index  # Count of data lines
 
     out_lines = []
     for line in gwhyd_lines[:line_index]:

@@ -1,7 +1,7 @@
 # nearest_node.py
 # Read IWFM well file and return nearest IWFM node to an (x,y) location
 # the nearest node to each (x,y) point
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     ' Run nearest_node() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         node_file = sys.argv[1]
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         node_file = input('IWFM Node file name: ')
         well_file = input('Well file name: ')
 
-    iwfm.file_test(node_file) 
+    iwfm.file_test(node_file)
     iwfm.file_test(well_file)
 
     idb.exe_time()  # initialize timer
@@ -74,7 +74,8 @@ if __name__ == '__main__':
     print(f'  ** EXITING')
     sys.exit()
 
+    # Dead code - unreachable after sys.exit() and uses undefined variables (point, node_set)
     # cycle through points for nearest node
-    nearest = iwfm.nearest_node(point, node_set)
-
-    idb.exe_time()  # print elapsed time
+    # nearest = iwfm.nearest_node(point, node_set)
+    #
+    # idb.exe_time()  # print elapsed time

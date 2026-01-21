@@ -39,8 +39,9 @@ def igsm_read_streams(stream_file):
         Number of stream nodes
 
     '''
-    import iwfm as iwfm
+    import iwfm
 
+    iwfm.file_test(stream_file)
     with open(stream_file) as f:
         stream_lines = f.read().splitlines() 
     stream_index = 0  # start at the top
@@ -72,10 +73,11 @@ def igsm_read_streams(stream_file):
     selev = []
 
     # cycle through stream nodes in rating table section
-    for i in range(0, len(snodes_list)):  
+    for i in range(0, len(snodes_list)):
         l = stream_lines[stream_index].split()
-        selev.append(int(l[1]))
-        if i < len(snodes_list) - 1:  
+        # Convert to float (handles both int and float formats)
+        selev.append(float(l[1]))
+        if i < len(snodes_list) - 1:
             stream_index = iwfm.skip_ahead(stream_index + 1, stream_lines, 4)
 
     # put stream node info into a dictionary

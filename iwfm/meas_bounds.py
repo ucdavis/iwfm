@@ -1,6 +1,6 @@
 # meas_bounds.py
 # determine upper and lower bounds of a list of values
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,11 +40,12 @@ def meas_bounds(gwhyd_obs):
 
     well_names, earliest, latest = [], [], []
 
+    # Dead code - commented out due to undefined variables (incomplete implementation)
     # get the info from the first line
-    temp = gwhyd_obs[0].split
-    with open(filename) as f:
-        line = readline(f).split
-        well_name_temp = line(0)
+    # temp = gwhyd_obs[0].split()  # Fixed: added parentheses
+    # with open(filename) as f:  # Error: 'filename' undefined - needs to be passed as parameter
+    #     line = f.readline().split()  # Fixed: changed readline(f) to f.readline()
+    #     well_name_temp = line[0]  # Fixed: changed line(0) to line[0]
     #  early_temp      =
     #  late_temp       =
     #    for i in range(0,len(gwhyd_obs[j])):

@@ -2,7 +2,7 @@
 # Copy IWFM model elements shapefile, and create one shapefile of total area 
 # for each year and element, and another shapefile with percent element area
 # for each year and element
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import geopandas as gpd
 import re
 import sys
 import iwfm.debug as idb
-import iwfm as iwfm
+import iwfm 
 
 def map_lu(land_use_file, elem_shp_name, out_shp_basename, verbose=False):
     '''map_lu() - Copy IWFM model elements shapefile, and create one shapefile of total area 
@@ -49,6 +49,7 @@ def map_lu(land_use_file, elem_shp_name, out_shp_basename, verbose=False):
 
     '''
     
+    iwfm.file_test(elem_shp_name)
     gdf = gpd.read_file(elem_shp_name)                          # read elements shapefile into geopandas dataframe
 
     gdf.columns = gdf.columns.str.lower()                       # convert column names to lower case
@@ -57,14 +58,18 @@ def map_lu(land_use_file, elem_shp_name, out_shp_basename, verbose=False):
     
     #gdf['area'] = gdf['geometry'].area                          # calculate area of each element in shapefile - not used here
 
+    iwfm.file_test(land_use_file)
     with open(land_use_file) as f:
         file_lines = f.read().splitlines()        # open input file
 
-    line_index = iwfm.skip_ahead(0, file_lines, 0)              # skip to next value line
+    # Read FACTLNP (area conversion factor) using utility function
+    area_factor_str, line_index = iwfm.read_next_line_value(
+        file_lines, -1, column=0, skip_lines=0
+    )
+    area_factor = float(area_factor_str)  # factor to convert area to square feet - not used here
 
-    area_factor = float(file_lines[line_index].split()[0])      # factor to convert area to square feet - not used here
-
-    line_index = iwfm.skip_ahead(line_index, file_lines, 4)     # skip to next value line
+    # Skip 4 lines (NSPLNP, NFQLNP, DSSFL, comments) to reach data section
+    line_index = iwfm.skip_ahead(line_index, file_lines, 4)
 
     lu_lines = 1                                                # how many lines per time-step? count lines to next date
     while file_lines[line_index + lu_lines].find('_24:00') == -1:

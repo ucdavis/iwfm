@@ -49,7 +49,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm 
     from shapely.geometry import Point, Polygon
     from pathlib import Path
     import os
@@ -71,15 +71,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         sys.exit(1)
 
     gw_file_path = sim_dict['gw_file']
-    if not os.path.exists(gw_file_path):
-        print(f'\n*** ERROR: Groundwater file not found:')
-        print(f'    {gw_file_path}')
-        print('\n    Possible causes:')
-        print('    1. The file path in the simulation input file is incorrect')
-        print('    2. The file does not exist at the specified location')
-        print('    3. The path is relative but the working directory is incorrect')
-        print(f'\n    Current working directory: {os.getcwd()}')
-        sys.exit(1)
+    iwfm.file_test(gw_file_path)
 
     # Determine base path for resolving relative file paths in groundwater file
     # Paths in groundwater file are relative to the simulation file's directory
@@ -89,7 +81,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         # Fall back to groundwater file's directory for backwards compatibility
         base_path = Path(gw_file_path).resolve().parent
 
-    with open(sim_dict['gw_file']) as f:
+    with open(gw_file_path) as f:
         gw_lines = f.read().splitlines()
     gw_lines.append('')
 

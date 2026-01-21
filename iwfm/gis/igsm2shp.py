@@ -1,6 +1,6 @@
 # igsm2shp.py
 # Create shapefiles for an IGSM model
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,26 +36,29 @@ def igsm2shp(main_file, shape_name, verbose=False):
 
     '''
 
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as gis
 
-    # read main_file for file names
+    # Read main_file for file names
+    iwfm.file_test(main_file)
     with open(main_file) as f:
         main_lines = f.read().splitlines()
-    line_index = iwfm.skip_ahead(0, main_lines, 6)
-    elem_file = main_lines[line_index].split()[0]
-    line_index += 1
-    node_file = main_lines[line_index].split()[0]
-    line_index += 1
-    strat_file = main_lines[line_index].split()[0]
-    line_index += 1
-    stream_file = main_lines[line_index].split()[0]
-    line_index += 1
-    lake_file = main_lines[line_index].split()[0]
-    if lake_file[0] == '/': # no lake file listed
+
+    # Read file specifications: skip 6 lines to reach file specification section,
+    # then read 5 consecutive file names (elem, node, strat, stream, lake)
+    file_values, line_index = iwfm.read_multiple_line_values(
+        main_lines, -1, count=5, column=0, skip_lines=6
+    )
+    elem_file, node_file, strat_file, stream_file, lake_file = file_values
+
+    # Check if lake file is specified (indicated by '/')
+    if lake_file[0] == '/':  # no lake file listed
         lake_file = ''
-    line_index += 2
-    char_file = main_lines[line_index].split()[0]
+
+    # Skip well data file line (line 12) and read char_file (line 13)
+    char_file, line_index = iwfm.read_next_line_value(
+        main_lines, line_index, column=0, skip_lines=1
+    )
 
     iwfm.file_test(elem_file)
     iwfm.file_test(node_file)
@@ -118,7 +121,7 @@ if __name__ == "__main__":
     ''' Run igsm2shp() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file = sys.argv[1]
