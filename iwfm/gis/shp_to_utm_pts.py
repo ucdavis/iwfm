@@ -53,7 +53,7 @@ def shp_to_utm_pts(shape, outfile, verbose=False):
 
     # for UTM 1N-29N
     # the zone variable will tell which UTM zone this shapefile is in
-    prj = urlopen(f'http://spatialreference.org/ref/epsg/269{str(zone)}/esriwkt/')  
+    prj = urlopen(f'http://spatialreference.org/ref/epsg/269{zone:02d}/esriwkt/')  
 
     with open(f'{outfile}.prj', 'w') as f:
         f.write(str(prj.read()))

@@ -118,12 +118,11 @@ def get_zbudget_elemids(zbud, zones_file, area_conversion_factor=0.0000229568411
     return elemids
 
 if __name__ == '__main__':
-    ' Run get_zbudget_elemids() from command line '
+    ''' Run get_zbudget_elemids() from command line '''
     import sys
-    import os
+    from pathlib import Path
     import iwfm
     from pywfm import IWFMZBudget
-#    import iwfm.hdf5 as ihdf
     import iwfm.debug as idb
 
     verbose=True
@@ -138,12 +137,11 @@ if __name__ == '__main__':
     iwfm.file_test(hdf_file)
     iwfm.file_test(zones_file)
 
-    # if outfile_name extension != '.xlsx' add '.xlsx'
-    if hdf_file[-4:] != '.txt':
-        outfile_name = hdf_file[:-4] + '.txt'
+    # if outfile_name extension != '.txt' add '.txt'
+    hdf_path = Path(hdf_file)
+    if hdf_path.suffix != '.txt':
+        outfile_name = hdf_path.with_suffix('.txt')
         if verbose: print(f'  ==> {outfile_name=}')
-
-#    cwd = os.getcwd()               # get current directory path to add to outfile_name
 
     idb.exe_time()  # initialize timer
     

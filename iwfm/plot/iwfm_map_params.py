@@ -1,6 +1,6 @@
 # iwfm_map_params.py
 # Create a contour map representing nodal values such as groundwater data.
-# Copyright (C) 2024 University of California
+# Copyright (C) 2024-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -44,7 +44,6 @@ def get_params(data_filename, param_type, param_values, verbose=False):
         '''
     
     import numpy as np
-    import pandas as pd
     import iwfm
 
     if verbose: 
@@ -62,22 +61,22 @@ def get_params(data_filename, param_type, param_values, verbose=False):
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Non-ponded':
-        data = iwfm.iwfm_read_rz_npc_params(data_filename)
+        data = iwfm.iwfm_read_rz_npc(data_filename)
         param_types = {'cnnp': 0, 'etnp': 1, 'wspnp': 2, 'ipnp': 3, 'msnp': 4, 'tsnp': 5, 'rfnp': 6, 'runp': 7, 'icnp': 8}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Ponded':
-        data = iwfm.iwfm_read_rz_pc_params(data_filename)
+        data = iwfm.iwfm_read_rz_pc(data_filename)
         param_types = {'cnpc': 0, 'etpc': 1, 'wsppc': 2, 'ippc': 3, 'pdpc': 4, 'adpc': 5, 'rfpc': 6, 'rupc': 7, 'icpc': 8}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Urban':
-        data = iwfm.iwfm_read_rz_urban_params(data_filename)
+        data = iwfm.iwfm_read_rz_urban(data_filename)
         param_types = {'perv': 0, 'cnur': 1, 'pop': 2, 'wtr': 3, 'frur': 4, 'etur': 5, 'rtur': 6, 'ruur': 7, 'riur': 8, 'icur': 9}
         data = data[param_types[param_type]]
         format = 'elements'
     elif param_values[0] == 'Native':
-        data = iwfm.iwfm_read_rz_nr_params(data_filename)
+        data = iwfm.iwfm_read_rz_nr(data_filename)
         param_types = {'cnnv': 0, 'cnrv': 1, 'etnv': 2, 'etrv': 3, 'strv': 4, 'icnv': 5, 'icrv': 6}
         data = data[param_types[param_type]]
         format = 'elements'
@@ -229,13 +228,12 @@ def iwfm_map_params(dataset, bounding_poly, image_basename, cmap='rainbow', titl
 
 if __name__ == "__main__":
     ''' Run iwfm_map_params() from command line '''
-    import sys, os
+    import sys
     from pathlib import Path
     from shapely import geometry
     import iwfm.debug as idb
     import iwfm
     import iwfm.plot as iplot
-    import iwfm.gis as igis
 
     args = sys.argv
 

@@ -147,6 +147,7 @@ def read_overwrite_file(overwrite_file, nnodes, nlay, param_types, verbose=False
     '''
     import iwfm
 
+    iwfm.file_test(overwrite_file)
     with open(overwrite_file) as f:
         in_lines = f.read().splitlines()               # open and read input file
 

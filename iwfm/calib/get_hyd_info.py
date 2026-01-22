@@ -1,6 +1,6 @@
 # get_hyd_info.py
 # unpack control variables from file_dict for one hydrograph type
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -39,12 +39,13 @@ def get_hyd_info(ftype,file_dict):
     '''
 
     import os
-    import iwfm as iwfm
+    import iwfm
 
     main_file = file_dict[ftype][0]   # IWFM input file
     colid     = file_dict[ftype][8]   # col no of observation site name
     skips     = file_dict[ftype][9]   # lines to skip, different for each ftype
 
+    iwfm.file_test(main_file)
     with open(main_file) as f:
         in_lines = f.read().splitlines()                      # open and read input file
     line_index = 5  # skip first few lines

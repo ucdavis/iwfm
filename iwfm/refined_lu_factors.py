@@ -38,8 +38,6 @@ def refined_lu_factors(orig_areas_file,refined_areas_file,elem2elem_file):
     '''
 
     import csv
-    import numpy as np
-    import pandas as pd
     import iwfm
 
     # -- read the original model element areas file

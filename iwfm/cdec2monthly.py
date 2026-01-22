@@ -1,7 +1,7 @@
 # cdec2monthly.py
 # Read CDEC observations, convert sub-monthly observations to the monthly average
 # and write to a csv file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ def cdec2monthly(input_file, output_file, verbose=False):
     ----------
     input_file: str
         Name of file containing CDEC-formatted observations
-    
+
     output_file : str
         Name of output csv file with monthly values
-    
+
     verbose : bool, default=False
        Turn command-line output on or off
 
@@ -38,40 +38,48 @@ def cdec2monthly(input_file, output_file, verbose=False):
     nothing
 
     '''
-    import os
-    import pandas as pd
-    import numpy as np
+    import polars as pl
 
-    # read into pandas dataframe, replacing error codes with nan
+    # read csv and replace error codes with null
     flow_data = (
-        pd.read_csv(input_file)
-        .replace(r'--', np.nan, regex=True)
-        .replace(r'ART', np.nan, regex=True)
-        .replace(r'BRT', np.nan, regex=True)
+        pl.read_csv(input_file)
+        .with_columns(
+            pl.col('FLOW (CFS)')
+            .str.replace_all(r'--|ARTN|BRTN|ART|BRT', '')
+            .replace('', None)
+            .cast(pl.Float64)
+        )
+        .with_columns(
+            # combine DATE and TIME columns and parse as datetime
+            (pl.col('DATE') + ' ' + pl.col('TIME (PST)'))
+            .str.to_datetime('%m/%d/%Y %H:%M', strict=False)
+            .alias('DATE'),
+            (pl.col('FLOW (CFS)') * 1.983).alias('FLOW (AF)')
+        )
+        .drop_nulls(subset=['DATE'])  # remove rows with unparseable dates
     )
-    flow_data['DATE'] = pd.to_datetime(flow_data['DATE'], errors='coerce')
-    flow_data['FLOW (CFS)'] = flow_data['FLOW (CFS)'].astype(float)
-    flow_data['FLOW (AF)'] = (flow_data['FLOW (CFS)'].astype(float) * 1.983)
 
-    # -- sometimes get an error with the next line, some values are not numbers?
-    # Drop non-numeric columns before resampling (e.g., TIME column)
-    flow_daily = flow_data.resample('D', on='DATE').mean(numeric_only=True)  # get daily mean value
+    # get daily mean values
+    flow_daily = (
+        flow_data
+        .group_by_dynamic('DATE', every='1d')
+        .agg(
+            pl.col('FLOW (CFS)').mean(),
+            pl.col('FLOW (AF)').mean()
+        )
+    )
 
-    # the pandas dataframe was doing something weird, so ...
-    flow_daily.to_csv('temp.txt')         # write it to a temporary output file ...
-    flow_daily = pd.read_csv('temp.txt')  # read it back in ...
-    os.remove('temp.txt')                 # and delete the file
-
-    flow_daily['DATE'] = pd.to_datetime(flow_daily['DATE'], errors='coerce')
-    flow_daily['FLOW (CFS)'] = flow_daily['FLOW (CFS)'].astype(float)
-    flow_daily['FLOW (AF)'] = flow_daily['FLOW (AF)'].astype(float)
-
-    # Use 'ME' (month end) instead of deprecated 'M'
-    flow_monthly = flow_daily.resample('ME', on='DATE').sum(numeric_only=True)
+    # aggregate to monthly sums
+    flow_monthly = (
+        flow_daily
+        .group_by_dynamic('DATE', every='1mo')
+        .agg(
+            pl.col('FLOW (AF)').sum()
+        )
+    )
 
     # write to output file
-    header = ['FLOW (AF)']
-    flow_monthly.to_csv(output_file, columns=header)
+    flow_monthly.select(['DATE', 'FLOW (AF)']).write_csv(output_file)
 
     if verbose:
         print(f'  Aggregated {input_file} to monthly flows and wrote to {output_file}')

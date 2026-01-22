@@ -116,6 +116,37 @@ def get_nwis(files, timeout=30):
 
     return info
 
+def parse_html_table(table):
+    ''' parse_html_table() - Parse an HTML table element into headers and rows.
+
+    Parameters
+    ----------
+    table : bs4.element.Tag
+        BeautifulSoup table element.
+
+    Returns
+    -------
+    headers : list
+        List of column headers.
+    rows : list
+        List of rows, each row is a list of cell values.
+    '''
+    # Extract headers
+    headers = []
+    header_row = table.find('tr')
+    if header_row:
+        headers = [cell.get_text(strip=True) for cell in header_row.find_all(['th', 'td'])]
+
+    # Extract data rows
+    rows = []
+    for row in table.find_all('tr')[1:]:  # skip header row
+        cells = [cell.get_text(strip=True) for cell in row.find_all(['td', 'th'])]
+        if cells:  # skip empty rows
+            rows.append(cells)
+
+    return headers, rows
+
+
 def save_table_as_csv(name, table):
     ''' save_table_as_csv() - Save a data table from a website into a csv file. Prints status.
 
@@ -138,28 +169,36 @@ def save_table_as_csv(name, table):
     IOError
         If file cannot be written
     '''
-    import pandas as pd
+    import polars as pl
 
     try:
-        # Parse HTML table
-        df = pd.read_html(str(table))[0]
+        # Parse HTML table using BeautifulSoup
+        headers, rows = parse_html_table(table)
 
         # Validate parsed data
-        if df.empty:
+        if not rows:
             raise ValueError(f"Table '{name}' contains no data")
+
+        # Create polars DataFrame
+        # Ensure all rows have same number of columns as headers
+        if headers:
+            rows = [row[:len(headers)] + [''] * (len(headers) - len(row)) for row in rows]
+            df = pl.DataFrame(rows, schema=headers, orient='row')
+        else:
+            df = pl.DataFrame(rows, orient='row')
 
     except ValueError as e:
         raise ValueError(
             f"Failed to parse HTML table for '{name}': {str(e)}"
         ) from e
-    except IndexError:
+    except Exception as e:
         raise ValueError(
-            f"No valid table found in HTML for '{name}'"
-        ) from None
+            f"Failed to parse HTML table for '{name}': {str(e)}"
+        ) from e
 
     # Write to CSV with error handling
     try:
-        df.to_csv(name, index=False)
+        df.write_csv(name)
         print(f"Data table saved to {name} ({len(df)} rows)")
     except IOError as e:
         raise IOError(
@@ -198,7 +237,10 @@ def format_file(info):
 
     #  Access each file separately
     for file, data_source in info:
-        name = file.replace('raw', 'data')
+        # Only replace 'raw' in the filename, not the directory path
+        file_path = Path(file)
+        new_filename = file_path.name.replace('raw', 'data')
+        name = str(file_path.parent / new_filename)
 
         #  Read file contents with error handling
         try:

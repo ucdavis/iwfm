@@ -155,7 +155,6 @@ def hdf2bud_gw(hdf_file, output_file,
 
                 if debug:
                     logger.debug(f"Processing location {loc_idx+1}/{n_locations}: {loc_name}")
-                    logger.debug(f"Area: {area:,.2f} {area_units}")
 
                 # Get data for this location
                 data_raw = f[loc_name][:]

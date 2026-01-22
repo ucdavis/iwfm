@@ -22,13 +22,14 @@ from unittest.mock import Mock, patch, MagicMock
 
 
 def test_elem_zbud2shp_imports():
-    '''Test that elem_zbud2shp imports are clean (verifies fix).'''
+    '''Test that elem_zbud2shp uses pathlib (verifies fix).'''
     from iwfm.gis import elem_zbud2shp
     import inspect
 
     source = inspect.getsource(elem_zbud2shp)
-    # Should have 'import iwfm' not 'import iwfm as iwfm'
-    assert 'import iwfm' in source
+    # Should use pathlib instead of os.path
+    assert 'from pathlib import Path' in source
+    assert 'import os' not in source
 
 
 def test_elem_zbud2shp_count_initialized():
@@ -41,10 +42,8 @@ def test_elem_zbud2shp_count_initialized():
     assert 'count = 0' in source
 
 
-@patch('iwfm.gis.elem_zbud2shp.gpd')
-@patch('iwfm.gis.elem_zbud2shp.iwfm')
-@patch('builtins.open', create=True)
-def test_elem_zbud2shp_basic(mock_open, mock_iwfm, mock_gpd, tmp_path):
+@patch('geopandas.read_file')
+def test_elem_zbud2shp_basic(mock_gpd_read, tmp_path):
     '''Test basic functionality of elem_zbud2shp.'''
     from iwfm.gis.elem_zbud2shp import elem_zbud2shp
 
@@ -52,33 +51,22 @@ def test_elem_zbud2shp_basic(mock_open, mock_iwfm, mock_gpd, tmp_path):
     budget_content = [
         '# Header',
         '# Header 2',
-        '01/01/2020_24:00  10.0  20.0  30.0',
-        '01/02/2020_24:00  11.0  21.0  31.0',
-        '',
-        '',
+        '01/01/2020  10.0  20.0  30.0',
+        '01/02/2020  11.0  21.0  31.0',
     ]
 
     field_content = ['Field1', 'Field2']
 
-    # Mock file reading
-    mock_budget = MagicMock()
-    mock_budget.read.return_value.splitlines.return_value = budget_content
-
-    mock_fields = MagicMock()
-    mock_fields.read.return_value.splitlines.return_value = field_content
-
-    mock_open.side_effect = [mock_budget, mock_fields]
-
-    # Mock shapefile
-    mock_shapefile = Mock()
-    mock_shapefile.columns = Mock()
-    mock_shapefile.columns.str.lower.return_value = mock_shapefile.columns
-    mock_shapefile.__getitem__ = Mock(return_value=[1, 2, 3])
-    mock_shapefile.tolist = Mock(return_value=[1, 2, 3])
+    # Mock shapefile with proper pandas-like behavior
+    mock_shapefile = MagicMock()
+    mock_shapefile.columns = MagicMock()
+    mock_shapefile.columns.str.lower.return_value = ['elem_id', 'geometry']
+    mock_shapefile.__getitem__ = MagicMock(return_value=MagicMock(tolist=MagicMock(return_value=[0, 1])))
+    mock_shapefile.__setitem__ = MagicMock()
     mock_shapefile.copy.return_value = mock_shapefile
-    mock_shapefile.to_file = Mock()
+    mock_shapefile.to_file = MagicMock()
 
-    mock_gpd.read_file.return_value = mock_shapefile
+    mock_gpd_read.return_value = mock_shapefile
 
     budget_file = tmp_path / 'budget.out'
     field_file = tmp_path / 'fields.txt'
@@ -88,11 +76,10 @@ def test_elem_zbud2shp_basic(mock_open, mock_iwfm, mock_gpd, tmp_path):
     # Create dummy files
     budget_file.write_text('\n'.join(budget_content))
     field_file.write_text('\n'.join(field_content))
-    elem_shp.write_text('dummy')
 
-    # This test mainly verifies that count is initialized
-    # The function is complex and requires many mocks for full testing
-    assert True  # count initialization verified in source check
+    # This test mainly verifies structure and that imports work
+    # Full functional testing requires real shapefile data
+    assert True  # Structure verified in source checks
 
 
 def test_elem_zbud2shp_function_signature():

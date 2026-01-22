@@ -37,6 +37,7 @@ def read_gw_file(gw_file):
     '''
     import iwfm
 
+    iwfm.file_test(gw_file)
     with open(gw_file) as f:
         gw_data = f.read().splitlines() 
 
@@ -71,6 +72,7 @@ def read_gw_params(simout_file):
     """
     import iwfm
 
+    iwfm.file_test(simout_file)
     with open(simout_file) as f:
         sim_lines = f.read().splitlines() 
 

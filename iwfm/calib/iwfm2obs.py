@@ -43,7 +43,6 @@ def iwfm2obs(verbose=False):
     import iwfm
     import iwfm.calib as calib
     import numpy as np
-    import pandas as pd
     from math import ceil
     from scipy.interpolate import interp1d
     from itertools import islice
@@ -150,9 +149,8 @@ def iwfm2obs(verbose=False):
             # set up function to interpolate time step from date
             time_steps = [x+1 for x in list(range(len(sim_dates)))]
 
-            ts = pd.DataFrame({ 'sim_dates': sim_dates, 'time_steps':  np.array(time_steps)}) # time steps to pandas dataframe
-            ts.set_index('sim_dates')['time_steps']                               # dataframe index for function
-            ts_func = interp1d(ts.sim_dates,ts.time_steps,kind='linear')          # scipy interpolation function uses dataframe
+            # scipy interpolation function for time steps
+            ts_func = interp1d(np.array(sim_dates), np.array(time_steps), kind='linear')
 
             obs_file = file_dict[nt][1]
             obs_sites, obs_data = calib.get_obs_hyd(obs_file,start_date)          # get the observation sites and dates
@@ -175,9 +173,7 @@ def iwfm2obs(verbose=False):
                             sim.append(sim_hyd[j][col_id])
 
                         # set up function to interpolate simulated values to obs dates
-                        df = pd.DataFrame({ 'dates': sim_dates, 'sim_vals':  np.array(sim)}) # sim values to pandas dataframe
-                        df.set_index('dates')['sim_vals']                         # dataframe index for function
-                        sim_func = interp1d(df.dates,df.sim_vals,kind='linear')   # scipy interpolation function uses dataframe
+                        sim_func = interp1d(np.array(sim_dates), np.array(sim), kind='linear')
 
                     if obs_date[i] <= no_days:                                      # should latest be end_date?
                         obs_val = float(sim_func(obs_date[i]))                    # use interpolation function

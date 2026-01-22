@@ -1,6 +1,6 @@
 # dll_init.py
 # Initialize IWFM DLL
-# Copyright (C) 2021 University of California
+# Copyright (C) 2021-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -52,16 +52,7 @@ def dll_init(dll_path, preprocessor_file_name, simulation_file_name, has_routed_
     -- ? --
 
     '''
-    import os
-    import datetime
     import ctypes
-    import math
-    import numpy as np
-    import pandas as pd
-
-    import matplotlib.pyplot as plt
-    from matplotlib.path import Path
-    import matplotlib.patches as patches
 
     if isinstance(dll_path, str):
         dll_path = dll_path
@@ -105,7 +96,7 @@ if __name__ == '__main__':
     ' Run dll_init() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
     #import iwfm.dll as dll
 
     if len(sys.argv) > 1:  # arguments are listed on the command line

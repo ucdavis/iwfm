@@ -1,6 +1,6 @@
 # headall2csv.py
 # Read headall.out file and write out a csv file for each layer
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,15 +46,16 @@ def headall2csv(data, layers, dates, nodes, output_file, verbose=False):
     nothing
     
     '''
-    import pandas as pd
+    import polars as pl
 
     for i in range(0, layers):
-        out_list = []
-        for time_index in range(len(data)):
-            out_list.append(data[time_index][i])
-        out_df = pd.DataFrame(out_list, columns=nodes, index=dates).T
+        # build dict: first column is node IDs, then one column per date
+        out_dict = {'Node': nodes}
+        for time_index, date in enumerate(dates):
+            out_dict[str(date)] = data[time_index][i]
+        out_df = pl.DataFrame(out_dict)
         of = output_file + '_' + str(i + 1) + '.csv'
-        out_df.to_csv(of)
+        out_df.write_csv(of)
         if verbose:
             print(f'  Wrote layer {i + 1} to {of}')
     return

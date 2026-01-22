@@ -17,10 +17,40 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import pandas as pd
-import os
 from bs4 import BeautifulSoup
 import requests
+import polars as pl
+
+
+def parse_html_table(table):
+    """ parse_html_table() - Parse an HTML table element into a list of rows.
+
+    Parameters
+    ----------
+    table : bs4.element.Tag
+        BeautifulSoup table element.
+
+    Returns
+    -------
+    headers : list
+        List of column headers.
+    rows : list
+        List of rows, each row is a list of cell values.
+    """
+    # Extract headers
+    headers = []
+    header_row = table.find('tr')
+    if header_row:
+        headers = [cell.get_text(strip=True) for cell in header_row.find_all(['th', 'td'])]
+
+    # Extract data rows
+    rows = []
+    for row in table.find_all('tr')[1:]:  # skip header row
+        cells = [cell.get_text(strip=True) for cell in row.find_all(['td', 'th'])]
+        if cells:  # skip empty rows
+            rows.append(cells)
+
+    return headers, rows
 
 
 def save_table_as_csv(name, table):
@@ -30,27 +60,32 @@ def save_table_as_csv(name, table):
     ----------
     name : string
         Name for new csv file.
-    
-    table : html
-        Table collected from website.
-    
+
+    table : bs4.element.Tag
+        BeautifulSoup table element collected from website.
+
     Returns
     -------
     nothing
     """
+    try:
+        headers, rows = parse_html_table(table)
+        if not rows:
+            print(f"Failed to parse HTML table for '{name}': Table is empty or malformed")
+            return
+        # Create polars DataFrame
+        # Ensure all rows have same number of columns as headers
+        if headers:
+            rows = [row[:len(headers)] + [''] * (len(headers) - len(row)) for row in rows]
+            df = pl.DataFrame(rows, schema=headers, orient='row')
+        else:
+            df = pl.DataFrame(rows, orient='row')
+    except Exception as e:
+        print(f"Failed to parse HTML table for '{name}': {e}")
+        return
 
     try:
-        df = pd.read_html(str(table))[0]
-    except ValueError as e:
-        print(f"Failed to parse HTML table for '{name}': No valid table data found")
-        print(f"Details: {e}")
-        return
-    except IndexError:
-        print(f"Failed to parse HTML table for '{name}': Table is empty or malformed")
-        return
-
-    try:
-        df.to_csv(f"{name}", index=False)
+        df.write_csv(name)
     except PermissionError as e:
         print(f"Failed to save '{name}': Permission denied")
         print(f"Details: {e}")

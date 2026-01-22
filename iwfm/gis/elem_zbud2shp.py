@@ -17,11 +17,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import os
-import geopandas as gpd
-import numpy as np
-import iwfm
-
 
 def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=False):
     ''' elem_zbud2shp() - Read IWFM Elemental Z-Budget output file and place the sum of each column into
@@ -48,7 +43,9 @@ def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=
     -------
     nothing
     '''
-    cwd = os.getcwd()
+    from pathlib import Path
+    import geopandas as gpd
+    import numpy as np
 
     # -- read the Budget file into array file_lines
     with open(budget_file) as f:
@@ -110,12 +107,11 @@ def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=
         elem_data = np.asarray(elem_data).sum(axis=0).tolist()          # calculate sum of each column
 
         budget_data.append(elem_data)
-        elem_data.clear()
 
     count = 0  # Initialize counter for deep copy management
     for col, field_name in enumerate(field_names):
 
-        col_vals = [elem_data[col][elem] for elem in elem_ids]          # extract zone_data for field
+        col_vals = [budget_data[col][elem] for elem in elem_ids]        # extract zone_data for field
 
         shapefile[field_name] = col_vals                                # add a field to the geopandas dataframe for the diversion area
 
@@ -125,9 +121,7 @@ def elem_zbud2shp(budget_file, field_file, elem_shp_name, out_shp_name, verbose=
             shapefile = shapefile.copy()
             count = 0
 
-    shp_base = os.path.basename(out_shp_name).split('.')[0]             # create a shapefile name
-
-    shp_name = shp_base+'.shp'
+    shp_name = Path(out_shp_name).stem + '.shp'                          # create a shapefile name
 
     shapefile.to_file(shp_name)                                         # write the geopandas dataframe to a shapefile
 

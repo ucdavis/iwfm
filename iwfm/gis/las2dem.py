@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import numpy as np
-from laspy.file import File
+import laspy
 
 
 def las2dem(source, target, cell=1.0, NODATA=0):
@@ -48,12 +48,12 @@ def las2dem(source, target, cell=1.0, NODATA=0):
         source += '.las'
     if target[-4:] != '.asc':
         target += '.asc'
-    las = File(source, mode='r')  # Open LIDAR LAS file
-    min = las.header.min  # xyz min and max
-    max = las.header.max
+    las = laspy.read(source)  # Open LIDAR LAS file
+    min_coords = las.header.mins  # xyz min and max
+    max_coords = las.header.maxs
 
-    xdist = max[0] - min[0]  # Get the x axis distance
-    ydist = max[1] - min[1]  # Get the y axis distance
+    xdist = max_coords[0] - min_coords[0]  # Get the x axis distance
+    ydist = max_coords[1] - min_coords[1]  # Get the y axis distance
     cols = int(xdist) / cell  # Number of columns for our grid
     rows = int(ydist) / cell  # Number of rows for our grid
     cols = int(cols + 1)
@@ -66,8 +66,8 @@ def las2dem(source, target, cell=1.0, NODATA=0):
     ycell = -1 * cell  # Y resolution is negative
 
     # Project x, y values to grid
-    projx = (las.x - min[0]) / cell
-    projy = (las.y - min[1]) / ycell
+    projx = (las.x - min_coords[0]) / cell
+    projy = (las.y - min_coords[1]) / ycell
     # Cast to integers and clip for use as index
     ix = projx.astype(np.int32)
     iy = projy.astype(np.int32)
@@ -94,8 +94,8 @@ def las2dem(source, target, cell=1.0, NODATA=0):
     # Create our ASCII DEM header
     header =  f'ncols        {fill.shape[1]}\n'
     header += f'nrows        {fill.shape[0]}\n'
-    header += f'xllcorner    {min[0]}\n'
-    header += f'yllcorner    {min[1]}\n'
+    header += f'xllcorner    {min_coords[0]}\n'
+    header += f'yllcorner    {min_coords[1]}\n'
     header += f'cellsize     {cell}\n'
     header += f'NODATA_value      {NODATA}\n'
 

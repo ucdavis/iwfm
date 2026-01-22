@@ -33,110 +33,153 @@ def test_overlay_histograms_docstring_format():
     assert "'''" in source
 
 
-@patch('iwfm.plot.overlay_histograms.plt')
-def test_overlay_histograms_basic(mock_plt, tmp_path):
+@patch('matplotlib.pyplot.savefig')
+@patch('matplotlib.pyplot.grid')
+@patch('matplotlib.pyplot.legend')
+@patch('matplotlib.pyplot.title')
+@patch('matplotlib.pyplot.ylabel')
+@patch('matplotlib.pyplot.xlabel')
+@patch('matplotlib.pyplot.hist')
+def test_overlay_histograms_basic(mock_hist, mock_xlabel, mock_ylabel, mock_title, mock_legend, mock_grid, mock_savefig, tmp_path):
     '''Test basic functionality of overlay_histograms.'''
     from iwfm.plot.overlay_histograms import overlay_histograms
 
     data1 = [1.0, 2.0, 3.0, 4.0, 5.0]
     data2 = [1.5, 2.5, 3.5, 4.5, 5.5]
-    file_name = tmp_path / 'histogram.png'
+    file_name = tmp_path / 'histogram.pdf'
 
-    overlay_histograms(data1, data2, str(file_name))
+    overlay_histograms(data1, data2, str(file_name), format='pdf')
 
     # Verify plt.hist was called twice (once for each dataset)
-    assert mock_plt.hist.call_count == 2
-    mock_plt.savefig.assert_called_once()
+    assert mock_hist.call_count == 2
+    mock_savefig.assert_called_once()
 
 
-@patch('iwfm.plot.overlay_histograms.plt')
-def test_overlay_histograms_with_labels(mock_plt, tmp_path):
+@patch('matplotlib.pyplot.savefig')
+@patch('matplotlib.pyplot.grid')
+@patch('matplotlib.pyplot.legend')
+@patch('matplotlib.pyplot.title')
+@patch('matplotlib.pyplot.ylabel')
+@patch('matplotlib.pyplot.xlabel')
+@patch('matplotlib.pyplot.hist')
+def test_overlay_histograms_with_labels(mock_hist, mock_xlabel, mock_ylabel, mock_title, mock_legend, mock_grid, mock_savefig, tmp_path):
     '''Test overlay_histograms with custom labels.'''
     from iwfm.plot.overlay_histograms import overlay_histograms
 
     data1 = [1, 2, 3]
     data2 = [4, 5, 6]
-    file_name = tmp_path / 'histogram.png'
+    file_name = tmp_path / 'histogram.pdf'
 
     overlay_histograms(
         data1, data2, str(file_name),
         label1='Dataset A',
-        label2='Dataset B'
+        label2='Dataset B',
+        format='pdf'
     )
 
     # Check that hist was called with labels
-    calls = mock_plt.hist.call_args_list
+    calls = mock_hist.call_args_list
     assert len(calls) == 2
 
 
-@patch('iwfm.plot.overlay_histograms.plt')
-def test_overlay_histograms_with_alpha(mock_plt, tmp_path):
+@patch('matplotlib.pyplot.savefig')
+@patch('matplotlib.pyplot.grid')
+@patch('matplotlib.pyplot.legend')
+@patch('matplotlib.pyplot.title')
+@patch('matplotlib.pyplot.ylabel')
+@patch('matplotlib.pyplot.xlabel')
+@patch('matplotlib.pyplot.hist')
+def test_overlay_histograms_with_alpha(mock_hist, mock_xlabel, mock_ylabel, mock_title, mock_legend, mock_grid, mock_savefig, tmp_path):
     '''Test overlay_histograms with custom alpha transparency.'''
     from iwfm.plot.overlay_histograms import overlay_histograms
 
     data1 = [1, 2, 3]
     data2 = [4, 5, 6]
-    file_name = tmp_path / 'histogram.png'
+    file_name = tmp_path / 'histogram.pdf'
 
-    overlay_histograms(data1, data2, str(file_name), alpha=0.7)
+    overlay_histograms(data1, data2, str(file_name), alpha=0.7, format='pdf')
 
-    mock_plt.hist.assert_called()
+    mock_hist.assert_called()
 
 
-@patch('iwfm.plot.overlay_histograms.plt')
-def test_overlay_histograms_with_bins(mock_plt, tmp_path):
+@patch('matplotlib.pyplot.savefig')
+@patch('matplotlib.pyplot.grid')
+@patch('matplotlib.pyplot.legend')
+@patch('matplotlib.pyplot.title')
+@patch('matplotlib.pyplot.ylabel')
+@patch('matplotlib.pyplot.xlabel')
+@patch('matplotlib.pyplot.hist')
+def test_overlay_histograms_with_bins(mock_hist, mock_xlabel, mock_ylabel, mock_title, mock_legend, mock_grid, mock_savefig, tmp_path):
     '''Test overlay_histograms with custom bins.'''
     from iwfm.plot.overlay_histograms import overlay_histograms
 
     data1 = [1, 2, 3, 4, 5]
     data2 = [6, 7, 8, 9, 10]
-    file_name = tmp_path / 'histogram.png'
+    file_name = tmp_path / 'histogram.pdf'
 
-    overlay_histograms(data1, data2, str(file_name), bins=10)
+    overlay_histograms(data1, data2, str(file_name), bins=10, format='pdf')
 
-    mock_plt.hist.assert_called()
+    mock_hist.assert_called()
 
 
-@patch('iwfm.plot.overlay_histograms.plt')
-def test_overlay_histograms_numpy_arrays(mock_plt, tmp_path):
+@patch('matplotlib.pyplot.savefig')
+@patch('matplotlib.pyplot.grid')
+@patch('matplotlib.pyplot.legend')
+@patch('matplotlib.pyplot.title')
+@patch('matplotlib.pyplot.ylabel')
+@patch('matplotlib.pyplot.xlabel')
+@patch('matplotlib.pyplot.hist')
+def test_overlay_histograms_numpy_arrays(mock_hist, mock_xlabel, mock_ylabel, mock_title, mock_legend, mock_grid, mock_savefig, tmp_path):
     '''Test overlay_histograms with numpy arrays.'''
     from iwfm.plot.overlay_histograms import overlay_histograms
 
     data1 = np.array([1.0, 2.0, 3.0])
     data2 = np.array([4.0, 5.0, 6.0])
-    file_name = tmp_path / 'histogram.png'
+    file_name = tmp_path / 'histogram.pdf'
 
-    overlay_histograms(data1, data2, str(file_name))
+    overlay_histograms(data1, data2, str(file_name), format='pdf')
 
-    assert mock_plt.hist.call_count == 2
+    assert mock_hist.call_count == 2
 
 
-@patch('iwfm.plot.overlay_histograms.plt')
-def test_overlay_histograms_creates_legend(mock_plt, tmp_path):
+@patch('matplotlib.pyplot.savefig')
+@patch('matplotlib.pyplot.grid')
+@patch('matplotlib.pyplot.legend')
+@patch('matplotlib.pyplot.title')
+@patch('matplotlib.pyplot.ylabel')
+@patch('matplotlib.pyplot.xlabel')
+@patch('matplotlib.pyplot.hist')
+def test_overlay_histograms_creates_legend(mock_hist, mock_xlabel, mock_ylabel, mock_title, mock_legend, mock_grid, mock_savefig, tmp_path):
     '''Test that overlay_histograms creates a legend.'''
     from iwfm.plot.overlay_histograms import overlay_histograms
 
     data1 = [1, 2, 3]
     data2 = [4, 5, 6]
-    file_name = tmp_path / 'histogram.png'
+    file_name = tmp_path / 'histogram.pdf'
 
-    overlay_histograms(data1, data2, str(file_name))
+    overlay_histograms(data1, data2, str(file_name), format='pdf')
 
-    mock_plt.legend.assert_called_once()
+    mock_legend.assert_called_once()
 
 
-@patch('iwfm.plot.overlay_histograms.plt')
-def test_overlay_histograms_creates_grid(mock_plt, tmp_path):
+@patch('matplotlib.pyplot.savefig')
+@patch('matplotlib.pyplot.grid')
+@patch('matplotlib.pyplot.legend')
+@patch('matplotlib.pyplot.title')
+@patch('matplotlib.pyplot.ylabel')
+@patch('matplotlib.pyplot.xlabel')
+@patch('matplotlib.pyplot.hist')
+def test_overlay_histograms_creates_grid(mock_hist, mock_xlabel, mock_ylabel, mock_title, mock_legend, mock_grid, mock_savefig, tmp_path):
     '''Test that overlay_histograms creates a grid.'''
     from iwfm.plot.overlay_histograms import overlay_histograms
 
     data1 = [1, 2, 3]
     data2 = [4, 5, 6]
-    file_name = tmp_path / 'histogram.png'
+    file_name = tmp_path / 'histogram.pdf'
 
-    overlay_histograms(data1, data2, str(file_name))
+    overlay_histograms(data1, data2, str(file_name), format='pdf')
 
-    mock_plt.grid.assert_called_once()
+    mock_grid.assert_called_once()
 
 
 def test_overlay_histograms_function_signature():
@@ -152,5 +195,6 @@ def test_overlay_histograms_function_signature():
     assert 'file_name' in params
     assert 'label1' in params
     assert 'label2' in params
+    assert 'format' in params
     assert 'alpha' in params
     assert 'bins' in params

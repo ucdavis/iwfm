@@ -38,8 +38,8 @@ def headall2table(heads_file, output_file, out_date):
 
     '''
     import numpy as np
-    import pandas as pd
-    import iwfm as iwfm
+    import polars as pl
+    import iwfm
 
     out_mon = iwfm.month(out_date)
     out_day = iwfm.day(out_date)
@@ -79,9 +79,9 @@ def headall2table(heads_file, output_file, out_date):
         d = iwfm.day(end_date[0:10])
         y = iwfm.year(end_date[0:10])
         if m == out_mon and d == out_day and y == out_year:
-            out_table = np.asarray(data)
-            df = pd.DataFrame(np.transpose(out_table))
-            df.to_csv(output_file, header=header, index=False)
+            out_table = np.transpose(np.asarray(data))
+            df = pl.DataFrame(out_table, schema=header, orient='row')
+            df.write_csv(output_file)
             return
         else:
             data = []
@@ -96,9 +96,8 @@ def headall2table(heads_file, output_file, out_date):
 if __name__ == '__main__':
     ' Run headall2table() from command line '
     import sys
-    import os
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         heads_file = sys.argv[1]

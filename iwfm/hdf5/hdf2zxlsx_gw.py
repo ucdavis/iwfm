@@ -407,7 +407,6 @@ def hdf2zxlsx_gw(hdf_file, zone_file, output_file,
 
         if debug:
             logger.debug(f"Zone {zone_id}: {zone_name}")
-            logger.debug(f"Zone area: {zone_area:,.2f} {area_units}")
 
         # Create new sheet for this zone (max 31 chars for sheet name)
         sheet_name = f"Zone{zone_id}_{zone_name}"[:31]

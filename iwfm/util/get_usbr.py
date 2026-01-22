@@ -119,7 +119,7 @@ def pdf_to_excel(pdf_url, excel_filename, timeout=60):
         If Excel file cannot be written
     '''
     import tabula
-    import pandas as pd
+    import polars as pl
     import requests
 
     # Download PDF with timeout first to provide better error messages
@@ -144,7 +144,7 @@ def pdf_to_excel(pdf_url, excel_filename, timeout=60):
             f"Failed to download PDF from {pdf_url}: {str(e)}"
         ) from e
 
-    # Read tables from the online PDF
+    # Read tables from the online PDF (tabula returns pandas DataFrames)
     try:
         print(f"Parsing PDF tables...")
         tables = tabula.read_pdf(pdf_url, pages='all', multiple_tables=True)
@@ -161,37 +161,43 @@ def pdf_to_excel(pdf_url, excel_filename, timeout=60):
 
     print(f"Found {len(tables)} table(s) in PDF")
 
-    # Initialize an Excel writer with try-finally for guaranteed cleanup
-    excel_writer = None
+    # Convert pandas DataFrames to polars and write to Excel
     try:
-        excel_writer = pd.ExcelWriter(excel_filename, engine='xlsxwriter')
+        import xlsxwriter
 
-        # Loop through each table and save it to the Excel file
+        # Create workbook with xlsxwriter
+        workbook = xlsxwriter.Workbook(excel_filename)
+
         for i, table in enumerate(tables):
             sheet_name = f'Table_{i+1}'
 
-            # Validate table is not empty
-            if table is None or (isinstance(table, pd.DataFrame) and table.empty):
+            # Validate table is not empty (table is a pandas DataFrame from tabula)
+            if table is None or table.empty:
                 print(f"Warning: Table {i+1} is empty, skipping")
                 continue
 
-            table_df = pd.DataFrame(table)
-            table_df.to_excel(excel_writer, sheet_name=sheet_name, index=False)
+            # Convert pandas DataFrame to polars DataFrame
+            table_pl = pl.from_pandas(table)
 
+            # Create worksheet and write data
+            worksheet = workbook.add_worksheet(sheet_name)
+
+            # Write headers
+            for col_idx, col_name in enumerate(table_pl.columns):
+                worksheet.write(0, col_idx, col_name)
+
+            # Write data rows
+            for row_idx, row in enumerate(table_pl.iter_rows()):
+                for col_idx, value in enumerate(row):
+                    worksheet.write(row_idx + 1, col_idx, value)
+
+        workbook.close()
         print(f"Tables from {pdf_url} have been extracted and saved to {excel_filename}.")
 
     except Exception as e:
         raise IOError(
             f"Failed to write tables to Excel file '{excel_filename}': {str(e)}"
         ) from e
-
-    finally:
-        # Ensure Excel writer is always closed
-        if excel_writer is not None:
-            try:
-                excel_writer.close()
-            except Exception as e:
-                print(f"Warning: Error closing Excel writer: {str(e)}")
 
 def is_year_in_list(year, string_list):
     """is_year_in_list() - Check if a given year is present in any of the strings in a list.
@@ -224,14 +230,14 @@ def is_year_in_list(year, string_list):
     return -1
 
 def get_data(df, table_number, year):
-    """get_data() - Extract data for a given year from a DataFrame.
+    """get_data() - Extract data for a given year from a polars DataFrame.
 
     Parameters
     ----------
-    df : pandas DataFrame
+    df : polars DataFrame
         The DataFrame containing the data.
 
-    i : int
+    table_number : int
         An integer representing the table number.
 
     year : int or str
@@ -250,13 +256,13 @@ def get_data(df, table_number, year):
         start = 1
 
     #  Convert DataFrame to list
-    data = df.values.tolist()
+    data = df.rows()
 
     #  Search for year in header line
-    index = is_year_in_list(year, data[0])
+    index = is_year_in_list(year, list(data[0]))
 
      #  For new file format (years > 2021), header may be in this line instead
-    index0 = is_year_in_list(year, df.columns.tolist())
+    index0 = is_year_in_list(year, df.columns)
 
     #  If year not found in header, might be in other line checked
     if(index == -1):
@@ -265,22 +271,22 @@ def get_data(df, table_number, year):
     #  If year is found, form list of data in its column
     if(index != -1):
         datas = []
-        for list in data[start:]:
+        for row in data[start:]:
             #  If element is not NaN, add to list
-            if(str(list[index]) != 'nan'):
-                datas.append(list[index])
+            if(str(row[index]) != 'nan' and row[index] is not None):
+                datas.append(row[index])
             #  For years > 2021, sometimes excel sheet creates 2 columns / header
             #  Data is then offest 1 to right
             elif int(year) > 2021:
-                datas.append(list[index + 1])
+                datas.append(row[index + 1])
     return datas
 
 def get_names(df, table_number, year):
-    """get_names() - Extract reservoir names from a DataFrame.
+    """get_names() - Extract reservoir names from a polars DataFrame.
 
     Parameters
     ----------
-    df : pandas DataFrame
+    df : polars DataFrame
         The DataFrame containing the data.
 
     table_number : int
@@ -301,15 +307,16 @@ def get_names(df, table_number, year):
     else:
         start = 1
 
-    #  Get first column of DataFrame with names
-    names = df.iloc[start:, 0].tolist()
+    #  Get first column of DataFrame with names (using polars slicing)
+    first_col = df.columns[0]
+    names = df[start:, first_col].to_list()
 
 
     #  Add names of correct format to list
     resivoir_names = []
     j = 0
     while j < len(names):
-        if (str(names[j]) != 'nan'):
+        if (str(names[j]) != 'nan' and names[j] is not None):
             #  When converting pdf to excel, error in splitting names at " AT". This fixes it.
             if (" AT" in str(names[j])):
                 new_name = names[j] + " " + names[j + 1]
@@ -317,12 +324,13 @@ def get_names(df, table_number, year):
                 j += 1
             else:
                 resivoir_names.append(names[j])
-        j += 1    
+        j += 1
 
-    #  For first table, concatonate each dam name to the reservoir name     
+    #  For first table, concatonate each dam name to the reservoir name
     if(table_number == 0):
-        #  Get dam names
-        dam_names = df.iloc[2:,1].tolist()
+        #  Get dam names (using polars slicing)
+        second_col = df.columns[1]
+        dam_names = df[2:, second_col].to_list()
 
         #  Concatonate each name pairing
         for k, dam in enumerate(dam_names):
@@ -351,7 +359,7 @@ def extract_data_to_csv(excel_file):
     IOError
         If CSV files cannot be written
     '''
-    import pandas as pd
+    import polars as pl
     import re
     from pathlib import Path
 
@@ -362,11 +370,12 @@ def extract_data_to_csv(excel_file):
         )
 
     #  Get year with validation
-    # Try to extract 4-digit year from filename
-    year_match = re.search(r'(\d{4})', excel_file)
+    # Try to extract 4-digit year from filename only (not the full path)
+    filename = Path(excel_file).name
+    year_match = re.search(r'(\d{4})', filename)
     if not year_match:
         raise ValueError(
-            f"Could not extract year from filename '{excel_file}'. "
+            f"Could not extract year from filename '{filename}'. "
             f"Expected filename to contain a 4-digit year"
         )
     year = year_match.group(1)
@@ -389,7 +398,7 @@ def extract_data_to_csv(excel_file):
 
     # Read all sheets of the Excel file into a dictionary of DataFrames
     try:
-        xls = pd.read_excel(excel_file, sheet_name=None)
+        xls = pl.read_excel(excel_file, sheet_name=None)
     except FileNotFoundError:
         raise FileNotFoundError(
             f"Excel file not found: '{excel_file}'"

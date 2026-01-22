@@ -16,10 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import numpy as np
-from osgeo import gdal_array
-import iwfm
-
 
 def histogram(infile, scl=True):
     '''histogram() - Generate and display the color histogram of an image
@@ -38,10 +34,13 @@ def histogram(infile, scl=True):
 
     '''
 
-    t = None
+    import numpy as np
+    from osgeo import gdal_array
+    import iwfm.gis as igis
+
     arr = gdal_array.LoadFile(infile)
     histograms = [np.histogram(b) for b in arr]
-    t = iwfm.gis.histogram_draw(histograms, scale=scl)
+    t = igis.histogram_draw(histograms, scale=scl)
     t.pen(shown=False)
     t.done()
     return

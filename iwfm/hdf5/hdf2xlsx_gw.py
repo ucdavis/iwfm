@@ -189,7 +189,6 @@ def hdf2xlsx_gw(hdf_file, output_file,
 
             if debug:
                 logger.debug(f"Processing location {loc_idx+1}/{n_locations}: {loc_name}")
-                logger.debug(f"Area: {area:,.2f} {area_units}")
 
             # Create new sheet for this location
             ws = wb.create_sheet(title=loc_name[:31])  # Excel sheet name limit is 31 chars

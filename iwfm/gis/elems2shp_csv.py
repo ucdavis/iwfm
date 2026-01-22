@@ -50,7 +50,8 @@ def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910
     # Create list of element polygons
     polygons = []
     for elem in elem_nodes:  # for each element ...
-        if elem[-1]==0:  # remove the last item in list if zero
+        elem = elem[0:5]  # keep only elem_id and 4 nodes, ignore extra columns
+        if elem[-1]==0:  # remove the last item in list if zero (triangle)
             elem = elem[:-1]
 
         coords = []

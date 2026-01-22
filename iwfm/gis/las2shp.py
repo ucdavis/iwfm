@@ -77,73 +77,69 @@ def las2shp(source, target, max_edge_length=3, verbose=0):
         print(f'        number of triangles: {len(triangles.simplices)}')
     if verbose:
         print('    - Creating shapefile...')
-    # PolygonZ shapefile (x, y, z, m)
-    w = shapefile.Writer(target, shapefile.POLYGONZ)
-    w.field('X1', 'C', '40')
-    w.field('X2', 'C', '40')
-    w.field('X3', 'C', '40')
-    w.field('Y1', 'C', '40')
-    w.field('Y2', 'C', '40')
-    w.field('Y3', 'C', '40')
-    w.field('Z1', 'C', '40')
-    w.field('Z2', 'C', '40')
-    w.field('Z3', 'C', '40')
 
     # extract the Delaunay triangle coordinates to an np.array
     tri = triangles.simplices
     tris = len(tri)
 
-    # for s in triangles.simplices:
-    #  for data in itertools.combinations(s.coords,dim):
-    #    tri.append(data)
     if verbose:
         print(f'        len(tri): {len(tri)}')
         print(f'        points:\n{tri}')
 
-    # Loop through shapes and track progress every 10 percent
-    last_percent = 0
-    count = 0
-    # Check segments for large triangles along the convex hull which is a common
-    # artifact in Delaunay triangulation
-    for i in range(tris):
-        # t = triangles[i]
-        t = tri[i]
-        if verbose:
-            print(f'        t[{i}]: {t}')
-        pct = int((i / (tris * 1.0)) * 100.0)
-        if pct % 10.0 == 0 and pct > last_percent:
-            last_percent = pct
+    # PolygonZ shapefile (x, y, z, m)
+    with shapefile.Writer(target, shapefile.POLYGONZ) as w:
+        w.field('X1', 'C', '40')
+        w.field('X2', 'C', '40')
+        w.field('X3', 'C', '40')
+        w.field('Y1', 'C', '40')
+        w.field('Y2', 'C', '40')
+        w.field('Y3', 'C', '40')
+        w.field('Z1', 'C', '40')
+        w.field('Z2', 'C', '40')
+        w.field('Z3', 'C', '40')
+
+        # Loop through shapes and track progress every 10 percent
+        last_percent = 0
+        count = 0
+        # Check segments for large triangles along the convex hull which is a common
+        # artifact in Delaunay triangulation
+        for i in range(tris):
+            t = tri[i]
             if verbose:
-                print(f'        {last_percent} % done - Shape {i}/{tris} at {time.asctime()}')
-        x1 = las.x[t[0]]
-        y1 = las.y[t[0]]
-        z1 = las.z[t[0]]
-        if verbose:
-            print(f'        x1,y1,z1: {x1},{y1},{z1}')
-        x2 = las.x[t[1]]
-        y2 = las.y[t[1]]
-        z2 = las.z[t[1]]
-        if verbose:
-            print(f'        x2,y2,z2: {x2},{y2},{z2}')
-        x3 = las.x[t[2]]
-        y3 = las.y[t[2]]
-        z3 = las.z[t[2]]
-        if verbose:
-            print(f'        x3,y3,z3: {x3},{y3},{z3}')
-        if math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) > max_edge_length:
-            continue
-        if math.sqrt((x3 - x2) ** 2 + (y3 - y2) ** 2) > max_edge_length:
-            continue
-        if math.sqrt((x3 - x1) ** 2 + (y3 - y1) ** 2) > max_edge_length:
-            continue
-        part = [[x1, y1, z1, 0], [x2, y2, z2, 0], [x3, y3, z3, 0]]
-        if verbose:
-            print(f'        part: {part}\n')
-        w.polyz([part])
-        w.record(x1, x2, x3, y1, y2, y3, z1, z2, z3)
-        count += 1
-    if count == 0:
-        w = None
+                print(f'        t[{i}]: {t}')
+            pct = int((i / (tris * 1.0)) * 100.0)
+            if pct % 10.0 == 0 and pct > last_percent:
+                last_percent = pct
+                if verbose:
+                    print(f'        {last_percent} % done - Shape {i}/{tris} at {time.asctime()}')
+            x1 = las.x[t[0]]
+            y1 = las.y[t[0]]
+            z1 = las.z[t[0]]
+            if verbose:
+                print(f'        x1,y1,z1: {x1},{y1},{z1}')
+            x2 = las.x[t[1]]
+            y2 = las.y[t[1]]
+            z2 = las.z[t[1]]
+            if verbose:
+                print(f'        x2,y2,z2: {x2},{y2},{z2}')
+            x3 = las.x[t[2]]
+            y3 = las.y[t[2]]
+            z3 = las.z[t[2]]
+            if verbose:
+                print(f'        x3,y3,z3: {x3},{y3},{z3}')
+            if math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) > max_edge_length:
+                continue
+            if math.sqrt((x3 - x2) ** 2 + (y3 - y2) ** 2) > max_edge_length:
+                continue
+            if math.sqrt((x3 - x1) ** 2 + (y3 - y1) ** 2) > max_edge_length:
+                continue
+            part = [[x1, y1, z1, 0], [x2, y2, z2, 0], [x3, y3, z3, 0]]
+            if verbose:
+                print(f'        part: {part}\n')
+            w.polyz([part])
+            w.record(x1, x2, x3, y1, y2, y3, z1, z2, z3)
+            count += 1
+
     if verbose:
         print('    - Saving shapefile...')
         print('    - las2shp() done.')

@@ -1,7 +1,7 @@
 # get_stream_list_42.py
 # Reads part of the stream specification file for file type 4.2
 # and returns stream reach and rating table info
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -26,13 +26,13 @@ def get_stream_list_42(stream_lines, line_index, nreach, nrate):
     ----------
     stream_lines : list of strings
         contents of stream specification file
-    
+
     line_index : int
         current item in stream_lines
-    
+
     nreach : int
         number of stream reaches
-    
+
     nrate : int
         number of points in each stream node rating table
 
@@ -40,44 +40,48 @@ def get_stream_list_42(stream_lines, line_index, nreach, nrate):
     -------
     snode_ids : list
         list of model stream nodes
-    
+
     snode_dict : dictionary
         keys = stream node IDs, values = associated groundwater nodes
-    
+
     reach_info : list
         reach info lines for reaches in model
-    
+
     rattab_dict : dictionary
         keys = stream node IDs, values = rating tables
-    
+
     rating_header : str
         header info for rating tables including factors
-    
+
     stream_aq : str
         stream-aquifer section of stream preprocessor file
 
     '''
-    import iwfm as iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['Cc*#']
-    reach_ids, reach_nodes, reach_outflows, reach_names = [], [], [], []
     reach_info, snode_ids, rating_header, stream_aq = [], [], [], []
 
     # -- first section, reaches
     snode_dict = {}
     for _ in range(nreach):
-        line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
+        # Read reach info line using file_utils
+        _, line_index = read_next_line_value(stream_lines, line_index, column=0)
         info = stream_lines[line_index].split()  # -- get reach information
 
         snodes_temp, gwnodes_temp = [], []
+        nnodes = int(info[1])
 
-        for _ in range(int(info[1])):
-            line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
+        for _ in range(nnodes):
+            # Read stream node line using file_utils
+            _, line_index = read_next_line_value(stream_lines, line_index, column=0)
             temp = stream_lines[line_index].split()
-            snodes_temp.append(int(temp[0]))  
-            gwnodes_temp.append(int(temp[1])) 
-            snode_ids.append(int(temp[0])) 
-            snode_dict[int(temp[0])] = int(temp[1])
+            snode_id = int(temp[0])
+            gwnode_id = int(temp[1])
+            snodes_temp.append(snode_id)
+            gwnodes_temp.append(gwnode_id)
+            snode_ids.append(snode_id)
+            snode_dict[snode_id] = gwnode_id
 
         reach_info.append(
             [
@@ -109,8 +113,9 @@ def get_stream_list_42(stream_lines, line_index, nreach, nrate):
     line_index -= 1  # back up one before starting
     for sn in snode_ids:
         rt_temp = []
-        for t in range(0, nrate):  # nrate lines, already read first one
-            line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
+        for _ in range(nrate):
+            # Read rating table line using file_utils
+            _, line_index = read_next_line_value(stream_lines, line_index, column=0)
             rt_temp.append(stream_lines[line_index])
         rattab_dict[sn] = rt_temp
 
