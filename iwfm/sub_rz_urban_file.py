@@ -46,7 +46,8 @@ def sub_rz_urban_file(old_filename, sim_dict_new, elems, base_path=None, verbose
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
 
@@ -57,7 +58,7 @@ def sub_rz_urban_file(old_filename, sim_dict_new, elems, base_path=None, verbose
         ur_lines = f.read().splitlines()
     ur_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, ur_lines, 0)                # skip initial comments
+    _, line_index = read_next_line_value(ur_lines, -1, column=0, skip_lines=0)  # skip initial comments
 
     urarea_file = ur_lines[line_index].split()[0]                # original urban area file name
     urarea_file = urarea_file.replace('\\', '/')                  # convert backslashes to forward slashes
@@ -66,22 +67,23 @@ def sub_rz_urban_file(old_filename, sim_dict_new, elems, base_path=None, verbose
         urarea_file = str(base_path / urarea_file)
     ur_lines[line_index] =  '   ' + sim_dict_new['ura_file'] + '.dat		        / LUFLU'
 
-    line_index = iwfm.skip_ahead(line_index, ur_lines, 3)       # skip comments and two factors
+    _, line_index = read_next_line_value(ur_lines, line_index, column=0, skip_lines=2)  # skip comments and two factors
 
-    line_index = iwfm.skip_ahead(line_index, ur_lines, 3)       # skip three file names
-
-    # get orig_elems value
-    orig_elems, l = 0, line_index
-    while ur_lines[l][0] not in comments:
-        orig_elems += 1
-        l += 1
+    _, line_index = read_next_line_value(ur_lines, line_index, column=0, skip_lines=2)  # skip three file names
 
     line_index = iwfm.sub_remove_items(ur_lines, line_index, elems)    # curve numbers etc
 
     # initial conditions - process manually because end of file
-    line_index = iwfm.skip_ahead(line_index, ur_lines, 0)       # skip file name and comments
-    if int(ur_lines[line_index].split()[0]) > 0:
-        for i in range(0, orig_elems):
+    _, line_index = read_next_line_value(ur_lines, line_index - 1, column=0, skip_lines=0)  # skip file name and comments
+    # Check bounds before accessing - skip_ahead returns -1 at end of file
+    if (line_index >= 0 and
+        line_index < len(ur_lines) and
+        ur_lines[line_index].strip() and
+        int(ur_lines[line_index].split()[0]) > 0):
+        # Loop while current line is not a comment and not empty
+        while (line_index < len(ur_lines) and
+               ur_lines[line_index] and
+               ur_lines[line_index][0] not in comments):
             if int(ur_lines[line_index].split()[0]) not in elems:
                 del ur_lines[line_index]
             else:

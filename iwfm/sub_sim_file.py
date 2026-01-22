@@ -38,13 +38,15 @@ def sub_sim_file(in_sim_file, sim_dict_new, has_lake=False):
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     # -- read the simprocessor file into array sim_lines
+    iwfm.file_test(in_sim_file)
     with open(in_sim_file) as f:
         sim_lines = f.read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments and three header lines
+    _, line_index = read_next_line_value(sim_lines, -1, column=0, skip_lines=3)  # skip comments and three header lines
 
     # -- preprocessor output file
     sim_lines[line_index] = iwfm.pad_both(sim_dict_new['preout'], f=4, b=53) + ' '.join(
@@ -52,20 +54,20 @@ def sub_sim_file(in_sim_file, sim_dict_new, has_lake=False):
     )
 
     # -- groundwater file
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
+    _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
     sim_lines[line_index] = iwfm.pad_both(
         sim_dict_new['gw_file'], f=4, b=53
     ) + ' '.join(sim_lines[line_index].split()[1:])
 
     # -- stream file
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
+    _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
     sim_lines[line_index] = iwfm.pad_both(
         sim_dict_new['stream_file'], f=4, b=53
     ) + ' '.join(sim_lines[line_index].split()[1:])
 
     # -- lake file
     if has_lake:
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
         sim_lines[line_index] = iwfm.pad_both(
             sim_dict_new['lake_file'], f=4, b=53
         ) + ' '.join(sim_lines[line_index].split()[1:])
@@ -73,19 +75,19 @@ def sub_sim_file(in_sim_file, sim_dict_new, has_lake=False):
         line_index += 1
 
     # -- rootzone file
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
+    _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
     sim_lines[line_index] = iwfm.pad_both(
         sim_dict_new['root_file'], f=4, b=53
     ) + ' '.join(sim_lines[line_index].split()[1:])
 
     # -- small watersheds file
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
+    _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
     sim_lines[line_index] = iwfm.pad_both(
         sim_dict_new['swshed_file'], f=4, b=53
     ) + ' '.join(sim_lines[line_index].split()[1:])
 
     # -- unsaturated file
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
+    _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
     sim_lines[line_index] = iwfm.pad_both(
         sim_dict_new['unsat_file'], f=4, b=53
     ) + ' '.join(sim_lines[line_index].split()[1:])

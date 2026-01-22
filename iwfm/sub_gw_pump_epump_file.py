@@ -19,8 +19,8 @@
 
 
 def sub_gw_pump_epump_file(old_filename, new_filename, elems, verbose=False):
-    '''sub_gw_pump_epump_file() -  Copies the old element pumping file and replaces 
-       the contents with those of the new submodel, and writes out the new file
+    '''sub_gw_pump_epump_file() - Copies the old element pumping file and replaces
+        the contents with those of the new submodel, and writes out the new file
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ def sub_gw_pump_epump_file(old_filename, new_filename, elems, verbose=False):
         name of existing model element pumping file
 
     new_filename : str
-        name of new subnmodel element pumpgin file
+        name of new submodel element pumping file
 
     elems : list of ints
         list of existing model elements in submodel
@@ -43,24 +43,25 @@ def sub_gw_pump_epump_file(old_filename, new_filename, elems, verbose=False):
 
     '''
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
-    comments = ['C','c','*','#']
+    if verbose: print(f"Entered sub_gw_pump_epump_file() with {old_filename}")
 
     iwfm.file_test(old_filename)
     with open(old_filename) as f:
         epump_lines = f.read().splitlines()
     epump_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, epump_lines, 0)           # skip factors and comments
-
-    parts = epump_lines[line_index].split()
-    if not parts:
+    # skip initial comments to get NSINK
+    nsink_str, line_index = read_next_line_value(epump_lines, -1)
+    if not nsink_str:
         raise ValueError(f"{old_filename} line {line_index}: Expected number of element pumping specs (NSINK), got empty line")
-    nsink = int(parts[0])           # number of element pumping specs
- 
+    nsink = int(nsink_str)
+
     new_nsink, nsink_line = 0, line_index
 
-    line_index = iwfm.skip_ahead(line_index, epump_lines, 1)  # skip factors and comments
+    # skip to first pumping spec
+    _, line_index = read_next_line_value(epump_lines, line_index)
 
     for l in range(0, nsink):
         parts = epump_lines[line_index].split()
@@ -75,18 +76,24 @@ def sub_gw_pump_epump_file(old_filename, new_filename, elems, verbose=False):
     epump_lines[nsink_line] = '     ' + str(new_nsink) + '                       / NSINK'
 
     # element groups - collect them first, then write filtered groups
-    line_index = iwfm.skip_ahead(line_index, epump_lines, 0)  # skip comments
-    parts = epump_lines[line_index].split()
-    if not parts:
+    ngrp_str, line_index = read_next_line_value(epump_lines, line_index - 1)
+    if not ngrp_str:
         raise ValueError(f"{old_filename} line {line_index}: Expected number of element groups (NGRP), got empty line")
-    ngrp = int(parts[0])           # number of element groups
+    ngrp = int(ngrp_str)
     ngrp_line = line_index
-
-    line_index = iwfm.skip_ahead(line_index, epump_lines, 1)  # skip comments
-    group_start_line = line_index
 
     # Read all element groups
     filtered_groups = []
+
+    # Only process groups if there are any
+    if ngrp > 0:
+        # skip to first group
+        _, line_index = read_next_line_value(epump_lines, line_index)
+        group_start_line = line_index
+    else:
+        # No groups, set group_start_line to current position
+        group_start_line = line_index + 1
+
     for id in range(0, ngrp):
         parts = epump_lines[line_index].split()
         if len(parts) < 3:
@@ -139,7 +146,9 @@ def sub_gw_pump_epump_file(old_filename, new_filename, elems, verbose=False):
 
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(epump_lines))
-        if verbose:
-            print(f'      Wrote element pumping file {new_filename}')
+
+    if verbose:
+        print(f'      Wrote element pumping file {new_filename}')
+        print(f"Leaving sub_gw_pump_epump_file()")
 
     return new_nsink > 0

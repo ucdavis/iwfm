@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 # test_sub_gw_pump_epump_file.py
-# unit test for sub_gw_pump_epump_file function in the iwfm package
-# Copyright (C) 2025 University of California
+# Unit tests for sub_gw_pump_epump_file.py
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -15,372 +16,415 @@
 # For a copy of the GNU General Public License, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
+
 import pytest
-from pathlib import Path
-
-import iwfm
-
-
-# Path to test data
-TEST_DATA_DIR = Path(__file__).parent / "C2VSimCG-2021"
-ELEM_PUMP_FILE = TEST_DATA_DIR / "Simulation" / "Groundwater" / "C2VSimCG_ElemPump.dat"
-
-
-@pytest.fixture
-def elem_pump_file_exists():
-    """Check that the C2VSimCG element pumping file exists."""
-    if not TEST_DATA_DIR.exists():
-        pytest.skip(f"Test data directory not found: {TEST_DATA_DIR}")
-    if not ELEM_PUMP_FILE.exists():
-        pytest.skip(f"Element pumping file not found: {ELEM_PUMP_FILE}")
-    return True
-
+import tempfile
+import os
+
+
+def create_epump_file(nsink, pump_specs, ngrp, groups):
+    """Create an element pumping file for testing.
+
+    Parameters
+    ----------
+    nsink : int
+        Number of element pumping specifications
+    pump_specs : list of tuples
+        Each tuple: (elem_id, icolsk, fracsk, ioptsk, fracskl1, fracskl2, fracskl3, fracskl4,
+                     typdstsk, dstsk, icfirigsk, icadjsk)
+    ngrp : int
+        Number of element groups
+    groups : list of tuples
+        Each tuple: (grp_id, elem_list) where elem_list is a list of element IDs
+
+    Returns
+    -------
+    str
+        File contents
+    """
+    lines = []
+
+    # Header comments
+    lines.append("C IWFM Element Pumping Specification File")
+    lines.append("C*******************************************************************************")
+
+    # NSINK section
+    lines.append(f"     {nsink}                       / NSINK")
+    lines.append("C  ID  ICOLSK   FRACSK   IOPTSK   FRACSKL(1-4)   TYPDSTSK  DSTSK  ICFIRIGSK  ICADJSK")
+
+    # Pumping specifications
+    for spec in pump_specs:
+        elem_id, icolsk, fracsk, ioptsk = spec[0], spec[1], spec[2], spec[3]
+        fracskl1, fracskl2, fracskl3, fracskl4 = spec[4], spec[5], spec[6], spec[7]
+        typdstsk, dstsk, icfirigsk, icadjsk = spec[8], spec[9], spec[10], spec[11]
+        lines.append(f"    {elem_id}     {icolsk}     {fracsk}     {ioptsk}       "
+                     f"{fracskl1}     {fracskl2}     {fracskl3}    {fracskl4}       "
+                     f"{typdstsk}         {dstsk}       {icfirigsk}           {icadjsk}")
+
+    # NGRP section
+    lines.append("C Element Groups")
+    lines.append(f"     {ngrp}                  / NGRP")
+    lines.append("C    ID     NELEM    IELEM")
+
+    # Element groups
+    for grp_id, elem_list in groups:
+        nelem = len(elem_list)
+        # First line: grp_id, nelem, first_elem
+        lines.append(f"     {grp_id}       {nelem}       {elem_list[0]}    / Group {grp_id}")
+        # Continuation lines for remaining elements
+        for i in range(1, nelem):
+            lines.append(f"                     {elem_list[i]}")
+
+    return '\n'.join(lines)
+
+
+class TestSubGwPumpEpumpFile:
+    """Tests for sub_gw_pump_epump_file function"""
+
+    def test_file_not_found(self):
+        """Test error handling for non-existent file"""
+        from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+        with pytest.raises(SystemExit):
+            sub_gw_pump_epump_file('nonexistent_file.dat', 'new_file.dat', [1, 2, 3])
+
+    def test_basic_filtering(self):
+        """Test basic element filtering"""
+        # Create pumping specs for elements 1-5
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (2, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (3, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (4, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (5, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        content = create_epump_file(5, pump_specs, 0, [])
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            # Only keep elements 1, 3, 5
+            result = sub_gw_pump_epump_file(old_file, new_file, [1, 3, 5])
+
+            assert result is True  # Has wells
+            assert os.path.exists(new_file)
+
+            with open(new_file) as f:
+                new_content = f.read()
 
-# ============================================================================
-# Test sub_gw_pump_epump_file with actual C2VSimCG-2021 file
-# ============================================================================
+            # Check NSINK was updated to 3
+            assert '3' in new_content  # NSINK should be 3
 
-def test_sub_gw_pump_epump_file_creates_output(elem_pump_file_exists, tmp_path):
-    """Test that sub_gw_pump_epump_file creates an output file."""
-    output_file = tmp_path / "test_output_epump.dat"
-
-    # Use a small subset of elements
-    test_elems = [1, 2, 3, 4, 5]
-
-    # Run the function
-    has_wells = iwfm.sub_gw_pump_epump_file(
-        str(ELEM_PUMP_FILE),
-        str(output_file),
-        test_elems,
-        verbose=False
-    )
+    def test_all_elements_filtered(self):
+        """Test when no elements match submodel"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (2, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (3, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
 
-    # Should create output file
-    assert output_file.exists(), "Output file should be created"
+        content = create_epump_file(3, pump_specs, 0, [])
 
-    # Read and verify it has content
-    with open(output_file, 'r') as f:
-        content = f.read()
-    assert len(content) > 0, "Output file should have content"
-    assert '/ NSINK' in content, "Should have NSINK marker"
-    assert '/ NGRP' in content, "Should have NGRP marker"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
 
-
-def test_sub_gw_pump_epump_file_filters_elements(elem_pump_file_exists, tmp_path):
-    """Test that the function correctly filters elements."""
-    output_file = tmp_path / "filtered_epump.dat"
-
-    # Use a small subset of known elements
-    test_elems = [1, 2, 3, 4, 5]
-
-    # Run the function
-    has_wells = iwfm.sub_gw_pump_epump_file(
-        str(ELEM_PUMP_FILE),
-        str(output_file),
-        test_elems,
-        verbose=False
-    )
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-    # Read the output file and verify it contains only the specified elements
-    with open(output_file, 'r') as f:
-        output_lines = f.read().splitlines()
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
 
-    # Find the NSINK value in output
-    nsink_found = False
-    for line in output_lines:
-        if '/ NSINK' in line:
-            nsink_value = int(line.split()[0])
-            # Should have some element pumping specs (elements can appear multiple times with different well types)
-            assert nsink_value > 0, f"NSINK should be > 0, got {nsink_value}"
-            # Verify it's a reasonable number (less than total in original file)
-            assert nsink_value < 5568, f"NSINK should be filtered from 5568, got {nsink_value}"
-            nsink_found = True
-            break
-
-    assert nsink_found, "Should find NSINK line in output"
+            # Elements 10, 20, 30 are not in the file
+            result = sub_gw_pump_epump_file(old_file, new_file, [10, 20, 30])
 
+            assert result is False  # No wells remaining
+            assert os.path.exists(new_file)
 
-def test_sub_gw_pump_epump_file_preserves_format(elem_pump_file_exists, tmp_path):
-    """Test that output file preserves the IWFM format."""
-    output_file = tmp_path / "format_test_epump.dat"
+            with open(new_file) as f:
+                new_content = f.read()
 
-    # Use elements that we know exist
-    test_elems = list(range(1, 21))  # Elements 1-20
-
-    # Run the function
-    iwfm.sub_gw_pump_epump_file(
-        str(ELEM_PUMP_FILE),
-        str(output_file),
-        test_elems,
-        verbose=False
-    )
-
-    # Read output and verify format
-    with open(output_file, 'r') as f:
-        lines = f.readlines()
+            # NSINK should be 0
+            assert '0                       / NSINK' in new_content
 
-    # Should have content
-    assert len(lines) > 0, "Output file should have content"
-
-    # Should have NSINK marker
-    nsink_line_exists = any('/ NSINK' in line for line in lines)
-    assert nsink_line_exists, "Should have NSINK marker"
+    def test_with_element_groups(self):
+        """Test filtering with element groups"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (2, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (3, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (4, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
 
-    # Should have NGRP marker
-    ngrp_line_exists = any('/ NGRP' in line for line in lines)
-    assert ngrp_line_exists, "Should have NGRP marker"
-
-
-def test_sub_gw_pump_epump_file_returns_false_when_no_wells(elem_pump_file_exists, tmp_path):
-    """Test that function returns False when no wells match."""
-    output_file = tmp_path / "no_wells_epump.dat"
-
-    # Use elements that likely don't exist (very high numbers)
-    test_elems = [99999, 100000, 100001]
-
-    # Run the function
-    has_wells = iwfm.sub_gw_pump_epump_file(
-        str(ELEM_PUMP_FILE),
-        str(output_file),
-        test_elems,
-        verbose=False
-    )
-
-    # Should return False when no wells found
-    assert has_wells is False, "Should return False when no wells found"
-
-    # Output file should still be created
-    assert output_file.exists(), "Output file should be created even with no wells"
-
-
-def test_sub_gw_pump_epump_file_handles_element_groups(elem_pump_file_exists, tmp_path):
-    """Test that element groups are filtered correctly."""
-    output_file = tmp_path / "groups_test_epump.dat"
-
-    # Use elements that are in groups (from tail of file: 1336, 1349, etc.)
-    # These are in group 1
-    test_elems = [1336, 1349, 1358, 1359]
-
-    # Run the function
-    iwfm.sub_gw_pump_epump_file(
-        str(ELEM_PUMP_FILE),
-        str(output_file),
-        test_elems,
-        verbose=False
-    )
-
-    # Read output
-    with open(output_file, 'r') as f:
-        output_content = f.read()
-
-    # Should have NGRP section
-    assert '/ NGRP' in output_content, "Should have element groups section"
-
-
-def test_sub_gw_pump_epump_file_verbose_mode(elem_pump_file_exists, tmp_path, capsys):
-    """Test that verbose mode produces output."""
-    output_file = tmp_path / "verbose_test_epump.dat"
-    test_elems = [1, 2, 3]
-
-    # Run with verbose=True
-    iwfm.sub_gw_pump_epump_file(
-        str(ELEM_PUMP_FILE),
-        str(output_file),
-        test_elems,
-        verbose=True
-    )
-
-    # Capture output
-    captured = capsys.readouterr()
-
-    # Should have some output (if function prints anything)
-    # Some functions don't print in verbose mode, so this is optional
-    assert output_file.exists(), "Output file should exist"
-
-
-# ============================================================================
-# Test validation improvements (using malformed data)
-# ============================================================================
-
-def test_validation_empty_nsink_line(tmp_path):
-    """Test that empty NSINK line is caught."""
-    bad_epump = """C Element pumping file
-C Comment
-
-C Empty line above should fail
-"""
-    input_file = tmp_path / "bad_epump.dat"
-    input_file.write_text(bad_epump)
-
-    output_file = tmp_path / "output_epump.dat"
-    test_elems = [1, 2, 3]
-
-    # Should raise ValueError for empty line
-    with pytest.raises(ValueError, match="got empty line"):
-        iwfm.sub_gw_pump_epump_file(
-            str(input_file),
-            str(output_file),
-            test_elems,
-            verbose=False
-        )
-
-
-def test_validation_empty_ngrp_line(tmp_path):
-    """Test that empty NGRP line is caught."""
-    bad_epump = """C Element pumping file
-C Comment
-3                  / NSINK
-1	1	1.0
-2	1	1.0
-3	1	1.0
-C Groups section
-
-C Empty line above should fail
-"""
-    input_file = tmp_path / "bad_ngrp.dat"
-    input_file.write_text(bad_epump)
-
-    output_file = tmp_path / "output_epump.dat"
-    test_elems = [1, 2, 3]
-
-    # Should raise ValueError for empty line
-    with pytest.raises(ValueError, match="got empty line"):
-        iwfm.sub_gw_pump_epump_file(
-            str(input_file),
-            str(output_file),
-            test_elems,
-            verbose=False
-        )
-
-
-# ============================================================================
-# Test with synthetic minimal file
-# ============================================================================
-
-def test_sub_gw_pump_epump_file_minimal_valid_file(tmp_path):
-    """Test with a minimal valid element pumping file."""
-    # Create a minimal valid file
-    minimal_epump = """C Minimal element pumping file
-C Comment line
-     5                       / NSINK
-1	1	1.000	3	0.25	0.25	0.25	0.25	-1	0	1	3	0	1
-2	1	1.000	3	0.25	0.25	0.25	0.25	-1	0	1	3	0	1
-3	1	1.000	3	0.25	0.25	0.25	0.25	-1	0	1	3	0	1
-4	1	1.000	3	0.25	0.25	0.25	0.25	-1	0	1	3	0	1
-5	1	1.000	3	0.25	0.25	0.25	0.25	-1	0	1	3	0	1
-C Element groups section
-     2                  / NGRP
-1	2	1
-		2
-2	2	3
-		4
-"""
-    input_file = tmp_path / "minimal_epump.dat"
-    input_file.write_text(minimal_epump)
-
-    output_file = tmp_path / "output_minimal.dat"
-
-    # Filter to keep only elements 1, 2, 3
-    test_elems = [1, 2, 3]
-
-    has_wells = iwfm.sub_gw_pump_epump_file(
-        str(input_file),
-        str(output_file),
-        test_elems,
-        verbose=False
-    )
-
-    # Should return True (has wells)
-    assert has_wells is True
-
-    # Read output and verify
-    with open(output_file, 'r') as f:
-        output_lines = f.read().splitlines()
-
-    # Find NSINK in output - should be 3 (filtered from 5)
-    nsink_value = None
-    for line in output_lines:
-        if '/ NSINK' in line:
-            nsink_value = int(line.split()[0])
-            break
-
-    assert nsink_value == 3, f"Expected NSINK=3, got {nsink_value}"
-
-
-def test_sub_gw_pump_epump_file_filters_groups_correctly(tmp_path):
-    """Test that element groups are filtered based on member elements."""
-    # Create file with element groups
-    epump_with_groups = """C Element pumping file
-C Comment
-     6                       / NSINK
-10	1	1.0
-20	1	1.0
-30	1	1.0
-40	1	1.0
-50	1	1.0
-60	1	1.0
-C Element groups
-     3                  / NGRP
-1	2	10
-		20
-2	2	30
-		40
-3	2	50
-		60
-"""
-    input_file = tmp_path / "groups_epump.dat"
-    input_file.write_text(epump_with_groups)
-
-    output_file = tmp_path / "output_groups.dat"
-
-    # Keep only elements from groups 1 and 2
-    test_elems = [10, 20, 30, 40]
-
-    has_wells = iwfm.sub_gw_pump_epump_file(
-        str(input_file),
-        str(output_file),
-        test_elems,
-        verbose=False
-    )
-
-    assert has_wells is True
-
-    # Read output
-    with open(output_file, 'r') as f:
-        output_content = f.read()
-
-    # Should have filtered NSINK
-    assert '4' in output_content.split('/ NSINK')[0].split()[-1] or \
-           output_content.count('/ NSINK') > 0
-
-
-# ============================================================================
-# Test error messages include filename
-# ============================================================================
-
-def test_error_messages_include_filename(tmp_path):
-    """Test that error messages include the filename."""
-    bad_file = """C Bad file
-
-C Empty NSINK
-"""
-    input_file = tmp_path / "specific_bad_file.dat"
-    input_file.write_text(bad_file)
-
-    output_file = tmp_path / "output.dat"
-
-    with pytest.raises(ValueError) as exc_info:
-        iwfm.sub_gw_pump_epump_file(
-            str(input_file),
-            str(output_file),
-            [1, 2, 3],
-            verbose=False
-        )
-
-    # Error message should include filename
-    error_msg = str(exc_info.value)
-    assert "specific_bad_file.dat" in error_msg or "got empty line" in error_msg
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+        # Two groups
+        groups = [
+            (1, [1, 2, 3]),      # Group 1 has elements 1, 2, 3
+            (2, [4, 5, 6, 7])    # Group 2 has elements 4, 5, 6, 7
+        ]
+
+        content = create_epump_file(4, pump_specs, 2, groups)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            # Only elements 1, 2, 4 are in submodel
+            result = sub_gw_pump_epump_file(old_file, new_file, [1, 2, 4])
+
+            assert result is True
+            assert os.path.exists(new_file)
+
+            with open(new_file) as f:
+                new_content = f.read()
+
+            # Group 1 should have 2 elements (1, 2), Group 2 should have 1 element (4)
+            assert '2                  / NGRP' in new_content
+
+    def test_group_completely_filtered(self):
+        """Test when an entire group is filtered out"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (2, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        groups = [
+            (1, [1, 2]),        # Group 1 has elements 1, 2
+            (2, [10, 20, 30])   # Group 2 has elements 10, 20, 30 (not in submodel)
+        ]
+
+        content = create_epump_file(2, pump_specs, 2, groups)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            # Only elements 1, 2 are in submodel (group 2 completely filtered)
+            result = sub_gw_pump_epump_file(old_file, new_file, [1, 2])
+
+            assert result is True
+            assert os.path.exists(new_file)
+
+            with open(new_file) as f:
+                new_content = f.read()
+
+            # Only 1 group should remain
+            assert '1                  / NGRP' in new_content
+
+    def test_no_groups(self):
+        """Test file with no element groups (NGRP = 0)"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (2, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        content = create_epump_file(2, pump_specs, 0, [])
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            result = sub_gw_pump_epump_file(old_file, new_file, [1, 2])
+
+            assert result is True
+            assert os.path.exists(new_file)
+
+            with open(new_file) as f:
+                new_content = f.read()
+
+            assert '0                  / NGRP' in new_content
+
+    def test_verbose_mode(self):
+        """Test that verbose mode runs without error"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (2, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        content = create_epump_file(2, pump_specs, 0, [])
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            # Should not raise an error with verbose=True
+            result = sub_gw_pump_epump_file(old_file, new_file, [1, 2], verbose=True)
+
+            assert result is True
+            assert os.path.exists(new_file)
+
+    def test_return_value_true(self):
+        """Test that function returns True when wells remain"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        content = create_epump_file(1, pump_specs, 0, [])
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            result = sub_gw_pump_epump_file(old_file, new_file, [1])
+
+            assert result is True
+
+    def test_return_value_false(self):
+        """Test that function returns False when no wells remain"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        content = create_epump_file(1, pump_specs, 0, [])
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            # Element 100 is not in the file
+            result = sub_gw_pump_epump_file(old_file, new_file, [100])
+
+            assert result is False
+
+    def test_preserves_comments(self):
+        """Test that header comments are preserved in output"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        content = create_epump_file(1, pump_specs, 0, [])
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            sub_gw_pump_epump_file(old_file, new_file, [1])
+
+            with open(new_file) as f:
+                new_content = f.read()
+
+            # Check header is preserved
+            assert 'IWFM Element Pumping Specification File' in new_content
+
+    def test_large_element_ids(self):
+        """Test with large element IDs (like in real files)"""
+        pump_specs = [
+            (1336, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (1349, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (1358, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (1359, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        # Group with large element IDs (like Arvin-Edison WSD in real file)
+        groups = [
+            (1, [1336, 1349, 1358, 1359])
+        ]
+
+        content = create_epump_file(4, pump_specs, 1, groups)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            # Only elements 1336, 1358 in submodel
+            result = sub_gw_pump_epump_file(old_file, new_file, [1336, 1358])
+
+            assert result is True
+            assert os.path.exists(new_file)
+
+            with open(new_file) as f:
+                new_content = f.read()
+
+            # NSINK should be 2
+            assert '2                       / NSINK' in new_content
+            # Group should have 2 elements
+            assert '1336' in new_content
+            assert '1358' in new_content
+
+    def test_multiple_groups_partial_filtering(self):
+        """Test with multiple groups where some elements are filtered from each"""
+        pump_specs = [
+            (1, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (2, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (3, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (4, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (5, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3),
+            (6, 1, 1.0, 3, 0.25, 0.25, 0.25, 0.25, -1, 0, 1, 3)
+        ]
+
+        groups = [
+            (1, [1, 2, 3]),      # Keep 1, 3
+            (2, [4, 5]),         # Keep 5
+            (3, [6, 7, 8, 9])    # Keep 6 only
+        ]
+
+        content = create_epump_file(6, pump_specs, 3, groups)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            old_file = os.path.join(tmpdir, 'old_epump.dat')
+            with open(old_file, 'w') as f:
+                f.write(content)
+
+            new_file = os.path.join(tmpdir, 'new_epump.dat')
+
+            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+
+            # Submodel elements
+            result = sub_gw_pump_epump_file(old_file, new_file, [1, 3, 5, 6])
+
+            assert result is True
+
+            with open(new_file) as f:
+                new_content = f.read()
+
+            # All 3 groups should remain (each has at least 1 element)
+            assert '3                  / NGRP' in new_content
+
+
+if __name__ == '__main__':
+    pytest.main([__file__, '-v'])

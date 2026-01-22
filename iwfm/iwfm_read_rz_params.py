@@ -23,7 +23,7 @@ def iwfm_read_rz_params(rz_file, verbose=False):
     ----------
     rz_file : str
         The path of the file containing the root zone data.
-  
+
     verbose : bool, default = False
         If True, print status messages.
 
@@ -35,22 +35,23 @@ def iwfm_read_rz_params(rz_file, verbose=False):
     """
 
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     if verbose: print(f"  Entered iwfm_read_rz_params() with {rz_file=}")
 
+    iwfm.file_test(rz_file)
     with open(rz_file) as f:
         rz_lines = f.read().splitlines()                # open and read input file
 
-    line_index = iwfm.skip_ahead(0, rz_lines, 18)               # skip four parameters and 15 file names
-    factk = float(rz_lines[line_index].split()[0])              # K multiplier
+    factk, line_index = read_next_line_value(rz_lines, -1, skip_lines=18)  # skip four parameters and 15 file names
+    factk = float(factk)                                        # K multiplier
 
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0) 
-    factcp = float(rz_lines[line_index].split()[0])             # capillary rise multiplier
+    factcp, line_index = read_next_line_value(rz_lines, line_index)
+    factcp = float(factcp)                                      # capillary rise multiplier
 
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0) 
-    tkunit = rz_lines[line_index].split()[0]                    # K time unit
+    tkunit, line_index = read_next_line_value(rz_lines, line_index)  # K time unit
 
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0) 
+    _, line_index = read_next_line_value(rz_lines, line_index)  # skip to parameter table 
 
     #  Lists for each parameter
     params = [[], [], [], [], [], [], [], [], [], [], [], [], []]

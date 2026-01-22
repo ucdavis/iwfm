@@ -26,10 +26,10 @@ def sub_pp_lake_file(lake_file, new_lake_file, lake_info):
     ----------
     lake_file : str
         name of existing preprocessor node file
-    
+
     new_lake_file : str
         name of submodel preprocessor node file
-    
+
     lake_info : list
         info describing of each lake in the submodel
 
@@ -38,17 +38,21 @@ def sub_pp_lake_file(lake_file, new_lake_file, lake_info):
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    iwfm.file_test(lake_file)
     with open(lake_file) as f:
         lake_lines = f.read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, lake_lines, 0)  # skip comments
+    # Skip comments and read NLAKE line
+    _, line_index = read_next_line_value(lake_lines, -1, column=0, skip_lines=0)
     lake_lines[line_index] = iwfm.pad_both(str(len(lake_info)), f=4, b=35) + ' '.join(
         lake_lines[line_index].split()[1:]
     )
 
-    line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
+    # Skip to lake data section
+    _, line_index = read_next_line_value(lake_lines, line_index, column=0, skip_lines=0)
 
     new_lake_lines = lake_lines[:line_index]
 

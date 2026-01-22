@@ -19,16 +19,16 @@
 
 
 def sub_gw_subs_file(old_filename, new_filename, node_list, bounding_poly, verbose=False):
-    '''sub_gw_subs_file() - Read the original groundwater subsidence file, determine 
+    '''sub_gw_subs_file() - Read the original groundwater subsidence file, determine
         which nodes are in the submodel, and write out a new file
 
     Parameters
     ----------
     old_filename : str
-        name of existing model element ppumping file
+        name of existing model subsidence file
 
     new_filename : str
-        name of new subnmodel element pumpgin file
+        name of new submodel subsidence file
 
     node_list : list of ints
         list of existing model nodes in submodel
@@ -44,27 +44,27 @@ def sub_gw_subs_file(old_filename, new_filename, node_list, bounding_poly, verbo
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
     from shapely.geometry import Point
 
-    comments = ['C','c','*','#']
-    nodes = []
-    for n in node_list:
-        nodes.append(n)
+    if verbose: print(f"Entered sub_gw_subs_file() with {old_filename}")
 
+    nodes = list(node_list)
+
+    iwfm.file_test(old_filename)
     with open(old_filename) as f:
         subs_lines = f.read().splitlines()
     subs_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, subs_lines, 0)                # skip initial comments
-
-    line_index = iwfm.skip_ahead(line_index, subs_lines, 5)       # skip file names and factors
-
-    # -- hydrographs
-    nouts = int(subs_lines[line_index].split()[0])                # number of hydrographs
+    # Skip initial comments and file names/factors (5 data lines), then read nouts
+    nouts_str, line_index = read_next_line_value(subs_lines, -1, column=0, skip_lines=5)
+    nouts = int(nouts_str)
 
     new_nouts, nouts_line = 0, line_index
-    line_index = iwfm.skip_ahead(line_index, subs_lines, 3)       # skip factors
+
+    # Skip factors (3 data lines) to reach hydrograph locations
+    line_index = iwfm.skip_ahead(line_index, subs_lines, 3)
 
     # remove hydrographs that are not in the submodel
     keep_hyd = []
@@ -85,8 +85,8 @@ def sub_gw_subs_file(old_filename, new_filename, node_list, bounding_poly, verbo
     # -- subsidence parameters
     # -- parametric grid for subsidence parameters --
     pgroups = int(subs_lines[line_index].split()[0])              # parametric grid?
-    # skip factors
-    line_index = iwfm.skip_ahead(line_index + 1, subs_lines, 1)
+    # skip factors (1 data line after pgroups line)
+    _, line_index = read_next_line_value(subs_lines, line_index, column=0, skip_lines=1)
 
     # --  TODO:  if pgroups > 0,  skip parametric grid(s)
 
@@ -117,7 +117,9 @@ def sub_gw_subs_file(old_filename, new_filename, node_list, bounding_poly, verbo
 
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(subs_lines))
+
     if verbose:
         print(f'      Wrote subsidence file {new_filename}')
+        print(f"Leaving sub_gw_subs_file()")
 
     return

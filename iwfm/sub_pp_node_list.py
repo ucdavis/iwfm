@@ -1,4 +1,4 @@
-# sub_pp_nodes.py
+# sub_pp_node_list.py
 # Reads the element file and returns a list of the nodes in the submodel
 # Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
@@ -17,15 +17,15 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_pp_nodes(elem_file, elem_list):
-    ''' sub_pp_nodes() - Read the element file and return a list of the
+def sub_pp_node_list(elem_file, elem_list):
+    ''' sub_pp_node_list() - Read the element file and return a list of the
         nodes in the submodel
 
     Parameters
     ----------
     elem_file : str
         existing model preprocessor element file name
-    
+
     elem_list : list of ints
         list of existing model elements in submodel
 
@@ -35,31 +35,31 @@ def sub_pp_nodes(elem_file, elem_list):
         list of existing model nodes in submodel
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['Cc*#']
     elems = []
     for e in elem_list:
         elems.append(int(e[0]))
 
+    iwfm.file_test(elem_file)
     with open(elem_file) as f:
         elem_lines = f.read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, elem_lines, 0)  # skip comments
+    # Skip comments to NE line
+    _, line_index = read_next_line_value(elem_lines, -1, column=0, skip_lines=0)
     # -- skip to number of subregions
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
 
     # get number of subregions
     subs = int(elem_lines[line_index][0:15])
-    
+
     # -- skip to start of subregion list
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
 
-    # -- skip the subregion lines
-    line_index = iwfm.skip_ahead(line_index + subs, elem_lines, 0)
-
-    # -- skip to start of element list
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0) 
+    # -- skip the subregion lines to reach start of element list
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=subs - 1)
 
     # -- get node list from element list
     node_list = []
@@ -73,6 +73,6 @@ def sub_pp_nodes(elem_file, elem_list):
                     node_list.append(node)
     node_list.sort()
     # remove 0, it is not a node number, just indicates a triangular element
-    if (node_list[0] == 0):  
+    if (node_list[0] == 0):
         node_list.pop(0)
     return node_list

@@ -41,7 +41,8 @@ def sub_st_inflow_file(old_filename, new_filename, snode_list, verbose=False):
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
 
@@ -52,13 +53,13 @@ def sub_st_inflow_file(old_filename, new_filename, snode_list, verbose=False):
         inflow_lines = f.read().splitlines()
     inflow_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, inflow_lines, 0)                # skip initial comments
+    _, line_index = read_next_line_value(inflow_lines, -1, column=0, skip_lines=0)  # skip initial comments
 
     # -- inflows
     ninflows = int(inflow_lines[line_index].split()[0])             # number of inflows
 
     new_ninflows, ninflows_line = 0, line_index
-    line_index = iwfm.skip_ahead(line_index, inflow_lines, 5)       # skip factors
+    _, line_index = read_next_line_value(inflow_lines, line_index - 1, column=0, skip_lines=5)  # skip factors
 
     for j in range(0, ninflows):
         #print(f'  ==> inflow_lines[line_index]: {inflow_lines[line_index]}')

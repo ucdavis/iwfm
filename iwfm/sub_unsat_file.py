@@ -41,18 +41,20 @@ def sub_unsat_file(old_filename, new_filename, elem_list, verbose=False):
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
     elems = []
     for e in elem_list:
         elems.append(e[0])
 
+    iwfm.file_test(old_filename)
     with open(old_filename) as f:
         unsat_lines = f.read().splitlines()
     unsat_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, unsat_lines, 9)  # skip factors and comments
+    _, line_index = read_next_line_value(unsat_lines, -1, column=0, skip_lines=9)  # skip factors and comments
 
     while line_index < len(unsat_lines):
         if (

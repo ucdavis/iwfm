@@ -17,9 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def read_sim_wells(gw_file):
-    ''' read_sim_wells() - Read Groundwater.dat file and build a dictionary of 
-        groundwater hydrograph info and gwhyd_sim columns, and returns the 
+def read_sim_wells(gw_file, verbose=False):
+    ''' read_sim_wells() - Read Groundwater.dat file and build a dictionary of
+        groundwater hydrograph info and gwhyd_sim columns, and returns the
         dictionary
 
     Parameters
@@ -27,24 +27,36 @@ def read_sim_wells(gw_file):
     gw_file : str
         IWFM Groundwater.dat file name
 
+    verbose : bool, default = False
+        If True, print status messages.
+
     Returns
     -------
     well_dict : dictionary
         key = well name, values = well information (hydrograph file column,
         x, y, model layer, well name)
-    
+
+    well_list : list
+        list of well names
+
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
+
+    if verbose: print(f"Entered read_sim_wells() with {gw_file}")
 
     well_dict, well_list = {}, []
     with open(gw_file) as f:
-        gwhyd_info = f.read().splitlines() 
+        gwhyd_info = f.read().splitlines()
 
-    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  # skip to NOUTH
-    nouth = int(gwhyd_info[line_index].split()[0])
+    # skip to NOUTH, number of hydrographs (skip 20 non-comment lines after start)
+    nouth_str, line_index = read_next_line_value(gwhyd_info, 0, skip_lines=20)
+    nouth = int(nouth_str)
 
-    line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph
-    for i in range(0, nouth):  
+    # skip to first hydrograph (skip 3 lines: NOUTH, FACTXY, GWHYDOUTFL)
+    _, line_index = read_next_line_value(gwhyd_info, line_index, skip_lines=2)
+
+    for i in range(0, nouth):
         items, line = [], gwhyd_info[line_index].split()
         items.append(line[5].upper())  # state well number = key
         items.append(int(line[0]))     # column number in hydrograph file
@@ -55,4 +67,7 @@ def read_sim_wells(gw_file):
         well_dict[items[0]] = items[1:]
         well_list.append(items[0])
         line_index += 1
+
+    if verbose: print(f"Leaving read_sim_wells()")
+
     return well_dict, well_list

@@ -20,7 +20,7 @@
 def igsm_read_lake(lake_file):
     ''' igsm_read_lake() - Read an IGSM Lake file and returns (a) a list of
         elements and (b) a list of properties for each lake
-        
+
     Parameters
     ----------
     lake_file : str
@@ -30,21 +30,24 @@ def igsm_read_lake(lake_file):
     -------
     lake_elems : list
         all lake elements
-    
+
     lakes : list
         [lake_id, max_elev, next, nelem] for each lake
 
     '''
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(lake_file)
     with open(lake_file) as f:
         lake_lines = f.read().splitlines()  # open and read input file
 
-    lake_index = 0  # start at the top
-    lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  # skip comments
-    nlakes = int(lake_lines[lake_index].split()[0])
-    lake_index = iwfm.skip_ahead(lake_index + 1, lake_lines, 0)  # skip comments
+    # skip comments and read number of lakes
+    nlakes_str, lake_index = read_next_line_value(lake_lines, -1, column=0)
+    nlakes = int(nlakes_str)
+
+    # skip comments to first lake data line
+    _, lake_index = read_next_line_value(lake_lines, lake_index, column=0)
 
     lakes = []
     lake_elems = []

@@ -47,29 +47,30 @@ def sub_st_bp_file(old_filename, new_filename, elem_list, snode_list, verbose=Fa
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
     elems = []
     for e in elem_list:
         elems.append(int(e[0]))
 
-
+    iwfm.file_test(old_filename)
     with open(old_filename) as f:
         bp_lines = f.read().splitlines()
     bp_lines.append('\n\n\n\n\n')
 
-    line_index = iwfm.skip_ahead(0, bp_lines, 0)                # skip initial comments
+    _, line_index = read_next_line_value(bp_lines, -1, column=0, skip_lines=0)  # skip initial comments
 
     # -- bypass specifications
     nbp = int(bp_lines[line_index].split()[0])                  # number of diversions
     nbp_line = line_index
     new_nbp, nbp_line, keep_divs = 0, line_index, []
 
-    line_index = iwfm.skip_ahead(line_index, bp_lines, 5)       # skip factors
+    _, line_index = read_next_line_value(bp_lines, line_index - 1, column=0, skip_lines=5)  # skip factors
     bp_keep, bp_nlines = [], []
     for j in range(0, nbp):
-        line_index = iwfm.skip_ahead(line_index, bp_lines, 0)       # skip comments
+        _, line_index = read_next_line_value(bp_lines, line_index - 1, column=0, skip_lines=0)  # skip comments
         t = bp_lines[line_index].split()
 
         if int(t[4]) > 0:                     # one line: column of diversion file
@@ -90,10 +91,10 @@ def sub_st_bp_file(old_filename, new_filename, elem_list, snode_list, verbose=Fa
 
     bp_lines[nbp_line] = '      ' + str(new_nbp) + '                        / NDIVS'
 
-    line_index = iwfm.skip_ahead(line_index, bp_lines, 0)       # skip factors
+    _, line_index = read_next_line_value(bp_lines, line_index - 1, column=0, skip_lines=0)  # skip comments to seepage section
 
     for i in range(0,nbp):
-        line_index = iwfm.skip_ahead(line_index, bp_lines, 0)       # skip factors
+        _, line_index = read_next_line_value(bp_lines, line_index - 1, column=0, skip_lines=0)  # skip comments
         t = bp_lines[line_index].split()
         nlines = int(t[1])
 

@@ -44,16 +44,18 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    iwfm.file_test(old_filename)
     with open(old_filename) as f:
-        swshwd_lines = f.read().splitlines()  
+        swshwd_lines = f.read().splitlines()
 
-    line_index = iwfm.skip_ahead(0, swshwd_lines, 2)  # skip output file names and comments
+    _, line_index = read_next_line_value(swshwd_lines, -1, column=0, skip_lines=2)  # skip output file names and comments
 
     nsw_line, nsw = line_index, int(swshwd_lines[line_index].split()[0])
 
-    line_index = iwfm.skip_ahead(line_index + 4, swshwd_lines, 0)
+    _, line_index = read_next_line_value(swshwd_lines, line_index + 3, column=0, skip_lines=0)  # skip NSW + 3 factors (4 lines), then comments
 
     sw_list = []
     for sw in range(0, nsw):  # small watershed descriptions
@@ -67,8 +69,8 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
                 change, items[2] = 1, '0'
 
             # check that each arc node is in the submodel
-            for l in range(1, int(items[3])):  
-                line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1)
+            for l in range(1, int(items[3])):
+                _, line_index = read_next_line_value(swshwd_lines, line_index - 1, column=0, skip_lines=1)
                 
                 # remove this arc node and decrement nwb
                 if (int(swshwd_lines[line_index].split()[0]) not in snode_list):
@@ -79,7 +81,7 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
             if change:
                 swshwd_lines[line] = '\t'.join([i for i in items])
 
-            line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1)  
+            _, line_index = read_next_line_value(swshwd_lines, line_index - 1, column=0, skip_lines=1)
         else:  # remove these lines
             for i in range(0, int(items[3])):
                 del swshwd_lines[line_index]
@@ -89,26 +91,32 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
         swshwd_lines[nsw_line].split()[1:]
     )
 
-    line_index = iwfm.skip_ahead(line_index, swshwd_lines, 6)
+    _, line_index = read_next_line_value(swshwd_lines, line_index - 1, column=0, skip_lines=6)
 
     # remove root zone parameters for small watersheds outside submodel
-    for sw in range(0, nsw):  
+    for sw in range(0, nsw):
         if int(swshwd_lines[line_index].split()[0]) not in node_list:  # remove the line
             del swshwd_lines[line_index]
+        else:
+            line_index += 1
 
-    line_index = iwfm.skip_ahead(line_index, swshwd_lines, 3)
+    _, line_index = read_next_line_value(swshwd_lines, line_index - 1, column=0, skip_lines=3)
 
     # remove aquifer parameters for small watersheds outside submodel
     for sw in range(0, nsw):
         if int(swshwd_lines[line_index].split()[0]) not in node_list:  # remove the line
             del swshwd_lines[line_index]
+        else:
+            line_index += 1
 
-    line_index = iwfm.skip_ahead(line_index, swshwd_lines, 1)
+    _, line_index = read_next_line_value(swshwd_lines, line_index - 1, column=0, skip_lines=1)
 
     # remove initial conditions for small watersheds outside submodel
-    for sw in range(0, nsw):  
+    for sw in range(0, nsw):
         if int(swshwd_lines[line_index].split()[0]) not in node_list:  # remove the line
             del swshwd_lines[line_index]
+        else:
+            line_index += 1
 
     swshwd_lines.append('')
     # -- write submodel small watersheds file

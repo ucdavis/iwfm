@@ -1,7 +1,7 @@
 # sub_remove_items.py
 # Remove lines from IWFM input file block for components (elements, nodes, 
 # stream nodes, etc) that are not in the submodel
-# Copyright (C) 2020-2022 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -42,10 +42,13 @@ def sub_remove_items(file_lines, line_index, items, skip=0):
         ending line number after processing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
+
     comments = ['C','c','*','#']
 
-    line_index = iwfm.skip_ahead(line_index, file_lines, skip)       # skip comments
+    # Skip comments and additional lines
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=skip)
     if int(file_lines[line_index].split()[0]) > 0:
         while file_lines[line_index][0] not in comments:
             if int(file_lines[line_index].split()[0]) not in items:

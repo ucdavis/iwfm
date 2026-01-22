@@ -49,21 +49,25 @@ def sub_pp_streams(stream_file, node_list):
         stream-aquifer section of stream preprocessor file
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     nodes = []
     for n in node_list:
         nodes.append(int(n))
 
+    iwfm.file_test(stream_file)
     with open(stream_file) as f:
         stream_lines = f.read().splitlines()
 
     stream_type = stream_lines[0][1:]
 
-    line_index = iwfm.skip_ahead(0, stream_lines, 0)  # skip comments
+    # Skip comments to NRH line
+    _, line_index = read_next_line_value(stream_lines, -1, column=0, skip_lines=0)
     nreach = int(stream_lines[line_index].split()[0])
 
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
+    # Skip to NRTB line
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=0)
     nrate = int(stream_lines[line_index].split()[0])
 
     if stream_type == '4.0':

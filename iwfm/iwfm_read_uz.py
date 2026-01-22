@@ -16,8 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def read_param_table_ints(file_lines, line_index, lines):
-    """read_param_table_ints() - Read a table of integer parameters from a file and organize them into lists.
+def _read_param_table_floats(file_lines, line_index, lines):
+    """read_param_table_floats() - Read a table of float parameters from a file and organize them into lists.
 
     Parameters
     ----------
@@ -29,59 +29,20 @@ def read_param_table_ints(file_lines, line_index, lines):
 
     lines : int
         The number of lines to read.
-  
+
     Returns
     -------
-
     params : list
         A list of parameters
     """
-
-    import iwfm 
-
-    params = []
-    if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
-        params = [int(e) for e in file_lines[line_index].split()]
-    else:
-        for i in range(lines):
-            t = [int(e) for e in file_lines[line_index].split()]
-            params.append(t)
-            line_index += 1
-
-    return params, line_index
-
-def read_param_table_floats(file_lines, line_index, lines):
-    """read_param_table_floats() - Read a table of integer parameters from a file and organize them into lists.
-
-    Parameters
-    ----------
-    file_lines : list
-        File contents as list of lines
-
-    line_index : int
-        The index of the line to start reading from.
-
-    lines : int
-        The number of lines to read.
-  
-    Returns
-    -------
-
-    params : list
-        A list of parameters
-    """
-
-    import iwfm 
-
     params = []
     if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
         params = [float(e) for e in file_lines[line_index].split()]
         params[0] = int(params[0])
-        line_index = iwfm.skip_ahead(line_index + 1, file_lines, 0)  # skip to next value line
+        line_index += 1                                             # advance past data line
     else:
         for i in range(lines):
             t = [float(e) for e in file_lines[line_index].split()]
-#            print(f' *** {t=}')
             t[0] = int(t[0])
             params.append(t)
             line_index += 1                                         # skip to next line
@@ -120,20 +81,19 @@ def iwfm_read_uz(file, verbose=False):
     Parameters
     ----------
     file : str
-        The path of the file containing the urban land use data.
-  
+        The path of the file containing the unsaturated zone data.
+
     verbose : bool, default = False
         If True, print status messages.
 
     Returns
     -------
-
     params : list
-        A list of parameters: [perv, cnurb, icpopul, icwtruse, fracdm, iceturb, icrtfurb, icrufurb, icurbspec, ic]
+        A list of parameters: [pd, pn, pi, pk, prhc, ic]
 
     """
     import iwfm
-    import numpy as np
+    from iwfm.file_utils import read_next_line_value
 
     uz_dict = {}
 
@@ -141,44 +101,43 @@ def iwfm_read_uz(file, verbose=False):
 
     iwfm.file_test(file)
     with open(file) as f:
-        uz_lines = f.read().splitlines()                   # open and read input file
+        uz_lines = f.read().splitlines()                        # open and read input file
     uz_version = uz_lines[0].split()[0]                         # version number
 
-    line_index = iwfm.skip_ahead(0, uz_lines, 0)                # skip to next value line
-    layers = int(uz_lines[line_index].split()[0])               # number of layers
+    layers, line_index = read_next_line_value(uz_lines, 0)      # number of layers
+    layers = int(layers)
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
-    uzconv = float(uz_lines[line_index].split()[0])             # convergence criteria
+    uzconv, line_index = read_next_line_value(uz_lines, line_index)  # convergence criteria
+    uzconv = float(uzconv)
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
-    itmax = int(uz_lines[line_index].split()[0])                # max iterations
+    itmax, line_index = read_next_line_value(uz_lines, line_index)   # max iterations
+    itmax = int(itmax)
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
-    uz_dict['bud'] = get_name(uz_lines[line_index]) 
+    bud, line_index = read_next_line_value(uz_lines, line_index)
+    uz_dict['bud'] = get_name(uz_lines[line_index])
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
-    uz_dict['zbud'] = get_name(uz_lines[line_index]) 
+    zbud, line_index = read_next_line_value(uz_lines, line_index)
+    uz_dict['zbud'] = get_name(uz_lines[line_index])
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
-    uz_dict['fcond'] = get_name(uz_lines[line_index]) 
+    fcond, line_index = read_next_line_value(uz_lines, line_index)
+    uz_dict['fcond'] = get_name(uz_lines[line_index])
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
-    ngroup = int(uz_lines[line_index].split()[0])               # number of parametric grid groups
+    ngroup, line_index = read_next_line_value(uz_lines, line_index)  # number of parametric grid groups
+    ngroup = int(ngroup)
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
+    _, line_index = read_next_line_value(uz_lines, line_index)
     factors = [float(i) for i in uz_lines[line_index].split()]
 
-    line_index = iwfm.skip_ahead(line_index + 1, uz_lines, 0)   # skip to next value line
-    tunit = uz_lines[line_index].split()[0]                     # time unit for aquifer Kh
+    tunit, line_index = read_next_line_value(uz_lines, line_index)   # time unit for aquifer Kh
 
     if ngroup > 0:                                              # read parameter grid
-        line_index = iwfm.skip_ahead(line_index, uz_lines, 1)   # skip to next value line
+        nodes, line_index = read_next_line_value(uz_lines, line_index)  # number of parametric grid nodes
+        nodes = int(nodes)
 
-        nodes = int(uz_lines[line_index].split()[0])            # number of parametric grid nodes
-        line_index = iwfm.skip_ahead(line_index, uz_lines, 1)   # skip to next value line
-        nep = int(uz_lines[line_index].split()[0])              # number of parametric grid elements
+        nep, line_index = read_next_line_value(uz_lines, line_index)    # number of parametric grid elements
+        nep = int(nep)
 
-        line_index = iwfm.skip_ahead(line_index, uz_lines, 1)   # skip to next value line
+        _, line_index = read_next_line_value(uz_lines, line_index)      # skip to next value line
 
         # read parametric grid nodal data
         elems = []
@@ -190,14 +149,14 @@ def iwfm_read_uz(file, verbose=False):
         elem_id = [0 for row in range(nodes)]
         x = [0 for row in range(nodes)]
         y = [0 for row in range(nodes)]
-        pd = [[0 for col in range(layers)] for row in range(nodes)]
-        pn = [[0 for col in range(layers)] for row in range(nodes)]
-        pi = [[0 for col in range(layers)] for row in range(nodes)]
-        pk = [[0 for col in range(layers)] for row in range(nodes)]
-        prhc = [[0 for col in range(layers)] for row in range(nodes)]
+        pd = [[0.0 for col in range(layers)] for row in range(nodes)]
+        pn = [[0.0 for col in range(layers)] for row in range(nodes)]
+        pi = [[0.0 for col in range(layers)] for row in range(nodes)]
+        pk = [[0.0 for col in range(layers)] for row in range(nodes)]
+        prhc = [[0.0 for col in range(layers)] for row in range(nodes)]
 
         # skip to parameter values section
-        line_index = iwfm.skip_ahead(line_index, uz_lines, 0)   # skip to next value line
+        _, line_index = read_next_line_value(uz_lines, line_index - 1)  # skip to next value line
 
         # read parameter values
         for node in range(nodes):
@@ -215,7 +174,7 @@ def iwfm_read_uz(file, verbose=False):
                 line_index += 1
 
     else:                                                               # read parameter values
-        line_index = iwfm.skip_ahead(line_index, uz_lines, 1)   # skip to next value line
+        _, line_index = read_next_line_value(uz_lines, line_index)      # skip to next value line
         # how many elements?
         elems = 0
         while (line_index + elems < len(uz_lines) and
@@ -229,11 +188,11 @@ def iwfm_read_uz(file, verbose=False):
 
         # initialize parameter arrays
         elem_id = [0 for row in range(elems)]
-        pd = [[0 for col in range(layers)] for row in range(elems)]
-        pn = [[0 for col in range(layers)] for row in range(elems)]
-        pi = [[0 for col in range(layers)] for row in range(elems)]
-        pk = [[0 for col in range(layers)] for row in range(elems)]
-        prhc = [[0 for col in range(layers)] for row in range(elems)]
+        pd = [[0.0 for col in range(layers)] for row in range(elems)]
+        pn = [[0.0 for col in range(layers)] for row in range(elems)]
+        pi = [[0.0 for col in range(layers)] for row in range(elems)]
+        pk = [[0.0 for col in range(layers)] for row in range(elems)]
+        prhc = [[0.0 for col in range(layers)] for row in range(elems)]
 
         # read parameter values
         for elem in range(elems):
@@ -249,7 +208,7 @@ def iwfm_read_uz(file, verbose=False):
             line_index += 1
 
     # how many elements?
-    line_index = iwfm.skip_ahead(line_index, uz_lines, 0)   # skip to next value line
+    _, line_index = read_next_line_value(uz_lines, line_index - 1)  # skip to next value line
     ne = 0
     while (line_index + ne < len(uz_lines) and
            len(uz_lines[line_index + ne]) > 2 and
@@ -263,7 +222,7 @@ def iwfm_read_uz(file, verbose=False):
         )
 
     # initial condition
-    ic, line_index = read_param_table_floats(uz_lines, line_index, ne)
+    ic, line_index = _read_param_table_floats(uz_lines, line_index, ne)
 
     params = [pd, pn, pi, pk, prhc, ic]
 

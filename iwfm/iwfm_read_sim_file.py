@@ -17,60 +17,61 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm_read_sim_file(sim_file):
+def iwfm_read_sim_file(sim_file, verbose=False):
     ''' iwfm_read_sim_file() - Read an IWFM Simulation main input file
         and return a list of the files called and some settings
 
     Parameters
     ----------
     sim_file : str
-        name of existing nmodel main input file
+        name of existing model main input file
+
+    verbose : bool, default = False
+        If True, print status messages.
 
     Returns
     -------
-    sim_dict : dicttionary
+    sim_dict : dictionary
         dictionary of existing model file names
-    
+
     have_lake : bool
-        True of existing model has a lake file
+        True if existing model has a lake file
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    if verbose: print(f"Entered iwfm_read_sim_file() with {sim_file}")
+
+    iwfm.file_test(sim_file)
     with open(sim_file) as f:
         sim_lines = f.read().splitlines()              # open and read input file
-    line_index = iwfm.skip_ahead(0, sim_lines, 3)               # skip comments
 
     sim_dict = {}
-    sim_dict['preout'] = sim_lines[line_index].split()[0]       # preproc output file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['gw_file'] = sim_lines[line_index].split()[0]      # groundwater main file
+    sim_dict['preout'], line_index = read_next_line_value(sim_lines, -1, skip_lines=3)  # preproc output file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['stream_file'] = sim_lines[line_index].split()[0]  # streams main file
+    sim_dict['gw_file'], line_index = read_next_line_value(sim_lines, line_index)  # groundwater main file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    lake_file = sim_lines[line_index].split()[0]                # lake file
+    sim_dict['stream_file'], line_index = read_next_line_value(sim_lines, line_index)  # streams main file
+
+    lake_file, line_index = read_next_line_value(sim_lines, line_index)  # lake file
     have_lake = True
     if lake_file[0] == '/':
         lake_file = ''
         have_lake = False
     sim_dict['lake_file'] = lake_file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['root_file'] = sim_lines[line_index].split()[0]    # root zone main file
+    sim_dict['root_file'], line_index = read_next_line_value(sim_lines, line_index)  # root zone main file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['swshed_file'] = sim_lines[line_index].split()[0]  # small watersheds file
+    sim_dict['swshed_file'], line_index = read_next_line_value(sim_lines, line_index)  # small watersheds file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['unsat_file'] = sim_lines[line_index].split()[0]   # unsaturated zone file
+    sim_dict['unsat_file'], line_index = read_next_line_value(sim_lines, line_index)  # unsaturated zone file
 
-    line_index = iwfm.skip_ahead(line_index + 3, sim_lines, 0) 
-    sim_dict['precip_file'] = sim_lines[line_index].split()[0]  # precipitation file
+    sim_dict['precip_file'], line_index = read_next_line_value(sim_lines, line_index, skip_lines=2)  # precipitation file
 
-    line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0) 
-    sim_dict['et_file'] = sim_lines[line_index].split()[0]      # evapotranspiration file
+    sim_dict['et_file'], line_index = read_next_line_value(sim_lines, line_index)  # evapotranspiration file
+
+    if verbose: print(f"Leaving iwfm_read_sim_file()")
 
     return sim_dict, have_lake

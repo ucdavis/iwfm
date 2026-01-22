@@ -16,10 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import iwfm as iwfm
+import iwfm
 import re
 from pathlib import Path
 from shapely.geometry import Point, Polygon
+from iwfm.file_utils import read_next_line_value
 
 
 class IWFMModelError(Exception):
@@ -134,29 +135,30 @@ class iwfm_model:
         ''' read_prepcoc() - Read an IWFM Preprocessor main input file, and
             return a list of the files called and some settings.'''
         # -- read the preprocessor file into array file_lines
+        iwfm.file_test(pre_file)
         with open(pre_file) as f:
             pre_lines = f.read().splitlines()
 
-        line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments
+        _, line_index = read_next_line_value(pre_lines, -1, column=0, skip_lines=3)  # skip comments
 
         # -- read input file names and create a dictionary ------------------
         self.pre_files_dict = {}
         self.pre_files_dict['preout'] = _safe_get_filename(pre_lines[line_index], line_index, 'preout')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        _, line_index = read_next_line_value(pre_lines, line_index, column=0)
         self.pre_files_dict['elem_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'elem_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        _, line_index = read_next_line_value(pre_lines, line_index, column=0)
         self.pre_files_dict['node_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'node_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        _, line_index = read_next_line_value(pre_lines, line_index, column=0)
         self.pre_files_dict['strat_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'strat_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
+        _, line_index = read_next_line_value(pre_lines, line_index, column=0)
         self.pre_files_dict['stream_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'stream_file')
 
-        line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
-        lake_file = _safe_get_filename(pre_lines[line_index], line_index, 'lake_file')  
+        _, line_index = read_next_line_value(pre_lines, line_index, column=0)
+        lake_file = _safe_get_filename(pre_lines[line_index], line_index, 'lake_file')
         if lake_file[0] == '/':
             lake_file = ''
         self.pre_files_dict['lake_file'] = lake_file
@@ -167,25 +169,26 @@ class iwfm_model:
         ''' read_sim() - Read an IWFM Simulation main input file, and return
             a dictionary with the files called and some settings.'''
 
+        iwfm.file_test(sim_file)
         with open(sim_file) as f:
             sim_lines = f.read().splitlines()
 
-        line_index = iwfm.skip_ahead(0, sim_lines, 3)  # skip comments
+        _, line_index = read_next_line_value(sim_lines, -1, column=0, skip_lines=3)  # skip comments
 
         # -- read input file names and create a dictionary
         self.sim_files_dict = {}
         preout = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'preout'))
         self.sim_files_dict['preout'] = preout
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         gw_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'gw'))
         self.sim_files_dict['gw'] = gw_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         stream_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'stream'))
         self.sim_files_dict['stream'] = stream_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         temp = _safe_get_filename(sim_lines[line_index], line_index, 'lake')
         if temp[0] == '/':
             lake_file = ''
@@ -193,47 +196,47 @@ class iwfm_model:
             lake_file = iwfm.file_get_path(temp)
         self.sim_files_dict['lake'] = lake_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         rz_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'rootzone'))
         self.sim_files_dict['rootzone'] = rz_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         sw_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'smallwatershed'))
         self.sim_files_dict['smallwatershed'] = sw_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         us_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'unsat'))
         self.sim_files_dict['unsat'] = us_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         if_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'irrfrac'))
         self.sim_files_dict['irrfrac'] = if_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         sa_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'supplyadj'))
         self.sim_files_dict['supplyadj'] = sa_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         pc_file = _safe_get_filename(sim_lines[line_index], line_index, 'precip')
         self.sim_files_dict['precip'] = pc_file
 
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         et_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'et'))
         self.sim_files_dict['et'] = et_file
 
         # -- starting date
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         start = _safe_get_filename(sim_lines[line_index], line_index, 'start')
         self.sim_files_dict['start'] = start
 
         # -- time step
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 1)
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=1)
         step = _safe_get_filename(sim_lines[line_index], line_index, 'step')
         self.sim_files_dict['step'] = step
 
         # -- endng date
-        line_index = iwfm.skip_ahead(line_index + 1, sim_lines, 0)
-        end = _safe_get_filename(sim_lines[line_index], line_index, 'end')  
+        _, line_index = read_next_line_value(sim_lines, line_index, column=0)
+        end = _safe_get_filename(sim_lines[line_index], line_index, 'end')
         self.sim_files_dict['end'] = end
         return
 
@@ -243,22 +246,22 @@ class iwfm_model:
             nodes and their coordinates.'''
 
         # -- read the Node file into array file_lines
+        iwfm.file_test(node_file)
         with open(node_file) as f:
-            node_lines = f.read().splitlines()  
+            node_lines = f.read().splitlines()
 
-        line_index = 0  # start at the top
-        line_index = iwfm.skip_ahead(line_index, node_lines, 0)  # skip comments
+        _, line_index = read_next_line_value(node_lines, -1, column=0)  # skip comments
 
-        self.inodes = int(re.findall(r'\d+', node_lines[line_index])[0]) 
+        self.inodes = int(re.findall(r'\d+', node_lines[line_index])[0])
 
-        line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  # skip comments
+        _, line_index = read_next_line_value(node_lines, line_index, column=0)  # skip comments
 
         parts = node_lines[line_index].split()
         if not parts:
             raise ValueError(f"{node_file} line {line_index}: Expected factor value, got empty line")
         factor = float(parts[0])  # read factor
 
-        line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  # skip comments
+        _, line_index = read_next_line_value(node_lines, line_index, column=0)  # skip comments
 
         self.d_nodes = {}  # initialize nodal info dictionary
         self.d_nodexy = {}  # initialize elemental info dictionary
@@ -275,20 +278,20 @@ class iwfm_model:
         ''' read_elements() - Read an IWFM Element file, and return a list of
             the nodes making up each element.'''
         # -- read the Element file into array file_lines
+        iwfm.file_test(elem_file)
         with open(elem_file) as f:
             elem_lines = f.read().splitlines()
 
-        line_index = 0  
-        line_index = iwfm.skip_ahead(line_index, elem_lines, 0)  
+        _, line_index = read_next_line_value(elem_lines, -1, column=0)
 
-        self.elements = int(re.findall(r'\d+', elem_lines[line_index])[0]) 
+        self.elements = int(re.findall(r'\d+', elem_lines[line_index])[0])
 
-        line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
+        _, line_index = read_next_line_value(elem_lines, line_index, column=0)
 
         subregions = int(re.findall(r'\d+', elem_lines[line_index])[0])
 
-        line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
-        line_index = iwfm.skip_ahead(line_index + 1, elem_lines, subregions - 1)
+        _, line_index = read_next_line_value(elem_lines, line_index, column=0)
+        _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=subregions - 1)
 
         self.e_nos = []  # initialize list of elem nos
         self.d_elem_nodes = {}  # initialize list of elem nodes
@@ -310,11 +313,11 @@ class iwfm_model:
         ''' read_chars() - Read an IWFM Element Characteristics file and return
             a list of characteristics for each element.'''
 
+        iwfm.file_test(char_file)
         with open(char_file) as f:
             char_lines = f.read().splitlines()
 
-        char_index = 0  # start at the top
-        char_index = iwfm.skip_ahead(char_index, char_lines, 0)  # skip comments
+        _, char_index = read_next_line_value(char_lines, -1, column=0)  # skip comments
         self.elem_char = []
         for i in range(0, len(elem_nodes)):
             l = char_lines[char_index + i].split()
@@ -333,10 +336,10 @@ class iwfm_model:
     def read_lake_pre(self, lake_file):
         ''' read_lake() - Read an IWFM Lake file and return (a) a list of
             elements and (b) a list of properties for each lake.'''
+        iwfm.file_test(lake_file)
         with open(lake_file) as f:
             lake_lines = f.read().splitlines()
-        lake_index = 0  # start at the top
-        lake_index = iwfm.skip_ahead(lake_index, lake_lines, 0)  # skip comments
+        _, lake_index = read_next_line_value(lake_lines, -1, column=0)  # skip comments
         parts = lake_lines[lake_index].split()
         if not parts:
             raise ValueError(f"{lake_file} line {lake_index}: Expected number of lakes, got empty line")
@@ -344,7 +347,7 @@ class iwfm_model:
         self.lakes = []
         self.lake_elems = []
         for i in range(0, self.nlakes):
-            lake_index = iwfm.skip_ahead(lake_index + 1, lake_lines, 0)  # skip comments
+            _, lake_index = read_next_line_value(lake_lines, lake_index, column=0)  # skip comments
             l = lake_lines[lake_index].split()  # read first line of lake description
             lake_id = int(l.pop(0))
             max_elev = float(l.pop(0))
@@ -354,7 +357,7 @@ class iwfm_model:
             for j in range(0, nelem):
                 e = []
                 if j > 0:  # need to read next line
-                    lake_index = iwfm.skip_ahead(lake_index + 1, lake_lines, 0)
+                    _, lake_index = read_next_line_value(lake_lines, lake_index, column=0)
                     l = lake_lines[lake_index].split()  # get next line
                 e.append(lake_id)  # lake number
                 e.append(int(l[0]))  # element number
@@ -366,11 +369,11 @@ class iwfm_model:
         ''' read_streams() - Read an IWFM Stream Geometry file and compile
             a list of stream reaches and (b) a dictionary of stream nodes,
             and return the number of stream nodes.'''
+        iwfm.file_test(stream_file)
         with open(stream_file) as f:
             stream_lines = f.read().splitlines()
 
-        stream_index = 0  # start at the top
-        stream_index = iwfm.skip_ahead(stream_index, stream_lines, 0)
+        _, stream_index = read_next_line_value(stream_lines, -1, column=0)
         parts = stream_lines[stream_index].split()
         if not parts:
             raise ValueError(f"{stream_file} lineine {stream_index}: Expected number of reaches, got empty line")
@@ -380,14 +383,14 @@ class iwfm_model:
         parts = stream_lines[stream_index].split()
         if not parts:
             raise ValueError(f"{stream_file} line {stream_index}: Expected rating table count, got empty line")
-        self.n_rating = int(parts[0])  
+        self.n_rating = int(parts[0])
 
         self.sreach_list = []
         snodes_list = []
         nsnodes = 0
         for i in range(0, self.nreach):  # cycle through stream reaches
             # read reach information
-            stream_index = iwfm.skip_ahead(stream_index + 1, stream_lines, 0)
+            _, stream_index = read_next_line_value(stream_lines, stream_index, column=0)
             l = stream_lines[stream_index].split()
             # streams package version 4.2
             reach = int(l.pop(0))
@@ -402,7 +405,7 @@ class iwfm_model:
             oflow = int(l.pop(0))
             # read stream node information
             for j in range(0, snodes):
-                stream_index = iwfm.skip_ahead(stream_index, stream_lines, 1)
+                _, stream_index = read_next_line_value(stream_lines, stream_index - 1, column=0, skip_lines=1)
                 l = stream_lines[stream_index].split()
                 t = [int(l[0]), int(l[1]), reach]  #  snode, GW Node, reach
                 snodes_list.append(t)
@@ -412,14 +415,14 @@ class iwfm_model:
                     lower = int(l[0])
             self.sreach_list.append([reach, upper, lower, oflow])
 
-        stream_index = iwfm.skip_ahead(stream_index + 1, stream_lines, 3) 
+        _, stream_index = read_next_line_value(stream_lines, stream_index, column=0, skip_lines=3)
         selev = []
-        for i in range(0, len(snodes_list)):  
+        for i in range(0, len(snodes_list)):
             l = stream_lines[stream_index].split()
             selev.append(float(l[1]))
             stream_index = stream_index + self.n_rating
             if i < len(snodes_list) - 1:  # stop at end
-                stream_index = iwfm.skip_ahead(stream_index, stream_lines, 0)
+                _, stream_index = read_next_line_value(stream_lines, stream_index - 1, column=0)
 
         # put stream node info into a dictionary
         self.stnodes_dict = {}
@@ -438,17 +441,17 @@ class iwfm_model:
 
     def read_strat(self, strat_file):
 
+        iwfm.file_test(strat_file)
         with open(strat_file) as f:
             strat_lines = f.read().splitlines()
 
-        line_index = 0  # start at the top
-        line_index = iwfm.skip_ahead(line_index, strat_lines, 0)  # skip comments
+        _, line_index = read_next_line_value(strat_lines, -1, column=0)  # skip comments
         layers = int(re.findall(r'\d+', strat_lines[line_index])[0])  # read no. layers
 
-        line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
+        _, line_index = read_next_line_value(strat_lines, line_index, column=0)  # skip comments
         factor = float(re.findall(r'[-+]?\d*\.?\d+', strat_lines[line_index])[0])  # read factor
 
-        line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)  # skip comments
+        _, line_index = read_next_line_value(strat_lines, line_index, column=0)  # skip comments
         self.strat = []  # initialize list
         for i in range(0, len(self.d_nodes)):
             l = strat_lines[line_index + i].split()

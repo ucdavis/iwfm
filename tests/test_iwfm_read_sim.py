@@ -141,8 +141,8 @@ C Above line is empty - should fail
     p = tmp_path / "bad_sim.in"
     p.write_text(bad_sim)
 
-    # Should raise ValueError for empty line (will be caught at first empty field)
-    with pytest.raises(ValueError, match="got empty line"):
+    # Should raise IndexError for empty line (column not found)
+    with pytest.raises(IndexError, match="Column 0 not found"):
         iwfm.iwfm_read_sim(str(p))
 
 
@@ -158,8 +158,8 @@ C Above line is empty - should fail for gw
     p = tmp_path / "bad_sim.in"
     p.write_text(bad_sim)
 
-    # Should raise ValueError for empty line
-    with pytest.raises(ValueError, match="got empty line"):
+    # Should raise IndexError for empty line (column not found)
+    with pytest.raises(IndexError, match="Column 0 not found"):
         iwfm.iwfm_read_sim(str(p))
 
 
@@ -185,8 +185,8 @@ C Above line is empty - should fail for start date
     p = tmp_path / "bad_sim.in"
     p.write_text(bad_sim)
 
-    # Should raise ValueError for empty line
-    with pytest.raises(ValueError, match="got empty line"):
+    # Should raise IndexError for empty line (column not found)
+    with pytest.raises(IndexError, match="Column 0 not found"):
         iwfm.iwfm_read_sim(str(p))
 
 
@@ -225,12 +225,12 @@ C Empty GW line above
     p = tmp_path / "bad_sim.in"
     p.write_text(bad_sim)
 
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(IndexError) as exc_info:
         iwfm.iwfm_read_sim(str(p))
 
-    # Error message should mention what was expected
+    # Error message should mention column and line info
     error_msg = str(exc_info.value)
-    assert "Expected" in error_msg or "got empty line" in error_msg
+    assert "Column" in error_msg or "line" in error_msg
 
 
 # ============================================================================

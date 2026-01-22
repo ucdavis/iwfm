@@ -24,7 +24,7 @@ def iwfm_read_rz_nr(file, verbose=False):
     ----------
     file : str
         The path of the file containing the ponded crop data.
-  
+
     verbose : bool, default = False
         If True, print status messages.
 
@@ -33,7 +33,7 @@ def iwfm_read_rz_nr(file, verbose=False):
 
     crops : list
         A list of crop codes
-    
+
     params : list
         A list of parameters: [cnnv, cnrv, icetnv, icetrv, istrmrv, ic]
 
@@ -41,30 +41,31 @@ def iwfm_read_rz_nr(file, verbose=False):
         A list of file names: [nr_area_file]
 
     """
-    import iwfm as iwfm
+    import iwfm
     import numpy as np
+    from iwfm.file_utils import read_next_line_value
 
-    ncrops = 2                                                  # number of ponded crop types (may be variable in future IWFM versions)
+    ncrops = 2                                                  # number of crop types (may be variable in future IWFM versions)
 
     if verbose: print(f"Entered iwfm_read_rz_nr() with {file}")
 
+    iwfm.file_test(file)
     with open(file) as f:
-        nr_lines = f.read().splitlines()                   # open and read input file
+        nr_lines = f.read().splitlines()                        # open and read input file
 
-    line_index = iwfm.skip_ahead(0, nr_lines, 0)                # skip to number of crop types
-    nr_area_file = nr_lines[line_index].split()[0]
+    nr_area_file, line_index = read_next_line_value(nr_lines, -1)
 
-    line_index = iwfm.skip_ahead(line_index + 1, nr_lines, 0)           # skip budget file names
-    fact = float(nr_lines[line_index].split()[0])                       # root zone depth conversion factor
+    fact, line_index = read_next_line_value(nr_lines, line_index)       # root zone depth conversion factor
+    fact = float(fact)
 
-    line_index = iwfm.skip_ahead(line_index + 1, nr_lines, 0)           # skip budget file names
-    rd_nat = float(nr_lines[line_index].split()[0]) * fact              # root zone depth conversion factor
+    rd_nat, line_index = read_next_line_value(nr_lines, line_index)     # native root zone depth
+    rd_nat = float(rd_nat) * fact
 
-    line_index = iwfm.skip_ahead(line_index + 1, nr_lines, 0)           # skip budget file names
-    rd_rip = float(nr_lines[line_index].split()[0]) * fact              # root zone depth conversion factor
+    rd_rip, line_index = read_next_line_value(nr_lines, line_index)     # riparian root zone depth
+    rd_rip = float(rd_rip) * fact
 
     # how many elements?
-    line_index = iwfm.skip_ahead(line_index + 1, nr_lines, 0)           # skip to next value line
+    _, line_index = read_next_line_value(nr_lines, line_index)
     ne = 0
     while (line_index + ne < len(nr_lines) and
            nr_lines[line_index+(ne)].split()[0] != 'C'):
@@ -82,8 +83,7 @@ def iwfm_read_rz_nr(file, verbose=False):
 
     params = np.array(params)
 
-    line_index = iwfm.skip_ahead(line_index + 1, nr_lines, 0)           # skip to next value line
-
+    _, line_index = read_next_line_value(nr_lines, line_index)          # skip to next value line
 
     # initial condition
     ic, line_index = iwfm.iwfm_read_param_table_floats(nr_lines, line_index, ne)
@@ -95,7 +95,7 @@ def iwfm_read_rz_nr(file, verbose=False):
     files = [nr_area_file]
 
     params = [params, ic]
-        
+
     if verbose: print(f"Leaving iwfm_read_rz_nr()")
 
     return crops, params, files

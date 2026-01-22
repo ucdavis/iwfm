@@ -19,16 +19,16 @@
 
 
 def sub_gw_td_file(old_filename, new_filename, node_list, verbose=False):
-    '''sub_gw_td_file() - Read the original tile drain main file, determine 
+    '''sub_gw_td_file() - Read the original tile drain main file, determine
         which components are in the submodel, and write out a new file
 
     Parameters
     ----------
     old_filename : str
-        name of existing model element ppumping file
+        name of existing model tile drain file
 
     new_filename : str
-        name of new subnmodel element pumpgin file
+        name of new submodel tile drain file
 
     node_list : list of ints
         list of existing model nodes in submodel
@@ -42,24 +42,26 @@ def sub_gw_td_file(old_filename, new_filename, node_list, verbose=False):
         True if there are any tile drains in the submodel, False otherwise
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
-    comments = ['C','c','*','#']
-    nodes = []
-    for n in node_list:
-        nodes.append(n)
+    if verbose: print(f"Entered sub_gw_td_file() with {old_filename}")
 
+    nodes = list(node_list)
+
+    iwfm.file_test(old_filename)
     with open(old_filename) as f:
         td_lines = f.read().splitlines()
     td_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, td_lines, 0)                # skip initial comments
-
     # -- tile drains
-    ntd = int(td_lines[line_index].split()[0])                  # number of tile drains
+    # Skip initial comments and read ntd (number of tile drains)
+    ntd_str, line_index = read_next_line_value(td_lines, -1, column=0, skip_lines=0)
+    ntd = int(ntd_str)
     ntd_line = line_index
 
-    line_index = iwfm.skip_ahead(line_index, td_lines, 4)       # skip factors
+    # Skip factors (4 data lines) to reach tile drain data
+    line_index = iwfm.skip_ahead(line_index, td_lines, 4)
     new_ntd = 0
 
     # remove tile drains nodes that are not in the submodel
@@ -78,10 +80,11 @@ def sub_gw_td_file(old_filename, new_filename, node_list, verbose=False):
     td_lines[ntd_line] = '         ' + str(new_ntd) + '                       / NTD'
 
     # -- subsurface irrigation
-    nsi = int(td_lines[line_index].split()[0])                  # number of tile drains
+    nsi = int(td_lines[line_index].split()[0])                  # number of subsurface irrigation nodes
     nsi_line = line_index
 
-    line_index = iwfm.skip_ahead(line_index, td_lines, 4)       # skip factors
+    # Skip factors (4 data lines) to reach subsurface irrigation data
+    _, line_index = read_next_line_value(td_lines, line_index, column=0, skip_lines=3)
     new_nsi = 0
 
     # remove subsurface irrigation for nodes that are not in the submodel
@@ -98,10 +101,11 @@ def sub_gw_td_file(old_filename, new_filename, node_list, verbose=False):
     td_lines[nsi_line] = '         ' + str(new_nsi) + '                       / NSI'
 
     # -- tile drain hydrographs
-    nhyd = int(td_lines[line_index].split()[0])                    # number of tile drains
+    nhyd = int(td_lines[line_index].split()[0])                    # number of hydrographs
     nhyd_line = line_index
 
-    line_index = iwfm.skip_ahead(line_index, td_lines, 4)          # skip factors
+    # Skip factors (4 data lines) to reach hydrograph data
+    line_index = iwfm.skip_ahead(line_index, td_lines, 4)
     new_nhyd = 0
 
     # remove hydrographs for tile drains that are not in the submodel
@@ -120,7 +124,9 @@ def sub_gw_td_file(old_filename, new_filename, node_list, verbose=False):
 
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(td_lines))
+
     if verbose:
         print(f'      Wrote tile drain file {new_filename}')
+        print(f"Leaving sub_gw_td_file()")
 
     return ntd > 0

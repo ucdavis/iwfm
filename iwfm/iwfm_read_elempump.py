@@ -63,16 +63,17 @@ def iwfm_read_elempump(elempump_file_name, elem_ids, ag=1, ur=2, comment=0, verb
 
     '''
     import sys
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(elempump_file_name)
-
     with open(elempump_file_name) as f:
         elempump_lines = f.read().splitlines()
-    line_index = iwfm.skip_ahead(0, elempump_lines, 0)
 
-    pump_lines = int(elempump_lines[line_index].split()[0])                 # number of lines of pumping data
-    line_index = iwfm.skip_ahead(line_index + 1, elempump_lines, 0)  
+    pump_lines, line_index = read_next_line_value(elempump_lines, -1, column=0)
+    pump_lines = int(pump_lines)  # number of lines of pumping data
+
+    _, line_index = read_next_line_value(elempump_lines, line_index, column=0)  
 
     layers = len(elempump_lines[line_index].split('\t')) - 10 - comment     # number of layers in the model
     

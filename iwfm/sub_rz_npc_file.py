@@ -46,7 +46,8 @@ def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=F
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
 
@@ -57,11 +58,11 @@ def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=F
         npc_lines = f.read().splitlines()
     npc_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, npc_lines, 0)                # skip initial comments
+    _, line_index = read_next_line_value(npc_lines, -1, column=0, skip_lines=0)  # skip initial comments
     ncrop = int(npc_lines[line_index].split()[0])                # number of crop types
 
     # non-ponded crop area file name
-    line_index = iwfm.skip_ahead(line_index, npc_lines, 2 + ncrop)       # skip factors
+    _, line_index = read_next_line_value(npc_lines, line_index, column=0, skip_lines=1 + ncrop)  # skip factors
     nparea_file = npc_lines[line_index].split()[0]               # original crop area file name
     nparea_file = nparea_file.replace('\\', '/')                  # convert backslashes to forward slashes
     # Resolve relative path from simulation base directory if provided
@@ -70,18 +71,12 @@ def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=F
     npc_lines[line_index] = '   ' + sim_dict_new['npa_file'] + '.dat		        / LUFLNP'
 
     # budget section
-    line_index = iwfm.skip_ahead(line_index, npc_lines, 1)       # skip comments
+    _, line_index = read_next_line_value(npc_lines, line_index, column=0, skip_lines=0)  # skip comments
     nbud = int(npc_lines[line_index].split()[0])                 # number of crop budgets
-    line_index = iwfm.skip_ahead(line_index, npc_lines, 3 + nbud) # skip budget section
+    _, line_index = read_next_line_value(npc_lines, line_index, column=0, skip_lines=2 + nbud)  # skip budget section
 
-    line_index = iwfm.skip_ahead(line_index, npc_lines, 2)       # skip file name and factor
-    line_index = iwfm.skip_ahead(line_index, npc_lines, ncrop)   # skip crop root depths
-
-    # get orig_elems value
-    orig_elems, l = 0, line_index
-    while npc_lines[l][0] not in comments:
-        orig_elems += 1
-        l += 1
+    _, line_index = read_next_line_value(npc_lines, line_index, column=0, skip_lines=1)  # skip file name and factor
+    _, line_index = read_next_line_value(npc_lines, line_index, column=0, skip_lines=ncrop - 1)  # skip crop root depths
 
     line_index = iwfm.sub_remove_items(npc_lines, line_index, elems)    # curve numbers
 
@@ -100,9 +95,16 @@ def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=F
     line_index = iwfm.sub_remove_items(npc_lines, line_index, elems)    # reuse fractions
 
     # initial conditions - process manually because end of file
-    line_index = iwfm.skip_ahead(line_index, npc_lines, 1)       # skip file name and comments
-    if int(npc_lines[line_index].split()[0]) > 0:
-        for i in range(0, orig_elems):
+    _, line_index = read_next_line_value(npc_lines, line_index, column=0, skip_lines=0)  # skip file name and comments
+    # Check bounds before accessing - skip_ahead returns -1 at end of file
+    if (line_index >= 0 and
+        line_index < len(npc_lines) and
+        npc_lines[line_index].strip() and
+        int(npc_lines[line_index].split()[0]) > 0):
+        # Loop while current line is not a comment and not empty
+        while (line_index < len(npc_lines) and
+               npc_lines[line_index] and
+               npc_lines[line_index][0] not in comments):
             if int(npc_lines[line_index].split()[0]) not in elems:
                 del npc_lines[line_index]
             else:

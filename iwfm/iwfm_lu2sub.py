@@ -51,17 +51,17 @@ def iwfm_lu2sub(
     
     '''
     import sys, re, os
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(elem_file)
-    iwfm.file_test(lu_file)
-
-    elem_ids, _, _ = iwfm.iwfm_read_elements(elem_file) 
+    elem_ids, _, _ = iwfm.iwfm_read_elements(elem_file)
     elem_ids.sort()
 
+    iwfm.file_test(lu_file)
     with open(lu_file) as f:
         lu_lines = f.read().splitlines()  # open and read input file
-    line_index = iwfm.skip_ahead(0, lu_lines, 4) # skip comments
+    _, line_index = read_next_line_value(lu_lines, -1, column=0, skip_lines=4)  # skip comments
     header = line_index
 
     if verbose:
@@ -93,7 +93,8 @@ def iwfm_lu2sub(
                 out.append('\t' + this_line[j])
             out_lines.append(out)
         line_index += 1
-    outport.write('\n')
+    if verbose:
+        outport.write('\n')
 
     with open(out_file, 'w') as f:
         for i in range(0, header):  # copy top of input file to output

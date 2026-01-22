@@ -38,13 +38,15 @@ def sub_pp_lakes(lake_file, elem_list):
         True if the submodel includes any lakes
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     have_lake = False
 
     #print(f'  ==> elem_list: {elem_list}')
     elems = [int(e[0]) for e in elem_list]
 
+    iwfm.file_test(lake_file)
     with open(lake_file) as f:
         lake_lines = f.read().splitlines()  # open and read input file
 
@@ -53,7 +55,7 @@ def sub_pp_lakes(lake_file, elem_list):
         raise ValueError("Lake file is empty")
     lake_type = lake_lines[0][1:] if len(lake_lines[0]) > 1 else ''
 
-    line_index = iwfm.skip_ahead(0, lake_lines, 0)  # skip comments
+    _, line_index = read_next_line_value(lake_lines, -1, column=0, skip_lines=0)
     parts = lake_lines[line_index].split()
     if not parts:
         raise ValueError(f"{lake_file} line {line_index}: Expected number of lakes, got empty line")
@@ -61,7 +63,7 @@ def sub_pp_lakes(lake_file, elem_list):
 
     lake_info = []
     for lake in range(0, nlakes):
-        line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
+        _, line_index = read_next_line_value(lake_lines, line_index, column=0, skip_lines=0)
         temp = lake_lines[line_index].split()
         if len(temp) < 5:
             raise ValueError(
@@ -73,7 +75,7 @@ def sub_pp_lakes(lake_file, elem_list):
         if int(temp[4]) in elems:
             lake_elems.append(int(temp[4]))
         for elem in range(0, nelake - 1):
-            line_index = iwfm.skip_ahead(line_index + 1, lake_lines, 0)
+            _, line_index = read_next_line_value(lake_lines, line_index, column=0, skip_lines=0)
             parts = lake_lines[line_index].split()
             if not parts:
                 raise ValueError(f"{lake_file} line {line_index}: Expected lake element ID, got empty line")

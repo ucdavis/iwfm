@@ -88,19 +88,20 @@ def iwfm_read_gw(gw_file, verbose=False):
         (X,Y) scale factor for hydrographs
                 
     '''
-    import iwfm as iwfm
+    import iwfm
     import numpy as np
     import re
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(gw_file)
 
     comments, gw_dict = 'Cc*#', {}
 
     with open(gw_file) as f:
-        file_lines = f.read().splitlines()  
+        file_lines = f.read().splitlines()
 
     # get sub-process file names (or 'none' if not present)
-    line_index = iwfm.skip_ahead(1, file_lines, 0) 
+    _, line_index = read_next_line_value(file_lines, 0, column=0)
     gw_dict['bc'] = get_name(file_lines[line_index]) 
 
     line_index += 1
@@ -113,17 +114,17 @@ def iwfm_read_gw(gw_file, verbose=False):
     gw_dict['subsidence'] = get_name(file_lines[line_index]) 
 
     line_index += 10
-    gw_dict['headall'] = get_name(file_lines[line_index]) 
+    gw_dict['headall'] = get_name(file_lines[line_index])
 
-    line_index = iwfm.skip_ahead(line_index, file_lines, 7) 
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=7)
     nouth = int(file_lines[line_index].split()[0])             # number of lines to skip
     factxy = float(file_lines[line_index+1].split()[0])        # (X,Y) scale factor
 
-    line_index = iwfm.skip_ahead(line_index, file_lines, 2)
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=2)
     gw_dict['gwhyd'] = get_name(file_lines[line_index]) 
 
     # hydrographs
-    line_index = iwfm.skip_ahead(line_index, file_lines, 1)
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
     hydrographs = []
     for i in range(nouth):
         if re.search(file_lines[line_index].split()[0], comments):
@@ -133,17 +134,17 @@ def iwfm_read_gw(gw_file, verbose=False):
     if verbose: print(f' ==> {gw_file} has {nouth} hydrograph(s)')
 
     # element face flow - skip
-    line_index = iwfm.skip_ahead(line_index, file_lines, 0)             # skip to Element Face Flows
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0)
     noutf = int(file_lines[line_index].split()[0])                      # Element Face Flow lines
     if verbose: print(f' ==> {gw_file} has {noutf} face flow line(s)')
-    line_index = iwfm.skip_ahead(line_index, file_lines, noutf + 2)     # skip Element Face Flow file name and data
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=noutf + 2)
 
     if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
     ngroup = int(file_lines[line_index].split()[0])                      # skip to Parameter Groups
     
     if verbose: print(f' ==> {gw_file} has {ngroup} parameter group(s)')
 
-    line_index = iwfm.skip_ahead(line_index, file_lines, 2)             # skip FACTOR lines
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=2)
     if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 
     # units
@@ -157,20 +158,20 @@ def iwfm_read_gw(gw_file, verbose=False):
     units=[tunitkh, tunitv, tunitl]
     if verbose: print(f' ==> {tunitl=}')
 
-    line_index = iwfm.skip_ahead(line_index, file_lines, 1)             # skip to parameter section
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
     if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 
     if ngroup > 0:                                                      # read parameter grid
-        line_index = iwfm.skip_ahead(line_index, file_lines, 1)         # skip model node numbers
+        _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
         if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 
         nodes = int(file_lines[line_index].split()[0])                  # number of parametric grid nodes
-        line_index = iwfm.skip_ahead(line_index, file_lines, 1)         # skip model node numbers
+        _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
         nep = int(file_lines[line_index].split()[0])                    # number of parametric grid elements
         if verbose: print(f' ==> {nodes=}')
         if verbose: print(f' ==> {nep=}')
 
-        line_index = iwfm.skip_ahead(line_index, file_lines, nep+1)         # skip parametric grid element description
+        _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=nep+1)
         if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 
         # how many layers?
@@ -196,11 +197,11 @@ def iwfm_read_gw(gw_file, verbose=False):
         node_id = [0 for row in range(nodes)]
         x = [0 for row in range(nodes)]
         y = [0 for row in range(nodes)]
-        Kh = [[0 for col in range(layers)] for row in range(nodes)]
-        Ss = [[0 for col in range(layers)] for row in range(nodes)]
-        Sy = [[0 for col in range(layers)] for row in range(nodes)]
-        Kq = [[0 for col in range(layers)] for row in range(nodes)]
-        Kv = [[0 for col in range(layers)] for row in range(nodes)]
+        Kh = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Ss = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Sy = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Kq = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Kv = [[0.0 for col in range(layers)] for row in range(nodes)]
 
         # read parameter values
         for node in range(nodes):
@@ -249,11 +250,11 @@ def iwfm_read_gw(gw_file, verbose=False):
 
         # initialize parameter arrays
         node_id = [0 for row in range(nodes)]
-        Kh = [[0 for col in range(layers)] for row in range(nodes)]
-        Ss = [[0 for col in range(layers)] for row in range(nodes)]
-        Sy = [[0 for col in range(layers)] for row in range(nodes)]
-        Kq = [[0 for col in range(layers)] for row in range(nodes)]
-        Kv = [[0 for col in range(layers)] for row in range(nodes)]
+        Kh = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Ss = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Sy = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Kq = [[0.0 for col in range(layers)] for row in range(nodes)]
+        Kv = [[0.0 for col in range(layers)] for row in range(nodes)]
 
         # read parameter values
         for node in range(nodes):
@@ -268,11 +269,11 @@ def iwfm_read_gw(gw_file, verbose=False):
                 Kv[node][layer] = float(values[4])
                 line_index += 1
 
-    line_index = iwfm.skip_ahead(line_index, file_lines, 0)       # skip anomaly section
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0)
     if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
     nebk = int(file_lines[line_index].split()[0])                 # anomaly lines
     if verbose: print(f' ==> {nebk=}')
-    line_index = iwfm.skip_ahead(line_index, file_lines, nebk+4)  # skip anomaly section and FACTHP
+    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=nebk+4)
 
     if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
 

@@ -18,14 +18,17 @@
 # -----------------------------------------------------------------------------
 
 
-def read_wells(infile):
+def read_wells(infile, verbose=False):
     ''' read_wells() - Read IWFM Groundwater.dat file and build a dictionary
         of groundwater hydrograph info and gwhyd_sim columns
 
     Parameters
     ----------
     infile : str
-        IWFM Groundwaer.dat file name
+        IWFM Groundwater.dat file name
+
+    verbose : bool, default = False
+        If True, print status messages.
 
     Returns
     -------
@@ -33,18 +36,24 @@ def read_wells(infile):
         key = well name (i.e. state ID), values = simulated heads
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    if verbose: print(f"Entered read_wells() with {infile}")
+
+    iwfm.file_test(infile)
     with open(infile) as f:
-        gwhyd_info = f.read().splitlines() 
+        gwhyd_info = f.read().splitlines()
 
-    # skip to NOUTH, number of hydrographs
-    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  
-    nouth = int(gwhyd_info[line_index].split()[0])
+    # skip to NOUTH, number of hydrographs (skip 20 non-comment lines after start)
+    nouth_str, line_index = read_next_line_value(gwhyd_info, 0, skip_lines=20)
+    nouth = int(nouth_str)
 
     well_dict = {}
-    line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph
-    for i in range(0, nouth): 
+    # skip to first hydrograph (skip 3 lines: NOUTH, FACTXY, GWHYDOUTFL)
+    _, line_index = read_next_line_value(gwhyd_info, line_index, skip_lines=2)
+
+    for i in range(0, nouth):
         items = []
         line = gwhyd_info[line_index].split()
         items.append(line[5].upper())  # well name = key
@@ -55,5 +64,8 @@ def read_wells(infile):
         items.append(line[5].lower())  # well name (state well number)
         key, values = items[0], items[1:]
         well_dict[key] = values
-        line_index = line_index + 1
+        line_index += 1
+
+    if verbose: print(f"Leaving read_wells()")
+
     return well_dict

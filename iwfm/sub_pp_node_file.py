@@ -38,16 +38,20 @@ def sub_pp_node_file(node_file, new_node_file, node_list):
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    iwfm.file_test(node_file)
     with open(node_file) as f:
         node_lines = f.read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, node_lines, 0)  # skip comments
+    # Skip comments and read ND line
+    _, line_index = read_next_line_value(node_lines, -1, column=0, skip_lines=0)
     node_lines[line_index] = iwfm.pad_both(str(len(node_list)), f=4, b=35) + ' '.join(
         node_lines[line_index].split()[1:])
 
-    line_index = iwfm.skip_ahead(line_index + 2, node_lines, 0)
+    # Skip FACT line and comments to node data section
+    _, line_index = read_next_line_value(node_lines, line_index, column=0, skip_lines=1)
 
     new_node_lines = node_lines[:line_index]
 

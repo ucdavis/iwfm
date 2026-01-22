@@ -39,22 +39,21 @@ def iwfm_read_elements(elem_file, verbose=False):
 
     '''
     import re
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(elem_file)
-
     with open(elem_file) as f:
-        elem_lines = f.read().splitlines()  
-    line_index = iwfm.skip_ahead(0, elem_lines, 0) 
+        elem_lines = f.read().splitlines()
 
-    elements = int(elem_lines[line_index].split()[0])  
+    elements, line_index = read_next_line_value(elem_lines, -1, column=0)
+    elements = int(elements)
 
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
+    subregions, line_index = read_next_line_value(elem_lines, line_index, column=0)
+    subregions = int(subregions)
 
-    subregions = int(elem_lines[line_index].split()[0])  
-
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, subregions - 1)
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0)
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=subregions - 1)
 
     elem_ids, elem_nodes, elem_sub = [], [], []
     for i in range(0, elements):  

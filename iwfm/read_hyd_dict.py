@@ -18,34 +18,42 @@
 # -----------------------------------------------------------------------------
 
 
-def read_hyd_dict(gw_dat_file):
-    ''' read_hyd_dict() -  Read hydrograph info from Groundwater.dat file and build
+def read_hyd_dict(gw_dat_file, verbose=False):
+    ''' read_hyd_dict() - Read hydrograph info from Groundwater.dat file and build
         a dictionary of groundwater hydrograph info
 
     Parameters
     ----------
     gw_dat_file : str
-        IWFM Groundwaer.dat file name
+        IWFM Groundwater.dat file name
+
+    verbose : bool, default = False
+        If True, print status messages.
 
     Returns
     -------
     well_dict : dictionary
-        key = well name (i.e. state well ID), value = well information, 
-                                
+        key = well name (i.e. state well ID), value = well information
+
     '''
     import iwfm
+    from iwfm.file_utils import read_next_line_value
+
+    if verbose: print(f"Entered read_hyd_dict() with {gw_dat_file}")
 
     well_dict = {}
     iwfm.file_test(gw_dat_file)
     with open(gw_dat_file) as f:
         gwhyd_info = f.read().splitlines()  # open and read input file
 
-    # skip to NOUTH, number of hydrographs
-    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)  
-    nouth = int(gwhyd_info[line_index].split()[0])
+    # skip to NOUTH, number of hydrographs (skip 20 non-comment lines after start)
+    nouth_str, line_index = read_next_line_value(gwhyd_info, 0, skip_lines=20)
+    nouth = int(nouth_str)
 
-    line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph
-    for i in range(0, nouth): 
+    # skip to first hydrograph (skip 3 lines: NOUTH, FACTXY, GWHYDOUTFL)
+    _, line_index = read_next_line_value(gwhyd_info, line_index, skip_lines=2)
+
+    for i in range(0, nouth):
         items = []
         line = gwhyd_info[line_index].split()
         items.append(line[5])          # well name = key
@@ -56,4 +64,7 @@ def read_hyd_dict(gw_dat_file):
         items.append(line[5].lower())  # well name
         well_dict[items[0]] = items[1:]
         line_index += 1
+
+    if verbose: print(f"Leaving read_hyd_dict()")
+
     return well_dict

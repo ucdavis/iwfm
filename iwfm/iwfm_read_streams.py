@@ -17,9 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm_read_streams(stream_file):
+def iwfm_read_streams(stream_file, verbose=False):
     ''' iwfm_read_streams() - Read an IWFM Stream Geometry file and return
-        a list of stream reaches, a dictionary of stream nodes, and the 
+        a list of stream reaches, a dictionary of stream nodes, and the
         number of stream nodes
 
     Parameters
@@ -27,39 +27,46 @@ def iwfm_read_streams(stream_file):
     stream_file : str
         IWFM Streams file name
 
+    verbose : bool, default = False
+        If True, print status messages.
+
     Returns
     -------
     reach_list : list
         information for each stream reach
-    
+
     stnodes_dict : dictionary
         key = stream node ID, values = [groundwater node, reach, elevation]
-    
+
     len(snodes_list) : int
         number of stream nodes
-    
+
     rating_dict : dictionary
         key = stream node ID, values = rating table
-    
-    '''
-    import iwfm as iwfm
 
-    iwfm.file_test(stream_file)
+    '''
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
+
+    if verbose: print(f"Entered iwfm_read_streams() with {stream_file}")
+
     comments = 'Cc*#'
 
+    iwfm.file_test(stream_file)
     with open(stream_file) as f:
-        stream_lines = f.read().splitlines()  
+        stream_lines = f.read().splitlines()
     stream_type = stream_lines[0][1:]
-    stream_index = iwfm.skip_ahead(1, stream_lines, 0)  
 
-    nreach = int(stream_lines[stream_index].split()[0])
-    stream_index += 1
-    rating = int(stream_lines[stream_index].split()[0])
+    nreach, stream_index = read_next_line_value(stream_lines, 0)
+    nreach = int(nreach)
+
+    rating, stream_index = read_next_line_value(stream_lines, stream_index)
+    rating = int(rating)
 
     # read in stream reaches
     reach_list, snodes_list, nsnodes = [], [], 0
-    for i in range(0, nreach):  
-        stream_index = iwfm.skip_ahead(stream_index + 1, stream_lines, 0)
+    for i in range(0, nreach):
+        _, stream_index = read_next_line_value(stream_lines, stream_index)
         l = stream_lines[stream_index].split()
 
         reach = int(l.pop(0))
@@ -91,7 +98,7 @@ def iwfm_read_streams(stream_file):
         lower = None
 
         for j in range(0, snodes):
-            stream_index = iwfm.skip_ahead(stream_index, stream_lines, 1)
+            _, stream_index = read_next_line_value(stream_lines, stream_index)
             l = stream_lines[stream_index].split()
             t = [int(l[0]), int(l[1]), reach]
             snodes_list.append(t)
@@ -106,7 +113,7 @@ def iwfm_read_streams(stream_file):
 
         reach_list.append([reach, upper, lower, oflow])
 
-    stream_index = iwfm.skip_ahead(stream_index + 1, stream_lines, 3) 
+    _, stream_index = read_next_line_value(stream_lines, stream_index, skip_lines=3)
     rating_dict = {}
     selev = []
     for i in range(0, len(snodes_list)):
@@ -124,12 +131,14 @@ def iwfm_read_streams(stream_file):
         rating_dict[snode] = temp   # key = stream node ID, values = rating table
 
         if i < len(snodes_list) - 1:  # stop at end
-            stream_index = iwfm.skip_ahead(stream_index, stream_lines, 0)
+            _, stream_index = read_next_line_value(stream_lines, stream_index - 1)
 
     # put stream node info into a dictionary
     stnodes_dict, j = {}, 0
     for i, snode in enumerate(snodes_list):
-        key, values = snode[0], [snode[1],snode[2],selev[i]]    # key = stream node ID, values = [groundwater node, reach, elevation]
+        key, values = snode[0], [snode[1], snode[2], selev[i]]    # key = stream node ID, values = [groundwater node, reach, elevation]
         stnodes_dict[key] = values
+
+    if verbose: print(f"Leaving iwfm_read_streams()")
 
     return reach_list, snodes_list, stnodes_dict, len(snodes_list), rating_dict

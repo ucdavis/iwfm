@@ -19,16 +19,16 @@
 
 
 def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verbose=False):
-    '''sub_gw_pump_well_file() - Copies the old well pumping file and replaces the 
-       contents with those of the new submodel, and writes out the new file
+    '''sub_gw_pump_well_file() - Copies the old well pumping file and replaces the
+        contents with those of the new submodel, and writes out the new file
 
     Parameters
     ----------
     old_filename : str
-        name of existing model element ppumping file
+        name of existing model well pumping file
 
     new_filename : str
-        name of new subnmodel element pumpgin file
+        name of new submodel well pumping file
 
     elems : list of ints
         list of existing model elements in submodel
@@ -45,10 +45,11 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
         True if any wells in submodel, False otherwise
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
     from shapely.geometry import Point
 
-    comments = ['C','c','*','#']
+    if verbose: print(f"Entered sub_gw_pump_well_file() with {old_filename}")
 
     # Check if well file exists using iwfm utility
     iwfm.file_test(old_filename)
@@ -57,12 +58,13 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
         well_lines = f.read().splitlines()
     well_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, well_lines, 0)           # skip factors and comments
-
-    nwells = int(well_lines[line_index].split()[0])          # number of well pumping specs
+    # Skip initial comments and read nwells (number of wells)
+    nwells_str, line_index = read_next_line_value(well_lines, -1, column=0, skip_lines=0)
+    nwells = int(nwells_str)
     new_nwells, nwells_line = 0, line_index
 
-    line_index = iwfm.skip_ahead(line_index, well_lines, 4)  # skip factors and comments
+    # Skip factors (4 data lines) to reach well location data
+    _, line_index = read_next_line_value(well_lines, line_index, column=0, skip_lines=3)
 
     keep_wells = []
     for l in range(0, nwells):
@@ -77,7 +79,8 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
             line_index += 1
 
     well_lines[nwells_line] = '         ' + str(new_nwells) + '                       / NWELL'
-    line_index = iwfm.skip_ahead(line_index, well_lines, 0)  # skip factors and comments
+    # Skip comments to well pumping characteristics section
+    line_index = iwfm.skip_ahead(line_index, well_lines, 0)
 
     for l in range(0, nwells):
         t = well_lines[line_index].split()
@@ -87,14 +90,16 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
             line_index += 1
 
     # -- delivery element groups
-    line_index = iwfm.skip_ahead(line_index, well_lines, 0)  # skip comments
-
-    ngrp = int(well_lines[line_index].split()[0])           # number of element groups
+    # Skip comments and read ngrp (number of element groups)
+    ngrp_str, line_index = read_next_line_value(well_lines, line_index - 1, column=0, skip_lines=0)
+    ngrp = int(ngrp_str)
     new_ngrp, ngrp_line = 0, line_index
 
     # cycle through element groups, eliminating those outside the submodel area
     # and reducing those partially inside the submodel area
-    line_index = iwfm.skip_ahead(line_index, well_lines, 1)  # skip comments
+    # Skip to first group (1 data line after ngrp)
+    if ngrp > 0:
+        _, line_index = read_next_line_value(well_lines, line_index, column=0, skip_lines=0)
     for id in range(0, ngrp):
         grp_line, ielems = line_index, []
 
@@ -154,11 +159,13 @@ def sub_gw_pump_well_file(old_filename, new_filename, elems, bounding_poly, verb
     well_lines[ngrp_line] = '         ' + str(new_ngrp) + '                       / NGRP'
     well_lines.append('')
 
-    # -- write out the submodel wwell specification file
+    # -- write out the submodel well specification file
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(well_lines))
-        if verbose:
-            print(f'      Wrote well specification file {new_filename}')
+
+    if verbose:
+        print(f'      Wrote well specification file {new_filename}')
+        print(f"Leaving sub_gw_pump_well_file()")
 
     return new_nwells > 0
 

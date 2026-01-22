@@ -45,26 +45,20 @@ def iwfm_read_rz_file_names(rz_file_name, verbose=False):
     """
     import iwfm
     import os
+    from iwfm.file_utils import read_next_line_value
 
     if verbose: print(f"  Reading rootzone file names from {rz_file_name}")
 
+    iwfm.file_test(rz_file_name)
     with open(rz_file_name) as f:
         rz_lines = f.read().splitlines()
 
     # Skip to the file names section (after RZCONV, RZITERMX, FACTCN, GWUPTK)
-    line_index = iwfm.skip_ahead(0, rz_lines, 4)
-
     # Read the four file names: AGNPFL, PFL, URBFL, NVRVFL
-    rz_npc_file_name = rz_lines[line_index].split()[0]
-
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
-    rz_pc_file_name = rz_lines[line_index].split()[0]
-
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
-    rz_ur_file_name = rz_lines[line_index].split()[0]
-
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
-    rz_nv_file_name = rz_lines[line_index].split()[0]
+    rz_npc_file_name, line_index = read_next_line_value(rz_lines, -1, skip_lines=4)
+    rz_pc_file_name, line_index = read_next_line_value(rz_lines, line_index)
+    rz_ur_file_name, line_index = read_next_line_value(rz_lines, line_index)
+    rz_nv_file_name, line_index = read_next_line_value(rz_lines, line_index)
 
     # Normalize path separators (convert backslashes to forward slashes)
     rz_npc_file_name = rz_npc_file_name.replace('\\', '/')
@@ -72,14 +66,15 @@ def iwfm_read_rz_file_names(rz_file_name, verbose=False):
     rz_ur_file_name = rz_ur_file_name.replace('\\', '/')
     rz_nv_file_name = rz_nv_file_name.replace('\\', '/')
 
-    # Remove "RootZone/" prefix if present (files are typically in the same directory as the main RZ file)
-    if rz_npc_file_name.startswith('RootZone/'):
-        rz_npc_file_name = rz_npc_file_name[9:]  # Remove 'RootZone/' prefix
-    if rz_pc_file_name.startswith('RootZone/'):
+    # Remove "RootZone/" prefix if present (case-insensitive)
+    # Files are typically in the same directory as the main RZ file
+    if rz_npc_file_name.lower().startswith('rootzone/'):
+        rz_npc_file_name = rz_npc_file_name[9:]
+    if rz_pc_file_name.lower().startswith('rootzone/'):
         rz_pc_file_name = rz_pc_file_name[9:]
-    if rz_ur_file_name.startswith('RootZone/'):
+    if rz_ur_file_name.lower().startswith('rootzone/'):
         rz_ur_file_name = rz_ur_file_name[9:]
-    if rz_nv_file_name.startswith('RootZone/'):
+    if rz_nv_file_name.lower().startswith('rootzone/'):
         rz_nv_file_name = rz_nv_file_name[9:]
 
     # Convert relative paths to absolute paths based on the rootzone file location

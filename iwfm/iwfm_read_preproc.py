@@ -35,12 +35,12 @@ def iwfm_read_preproc(pre_file):
         True = the existing model has a lake file
 
     '''
-    import iwfm as iwfm
+    import iwfm
     from pathlib import Path
+    from iwfm.file_utils import read_next_line_value
 
     # Use iwfm utility for file validation
     iwfm.file_test(pre_file)
-
     with open(pre_file) as f:
         pre_lines = f.read().splitlines()  # open and read input file
 
@@ -49,28 +49,22 @@ def iwfm_read_preproc(pre_file):
 
     pre_dict = {}
 
-    line_index = iwfm.skip_ahead(0, pre_lines, 3)  # skip comments
-    preout = pre_lines[line_index].split()[0]  # preproc output file
+    preout, line_index = read_next_line_value(pre_lines, -1, skip_lines=3)  # preproc output file
     pre_dict['preout'] = str(pre_base_path / preout.replace('\\', '/'))
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
-    elem_file = pre_lines[line_index].split()[0]  # element file
+    elem_file, line_index = read_next_line_value(pre_lines, line_index)     # element file
     pre_dict['elem_file'] = str(pre_base_path / elem_file.replace('\\', '/'))
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
-    node_file = pre_lines[line_index].split()[0]  # node file
+    node_file, line_index = read_next_line_value(pre_lines, line_index)     # node file
     pre_dict['node_file'] = str(pre_base_path / node_file.replace('\\', '/'))
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
-    strat_file = pre_lines[line_index].split()[0]  # stratigraphy file
+    strat_file, line_index = read_next_line_value(pre_lines, line_index)    # stratigraphy file
     pre_dict['strat_file'] = str(pre_base_path / strat_file.replace('\\', '/'))
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
-    stream_file = pre_lines[line_index].split()[0]  # stream file
+    stream_file, line_index = read_next_line_value(pre_lines, line_index)   # stream file
     pre_dict['stream_file'] = str(pre_base_path / stream_file.replace('\\', '/'))
 
-    line_index = iwfm.skip_ahead(line_index + 1, pre_lines, 0)
-    lake_file = pre_lines[line_index].split()[0]  # lake file
+    lake_file, line_index = read_next_line_value(pre_lines, line_index)     # lake file
     # -- is there a lake file?
     have_lake = True
     if lake_file[0] == '/':

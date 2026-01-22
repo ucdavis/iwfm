@@ -18,14 +18,14 @@
 
 
 def igsm_read_chars(char_file, elem_nodes):
-    ''' igsm_read_chars() - Read an IGSM Element Characteristics file and 
+    ''' igsm_read_chars() - Read an IGSM Element Characteristics file and
         returns a list of characteristics for each element.
 
     Parameters
     ----------
     char_file : str
         IGSM Element Characteristics file name
-    
+
     elem_nodes : list
         elements and associated nodes
 
@@ -33,14 +33,17 @@ def igsm_read_chars(char_file, elem_nodes):
     -------
     elem_char : list
         element characteristics
-    
+
     '''
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(char_file)
     with open(char_file) as f:
         char_lines = f.read().splitlines()  # open and read input file
-    char_index = iwfm.skip_ahead(0, char_lines, 0)  # skip comments
+
+    # skip comments to find first data line
+    _, char_index = read_next_line_value(char_lines, -1, column=0)
     elem_char = []
     for i in range(0, len(elem_nodes)):
         l = char_lines[char_index + i].split()

@@ -20,37 +20,36 @@
 def igsm_read_elements(elem_file):
     ''' igsm_read_elements() - Read an IGSM Element file, and returns a list
         of the nodes making up each element
-    
+
     Parameters
     ----------
     elem_file : str
         name of IGSM elements file
-    
+
     Returns
     -------
     elem_nodes : list
         list of elements and nodes for each element
-    
+
     elem_list : list
         list of elements
-    
+
     '''
-    import iwfm as iwfm
+    import re
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     # -- read the Element file into array file_lines
+    iwfm.file_test(elem_file)
     with open(elem_file) as f:
         elem_lines = f.read().splitlines()  # open and read input file
 
-    line_index = 0  # start at the top
-    line_index = iwfm.skip_ahead(line_index, elem_lines, 0)  # skip comments
+    # skip comments and read number of elements
+    elem_count_str, line_index = read_next_line_value(elem_lines, -1, column=0)
+    elements = int(re.findall(r'\d+', elem_count_str)[0])
 
-    import re
-
-    elements = int(
-        re.findall(r'\d+', elem_lines[line_index])[0]
-    )  # read number of elements
-
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)  # skip comments
+    # skip comments to first element data line
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0)
 
     elem_nodes, elem_list = [], []
     for i in range(0, elements):  # read element information

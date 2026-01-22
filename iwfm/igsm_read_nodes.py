@@ -1,6 +1,6 @@
 # igsm_read_nodes.py
 # Read an IGSM pre-processor node file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ def igsm_read_nodes(node_file):
         nodes
         
     '''
-    import iwfm as iwfm
+    import iwfm
 
     node_coord, node_list, factor = iwfm.iwfm_read_nodes(node_file)
     return node_coord, node_list, factor

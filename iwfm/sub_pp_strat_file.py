@@ -39,17 +39,21 @@ def sub_pp_strat_file(strat_file, new_strat_file, node_list):
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    iwfm.file_test(strat_file)
     with open(strat_file) as f:
         strat_lines = f.read().splitlines() 
 
     while len(strat_lines[-1]) < 2:
         strat_lines.pop()
 
-    line_index = iwfm.skip_ahead(0, strat_lines, 0)  # skip comments
+    # Skip comments to NL line
+    _, line_index = read_next_line_value(strat_lines, -1, column=0, skip_lines=0)
 
-    line_index = iwfm.skip_ahead(line_index + 3, strat_lines, 0)  # skip comments
+    # Skip FACT line and comments to reach node data
+    _, line_index = read_next_line_value(strat_lines, line_index, column=0, skip_lines=1)
     new_strat_lines = strat_lines[:line_index]
 
     for i in range(line_index, len(strat_lines)):

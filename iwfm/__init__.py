@@ -235,7 +235,7 @@ from iwfm.sub_pp_lake_file import sub_pp_lake_file
 from iwfm.sub_pp_strat_file import sub_pp_strat_file
 from iwfm.sub_pp_stream_file import sub_pp_stream_file
 from iwfm.get_elem_list import get_elem_list
-from iwfm.sub_pp_nodes import sub_pp_nodes
+from iwfm.sub_pp_node_list import sub_pp_node_list
 from iwfm.sub_pp_lakes import sub_pp_lakes
 from iwfm.sub_pp_streams import sub_pp_streams
 from iwfm.get_stream_list_42 import get_stream_list_42

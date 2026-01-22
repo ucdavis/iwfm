@@ -35,12 +35,14 @@ def iwfm_read_chars(char_file, elem_nodes):
         elements and their characteristics
     
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    iwfm.file_test(char_file)
     with open(char_file) as f:
         char_lines = f.read().splitlines()  # open and read input file
 
-    char_index = iwfm.skip_ahead(0, char_lines, 0)  # skip comments
+    _, char_index = read_next_line_value(char_lines, -1, column=0)  # skip comments
     elem_char = []
     for i in range(0, len(elem_nodes)):
         l = char_lines[char_index + i].split()

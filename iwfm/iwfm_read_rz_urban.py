@@ -16,20 +16,23 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def iwfm_read_rz_urban(file):
+def iwfm_read_rz_urban(file, verbose=False):
     """iwfm_read_rz_urban() - Read urban land use data from a file and organize them into lists.
 
     Parameters
     ----------
     file : str
         The path of the file containing the urban land use data.
-  
+
+    verbose : bool, default = False
+        If True, print status messages.
+
     Returns
     -------
 
     crops : list
         A list of crop codes
-    
+
     params : list
         A list of parameters: [perv, cnurb, icpopul, icwtruse, fracdm, iceturb, icrtfurb, icrufurb, icurbspec, ic]
 
@@ -37,32 +40,32 @@ def iwfm_read_rz_urban(file):
         A list of file names: [ur_area_file, ur_pop_file, ur_wtr_file, ur_spec_file]
 
     """
-    import iwfm as iwfm
+    import iwfm
     import numpy as np
+    from iwfm.file_utils import read_next_line_value
 
+    if verbose: print(f"Entered iwfm_read_rz_urban() with {file}")
+
+    iwfm.file_test(file)
     with open(file) as f:
         ur_lines = f.read().splitlines()                   # open and read input file
 
-    line_index = iwfm.skip_ahead(0, ur_lines, 0)                # skip to number of crop types
-    ur_area_file = ur_lines[line_index].split()[0]
+    ur_area_file, line_index = read_next_line_value(ur_lines, -1)
 
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
-    factf = float(ur_lines[line_index].split()[0])              # root zone depth conversion factor
+    factf, line_index = read_next_line_value(ur_lines, line_index)
+    factf = float(factf)                                        # root zone depth conversion factor
 
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
-    rooturb = float(ur_lines[line_index].split()[0])*factf      # urban root zone depth
+    rooturb, line_index = read_next_line_value(ur_lines, line_index)
+    rooturb = float(rooturb) * factf                            # urban root zone depth
 
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
-    ur_pop_file = ur_lines[line_index].split()[0]
+    ur_pop_file, line_index = read_next_line_value(ur_lines, line_index)
 
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
-    ur_wtr_file = ur_lines[line_index].split()[0]
+    ur_wtr_file, line_index = read_next_line_value(ur_lines, line_index)
 
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
-    ur_spec_file = ur_lines[line_index].split()[0]
+    ur_spec_file, line_index = read_next_line_value(ur_lines, line_index)
 
     # how many elements?
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
+    _, line_index = read_next_line_value(ur_lines, line_index)
     n_elems = 0
     while (line_index + n_elems < len(ur_lines) and
            ur_lines[line_index+(n_elems)].split()[0] != 'C'):
@@ -80,17 +83,19 @@ def iwfm_read_rz_urban(file):
 
     params = np.array(params)
 
-    line_index = iwfm.skip_ahead(line_index + 1, ur_lines, 0)   # skip to next value line
+    _, line_index = read_next_line_value(ur_lines, line_index)  # skip to next value line
 
     # initial condition
     ic, line_index = iwfm.iwfm_read_param_table_floats(ur_lines, line_index, n_elems)
 
     ic = np.array(ic)
 
-    crops = ['urban','ic']
+    crops = ['urban', 'ic']
 
     files = [ur_area_file, ur_pop_file, ur_wtr_file, ur_spec_file]
 
     params = [params, ic]
-        
+
+    if verbose: print(f"Leaving iwfm_read_rz_urban()")
+
     return crops, params, files

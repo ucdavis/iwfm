@@ -17,50 +17,57 @@
 # -----------------------------------------------------------------------------
 
 
-def iwfm_read_strat(strat_file, node_coords):
-    ''' iwfm_read_strat() - Read an IWFM Stratigraphy file and return a 
+def iwfm_read_strat(strat_file, node_coords, verbose=False):
+    ''' iwfm_read_strat() - Read an IWFM Stratigraphy file and return a
         list of stratigraphy for each node
-    
-    Parameters:
-    -----------
+
+    Parameters
+    ----------
     strat_file : str
         name of existing IWFM stratigraphy file
-    
+
     node_coords : list
         (x,y) locations of IWFM model nodes
+
+    verbose : bool, default = False
+        If True, print status messages.
 
     Returns
     -------
     strat : list
         stratigraphy for each node
-    
+
     nlayers : int
         number of layers
 
     '''
-    import iwfm as iwfm
-    import re
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
+
+    if verbose: print(f"Entered iwfm_read_strat() with {strat_file}")
 
     iwfm.file_test(strat_file)
-
     with open(strat_file) as f:
         strat_lines = f.read().splitlines()
-    line_index = iwfm.skip_ahead(0, strat_lines, 0)
 
-    layers = int(re.findall(r'\d+', strat_lines[line_index])[0])  
+    layers, line_index = read_next_line_value(strat_lines, -1)
+    layers = int(layers)
 
-    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0)
-    factor = float(re.findall(r'[-+]?\d*\.?\d+', strat_lines[line_index])[0])
+    factor, line_index = read_next_line_value(strat_lines, line_index)
+    factor = float(factor)
 
-    line_index = iwfm.skip_ahead(line_index + 1, strat_lines, 0) 
+    _, line_index = read_next_line_value(strat_lines, line_index)
 
     strat = []
     for i in range(0, len(node_coords)):
         l = strat_lines[line_index + i].split()
         s = []
-        s.append(int(l.pop(0))) 
+        s.append(int(l.pop(0)))
         for j in range(0, len(l)):
-            s.append(factor * float(l.pop(0)))  
+            s.append(factor * float(l.pop(0)))
         strat.append(s)
     nlayers = int((len(strat[0]) - 1) / 2)
+
+    if verbose: print(f"Leaving iwfm_read_strat()")
+
     return strat, nlayers

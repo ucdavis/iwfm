@@ -46,7 +46,8 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
 
@@ -57,7 +58,7 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
         nv_lines = f.read().splitlines()
     nv_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, nv_lines, 0)                # skip initial comments
+    _, line_index = read_next_line_value(nv_lines, -1, column=0, skip_lines=0)  # skip initial comments
 
     # native and riparian vegetation area file name
     nvarea_file = nv_lines[line_index].split()[0]               # original area file name
@@ -67,20 +68,21 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
         nvarea_file = str(base_path / nvarea_file)
     nv_lines[line_index] = '   ' + sim_dict_new['nva_file'] + '.dat		        / LUFLNVRV'
 
-    line_index = iwfm.skip_ahead(line_index, nv_lines, 4)       # skip comments and three factors
-
-    # get orig_elems value
-    orig_elems, l = 0, line_index
-    while nv_lines[l][0] not in comments:
-        orig_elems += 1
-        l += 1
+    _, line_index = read_next_line_value(nv_lines, line_index, column=0, skip_lines=3)  # skip comments and three factors
 
     line_index = iwfm.sub_remove_items(nv_lines, line_index, elems)    # parameters
 
     # initial conditions - process manually because end of file
-    line_index = iwfm.skip_ahead(line_index, nv_lines, 0)       # skip file name and comments
-    if int(nv_lines[line_index].split()[0]) > 0:
-        for i in range(0, orig_elems):
+    _, line_index = read_next_line_value(nv_lines, line_index, column=0, skip_lines=0)  # skip file name and comments
+    # Check bounds before accessing - skip_ahead returns -1 at end of file
+    if (line_index >= 0 and
+        line_index < len(nv_lines) and
+        nv_lines[line_index].strip() and
+        int(nv_lines[line_index].split()[0]) > 0):
+        # Loop while current line is not a comment and not empty
+        while (line_index < len(nv_lines) and
+               nv_lines[line_index] and
+               nv_lines[line_index][0] not in comments):
             if int(nv_lines[line_index].split()[0]) not in elems:
                 del nv_lines[line_index]
             else:

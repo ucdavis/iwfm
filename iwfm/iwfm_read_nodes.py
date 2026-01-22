@@ -39,29 +39,29 @@ def iwfm_read_nodes(node_file, factor=0.0):
         Else if factor <> 0.0 use this as the factor
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import re
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(node_file)
-
     with open(node_file) as f:
-        node_lines = f.read().splitlines()  
+        node_lines = f.read().splitlines()
 
-    line_index = iwfm.skip_ahead(0, node_lines, 0)  
+    _, line_index = read_next_line_value(node_lines, -1, column=0)
 
-    inodes = int(re.findall(r'\d+', node_lines[line_index])[0])  
+    inodes = int(re.findall(r'\d+', node_lines[line_index])[0])
 
-    line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0) 
+    _, line_index = read_next_line_value(node_lines, line_index, column=0)
 
     read_factor = float(node_lines[line_index].split()[0])
 
     if factor == 0:
         factor = read_factor
 
-    line_index = iwfm.skip_ahead(line_index + 1, node_lines, 0)  
+    _, line_index = read_next_line_value(node_lines, line_index, column=0)
 
     node_list, node_coord = [], []
-    for i in range(0, inodes):  
+    for i in range(0, inodes):
         l = node_lines[line_index + i].split()
         l[0], l[1], l[2] = int(l[0]), float(l[1]), float(l[2])
         node_list.append(l[0])

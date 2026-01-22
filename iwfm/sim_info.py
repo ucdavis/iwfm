@@ -17,14 +17,17 @@
 # -----------------------------------------------------------------------------
 
 
-def sim_info(in_file):
+def sim_info(in_file, verbose=False):
     ''' sim_info() - reads simulation input file and returns the starting date, ending
         date and time step of the simulation
-        
+
     Parameters
     ----------
     in_file : str
         IWFM Simulation main input file
+
+    verbose : bool, default = False
+        If True, print status messages.
 
     Returns
     -------
@@ -38,14 +41,17 @@ def sim_info(in_file):
         time step in DSS format
 
     '''
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
-    import iwfm as iwfm
+    if verbose: print(f"Entered sim_info() with {in_file}")
 
+    iwfm.file_test(in_file)
     with open(in_file) as f:
-        sim_lines = f.read().splitlines()          # open and read input file
+        sim_lines = f.read().splitlines()
 
-    in_index = iwfm.skip_ahead(0,sim_lines,skip=14)
-    start_date = sim_lines[in_index].split()[0]
+    # skip 14 non-comment lines to get to start_date
+    start_date, in_index = read_next_line_value(sim_lines, 0, skip_lines=14)
 
     # Validate start_date format
     try:
@@ -53,16 +59,18 @@ def sim_info(in_file):
     except ValueError as e:
         raise ValueError(f"Error reading start date from {in_file} line {in_index+1}: {str(e)}") from e
 
-    in_index = iwfm.skip_ahead(in_index,sim_lines,skip=2)
-    time_step = sim_lines[in_index].split()[0]
+    # skip 1 non-comment line (RESTART) to get to time_step
+    time_step, in_index = read_next_line_value(sim_lines, in_index, skip_lines=1)
 
-    in_index += 1
-    end_date = sim_lines[in_index].split()[0]
+    # next line is end_date
+    end_date, in_index = read_next_line_value(sim_lines, in_index)
 
     # Validate end_date format
     try:
         iwfm.validate_date_format(end_date, f'{in_file} line {in_index+1} end_date')
     except ValueError as e:
         raise ValueError(f"Error reading end date from {in_file} line {in_index+1}: {str(e)}") from e
+
+    if verbose: print(f"Leaving sim_info()")
 
     return start_date, end_date, time_step

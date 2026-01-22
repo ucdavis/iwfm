@@ -63,7 +63,7 @@ def read_param_table_floats(file_lines, line_index, lines):
 
     lines : int
         The number of lines to read.
-  
+
     Returns
     -------
 
@@ -71,13 +71,13 @@ def read_param_table_floats(file_lines, line_index, lines):
         A list of parameters
     """
 
-    import iwfm 
+    from iwfm.file_utils import read_next_line_value
 
     params = []
     if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
         params = [float(e) for e in file_lines[line_index].split()]
         params[0] = int(params[0])
-        line_index = iwfm.skip_ahead(line_index + 1, file_lines, 0)  # skip to next value line
+        _, line_index = read_next_line_value(file_lines, line_index, column=0)  # skip to next value line
     else:
         for i in range(lines):
             t = [float(e) for e in file_lines[line_index].split()]
@@ -97,7 +97,7 @@ def iwfm_read_et_vals(et_file, verbose=False):
     ----------
     et_file : str
         The path of the file containing the evapotranspiration data.
-  
+
     verbose : bool, default = False
         If True, print status messages.
 
@@ -109,27 +109,28 @@ def iwfm_read_et_vals(et_file, verbose=False):
 
     """
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(et_file)
     with open(et_file) as f:
         et_lines = f.read().splitlines()                   # open and read input file
 
-    line_index = iwfm.skip_ahead(0, et_lines, 0)                # skip to next value line
-    nevap = int(et_lines[line_index].split()[0])                # number of columns
+    nevap, line_index = read_next_line_value(et_lines, -1, column=0)  # skip to next value line
+    nevap = int(nevap)                                          # number of columns
 
-    line_index = iwfm.skip_ahead(line_index + 1, et_lines, 0)   # skip to next value line
-    factet = float(et_lines[line_index].split()[0])             # conversion factor
+    factet, line_index = read_next_line_value(et_lines, line_index, column=0)  # skip to next value line
+    factet = float(factet)                                      # conversion factor
 
-    line_index = iwfm.skip_ahead(line_index + 1, et_lines, 0)   # skip to next value line
-    nspet = int(et_lines[line_index].split()[0])                # number of timesteps to update et data
+    nspet, line_index = read_next_line_value(et_lines, line_index, column=0)  # skip to next value line
+    nspet = int(nspet)                                          # number of timesteps to update et data
 
-    line_index = iwfm.skip_ahead(line_index + 1, et_lines, 0)   # skip to next value line
-    nfqet = int(et_lines[line_index].split()[0])                # repetition requency of et data
+    nfqet, line_index = read_next_line_value(et_lines, line_index, column=0)  # skip to next value line
+    nfqet = int(nfqet)                                          # repetition requency of et data
 
-    line_index = iwfm.skip_ahead(line_index + 1, et_lines, 0)   # skip to next value line
-    dssfl = et_lines[line_index].split()[0]                     # dss file name
+    dssfl, line_index = read_next_line_value(et_lines, line_index, column=0)  # skip to next value line
+                                                                # dss file name
 
-    line_index = iwfm.skip_ahead(line_index + 1, et_lines, 0)   # skip to next value line
+    _, line_index = read_next_line_value(et_lines, line_index, column=0)  # skip to next value line
 
     # evapotranspiration data
     et = []

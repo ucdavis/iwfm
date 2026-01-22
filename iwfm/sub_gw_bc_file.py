@@ -28,8 +28,8 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
     old_filename : str
         name of existing model boundary condition file
 
-     sim_dict_new : str
-        new subnmodel file names
+    sim_dict_new : str
+        new submodel file names
 
     nodes : list of ints
         list of existing model nodes in submodel
@@ -51,55 +51,47 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
     nothing
 
     '''
-    import iwfm as iwfm
-    from shapely.geometry import Point, Polygon
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
     from pathlib import Path
 
-    comments = ['C','c','*','#']
+    if verbose: print(f"Entered sub_gw_bc_file() with {old_filename}")
 
+    iwfm.file_test(old_filename)
     with open(old_filename) as f:
         bc_lines = f.read().splitlines()
     bc_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, bc_lines, 0)                # skip initial comments
-
- 
     # -- file names --
     # specified flow conditions file
-    spfl_file = bc_lines[line_index].split()[0]  
+    spfl_file, line_index = read_next_line_value(bc_lines, -1)
     have_spfl = True
     if spfl_file[0] == '/':
         have_spfl = False
     else:
-        spfl_file = spfl_file.replace('\\', ' ').split()[1]     
+        spfl_file = spfl_file.replace('\\', ' ').split()[1]
         bc_lines[line_index] = '   ' + sim_dict_new['spfl_file'] + '.dat		        / SPFLOWBCFL'
 
-    line_index = iwfm.skip_ahead(line_index, bc_lines, 1)
-
     # specified head conditions file
-    sphd_file = bc_lines[line_index].split()[0]  
+    sphd_file, line_index = read_next_line_value(bc_lines, line_index)
     have_sphd = True
     if sphd_file[0] == '/':
         have_sphd = False
     else:
-        sphd_file = sphd_file.replace('\\', ' ').split()[1]     
+        sphd_file = sphd_file.replace('\\', ' ').split()[1]
         bc_lines[line_index] = '   ' + sim_dict_new['sphd_file'] + '.dat		        / SPHEADBCFL'
 
-    line_index = iwfm.skip_ahead(line_index, bc_lines, 1)
-
     # general head boundary conditions file
-    ghd_file = bc_lines[line_index].split()[0]  
+    ghd_file, line_index = read_next_line_value(bc_lines, line_index)
     have_ghd = True
     if ghd_file[0] == '/':
         have_ghd = False
     else:
-        ghd_file = ghd_file.replace('\\', ' ').split()[1]     
+        ghd_file = ghd_file.replace('\\', ' ').split()[1]
         bc_lines[line_index] = '   ' + sim_dict_new['ghd_file'] + '.dat		        / GHBCFL'
 
-    line_index = iwfm.skip_ahead(line_index, bc_lines, 1)
-
     # constrained general head boundary conditions file
-    cghd_file = bc_lines[line_index].split()[0]
+    cghd_file, line_index = read_next_line_value(bc_lines, line_index)
     have_cghd = True
     if cghd_file[0] == '/':
         have_cghd = False
@@ -110,25 +102,20 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
             cghd_file = str(base_path / cghd_file)
         bc_lines[line_index] = '   ' + sim_dict_new['cghd_file'] + '.dat		        / CONGHBCFL'
 
-    line_index = iwfm.skip_ahead(line_index, bc_lines, 1)
-    
     # time-series boundary conditions file
-    tsbc_file = bc_lines[line_index].split()[0]  
+    tsbc_file, line_index = read_next_line_value(bc_lines, line_index)
     have_tsbc = True
     if tsbc_file[0] == '/':
         have_tsbc = False
     else:
-        tsbc_file = tsbc_file.replace('\\', ' ').split()[1]     
+        tsbc_file = tsbc_file.replace('\\', ' ').split()[1]
         bc_lines[line_index] = '   ' + sim_dict_new['tsbc_file'] + '.dat		        / TSBCFL'
 
-
     # -- boundary flow node hydrographs --
-    line_index = iwfm.skip_ahead(line_index, bc_lines, 1) 
-    b_outnodes = int(bc_lines[line_index].split()[0])
-    line_index = iwfm.skip_ahead(line_index, bc_lines, 1) 
-    b_outfile  = bc_lines[line_index].split()[0]
+    b_outnodes_str, line_index = read_next_line_value(bc_lines, line_index)
+    b_outnodes = int(b_outnodes_str)
+    b_outfile, line_index = read_next_line_value(bc_lines, line_index)
     # -- TODO: if b_outnodes > 0: reduce hydrograph nodes to those in submodel
-
 
     # --  specified flow bc file  --
     #if have_spfl:   TODO          # process specified flow bc file
@@ -141,12 +128,13 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
 
     # --  constrained general head bc file  --
     if have_cghd:                  # process constrained general head bc file
-        iwfm.sub_gw_bc_cghd_file(cghd_file,sim_dict_new['cghd_file'],nodes,verbose)
-
+        iwfm.sub_gw_bc_cghd_file(cghd_file, sim_dict_new['cghd_file'], nodes, verbose)
 
     with open(sim_dict_new['bc_file'], 'w') as outfile:
         outfile.write('\n'.join(bc_lines))
-        if verbose:
-            print(f'      Wrote boundary conditions file {sim_dict_new["bc_file"]}')
+
+    if verbose:
+        print(f'      Wrote boundary conditions file {sim_dict_new["bc_file"]}')
+        print(f"Leaving sub_gw_bc_file()")
 
     return

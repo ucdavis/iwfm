@@ -52,14 +52,17 @@ def sub_pp_stream_file(stream_file, new_stream_file, snode_dict, reach_info,
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
+    iwfm.file_test(stream_file)
     with open(stream_file) as f:
         stream_lines = f.read().splitlines()
 
     stream_type = stream_lines[0][1:]
 
-    line_index = iwfm.skip_ahead(0, stream_lines, 0)  # skip comments
+    # Skip comments to NRH line
+    _, line_index = read_next_line_value(stream_lines, -1, column=0, skip_lines=0)
     sub_stream_lines = stream_lines[:line_index]
 
     # -- number of stream reaches

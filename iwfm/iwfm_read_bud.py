@@ -35,63 +35,52 @@ def iwfm_read_bud(bud_file, verbose=False):
 
     '''
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(bud_file)
     with open(bud_file) as f:
         bud_lines = f.read().splitlines()
 
-    line_index = iwfm.skip_ahead(0, bud_lines, 0)  # skip comments
-
     # read factors and labels
-    factlou = float(bud_lines[line_index].split()[0])
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    factlou, line_index = read_next_line_value(bud_lines, -1, column=0)
+    factlou = float(factlou)
 
-    unutlou=  bud_lines[line_index].split()[0]
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    unutlou, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-    factarou = float(bud_lines[line_index].split()[0])
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    factarou, line_index = read_next_line_value(bud_lines, line_index, column=0)
+    factarou = float(factarou)
 
-    unitarou = bud_lines[line_index].split()[0]
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    unitarou, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-    factvolou = float(bud_lines[line_index].split()[0])
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    factvolou, line_index = read_next_line_value(bud_lines, line_index, column=0)
+    factvolou = float(factvolou)
 
-    unitvolou = bud_lines[line_index].split()[0]
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    unitvolou, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-    cache = bud_lines[line_index].split()[0]
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    cache, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
     # read begin and end dates
-    bdt = bud_lines[line_index].split()[0]
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    bdt, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-    edt = bud_lines[line_index].split()[0]
-    line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
+    edt, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
     # number of budgets to process
-    nbudget = int(bud_lines[line_index].split()[0])
-    
+    nbudget, line_index = read_next_line_value(bud_lines, line_index, column=0)
+    nbudget = int(nbudget)
+
     factors = [nbudget, factlou, unutlou, factarou, unitarou, factvolou, unitvolou, bdt, edt]
 
     budget_list = []
     for b in range(nbudget):
-        line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
-        hdffile = bud_lines[line_index].split()[0]
+        hdffile, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-        line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
-        outfile = bud_lines[line_index].split()[0]
+        outfile, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-        line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
-        intprnt = bud_lines[line_index].split()[0]
+        intprnt, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-        line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
-        nlprint = bud_lines[line_index].split()[0]
+        nlprint, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
-        line_index = iwfm.skip_ahead(line_index + 1, bud_lines, 0)  
-        lprint = bud_lines[line_index].split()[0]
+        lprint, line_index = read_next_line_value(bud_lines, line_index, column=0)
 
         budget_list.append([hdffile, outfile, intprnt, nlprint, lprint])
 

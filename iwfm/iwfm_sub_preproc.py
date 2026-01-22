@@ -66,8 +66,7 @@ def iwfm_sub_preproc(
     '''
     import iwfm
     import pickle
-    import pandas as pd
-    import geopandas as gpd
+    import polars as pl
 
     # -- get list of file names from preprocessor input file
     pre_dict, have_lake = iwfm.iwfm_read_preproc(in_pp_file)
@@ -85,7 +84,7 @@ def iwfm_sub_preproc(
         print(f'  Read submodel element pairs file {elem_pairs_file}')
 
     # -- determine submodel nodes
-    sub_node_list = iwfm.sub_pp_nodes(pre_dict['elem_file'], sub_elem_list)
+    sub_node_list = iwfm.sub_pp_node_list(pre_dict['elem_file'], sub_elem_list)
     with open(out_base_name + '_nodes.bin', 'wb') as f:
         pickle.dump(sub_node_list, f)  # dump sub_node_list to file
     if verbose:
@@ -131,15 +130,15 @@ def iwfm_sub_preproc(
         if have_lake and verbose:
             print('  Compiled list of submodel lakes')
 
-    # create pandas dataframe for submodel
-    df = pd.DataFrame(
+    # create polars dataframe for submodel and write to parquet
+    df = pl.DataFrame(
         {
             'node_id':  [row[0] for row in node_coord],
             'easting':  [row[1] for row in node_coord],
             'northing': [row[2] for row in node_coord],
         }
     )
-    df.to_pickle(out_base_name + '_df.bin')
+    df.write_parquet(out_base_name + '_df.parquet')
 
     if verbose:
         print(' ')

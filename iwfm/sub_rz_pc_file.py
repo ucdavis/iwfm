@@ -46,7 +46,8 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
     ncrop = 5
@@ -58,7 +59,7 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
         pc_lines = f.read().splitlines()
     pc_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, pc_lines, 0)                # skip initial comments
+    _, line_index = read_next_line_value(pc_lines, -1, column=0, skip_lines=0)  # skip initial comments
 
     # ponded crop area file name
     parea_file = pc_lines[line_index].split()[0]               # original crop area file name
@@ -69,22 +70,16 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
     pc_lines[line_index] = '   ' + sim_dict_new['pca_file'] + '.dat		        / LUFLP'
 
     # budget section
-    line_index = iwfm.skip_ahead(line_index + 1, pc_lines, 0)       # skip comments
+    _, line_index = read_next_line_value(pc_lines, line_index, column=0, skip_lines=0)  # skip comments
     nbud = int(pc_lines[line_index].split()[0])                     # number of crop budgets
-    line_index = iwfm.skip_ahead(line_index, pc_lines, 3 + nbud)    # skip budget section
+    _, line_index = read_next_line_value(pc_lines, line_index, column=0, skip_lines=2 + nbud)  # skip budget section
 
-    line_index = iwfm.skip_ahead(line_index, pc_lines, 1)           # skip factor
-    line_index = iwfm.skip_ahead(line_index, pc_lines, ncrop)       # skip crop root depths
-
-    # get orig_elems value
-    orig_elems, l = 0, line_index
-    while pc_lines[l][0] not in comments:
-        orig_elems += 1
-        l += 1
+    _, line_index = read_next_line_value(pc_lines, line_index, column=0, skip_lines=0)  # skip factor
+    _, line_index = read_next_line_value(pc_lines, line_index, column=0, skip_lines=ncrop - 1)  # skip crop root depths
 
     line_index = iwfm.sub_remove_items(pc_lines, line_index, elems)    # curve numbers
 
-    line_index = iwfm.skip_ahead(line_index, pc_lines, 0)              # skip comments
+    _, line_index = read_next_line_value(pc_lines, line_index - 1, column=0, skip_lines=0)  # skip comments
 
     line_index = iwfm.sub_remove_items(pc_lines, line_index, elems)    # crop ETc
 
@@ -92,7 +87,7 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
 
     line_index = iwfm.sub_remove_items(pc_lines, line_index, elems)    # irrigation periods
 
-    line_index = iwfm.skip_ahead(line_index, pc_lines, 2)              # skip comments and file names
+    _, line_index = read_next_line_value(pc_lines, line_index - 1, column=0, skip_lines=2)  # skip comments and two file names
 
     line_index = iwfm.sub_remove_items(pc_lines, line_index, elems)    # ponding depths
 
@@ -103,9 +98,16 @@ def sub_rz_pc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
     line_index = iwfm.sub_remove_items(pc_lines, line_index, elems)    # re-use flow depths
 
     # initial conditions - process manually because end of file
-    line_index = iwfm.skip_ahead(line_index, pc_lines, 0)       # skip file name and comments
-    if int(pc_lines[line_index].split()[0]) > 0:
-        for i in range(0, orig_elems):
+    _, line_index = read_next_line_value(pc_lines, line_index - 1, column=0, skip_lines=0)  # skip file name and comments
+    # Check bounds before accessing - skip_ahead returns -1 at end of file
+    if (line_index >= 0 and
+        line_index < len(pc_lines) and
+        pc_lines[line_index].strip() and
+        int(pc_lines[line_index].split()[0]) > 0):
+        # Loop while current line is not a comment and not empty
+        while (line_index < len(pc_lines) and
+               pc_lines[line_index] and
+               pc_lines[line_index][0] not in comments):
             if int(pc_lines[line_index].split()[0]) not in elems:
                 del pc_lines[line_index]
             else:

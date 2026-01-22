@@ -16,78 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def read_param_table_ints(file_lines, line_index, lines):
-    """read_param_table_ints() - Read a table of integer parameters from a file and organize them into lists.
-
-    Parameters
-    ----------
-    file_lines : list
-        File contents as list of lines
-
-    line_index : int
-        The index of the line to start reading from.
-
-    lines : int
-        The number of lines to read.
-  
-    Returns
-    -------
-
-    params : list
-        A list of parameters
-    """
-
-    params = []
-    if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
-        params = [int(e) for e in file_lines[line_index].split()]
-    else:
-        for i in range(lines):
-            t = [int(e) for e in file_lines[line_index].split()]
-            params.append(t)
-            line_index += 1
-
-    return params, line_index
-
-def read_param_table_floats(file_lines, line_index, lines):
-    """read_param_table_floats() - Read a table of integer parameters from a file and organize them into lists.
-
-    Parameters
-    ----------
-    file_lines : list
-        File contents as list of lines
-
-    line_index : int
-        The index of the line to start reading from.
-
-    lines : int
-        The number of lines to read.
-  
-    Returns
-    -------
-
-    params : list
-        A list of parameters
-    """
-
-    import iwfm 
-
-    params = []
-    if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements
-        params = [float(e) for e in file_lines[line_index].split()]
-        params[0] = int(params[0])
-        line_index = iwfm.skip_ahead(line_index + 1, file_lines, 0)  # skip to next value line
-    else:
-        for i in range(lines):
-            t = [float(e) for e in file_lines[line_index].split()]
-#            print(f' *** {t=}')
-            t[0] = int(t[0])
-            params.append(t)
-            line_index += 1                                         # skip to next line
-    line_index -= 1
-
-    return params, line_index
-
-
 def iwfm_read_precip_vals(precip_file, verbose=False):
     """iwfm_read_precip_vals() - Read precipitation from a file and organize them into lists.
 
@@ -95,7 +23,7 @@ def iwfm_read_precip_vals(precip_file, verbose=False):
     ----------
     precip_file : str
         The path of the file containing the precipitation data.
-  
+
     verbose : bool, default = False
         If True, print status messages.
 
@@ -107,38 +35,35 @@ def iwfm_read_precip_vals(precip_file, verbose=False):
 
     """
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(precip_file)
     with open(precip_file) as f:
-        pr_lines = f.read().splitlines()                   # open and read input file
+        pr_lines = f.read().splitlines()                                # open and read input file
 
-    line_index = iwfm.skip_ahead(0, pr_lines, 0)                # skip to next value line
-    nrain = int(pr_lines[line_index].split()[0])                # number of columns
+    nrain, line_index = read_next_line_value(pr_lines, -1)              # number of columns
+    nrain = int(nrain)
 
-    line_index = iwfm.skip_ahead(line_index + 1, pr_lines, 0)   # skip to next value line
-    factrn = float(pr_lines[line_index].split()[0])             # conversion factor
+    factrn, line_index = read_next_line_value(pr_lines, line_index)     # conversion factor
+    factrn = float(factrn)
 
-    line_index = iwfm.skip_ahead(line_index + 1, pr_lines, 0)   # skip to next value line
-    nsprn = int(pr_lines[line_index].split()[0])                # number of timesteps to update et data
+    nsprn, line_index = read_next_line_value(pr_lines, line_index)      # number of timesteps to update et data
+    nsprn = int(nsprn)
 
-    line_index = iwfm.skip_ahead(line_index + 1, pr_lines, 0)   # skip to next value line
-    nfqrn = int(pr_lines[line_index].split()[0])                # repetition requency of et data
+    nfqrn, line_index = read_next_line_value(pr_lines, line_index)      # repetition frequency of et data
+    nfqrn = int(nfqrn)
 
-    line_index = iwfm.skip_ahead(line_index + 1, pr_lines, 0)   # skip to next value line
-    dssfl = pr_lines[line_index].split()[0]                     # dss file name
+    dssfl, line_index = read_next_line_value(pr_lines, line_index)      # dss file name
 
-    line_index = iwfm.skip_ahead(line_index + 1, pr_lines, 0)   # skip to next value line
+    _, line_index = read_next_line_value(pr_lines, line_index)          # skip to first data line
 
-    # evapotranspiration data
+    # precipitation data
     precip = []
     while line_index < len(pr_lines) and len(pr_lines[line_index]) > 10:
         t = pr_lines[line_index].split()
-        for i in range(1,nrain):
+        for i in range(1, nrain):
             t[i] = float(t[i])
         precip.append(t)
         line_index += 1
 
-    params = precip
-
-
-    return params
+    return precip

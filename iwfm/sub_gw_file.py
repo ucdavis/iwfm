@@ -30,7 +30,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         existing model file names
 
     sim_dict_new : str
-        new subnmodel file names
+        new submodel file names
 
     node_list : list of ints
         list of existing model nodes in submodel
@@ -41,6 +41,9 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
     bounding_poly : shapely.geometry Polygon
         submodel boundary form model nodes
 
+    sim_base_path : Path, optional
+        base path for resolving relative file paths
+
     verbose : bool, default=False
         turn command-line output on or off
 
@@ -49,13 +52,15 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
     nothing
 
     '''
-    import iwfm 
-    from shapely.geometry import Point, Polygon
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
+    from shapely.geometry import Point
     from pathlib import Path
-    import os
     import sys
 
-    comments = ['C','c','*','#']
+    if verbose: print(f"Entered sub_gw_file() with {sim_dict.get('gw_file', 'N/A')}")
+
+    comments = ['C', 'c', '*', '#']
     nodes = []
     for n in node_list:
         nodes.append(n)
@@ -85,15 +90,11 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         gw_lines = f.read().splitlines()
     gw_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, gw_lines, 0)                # skip initial comments
-
     gw_dict = {}
-
 
     # -- file names --
     # boundary condition file
-    line_index = iwfm.skip_ahead(line_index, gw_lines, 0)
-    bc_file = gw_lines[line_index].split()[0]                   # boundary condiitons main file
+    bc_file, line_index = read_next_line_value(gw_lines, -1)
     bc_line = line_index   # if no boundary conditions in submodel, come back and remove file name
     have_bc = True
     if bc_file[0] == '/':
@@ -107,10 +108,8 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         gw_lines[line_index] = '   ' + sim_dict_new['bc_file'] + '.dat		        / BCFL'
     gw_dict['bc_file'] = bc_file
 
-
     # tile drain file
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0)
-    td_file = gw_lines[line_index].split()[0]                   # tile drain main file
+    td_file, line_index = read_next_line_value(gw_lines, line_index)
     tile_line = line_index   # if no tile drains in submodel, come back and remove file name
     have_td = True
     if td_file[0] == '/':
@@ -124,10 +123,8 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         gw_lines[line_index] = '   ' + sim_dict_new['drain_file'] + '.dat		        / TDFL'
     gw_dict['drain_file'] = td_file
 
-
     # pumping file
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0)
-    pump_file = gw_lines[line_index].split()[0]                 # pumping main file
+    pump_file, line_index = read_next_line_value(gw_lines, line_index)
     pump_line = line_index   # if no pumping in submodel, come back and remove file name
     have_pump = True
     if pump_file[0] == '/':
@@ -141,10 +138,8 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         gw_lines[line_index] = '   ' + sim_dict_new['pump_file'] + '.dat		        / PUMPFL'
     gw_dict['pump_file'] = pump_file
 
-
     # subsidence file
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0)
-    subs_file = gw_lines[line_index].split()[0]           # subsidence main file
+    subs_file, line_index = read_next_line_value(gw_lines, line_index)
     subs_line = line_index   # if no subsidence in submodel, come back and remove file name
     have_subs = True
     if subs_file[0] == '/':
@@ -158,17 +153,17 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         gw_lines[line_index] = '   ' + sim_dict_new['sub_file'] + '.dat		        / SUBSFL'
     gw_dict['subs_file'] = subs_file
 
-
     # -- hydrograph section --
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 16)
-
-    nhyds = int(gw_lines[line_index].split()[0])                # number of hydrographs
+    # skip 16 non-comment lines to get to NOUTH
+    nhyds_str, line_index = read_next_line_value(gw_lines, line_index, skip_lines=16)
+    nhyds = int(nhyds_str)
     hyds_line = line_index
 
-    line_index = iwfm.skip_ahead(line_index, gw_lines, 3)
+    # skip 3 lines (NOUTH, FACTXY, GWHYDOUTFL) to get to hydrograph data
+    _, line_index = read_next_line_value(gw_lines, line_index, skip_lines=2)
 
     # check each hydrographs and remove the hydrographs outside the submodel boundary
-    new_hyds = 0 
+    new_hyds = 0
     for i in range(0, nhyds):
         t = gw_lines[line_index].split()
         point = Point(float(t[3]), float(t[4]))
@@ -181,23 +176,21 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
 
     # update the number of hydrographs
     gw_lines[hyds_line] = '     ' + str(new_hyds) + '        / NOUTH'
-    
+
     # -- element face flow section --
     # --  TODO:  element face flow section
-    # skip element face flow section
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 2) 
-
+    # skip element face flow section (2 lines: NOUTF, FCHYDOUTFL)
+    _, line_index = read_next_line_value(gw_lines, line_index, skip_lines=2)
 
     # -- parametric grid for groundwater parameters --
     pgroups = int(gw_lines[line_index].split()[0])              # parametric grid?
- 
-    # skip factors
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 4)
+
+    # skip factors (4 lines after NGROUP)
+    _, line_index = read_next_line_value(gw_lines, line_index, skip_lines=4)
 
     # --  TODO:  if pgroups > 0,  skip parametric grid(s)
 
-
-    # -- parameters for each model node -- 
+    # -- parameters for each model node --
     # first, determine the number of layers - 1st line has 6 items, others have 5 items
     layers, line = 1, line_index + 1
     while len(gw_lines[line].split()) < 6:
@@ -205,48 +198,47 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         line += 1
 
     # count the number of nodes in the original model file
-    line, node_count = line_index, 0 # starting point
+    line, node_count = line_index, 0  # starting point
     while gw_lines[line][0] not in comments:
         line += 1
         node_count += 1
     node_count = int(node_count / layers)
 
     # remove parameters for nodes that are not in the submodel
-    for l in range(1,node_count + 1):
-        if (l not in nodes):
-            for i in range(0,layers):  # remove <layers> lines
+    for l in range(1, node_count + 1):
+        if l not in nodes:
+            for i in range(0, layers):  # remove <layers> lines
                 del gw_lines[line_index]
         else:
             line_index += layers
 
     # -- hydraulic conductivity anomalies --
     # skip to nebk
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 0)
-    nebk = int(gw_lines[line_index].split()[0])                # number of hydrographs
+    nebk_str, line_index = read_next_line_value(gw_lines, line_index)
+    nebk = int(nebk_str)
     nebk_line = line_index
 
-    # skip to hydraulic conductivity anomalies
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 2)
+    # skip to hydraulic conductivity anomalies (2 lines: FACT, TUNITH)
+    _, line_index = read_next_line_value(gw_lines, line_index, skip_lines=2)
     nebk_new = 0
     # remove lines that are not in submodel
-    for l in range(0,nebk):                         
-        if (int(gw_lines[line_index].split()[1]) in elems):
+    for l in range(0, nebk):
+        if int(gw_lines[line_index].split()[1]) in elems:
             line_index += 1
             nebk_new += 1
         else:
             del gw_lines[line_index]
     gw_lines[nebk_line] = '     ' + str(nebk_new) + '                         / NEBK'
 
-
     # -- initial conditions --
-    line_index = iwfm.skip_ahead(line_index + 1, gw_lines, 1)
+    # skip 1 line (FACTHP) to get to initial head data
+    _, line_index = read_next_line_value(gw_lines, line_index, skip_lines=1)
     # remove lines that are not in submodel
-    for l in range(1,node_count + 1):            
-        if (l not in nodes):
-                del gw_lines[line_index]
+    for l in range(1, node_count + 1):
+        if l not in nodes:
+            del gw_lines[line_index]
         else:
             line_index += 1
- 
 
     # -- boundary conditions file --
     if have_bc:
@@ -262,7 +254,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
     if have_pump:
         iwfm.sub_gw_pump_file(pump_file, sim_dict_new, elems, bounding_poly, base_path, verbose=verbose)
 
-    # -- subsidence file -- 
+    # -- subsidence file --
     if have_subs:
         iwfm.sub_gw_subs_file(subs_file, sim_dict_new['sub_file'], node_list, bounding_poly, verbose=verbose)
 
@@ -270,7 +262,9 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
 
     with open(sim_dict_new['gw_file'], 'w') as outfile:
         outfile.write('\n'.join(gw_lines))
+
     if verbose:
         print(f'  Wrote groundwater main file {sim_dict_new["gw_file"]}')
+        print(f"Leaving sub_gw_file()")
 
     return

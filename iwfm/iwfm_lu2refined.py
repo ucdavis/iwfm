@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+
 def iwfm_lu2refined(in_lu_file,lu_factors,verbose=False):
     ''' iwfm_lu2refined() - Modify IWFM land use file for a refined model
 
@@ -38,13 +39,14 @@ def iwfm_lu2refined(in_lu_file,lu_factors,verbose=False):
     import os
     import re
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
 
     # read the original IWFM Land Use file
     iwfm.file_test(in_lu_file)
     with open(in_lu_file) as f:
         lu_lines = f.read().splitlines()  # open and read input file
-    line_index = iwfm.skip_ahead(0, lu_lines, 4)  # skip comments and header
+    _, line_index = read_next_line_value(lu_lines, -1, column=0, skip_lines=4)  # skip comments and header
 
     # open the output land use file
     out_lu_file_name = os.path.basename(in_lu_file).split('.')[0]+'_refined.dat'
@@ -110,7 +112,7 @@ if __name__ == '__main__':
     ' Run iwfm_lu2refined() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     args = sys.argv
 

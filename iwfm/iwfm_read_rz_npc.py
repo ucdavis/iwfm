@@ -25,7 +25,7 @@ def iwfm_read_rz_npc(file, verbose=False):
     ----------
     file : str
         The path of the file containing the non-ponded crop data.
-  
+
     verbose : bool, default = False
         If True, print status messages.
 
@@ -34,7 +34,7 @@ def iwfm_read_rz_npc(file, verbose=False):
 
     crops : list
         A list of crop codes
-    
+
     params : list
         A list of parameters: [cn, et, wsp, ip, ms, ts, rf, ru, ic]
 
@@ -42,55 +42,50 @@ def iwfm_read_rz_npc(file, verbose=False):
         A list of file names: [npc_area_file, npc_bd_file, npc_zb_file, npc_rd_file, npc_ms_file, npc_ts_file, npc_md_file]
 
     """
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     if verbose: print(f"Entered iwfm_read_rz_npc() with {file}")
 
+    iwfm.file_test(file)
     with open(file) as f:
-        npc_lines = f.read().splitlines()                  # open and read input file
+        npc_lines = f.read().splitlines()                           # open and read input file
 
-    line_index = iwfm.skip_ahead(0, npc_lines, 0)               # skip to number of crop types
-    ncrop = int(npc_lines[line_index].split()[0])               # number of crop types
+    ncrop, line_index = read_next_line_value(npc_lines, -1)         # number of crop types
+    ncrop = int(ncrop)
 
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-    fldmd = int(npc_lines[line_index].split()[0])               # soil moisture ocmputation method flag
+    fldmd, line_index = read_next_line_value(npc_lines, line_index) # soil moisture computation method flag
+    fldmd = int(fldmd)
 
     # read crop codes
     crops = []
     for i in range(ncrop):
-        line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-        crops.append(npc_lines[line_index].split()[0])              # crop code
+        crop, line_index = read_next_line_value(npc_lines, line_index)
+        crops.append(crop)
 
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-    npc_area_file = npc_lines[line_index].split()[0]
+    npc_area_file, line_index = read_next_line_value(npc_lines, line_index)
 
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-    nbcrop = int(npc_lines[line_index].split()[0])               # soil moisture ocmputation method flag
+    nbcrop, line_index = read_next_line_value(npc_lines, line_index)
+    nbcrop = int(nbcrop)
 
-    line_index = iwfm.skip_ahead(line_index + 1 + nbcrop, npc_lines, 0) # skip to budget file names
-    npc_bd_file = npc_lines[line_index].split()[0]                   # read crop budget file name
+    npc_bd_file, line_index = read_next_line_value(npc_lines, line_index, skip_lines=nbcrop)  # crop budget file name
 
-    line_index = iwfm.skip_ahead(line_index + 1 + nbcrop, npc_lines, 0) # skip to budget file names
-    npc_zb_file = npc_lines[line_index].split()[0]                   # read crop zbudget fractions file name
+    npc_zb_file, line_index = read_next_line_value(npc_lines, line_index, skip_lines=nbcrop)  # crop zbudget fractions file name
 
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)          # skip budget file names
-    npc_rd_file = npc_lines[line_index].split()[0]                   # read rooting depth fractions file name
+    npc_rd_file, line_index = read_next_line_value(npc_lines, line_index)   # rooting depth fractions file name
 
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-    fact = float(npc_lines[line_index].split()[0])               # soil moisture ocmputation method flag
+    fact, line_index = read_next_line_value(npc_lines, line_index)
+    fact = float(fact)
 
     # read rooting depths
     rd = []
     for i in range(ncrop):
-        line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-        t = []
-        t.append(int(npc_lines[line_index].split()[0]))  
-        t.append(float(npc_lines[line_index].split()[1]))
-        t.append(int(npc_lines[line_index].split()[2]))  
-        rd.append(t)
+        _, line_index = read_next_line_value(npc_lines, line_index)
+        parts = npc_lines[line_index].split()
+        rd.append([int(parts[0]), float(parts[1]), int(parts[2])])
 
     # how many elements?
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    _, line_index = read_next_line_value(npc_lines, line_index)
     ne = 0
     while (line_index + ne < len(npc_lines) and
            npc_lines[line_index+(ne)].split()[0] != 'C'):
@@ -105,52 +100,43 @@ def iwfm_read_rz_npc(file, verbose=False):
 
     # curve numbers
     cn, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    _, line_index = read_next_line_value(npc_lines, line_index)
 
     # ET
     et, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    _, line_index = read_next_line_value(npc_lines, line_index)
 
     # ag water supply requirement
     wsp, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    _, line_index = read_next_line_value(npc_lines, line_index)
 
     # irrigation period
     ip, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-
-    # minimum soil moisture
-    npc_ms_file = npc_lines[line_index].split()[0]                   # read minimum soil moisture file name
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    npc_ms_file, line_index = read_next_line_value(npc_lines, line_index)   # minimum soil moisture file name
+    _, line_index = read_next_line_value(npc_lines, line_index)             # skip to ms data
 
     ms, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-
-    # target soil misture
-    npc_ts_file = npc_lines[line_index].split()[0]                   # read target soil moisture file name
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    npc_ts_file, line_index = read_next_line_value(npc_lines, line_index)   # target soil moisture file name
+    _, line_index = read_next_line_value(npc_lines, line_index)             # skip to tsm data
 
     tsm, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    _, line_index = read_next_line_value(npc_lines, line_index)
 
     # return flow fractions
     rf, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    _, line_index = read_next_line_value(npc_lines, line_index)
 
     # reuse fractions
     ru, line_index = iwfm.iwfm_read_param_table_ints(npc_lines, line_index, ne)
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
-
-    # minimum deep perc fractions
-    npc_md_file = npc_lines[line_index].split()[0]                   # read target soil moisture file name
-    line_index = iwfm.skip_ahead(line_index + 1, npc_lines, 0)  # skip to next value line
+    npc_md_file, line_index = read_next_line_value(npc_lines, line_index)   # minimum deep perc file name
+    _, line_index = read_next_line_value(npc_lines, line_index)             # skip to ic data
 
     # initial condition
     ic, line_index = iwfm.iwfm_read_param_table_floats(npc_lines, line_index, ne)
 
     params = [cn, et, wsp, ip, ms, tsm, rf, ru, ic]
     files = [npc_area_file, npc_bd_file, npc_zb_file, npc_rd_file, npc_ms_file, npc_ts_file, npc_md_file]
-         
+
     if verbose: print(f"Leaving iwfm_read_rz_npc()")
 
     return crops, params, files

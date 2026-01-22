@@ -43,19 +43,20 @@ def iwfm_read_lake(lake_file):
               number of elements in lake
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     iwfm.file_test(lake_file)
     with open(lake_file) as f:
-        lake_lines = f.read().splitlines()  
+        lake_lines = f.read().splitlines()
 
-    lake_index = iwfm.skip_ahead(0, lake_lines, 0)  
+    _, lake_index = read_next_line_value(lake_lines, -1, column=0)
     nlakes = int(lake_lines[lake_index].split()[0])
 
     lakes, lake_elems = [], []
     for i in range(0, nlakes):
-        lake_index = iwfm.skip_ahead(lake_index + 1, lake_lines, 0)  
-        l = lake_lines[lake_index].split() 
+        _, lake_index = read_next_line_value(lake_lines, lake_index, column=0)
+        l = lake_lines[lake_index].split()
         lake_id = int(l.pop(0))
         max_elev = float(l.pop(0))
         dest = int(l.pop(0))
@@ -63,10 +64,10 @@ def iwfm_read_lake(lake_file):
         lakes.append([lake_id, max_elev, dest, nelem])
         for j in range(0, nelem):
             e = []
-            if j > 0:  
-                lake_index = iwfm.skip_ahead(lake_index + 1, lake_lines, 0)  
-                l = lake_lines[lake_index].split()  
-            e.append(lake_id)  
-            e.append(int(l[0])) 
+            if j > 0:
+                _, lake_index = read_next_line_value(lake_lines, lake_index, column=0)
+                l = lake_lines[lake_index].split()
+            e.append(lake_id)
+            e.append(int(l[0]))
             lake_elems.append(e)
     return lake_elems, lakes

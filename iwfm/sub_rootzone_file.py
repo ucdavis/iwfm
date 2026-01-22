@@ -49,8 +49,9 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=N
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
     from pathlib import Path
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
 
@@ -64,7 +65,8 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=N
     with open(sim_dict['root_file']) as f:
         rz_lines = f.read().splitlines()
 
-    line_index = iwfm.skip_ahead(1, rz_lines, 4)                # skip initial comments and factors
+    # Skip initial comments and 4 factor lines
+    _, line_index = read_next_line_value(rz_lines, 0, column=0, skip_lines=4)
 
     rz_dict = {}
 
@@ -83,7 +85,7 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=N
     rz_dict['np_file'] = npc_file
 
     # ponded crop file name
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
+    _, line_index = read_next_line_value(rz_lines, line_index, column=0, skip_lines=0)
     pc_file = rz_lines[line_index].split()[0]                   # ponded crop file
     have_pc = True
     if pc_file[0] == '/':
@@ -99,7 +101,7 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=N
     rz_dict['pc_file'] = pc_file
 
     # urban file name
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
+    _, line_index = read_next_line_value(rz_lines, line_index, column=0, skip_lines=0)
     urban_file = rz_lines[line_index].split()[0]                 # urban file
     urban_line = line_index
     have_urban = True
@@ -116,7 +118,7 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=N
     rz_dict['ur_file'] = urban_file
 
     # native veg file
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 0)
+    _, line_index = read_next_line_value(rz_lines, line_index, column=0, skip_lines=0)
     nv_file = rz_lines[line_index].split()[0]           # native veg file
     have_nv = True
     if nv_file[0] == '/':
@@ -131,8 +133,8 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=N
         rz_lines[line_index] = '   ' + sim_dict_new['nv_file'] + '.dat		        / NVRVFL'
     rz_dict['nv_file'] = nv_file
 
-    # skip input lines and comments to soil parameters sectoin
-    line_index = iwfm.skip_ahead(line_index + 1, rz_lines, 13)
+    # skip input lines and comments to soil parameters section
+    _, line_index = read_next_line_value(rz_lines, line_index, column=0, skip_lines=13)
 
     # remove elements not in submodel, modify stream node of elements in submodel
     while line_index < len(rz_lines):

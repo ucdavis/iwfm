@@ -27,13 +27,13 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
     ----------
     elem_file : str
         name of existing preprocessor element file
-    
+
     new_elem_file : str
         name of submodel preprocessor element file
-    
+
     elem_list : list of ints
         list of submodel elements
-    
+
     new_srs : list of ints
         list of submodel subregions
 
@@ -43,7 +43,8 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
         list of [element id, nodes and subregion] for each submodel element
 
     '''
-    import iwfm 
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
 
@@ -55,28 +56,33 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
     with open(elem_file) as f:
         elem_lines = f.read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, elem_lines, 0)  # skip comments
+    # Skip comments and read NE line
+    _, line_index = read_next_line_value(elem_lines, -1, column=0, skip_lines=0)
     elem_lines[line_index] = iwfm.pad_both(str(len(elem_list)), f=4, b=35) + ' '.join(
         elem_lines[line_index].split()[1:]
     )
 
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+    # Skip to NREGN line
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
     elem_lines[line_index] = iwfm.pad_both(str(len(new_srs)), f=4, b=35) + ' '.join(
         elem_lines[line_index].split()[1:]
     )
 
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+    # Skip to first subregion line
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
 
     for sr in range(0, len(new_srs)):
         elem_lines[line_index] = iwfm.pad_both(
             'Subregion ' + str(new_srs[sr]), f=4, b=25
         ) + ' '.join(elem_lines[line_index].split()[2:])
-        line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+        # Skip to next subregion line
+        _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
     # remove the remaining 'Subregion' lines
     while elem_lines[line_index][0] not in comments:
         del elem_lines[line_index]
 
-    line_index = iwfm.skip_ahead(line_index + 1, elem_lines, 0)
+    # Skip to element data section
+    _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
 
     new_elem_lines = elem_lines[:line_index]
 

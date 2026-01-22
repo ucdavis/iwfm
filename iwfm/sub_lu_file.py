@@ -19,18 +19,18 @@
 
 
 def sub_lu_file(in_filename, out_filename, elems, verbose=False):
-    ''' sub_lu_file() - Copy original land use input file, 
-        remove the elements that are not in the submodel, 
+    ''' sub_lu_file() - Copy original land use input file,
+        remove the elements that are not in the submodel,
         and write out the new file
 
     Parameters
     ----------
     in_filename : str
         name of existing land use file
-    
+
     out_filename : str
         name of new land use file
-    
+
     elems : list of ints
         list of existing model elements in submodel
 
@@ -41,7 +41,8 @@ def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     # Use iwfm utility for file validation
     iwfm.file_test(in_filename)
@@ -50,7 +51,10 @@ def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     with open(in_filename) as f:
         lu_lines = f.read().splitlines()  # open and read input file
 
-    line_index = iwfm.skip_ahead(0, lu_lines, 4)  # skip comments
+    # Skip comments and spec lines (4 data lines) to reach land use data
+    # read_next_line_value skips skip_lines, then reads the next line
+    # We need to skip 4 spec lines and position at the first data line
+    _, line_index = read_next_line_value(lu_lines, -1, column=0, skip_lines=4)
 
     # read the land use data into lists
     lu_table, lu_dates, lu_elems = iwfm.read_lu_file(in_filename)

@@ -33,18 +33,21 @@ def hyd_dict(gwhyd_info_file):
 
     '''
     import iwfm
+    from iwfm.file_utils import read_next_line_value
 
     well_dict = {}
     iwfm.file_test(gwhyd_info_file)
     with open(gwhyd_info_file) as f:
         gwhyd_info = f.read().splitlines()  # open and read input file
 
-    # skip to NOUTH, number of hydrographs
-    line_index = iwfm.skip_ahead(1, gwhyd_info, 20)
-    nouth = int(gwhyd_info[line_index].split()[0])
+    # skip to NOUTH, number of hydrographs (skip 20 non-comment lines after start)
+    nouth_str, line_index = read_next_line_value(gwhyd_info, 0, column=0, skip_lines=20)
+    nouth = int(nouth_str)
 
-    line_index = iwfm.skip_ahead(line_index, gwhyd_info, 3)  # skip to first hydrograph (skips NOUTH, FACTXY, GWHYDOUTFL)
-    for i in range(0, nouth):
+    # skip to first hydrograph (skip 3 lines: NOUTH, FACTXY, GWHYDOUTFL)
+    _, line_index = read_next_line_value(gwhyd_info, line_index, column=0, skip_lines=2)
+
+    for _ in range(nouth):
         items = []
         line = gwhyd_info[line_index].split()
 
@@ -53,20 +56,22 @@ def hyd_dict(gwhyd_info_file):
         # HYDTYP=1 (node number): 5 fields [ID, HYDTYP, LAYER, NODE, NAME]
         if len(line) >= 6:
             # HYDTYP=0 format with X-Y coordinates
-            items.append(line[5].lower())  # well name = key
+            well_name = line[5].lower()
+            items.append(well_name)        # well name = key
             items.append(int(line[0]))     # column number in hydrograph file
             items.append(float(line[3]))   # x
             items.append(float(line[4]))   # y
             items.append(int(line[2]))     # model layer
-            items.append(line[5].lower())  # well name
+            items.append(well_name)        # well name
         else:
             # HYDTYP=1 format with node number
-            items.append(line[4].lower())  # well name = key
+            well_name = line[4].lower()
+            items.append(well_name)        # well name = key
             items.append(int(line[0]))     # column number in hydrograph file
             items.append(0.0)              # x (not available for node format)
             items.append(0.0)              # y (not available for node format)
             items.append(int(line[2]))     # model layer
-            items.append(line[4].lower())  # well name
+            items.append(well_name)        # well name
 
         well_dict[items[0]] = items[1:]
         line_index += 1

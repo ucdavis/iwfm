@@ -19,8 +19,8 @@
 
 
 def sub_gw_bc_cghd_file(old_filename, new_filename, nodes, verbose=False):
-    '''sub_gw_bc_cghd_file() - Read the original groundwater constrained general head 
-        boundary conditions file, determine which boundary conditions are in the submodel, 
+    '''sub_gw_bc_cghd_file() - Read the original groundwater constrained general head
+        boundary conditions file, determine which boundary conditions are in the submodel,
         and write out a new file
 
     Parameters
@@ -28,8 +28,8 @@ def sub_gw_bc_cghd_file(old_filename, new_filename, nodes, verbose=False):
     old_filename : str
         name of existing model constrained general head boundary condition file
 
-     new_filename : str
-        name of new subnmodel constrained general head boundary condition file
+    new_filename : str
+        name of new submodel constrained general head boundary condition file
 
     nodes : list of ints
         list of existing model nodes in submodel
@@ -43,9 +43,10 @@ def sub_gw_bc_cghd_file(old_filename, new_filename, nodes, verbose=False):
         number of boundary conditions in new file
 
     '''
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.file_utils import read_next_line_value
 
-    comments = ['C','c','*','#']
+    if verbose: print(f"Entered sub_gw_bc_cghd_file() with {old_filename}")
 
     # Check if constrained head BC file exists using iwfm utility
     iwfm.file_test(old_filename)
@@ -54,27 +55,29 @@ def sub_gw_bc_cghd_file(old_filename, new_filename, nodes, verbose=False):
         cg_lines = f.read().splitlines()
     cg_lines.append('')
 
-    line_index = iwfm.skip_ahead(0, cg_lines, 0)                # skip initial comments
+    # skip initial comments to get NGB
+    ngb_str, ngb_line = read_next_line_value(cg_lines, -1)
+    ngb = int(ngb_str)
 
-    ngb = int(cg_lines[line_index].split()[0])  
-    ngb_line = line_index
-
-    line_index = iwfm.skip_ahead(0, cg_lines, 6)                # skip initial comments
+    # skip to first boundary condition data line (skip 5 lines: FACTH, FACTVL, TUNITVL, FACTC, TUNITC)
+    _, line_index = read_next_line_value(cg_lines, ngb_line, skip_lines=5)
 
     # remove lines for nodes that are not in the submodel
     new_ngb = 0
-    for l in range(0,ngb):
-        if (int(cg_lines[line_index].split()[0]) not in nodes):
+    for l in range(0, ngb):
+        if int(cg_lines[line_index].split()[0]) not in nodes:
             del cg_lines[line_index]
         else:
             line_index += 1
             new_ngb += 1
 
-    cg_lines[ngb_line] = '     '+ str(new_ngb) +'                         / NGB'
+    cg_lines[ngb_line] = '     ' + str(new_ngb) + '                         / NGB'
 
     with open(new_filename, 'w') as outfile:
         outfile.write('\n'.join(cg_lines))
-        if verbose:
-            print(f'      Wrote constrained general head BC file {new_filename}')
+
+    if verbose:
+        print(f'      Wrote constrained general head BC file {new_filename}')
+        print(f"Leaving sub_gw_bc_cghd_file()")
 
     return new_ngb

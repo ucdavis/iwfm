@@ -48,6 +48,7 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     '''
     import iwfm
     from pathlib import Path
+    from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']
 
@@ -63,7 +64,7 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
         stream_lines = f.read().splitlines()
     stream_lines.append('')
 
-    line_index = iwfm.skip_ahead(1, stream_lines, 0)                # skip initial comments
+    _, line_index = read_next_line_value(stream_lines, 0, column=0, skip_lines=0)  # skip initial comments (starting from line 1)
 
     st_dict = {}
 
@@ -83,7 +84,7 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     st_dict['stin_file'] = inflow_file
 
     # diversion specification file name
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=0)
     divspec_file = stream_lines[line_index].split()[0]                   # tile drain main file
     have_divspec = True
     if divspec_file[0] == '/':
@@ -99,7 +100,7 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     st_dict['divspec_file'] = divspec_file
 
     # bypass specification file name
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=0)
     bp_file = stream_lines[line_index].split()[0]                 # bypass specification file
     bp_line = line_index
     have_bp = True
@@ -116,7 +117,7 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     st_dict['bp_file'] = bp_file
 
     # diversion time series file
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0) 
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=0)
     div_file = stream_lines[line_index].split()[0]           # subsidence main file
     have_div = True
     if div_file[0] == '/':
@@ -132,13 +133,13 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     st_dict['div_file'] = div_file
 
     # skip comments to hydrograph section
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 2)
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=2)
 
     nhyds = int(stream_lines[line_index].split()[0])                # number of hydrographs
     hyds_line = line_index
  
     # --  hydrograph section --
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 6)
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=6)
  
     # check each hydrographs and remove the hydrographs outside the submodel boundary
     new_hyds = 0 
@@ -155,13 +156,13 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     stream_lines[hyds_line] = '     ' + str(new_hyds) + '        / NOUTR'
     
     # --- stream node budgets section --
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 0)
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=0)
 
     nbud = int(stream_lines[line_index].split()[0])                # number of stream node budgets
     buds_line = line_index
  
     # check each hydrographs and remove the hydrographs outside the submodel boundary
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 1)
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=1)
     new_buds = 0 
     for i in range(0, nbud):
         sn = int(stream_lines[line_index].split()[0])
@@ -176,7 +177,7 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
     stream_lines[buds_line] = '     ' + str(new_buds) + '        / NBUDR'
     
     # -- streambed parameters
-    line_index = iwfm.skip_ahead(line_index + 1, stream_lines, 3)
+    _, line_index = read_next_line_value(stream_lines, line_index, column=0, skip_lines=3)
 
     count = 0 
     while len(stream_lines) > line_index and len(stream_lines[line_index]) > 0 and stream_lines[line_index][0] not in comments:
