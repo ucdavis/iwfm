@@ -32,9 +32,6 @@ def save_plot(fig, filename):
     nothing
 
     """
-    from mpl_toolkits.mplot3d import Axes3D
-    import matplotlib.pyplot as plt
-    import numpy as np
 
     from PIL import Image
     from io import BytesIO

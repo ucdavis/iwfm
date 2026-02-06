@@ -51,7 +51,6 @@ def map_to_nodes_png(dataset, image_name, scaling_factor = 0.01 , point_type='ci
     """
     from PIL import Image, ImageDraw, ImageFont
     import iwfm.plot as iplot
-    import matplotlib.pyplot as plt
 
     # multiply y values by -1 to flip image
     dataset = iplot.flip_y(dataset)

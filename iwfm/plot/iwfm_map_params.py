@@ -16,412 +16,442 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def get_params(data_filename, param_type, param_values, verbose=False):
-    ''' get_params() - Get the parameter values from the data file 
-    
+# ---- Module-level parameter dictionary ----
+# Maps parameter keyword to [category, description]
+INPUT_DICT = {
+    'kh'     : ['Groundwater',  'Horizontal hydraulic conductivity'],
+    'ss'     : ['Groundwater',  'Specific storage'],
+    'sy'     : ['Groundwater',  'Specific yield'],
+    'kv'     : ['Groundwater',  'Vertical hydraulic conductivity'],
+    'kq'     : ['Groundwater',  'Aquiclude hydraulic conductivity'],
+    'gwic'   : ['Groundwater',  'Initial groundwater head'],
+
+    'nuz'    : ['Unsaturated',  'Unsaturated zone porosity'],
+    'iuz'    : ['Unsaturated',  'Unsaturated zone pore-size distribution index'],
+    'kuz'    : ['Unsaturated',  'Unsaturated zone hydraulic conductivity'],
+    'rhcuz'  : ['Unsaturated',  'Method to represent hydraulic conductivity vs. moisture content curve'],
+    'icuz'   : ['Unsaturated',  'Initial unsaturated zone moisture content'],
+
+    'wp'     : ['Rootzone',     'Wilting point'],
+    'fc'     : ['Rootzone',     'Field capacity'],
+    'tn'     : ['Rootzone',     'Porosity'],
+    'lambda' : ['Rootzone',     'Pore-size distribution index'],
+    'ksoil'  : ['Rootzone',     'Rootzone hydraulic conductivity'],
+    'rhc'    : ['Rootzone',     'Method to represent hydraulic conductivity vs. moisture content curve'],
+    'cp'     : ['Rootzone',     'Capillary rise'],
+    'irne'   : ['Rootzone',     'Precipitation column'],
+    'frne'   : ['Rootzone',     'Precipitation multiplier'],
+    'imsrc'  : ['Rootzone',     'Irrigation source column'],
+    'tp'     : ['Rootzone',     'Runoff and return flow destination type'],
+    'dest'   : ['Rootzone',     'Runoff and return flow destination value'],
+    'kpond'  : ['Rootzone',     'Ponded hydraulic conductivity'],
+
+    'cnnp'   : ['Non-ponded',   'Curve Number value'],
+    'etnp'   : ['Non-ponded',   'ET column'],
+    'ipnp'   : ['Non-ponded',   'Irrigation Period column'],
+    'tsnp'   : ['Non-ponded',   'Target soil moisture column'],
+    'rfnp'   : ['Non-ponded',   'Irrigation water return flow fraction column'],
+    'icnp'   : ['Non-ponded',   'Initial soil moisture condition'],
+
+    'cnpc'   : ['Ponded',       'Curve Number value'],
+    'etpc'   : ['Ponded',       'ET column'],
+    'wsppc'  : ['Ponded',       'Water Supply Requirement column'],
+    'ippc'   : ['Ponded',       'Irrigation Period column'],
+    'pdpc'   : ['Ponded',       'Ponding Depths column'],
+    'adpc'   : ['Ponded',       'Application Depths column'],
+    'rfpc'   : ['Ponded',       'Return Flow Depths column'],
+    'rupc'   : ['Ponded',       'Reuse Flow Depths column'],
+    'icpc'   : ['Ponded',       'Initial soil moisture condition'],
+
+    'perv'   : ['Urban',        'Percent pervious'],
+    'cnur'   : ['Urban',        'Curve Number value'],
+    'pop'    : ['Urban',        'Population column'],
+    'wtr'    : ['Urban',        'Water use column'],
+    'frur'   : ['Urban',        'Urban demand population fraction'],
+    'etur'   : ['Urban',        'ET column'],
+    'rtur'   : ['Urban',        'Urban fraction to runoff column'],
+    'ruur'   : ['Urban',        'Urban fraction reused column'],
+    'riur'   : ['Urban',        'Urban fraction used indoors column'],
+    'icur'   : ['Urban',        'Initial urban moisture content'],
+
+    'cnnv'   : ['Native',       'Native Vegetation Curve Number value'],
+    'cnrv'   : ['Native',       'Riparian Vegetation Curve Number value'],
+    'etnv'   : ['Native',       'Native Vegetation ET column'],
+    'etrv'   : ['Native',       'Riparian Vegetation ET column'],
+    'strv'   : ['Native',       'Riparian Vegetation source stream node'],
+    'icnv'   : ['Native',       'Initial native vegetation moisture content'],
+    'icrv'   : ['Native',       'Initial riparian vegetation moisture content'],
+
+    'et'     : ['ET',           'ET values'],
+    'pr'     : ['Precip',       'Precipitation values'],
+}
+
+# Maps category to sim_dict key for the file containing that data
+CATEGORY_TO_FILETYPE = {
+    'Groundwater': 'gw_file',
+    'Unsaturated': 'unsat_file',
+    'Rootzone':    'root_file',
+    'Non-ponded':  'root_file',
+    'Ponded':      'root_file',
+    'Urban':       'root_file',
+    'Native':      'root_file',
+    'ET':          'et_file',
+    'Precip':      'precip_file',
+}
+
+# Maps category to (reader_function_name, param_index_dict, data_format)
+CATEGORY_DISPATCH = {
+    'Groundwater': ('iwfm_read_gw_params',
+                    {'kh': 0, 'ss': 1, 'sy': 2, 'kq': 3, 'kv': 4, 'gwic': 5},
+                    'nodes'),
+    'Rootzone':    ('iwfm_read_rz_params',
+                    {'wp': 0, 'fc': 1, 'tn': 2, 'lambda': 3, 'ksoil': 4,
+                     'rhc': 5, 'cp': 6, 'irne': 7, 'frne': 8, 'imsrc': 9,
+                     'tp': 10, 'dest': 11, 'kpond': 12},
+                    'elements'),
+    'Non-ponded':  ('iwfm_read_rz_npc',
+                    {'cnnp': 0, 'etnp': 1, 'wspnp': 2, 'ipnp': 3,
+                     'msnp': 4, 'tsnp': 5, 'rfnp': 6, 'runp': 7, 'icnp': 8},
+                    'elements'),
+    'Ponded':      ('iwfm_read_rz_pc',
+                    {'cnpc': 0, 'etpc': 1, 'wsppc': 2, 'ippc': 3,
+                     'pdpc': 4, 'adpc': 5, 'rfpc': 6, 'rupc': 7, 'icpc': 8},
+                    'elements'),
+    'Urban':       ('iwfm_read_rz_urban',
+                    {'perv': 0, 'cnur': 1, 'pop': 2, 'wtr': 3, 'frur': 4,
+                     'etur': 5, 'rtur': 6, 'ruur': 7, 'riur': 8, 'icur': 9},
+                    'elements'),
+    'Native':      ('iwfm_read_rz_nr',
+                    {'cnnv': 0, 'cnrv': 1, 'etnv': 2, 'etrv': 3,
+                     'strv': 4, 'icnv': 5, 'icrv': 6},
+                    'elements'),
+    'Unsaturated': ('iwfm_read_uz_params',
+                    {'thkuz': 0, 'nuz': 1, 'iuz': 2, 'kuz': 3,
+                     'rhcuz': 4, 'icuz': 5},
+                    'elements'),
+    'ET':          ('iwfm_read_et_vals',
+                    {'et': 0},
+                    'elements'),
+    'Precip':      ('iwfm_read_precip_vals',
+                    {'pr': 0},
+                    'elements'),
+}
+
+# Maps rootzone sub-category to rz_dict key
+RZ_SUBFILE_MAP = {
+    'Non-ponded': 'np_file',
+    'Ponded':     'p_file',
+    'Urban':      'ur_file',
+    'Native':     'nr_file',
+}
+
+
+def get_params(data_filename, param_type, param_values, layer=0, verbose=False):
+    """Get parameter values from the data file.
+
     Parameters
     ----------
     data_filename : str
-        The name of the file containing the parameter values.
-        
+        Path to the file containing the parameter values.
+
     param_type : str
-        The parameter type to be mapped
+        The parameter keyword to be mapped (e.g. 'kh', 'sy', 'wp').
 
     param_values : list
-        [parameter type, simulation file, description ]
+        [category, description] from INPUT_DICT.
 
-    verbose : bool, default = False
+    layer : int, default=0
+        Layer index (0-based) for multi-layer data. Default is first layer.
+
+    verbose : bool, default=False
         If True, print status messages.
 
     Returns
     -------
-    data : list of lists
-        Parameter values.
+    data : list or numpy array
+        Parameter values (one per node or element).
 
-    format : str
+    data_format : str
         'nodes' or 'elements'
-        
-        '''
-    
+    """
     import numpy as np
     import iwfm
 
-    if verbose: 
+    if verbose:
         print(f"Reading parameter values from {data_filename}")
         print(f"Parameter type: {param_type}")
 
-    if param_values[0] == 'Groundwater':
-        data = iwfm.iwfm_read_gw_params(data_filename)
-        param_types = {'kh': 0, 'ss': 1, 'sy': 2, 'kq': 3, 'kv': 4, 'gwic': 5}
-        data = data[param_types[param_type]]
-        format = 'nodes'
-    elif param_values[0] == 'Rootzone':
-        data = iwfm.iwfm_read_rz_params(data_filename)
-        param_types = {'wp':0, 'fc':1, 'tn':2, 'lambda':3, 'ksoil':4, 'rhc':5, 'cp':6, 'irne':7, 'frne':8, 'imsrc':9, 'tp':10, 'dest':11, 'kpond':12}
-        data = data[param_types[param_type]]
-        format = 'elements'
-    elif param_values[0] == 'Non-ponded':
-        data = iwfm.iwfm_read_rz_npc(data_filename)
-        param_types = {'cnnp': 0, 'etnp': 1, 'wspnp': 2, 'ipnp': 3, 'msnp': 4, 'tsnp': 5, 'rfnp': 6, 'runp': 7, 'icnp': 8}
-        data = data[param_types[param_type]]
-        format = 'elements'
-    elif param_values[0] == 'Ponded':
-        data = iwfm.iwfm_read_rz_pc(data_filename)
-        param_types = {'cnpc': 0, 'etpc': 1, 'wsppc': 2, 'ippc': 3, 'pdpc': 4, 'adpc': 5, 'rfpc': 6, 'rupc': 7, 'icpc': 8}
-        data = data[param_types[param_type]]
-        format = 'elements'
-    elif param_values[0] == 'Urban':
-        data = iwfm.iwfm_read_rz_urban(data_filename)
-        param_types = {'perv': 0, 'cnur': 1, 'pop': 2, 'wtr': 3, 'frur': 4, 'etur': 5, 'rtur': 6, 'ruur': 7, 'riur': 8, 'icur': 9}
-        data = data[param_types[param_type]]
-        format = 'elements'
-    elif param_values[0] == 'Native':
-        data = iwfm.iwfm_read_rz_nr(data_filename)
-        param_types = {'cnnv': 0, 'cnrv': 1, 'etnv': 2, 'etrv': 3, 'strv': 4, 'icnv': 5, 'icrv': 6}
-        data = data[param_types[param_type]]
-        format = 'elements'
-    elif param_values[0] == 'Unsaturated':
-        data = iwfm.iwfm_read_uz_params(data_filename)
-        param_types = {'thkuz': 0, 'nuz': 1, 'iuz': 2, 'kuz': 3, 'rhcuz': 4, 'icuz': 5}  
-        data = data[param_types[param_type]]
-        format = 'elements'
-    elif param_values[0] == 'ET':
-        data = iwfm.iwfm_read_et_vals(data_filename)
-        param_types = {'et': 0}
-        data = data[param_types[param_type]]
-        format = 'elements'
-    elif param_values[0] == 'Precip':
-        data = iwfm.iwfm_read_precip_vals(data_filename)
-        param_types = {'pr': 0}
-        data = data[param_types[param_type]]
-        format = 'elements'
+    category = param_values[0]
 
-    else:
-        print(f"Parameter type {param_type} not found in input_dict")
-        sys.exit()
+    if category not in CATEGORY_DISPATCH:
+        raise ValueError(
+            f"Unknown category '{category}' for parameter '{param_type}'. "
+            f"Valid categories: {list(CATEGORY_DISPATCH.keys())}"
+        )
 
-    if verbose: print(f"Read parameter values")
+    reader_name, param_index, data_format = CATEGORY_DISPATCH[category]
+    reader_func = getattr(iwfm, reader_name)
+    data = reader_func(data_filename)
+    data = data[param_index[param_type]]
 
-    # Flatten multi-dimensional data (e.g., when data has multiple layers)
-    # Check if data is 2D (nodes x layers) and convert to 1D by averaging or taking first layer
+    if verbose:
+        print(f"Read parameter values")
+
+    # Handle multi-layer data: select requested layer
     if isinstance(data, np.ndarray) and len(data.shape) == 2:
-        if verbose: print(f"Data has {data.shape[1]} layers. Using layer 1 (first layer).")
-        data = data[:, 0]  # Take first layer
+        if layer >= data.shape[1]:
+            raise ValueError(
+                f"Requested layer {layer + 1} but data only has "
+                f"{data.shape[1]} layer(s)."
+            )
+        if verbose:
+            print(f"Data has {data.shape[1]} layer(s). Using layer {layer + 1}.")
+        data = data[:, layer]
     elif isinstance(data, list) and len(data) > 0 and isinstance(data[0], (list, np.ndarray)):
-        if verbose: print(f"Data has multiple values per location. Using first value.")
-        data = [d[0] if isinstance(d, (list, np.ndarray)) and len(d) > 0 else d for d in data]
+        if verbose:
+            print(f"Data has multiple values per location. Using layer {layer + 1}.")
+        data = [d[layer] if isinstance(d, (list, np.ndarray)) and len(d) > layer
+                else d for d in data]
 
-    return data, format
+    return data, data_format
 
 
-
-
-def iwfm_map_params(dataset, bounding_poly, image_basename, cmap='rainbow', title="Parameter values", label='Z values', 
-                    units='', no_levels=20, contour='line', verbose=False):
-    """iwfm_map_params() - Create a contour map representing nodal values such as groundwater data.
+def iwfm_map_params(dataset, bounding_poly, image_basename, cmap='rainbow',
+                    title='Parameter values', label='Z values', units='',
+                    no_levels=20, contour='line', output_dir='.', verbose=False):
+    """Create a contour map representing nodal or element values.
 
     Parameters
     ----------
-    dataset : list of lists [[x, y, value], [x, y, value], ...
-        A list containing lists of three values (x, y, value), representing the x and y coordinates of each
-        data point along with their corresponding values.
+    dataset : list of lists
+        [[x, y, value], ...] for each node or element centroid.
+
+    bounding_poly : shapely Polygon or list of (x, y) tuples
+        Boundary polygon for masking the contour map.
 
     image_basename : str
-        The desired name of the image file to be saved.
+        Base name for the output image file (without extension).
 
-    cmap : str, default = 'rainbow'
-        The colormap to be used for the scatter plot.  See https://matplotlib.org/stable/tutorials/colors/colormaps.html
+    cmap : str, default='rainbow'
+        Matplotlib colormap name.
 
-    title : str, default = "Parameter values"
+    title : str, default='Parameter values'
         Title for the plot.
 
-    label : str, default = 'Z values'
+    label : str, default='Z values'
         Label for the colorbar.
 
-    units : str, default = ''
+    units : str, default=''
         Units for the colorbar.
 
-    no_levels : int, default = 20
+    no_levels : int, default=20
         Number of contour levels.
 
-    contour : str, default = 'line'
-        Type of contour to be plotted.  Options are 'line' or 'filled'.
+    contour : str, default='line'
+        'line' for contour lines, 'filled' for filled contours.
 
-    verbose : bool, default = False
-        If True, print status messages.  
+    output_dir : str, default='.'
+        Directory for output image file.
+
+    verbose : bool, default=False
+        If True, print status messages.
 
     Returns
     -------
-    nothing
+    str
+        Path to the saved image file.
     """
+    import os
+    import matplotlib
+    matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from matplotlib.path import Path
+    from matplotlib.path import Path as MplPath
     from matplotlib.patches import PathPatch
     from scipy.interpolate import griddata
     import numpy as np
-    import iwfm.plot as iplot
+    from iwfm.plot import get_XYvalues, contour_levels
 
-    image_name = f'{image_basename}.png'           # image file name
+    image_name = os.path.join(output_dir, f'{image_basename}.png')
 
-    X, Y, Z = iplot.get_XYvalues(dataset)           # list of lists to numpy arrays
+    X, Y, Z = get_XYvalues(dataset)
 
     # Define the contour levels
-    levels = iplot.contour_levels(Z, no_levels=no_levels, verbose=verbose)
+    levels = contour_levels(Z, no_levels=no_levels, verbose=verbose)
 
-    # create a regular grid for interpolation
+    # Create a regular grid for interpolation
     ratio = (X.max() - X.min()) / (Y.max() - Y.min())
-    # Use a fixed grid resolution instead of scaling by data length
-    grid_res = 200  # number of points in each dimension
+    grid_res = 200
     xi = np.linspace(X.min(), X.max(), int(grid_res * ratio))
     yi = np.linspace(Y.min(), Y.max(), grid_res)
     Xi, Yi = np.meshgrid(xi, yi)
 
-    # interpolate the irregular data onto the regular grid
+    # Interpolate the irregular data onto the regular grid
     Zi = griddata((X, Y), Z, (Xi, Yi), method='linear')
 
-    # Set figure size, width and height in inches
     fig, ax = plt.subplots(figsize=(10, 8))
 
-    # create path from boundary polygon
-    # Extract coordinates from shapely Polygon if needed
+    # Create path from boundary polygon
     if hasattr(bounding_poly, 'exterior'):
-        # It's a shapely Polygon, extract coordinates
         boundary_coords = list(bounding_poly.exterior.coords)
-        path = Path(boundary_coords)
+        path = MplPath(boundary_coords)
     else:
-        # It's already a list of coordinates
-        path = Path(bounding_poly)
+        path = MplPath(bounding_poly)
 
-    # create a mask from the path
-    mask = path.contains_points(np.column_stack((Xi.ravel(),Yi.ravel()))).reshape(Xi.shape)
+    # Create and apply mask from boundary polygon
+    mask = path.contains_points(
+        np.column_stack((Xi.ravel(), Yi.ravel()))
+    ).reshape(Xi.shape)
+    Zi = np.ma.masked_array(Zi, mask=~mask)
 
-    # apply the mask to the data
-    Zi = np.ma.masked_array(Zi, mask=~mask) 
-
-    # plot the masked data
+    # Plot the masked data
     if contour == 'filled':
-        plt.contourf(Xi, Yi, Zi, levels=levels, cmap=cmap)    # filled contours
+        plt.contourf(Xi, Yi, Zi, levels=levels, cmap=cmap)
     else:
-        plt.contour(Xi, Yi, Zi, levels=levels, cmap=cmap)     # contour lines
+        plt.contour(Xi, Yi, Zi, levels=levels, cmap=cmap)
 
-    # Add colorbar to show the Z values
-    plt.colorbar(label=f'{label} {units}', shrink=.5, fraction=0.046, pad=0.04)   
+    # Add colorbar
+    cb_label = f'{label} {units}'.strip()
+    plt.colorbar(label=cb_label, shrink=0.5, fraction=0.046, pad=0.04)
 
-    # display boundary polygon
+    # Display boundary polygon
     patch = PathPatch(path, facecolor='none')
     ax.add_patch(patch)
 
-    ax.set_title(title)             # Add a title   
+    ax.set_title(title)
+    plt.axis('off')
 
-    plt.axis('off')                 # Hide X axis and Y axis labels
+    # Create output directory if needed
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
-    plt.savefig(image_name)         # Save the plot to an image file
+    plt.savefig(image_name)
+    plt.close('all')
 
-    #plt.show()                     # Show the plot
+    if verbose:
+        print(f"Image saved to {image_name}")
 
-    plt.close('all')                # close the plot to free up memory
-
-    if verbose: print(f"Image saved to {image_name}")
-
-    return
+    return image_name
 
 
 if __name__ == "__main__":
-    ''' Run iwfm_map_params() from command line '''
+    """Run iwfm_map_params() from command line."""
     import sys
     from pathlib import Path
     from shapely import geometry
-    import iwfm.debug as idb
+    from iwfm.debug import exe_time
     import iwfm
-    import iwfm.plot as iplot
 
-    args = sys.argv
+    if len(sys.argv) < 5:
+        print("Usage: python iwfm_map_params.py <sim_file> <pre_file> <param_type> <image_basename> [layer] [contour] [output_dir]")
+        print("  Create a contour map of IWFM model parameters")
+        print("")
+        print("  sim_file       : IWFM Simulation main file")
+        print("  pre_file       : IWFM Preprocessor main file")
+        print("  param_type     : Parameter keyword (see list below)")
+        print("  image_basename : Output image base name (without extension)")
+        print("  layer          : Layer number, 1-based (default: 1)")
+        print("  contour        : 'line' or 'filled' (default: 'line')")
+        print("  output_dir     : Output directory (default: '.')")
+        print("")
+        print("  Valid parameter keywords:")
+        # Group by category for readability
+        categories = {}
+        for key, val in INPUT_DICT.items():
+            categories.setdefault(val[0], []).append((key, val[1]))
+        for cat, params in categories.items():
+            print(f"    {cat}:")
+            for key, desc in params:
+                print(f"      {key:10s} - {desc}")
+        sys.exit(1)
 
-    if len(args) > 1:  # arguments are listed on the command line
-        sim_filename    = args[1]
-        pre_filename    = args[2]
-        param_type      = args[3]
-        image_basename  = args[4]
-    else:  # ask for file names from terminal
-        sim_filename    = input('IWFM Simulation file name: ')
-        pre_filename    = input('IWFM Preprocessor file name: ')
-        param_type      = input('Parameter keyword: ')
-        image_basename  = input('Output image basename: ')
+    sim_filename   = sys.argv[1]
+    pre_filename   = sys.argv[2]
+    param_type     = sys.argv[3]
+    image_basename = sys.argv[4]
+    layer          = int(sys.argv[5]) - 1 if len(sys.argv) > 5 else 0  # convert 1-based to 0-based
+    contour_type   = sys.argv[6] if len(sys.argv) > 6 else 'line'
+    output_dir     = sys.argv[7] if len(sys.argv) > 7 else '.'
 
     iwfm.file_test(sim_filename)
     iwfm.file_test(pre_filename)
 
-    input_dict = { 
-         'kh'     : [ 'Groundwater', 'Horizontal hydraulic conductivity' ],
-         'ss'     : [ 'Groundwater', 'Specific storage' ],
-         'sy'     : [ 'Groundwater', 'Specific yield' ],
-         'kv'     : [ 'Groundwater', 'Vertical hydraulic conductivity' ],
-         'kq'     : [ 'Groundwater', 'Aquiclude hydraulic conductivity' ],
-         'gwic'   : [ 'Groundwater', 'Initial groundwater head' ],
+    if param_type not in INPUT_DICT:
+        print(f" ** Parameter type '{param_type}' is invalid **")
+        print("Valid parameter types:")
+        for key, val in INPUT_DICT.items():
+            print(f"  {key:10s} - {val[0]:14s} {val[1]}")
+        sys.exit(1)
 
-         'nuz'    : [ 'Unsaturated', 'Unsaturated zone porosity' ],
-         'iuz'    : [ 'Unsaturated', 'Unsaturated zone pore-size distribution index' ],
-         'kuz'    : [ 'Unsaturated', 'Unsaturated zone hydraulic conductivity' ],
-         'rhcuz'  : [ 'Unsaturated', 'Method to represent hydraulic conductivity vs. moisture content curve' ],
-         'icuz'   : [ 'Unsaturated', 'Initial unsaturated zone moisture content' ],
+    param_values = INPUT_DICT[param_type]
+    category = param_values[0]
 
-         'wp'     : [ 'Rootzone',    'Wilting point' ],
-         'fc'     : [ 'Rootzone',    'Field capacity' ],
-         'tn'     : [ 'Rootzone',    'Porosity' ],
-         'lambda' : [ 'Rootzone',    'Pore-size distribution index' ],
-         'ksoil'  : [ 'Rootzone',    'Rootzone hydraulic conductivity' ],
-         'rhc'    : [ 'Rootzone',    'Method to represent hydraulic conductivity vs. moisture content curve' ],
-         'cp'     : [ 'Rootzone',    'Capillary rise' ],
-         'irne'   : [ 'Rootzone',    'Precipitation column' ],
-         'frne'   : [ 'Rootzone',    'Precipitation multiplier' ],
-         'imsrc'  : [ 'Rootzone',    'Irrigation source column' ],
-         'tp'     : [ 'Rootzone',    'Runoff and return flow destination type' ],
-         'dest'   : [ 'Rootzone',    'Runoff and return flow destination value' ],
-         'kpond'  : [ 'Rootzone',    'Ponded hydraulic conductivity' ],
+    exe_time()                                              # initialize timer
 
-         'cnnp'   : [ 'Non-ponded',  'Curve Number value' ],
-         'etnp'   : [ 'Non-ponded',  'ET column' ],
-         'ipnp'   : [ 'Non-ponded',  'Irrigation Period column' ],
-         'tsnp'   : [ 'Non-ponded',  'Target soil moisture column' ],
-         'rfnp'   : [ 'Non-ponded',  'Irrigation water return flow fraction column' ],
-         'icnp'   : [ 'Non-ponded',  'Initial soil moisture condition' ],
+    # Determine the file containing the data
+    data_filetype = CATEGORY_TO_FILETYPE[category]
 
-         'cnpc'    : [ 'Ponded',      'Curve Number value' ],
-         'etpc'    : [ 'Ponded',      'ET column' ],
-         'wsppc'   : [ 'Ponded',      'Water Supply Requirement column' ],
-         'ippc'    : [ 'Ponded',      'Irrigation Period column' ],
-         'pdpc'    : [ 'Ponded',      'Ponding Depths column' ],
-         'adpc'    : [ 'Ponded',      'Application Depths column' ],
-         'rfpc'    : [ 'Ponded',      'Return Flow Depths column' ],
-         'rupc'    : [ 'Ponded',      'Reuse Flow Depths column' ],
-         'icpc'    : [ 'Ponded',      'Initial soil moisture condition' ],
-
-         'perv'   : [ 'Urban',       'Percent pervious' ],
-         'cnur'   : [ 'Urban',       'Curve Number value' ],
-         'pop'    : [ 'Urban',       'Population column' ],
-         'wtr'    : [ 'Urban',       'Water use column' ],
-         'frur'   : [ 'Urban',       'Urban demand population fraction' ],
-         'etur'   : [ 'Urban',       'ET column' ],
-         'rtur'   : [ 'Urban',       'Urban fraction to runoff column' ],
-         'ruur'   : [ 'Urban',       'Urban fraction reused column' ],
-         'riur'   : [ 'Urban',       'Urban fraction used indoors column' ],
-         'icur'   : [ 'Urban',       'Initial urban moisture content' ],
-
-         'cnnv'   : [ 'Native',      'Native Vegetation Curve Number value' ],
-         'cnrv'   : [ 'Native',      'Riparian Vegetation Curve Number value' ],
-         'etnv'   : [ 'Native',      'Native Vegetation ET column' ],
-         'etrv'   : [ 'Native',      'Riparian Vegetation ET column' ],
-         'strv'   : [ 'Native',      'Riparian Vegetation source stream node' ],
-         'icnv'   : [ 'Native',      'Initial native vegetation moisture content' ],
-         'icrv'   : [ 'Native',      'Initial riparian vegetation moisture content' ],
-
-         'et'     : [ 'ET',          'ET values' ],
-         'pr'     : [ 'Precip',      'Precipitation values' ],
-        }   
-
-    if param_type in input_dict:
-        param_values = input_dict[param_type]
-    else:
-        print(f" ** Parameter type {param_type} is invalid **")
-        print(f"Valid parameter types are:")
-        print(input_dict.keys())                        # TODO: develop a better way to print the valid parameter types
-        print(f'Exiting...')
-        sys.exit()
-
-    idb.exe_time()                                          # initialize timer
-
-    # determine the file containing the data
-    if param_values[0] == 'Groundwater':
-        data_filetype = 'gw_file'
-    elif param_values[0] == 'Unsaturated':
-        data_filetype = 'unsat_file'
-    elif param_values[0] == 'Rootzone':
-        data_filetype = 'root_file'
-    elif param_values[0] == 'Non-ponded':
-        data_filetype = 'root_file'
-    elif param_values[0] == 'Ponded':
-        data_filetype = 'root_file'
-    elif param_values[0] == 'Urban':
-        data_filetype = 'root_file'
-    elif param_values[0] == 'Native':
-        data_filetype = 'root_file'
-    elif param_values[0] == 'ET':
-        data_filetype = 'et_file'
-    elif param_values[0] == 'Precip':
-        data_filetype = 'precip_file'
-    else:
-        print(f"Parameter type {param_type} not found in input_dict")
-        sys.exit()
-
-    # get file names from preprocessor file
+    # Get file names from preprocessor and simulation files
     pre_dict, have_lake = iwfm.iwfm_read_preproc(pre_filename)
-
-    # get file names from the simulation file
     sim_dict, have_lake = iwfm.iwfm_read_sim_file(sim_filename)
 
-    # get path to preprocessor main file
-    pre_file = Path(pre_filename)
+    sim_dir = Path(sim_filename).parent
+    pre_dir = Path(pre_filename).parent
 
-
-    if data_filetype == 'root_file':        # get rootzone file names
-        rz_filename = Path(sim_filename).parent / sim_dict[data_filetype].replace('\\', '/')
+    # Resolve the data file path
+    if data_filetype == 'root_file':
+        rz_filename = sim_dir / Path(sim_dict[data_filetype].replace('\\', '/'))
         rz_dict = iwfm.iwfm_read_rz(rz_filename)
 
-        if param_values[0] == 'Non-ponded':
-            data_filename = rz_dict['np_file'].replace('\\', '/')
-        elif param_values[0] == 'Ponded':
-            data_filename = rz_dict['p_file'].replace('\\', '/')
-        elif param_values[0] == 'Urban':
-            data_filename = rz_dict['ur_file'].replace('\\', '/')
-        elif param_values[0] == 'Native':
-            data_filename = rz_dict['nr_file'].replace('\\', '/')
+        if category in RZ_SUBFILE_MAP:
+            data_filename = rz_dict[RZ_SUBFILE_MAP[category]].replace('\\', '/')
         else:
+            # 'Rootzone' category — the rootzone main file has the parameters
             data_filename = sim_dict[data_filetype].replace('\\', '/')
     else:
         data_filename = sim_dict[data_filetype].replace('\\', '/')
 
-    data_filename = Path(sim_filename).parent / data_filename
+    data_filename = sim_dir / Path(data_filename)
     iwfm.file_test(data_filename)
 
-    data, format = get_params(data_filename, param_type, param_values)    # Get the parameter values from the data file
+    # Get the parameter values from the data file
+    data, data_format = get_params(data_filename, param_type, param_values,
+                                   layer=layer, verbose=True)
 
     # Read nodal X,Y coordinates from node file
-    node_filename = Path(pre_filename).parent / pre_dict['node_file'].replace('\\', '/')
+    node_filename = pre_dir / Path(pre_dict['node_file'].replace('\\', '/'))
     node_coord, node_list, factor = iwfm.iwfm_read_nodes(node_filename)
 
     # Read elements from elements file
-    elem_filename = Path(pre_filename).parent / pre_dict['elem_file'].replace('\\', '/')
+    elem_filename = pre_dir / Path(pre_dict['elem_file'].replace('\\', '/'))
     elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(elem_filename)
 
-    # calculate element centroids
+    # Calculate element centroids
     elem_centroids = iwfm.get_elem_centroids(elem_ids, elem_nodes, node_coord)
 
+    # Get boundary coordinates for masking
     boundary_coords = iwfm.iwfm_boundary_coords(node_filename, elem_filename)
+    bounding_poly = geometry.Polygon(boundary_coords)
 
-    if format == 'nodes':
-        dataset = []
-        for i in range(len(node_list)):
-            dataset.append([node_coord[i][1], node_coord[i][2], data[i]])
+    # Build the title and label from the parameter description
+    title = f"{param_values[1]}"
+    if layer > 0 or data_format == 'nodes':
+        title += f" - Layer {layer + 1}"
+    label = param_values[1]
 
-        # create boundary polygon
-        X_min = min([x[1] for x in node_coord])
-        X_max = max([x[1] for x in node_coord])
-        Y_min = min([x[2] for x in node_coord])
-        Y_max = max([x[2] for x in node_coord])
+    image_name = image_basename + '_' + param_type
 
-        point_list = [(X_min, Y_min), (X_max, Y_min), (X_max, Y_max), (X_min, Y_max), (X_min, Y_min)]
+    if data_format == 'nodes':
+        dataset = [[node_coord[i][1], node_coord[i][2], data[i]]
+                   for i in range(len(node_list))]
+    elif data_format == 'elements':
+        dataset = [[elem_centroids[i][1], elem_centroids[i][2], data[i]]
+                   for i in range(len(elem_centroids))]
+    else:
+        print(f"Error: Unknown data format '{data_format}'")
+        sys.exit(1)
 
-        bounding_poly = geometry.Polygon([(p[0], p[1]) for p in point_list])
+    iwfm_map_params(dataset, bounding_poly, image_name, title=title,
+                    label=label, contour=contour_type, output_dir=output_dir,
+                    verbose=True)
 
-        iplot.map_to_nodes_contour(dataset, bounding_poly, image_basename + '_' + param_type, verbose=True)    # Create a contour map representing nodal values such as groundwater data.
-
-    elif format == 'elements':
-        dataset = []
-        for i in range(len(elem_centroids)):
-            dataset.append([elem_centroids[i][1], elem_centroids[i][2], data[i]])
-
-
-    iwfm_map_params(dataset, bounding_poly, image_basename + '_' + param_type, verbose=True)    # Create a contour map representing nodal values such as groundwater data.
-
-    idb.exe_time()                                          # print elapsed time
-
+    exe_time()                                              # print elapsed time

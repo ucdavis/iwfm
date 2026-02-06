@@ -62,7 +62,6 @@ def map_to_nodes(dataset, bounding_poly, image_name, cmap='rainbow', marker_size
     import matplotlib.pyplot as plt
     from matplotlib.path import Path
     from matplotlib.patches import PathPatch
-    import numpy as np
     import iwfm.plot as iplot
 
     X, Y, values = iplot.get_XYvalues(dataset)  # list of lists to numpy arrays
