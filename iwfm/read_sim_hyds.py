@@ -32,28 +32,12 @@ def read_sim_hyds(gwhyd_files):
         list with one item of hydrograph values for each input hydrograph file
 
     '''
-    import numpy as np
-    import iwfm
+    from iwfm.read_sim_hyd import read_sim_hyd
 
     gwhyd_sim = []
 
     for k in range(0, len(gwhyd_files)):
-        with open(gwhyd_files[k]) as f:
-            gwhyd_lines = (f.read().splitlines())
-        gwhyd_lines = [word.replace('_24:00', ' ') for word in gwhyd_lines]
-
-        temp_sim = []
-        for j in range(9, len(gwhyd_lines)):
-            items= gwhyd_lines[j].split()
-            date_str = items.pop(0)
-            try:
-                date_dt = iwfm.safe_parse_date(date_str, f'{gwhyd_files[k]} line {j+1}')
-            except ValueError as e:
-                raise ValueError(f"Error reading {gwhyd_files[k]} line {j+1}: {str(e)}") from e
-            temp = [date_dt]                   # date
-            alist = [float(x) for x in items]       # values to floats
-            temp.extend(alist)
-            temp_sim.append(temp)
-        gwhyd_sim.append(np.array(temp_sim))
+        sim_hyd = read_sim_hyd(gwhyd_files[k])
+        gwhyd_sim.append(sim_hyd)
 
     return gwhyd_sim

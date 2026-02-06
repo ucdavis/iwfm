@@ -18,30 +18,74 @@
 
 
 def read_obs_smp(smp_file):
-    ''' read_obs_smp() - Read the contents of the observed values smp file
-    and return as array
+    ''' read_obs_smp() - Read the contents of an observed values smp file
+    (PEST observation file) and return as a polars DataFrame or dict.
 
     Parameters
     ----------
     smp_file : str
         Data file name (PEST-style smp format)
+        Format: site_name  MM/DD/YYYY  HH:MM:SS  value
 
     Returns
     -------
-    obs : list
-        data file contents
+    polars.DataFrame or dict
+        If polars is available, returns a sorted DataFrame with columns:
+            site_name : str   - observation site identifier
+            date      : datetime - observation date
+            time      : str   - observation time string (HH:MM:SS)
+            obs_value : float - observed value
+        If polars is not available, returns a dict with the same keys,
+        each containing a list of values.
+        Sorted by (site_name, date, time).
 
     '''
+    from datetime import datetime
+
+    site_names = []
+    dates = []
+    times = []
+    values = []
+
     with open(smp_file) as f:
-        file_lines = f.read().splitlines() 
-    file_lines = [word.replace("_", " ") for word in file_lines]
+        for line in f:
+            line = line.replace("_", " ")
+            parts = line.split()
+            if len(parts) < 4:
+                continue
 
-    obs = []
-    for j in range(0, len(file_lines)):
-        temp = file_lines[j].split()
-        obs.append([temp[0], temp[1], temp[2], float(temp[3])])
+            try:
+                name = parts[0]
+                dt = datetime.strptime(parts[1], '%m/%d/%Y')
+                tm = parts[2]
+                val = float(parts[3])
+            except (ValueError, IndexError):
+                continue
 
-    # sort the list by first column then second then third column
-    obs.sort(key=lambda x: (x[0], x[1], x[2]))
+            site_names.append(name)
+            dates.append(dt)
+            times.append(tm)
+            values.append(val)
 
-    return obs
+    # Try to return polars DataFrame if available, otherwise dict
+    try:
+        import polars as pl
+        df = pl.DataFrame({
+            'site_name': site_names,
+            'date': dates,
+            'time': times,
+            'obs_value': values,
+        })
+        return df.sort(['site_name', 'date', 'time'])
+    except ImportError:
+        # Sort using indices for dict fallback
+        sorted_indices = sorted(
+            range(len(site_names)),
+            key=lambda i: (site_names[i], dates[i], times[i])
+        )
+        return {
+            'site_name': [site_names[i] for i in sorted_indices],
+            'date': [dates[i] for i in sorted_indices],
+            'time': [times[i] for i in sorted_indices],
+            'obs_value': [values[i] for i in sorted_indices],
+        }

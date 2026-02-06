@@ -40,7 +40,6 @@ def read_sim_wells(gw_file, verbose=False):
         list of well names
 
     '''
-    import iwfm
     from iwfm.file_utils import read_next_line_value
 
     if verbose: print(f"Entered read_sim_wells() with {gw_file}")
@@ -58,12 +57,25 @@ def read_sim_wells(gw_file, verbose=False):
 
     for i in range(0, nouth):
         items, line = [], gwhyd_info[line_index].split()
-        items.append(line[5].upper())  # state well number = key
-        items.append(int(line[0]))     # column number in hydrograph file
-        items.append(float(line[3]))   # x
-        items.append(float(line[4]))   # y
-        items.append(int(line[2]))     # model layer
-        items.append(line[5].lower())  # well name (state well number)
+        hydtyp = int(line[1])
+        if hydtyp == 0:
+            # IHYDTYP=0: ID  HYDTYP  LAYER  X  Y  NAME
+            name = line[5].upper()
+            items.append(name)                 # state well number = key
+            items.append(int(line[0]))         # column number in hydrograph file
+            items.append(float(line[3]))       # x
+            items.append(float(line[4]))       # y
+            items.append(int(line[2]))         # model layer
+            items.append(line[5].lower())      # well name (state well number)
+        else:
+            # IHYDTYP=1: ID  HYDTYP  LAYER  NODE_NO  NAME
+            name = line[4].upper()
+            items.append(name)                 # state well number = key
+            items.append(int(line[0]))         # column number in hydrograph file
+            items.append(0.0)                  # x (not available)
+            items.append(0.0)                  # y (not available)
+            items.append(int(line[2]))         # model layer
+            items.append(line[4].lower())      # well name (state well number)
         well_dict[items[0]] = items[1:]
         well_list.append(items[0])
         line_index += 1

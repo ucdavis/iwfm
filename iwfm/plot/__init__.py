@@ -30,14 +30,14 @@ from iwfm.plot.contour_levels import contour_levels
 from iwfm.plot.get_maxs import get_maxs
 from iwfm.plot.get_mins import get_mins
 
-from iwfm.plot.gw_hyd import gw_hyd
-from iwfm.plot.gw_hyd_draw import gw_hyd_draw
-from iwfm.plot.gw_hyd_obs import gw_hyd_obs
-from iwfm.plot.gw_hyd_obs_draw import gw_hyd_obs_draw
-from iwfm.plot.gw_hyd_noobs import gw_hyd_noobs
-from iwfm.plot.gw_hyd_noobs_draw import gw_hyd_noobs_draw
-
 from iwfm.plot.simhyd_obs import simhyd_obs
+
+from iwfm.plot.head_hydrographs import read_hyd_info
+from iwfm.plot.head_hydrographs import read_obs_heads
+from iwfm.plot.head_hydrographs import plot_head_hydrograph
+from iwfm.plot.head_hydrographs import plot_all_hydrographs
+from iwfm.plot.head_hydrographs import extract_sim_dates
+from iwfm.plot.head_hydrographs import extract_sim_column
 
 from iwfm.plot.map_to_nodes import map_to_nodes
 from iwfm.plot.map_to_nodes_png import map_to_nodes_png

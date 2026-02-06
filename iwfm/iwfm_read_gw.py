@@ -81,8 +81,11 @@ def iwfm_read_gw(gw_file, verbose=False):
     units : list
         time units for Kh, Kv, and Ss
 
-    hydrographs : list
-        hydrograph file names
+    hydrographs : dict
+        dictionary mapping well_name to (order, layer, x, y)
+        order: 1-based column index in hydrograph output
+        layer: aquifer layer number
+        x, y: coordinates (scaled by factxy)
 
     factxy : float
         (X,Y) scale factor for hydrographs
@@ -116,20 +119,70 @@ def iwfm_read_gw(gw_file, verbose=False):
     line_index += 10
     gw_dict['headall'] = get_name(file_lines[line_index])
 
-    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=7)
-    nouth = int(file_lines[line_index].split()[0])             # number of lines to skip
-    factxy = float(file_lines[line_index+1].split()[0])        # (X,Y) scale factor
+    # Read past output file options to find NOUTH
+    # The number of lines between headall and NOUTH varies by IWFM version
+    # (some files include IHTPFLAG, others don't), so read line by line
+    # and look for the NOUTH value by scanning ahead for the / NOUTH comment
+    htpoutfl_str, line_index = read_next_line_value(file_lines, line_index, column=0)  # HTPOUTFL
+    vtpoutfl_str, line_index = read_next_line_value(file_lines, line_index, column=0)  # VTPOUTFL
+    gwbudfl_str, line_index = read_next_line_value(file_lines, line_index, column=0)   # GWBUDFL
+    zbudfl_str, line_index = read_next_line_value(file_lines, line_index, column=0)    # ZBUDFL
+    fngwfl_str, line_index = read_next_line_value(file_lines, line_index, column=0)    # FNGWFL
 
-    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=2)
-    gw_dict['gwhyd'] = get_name(file_lines[line_index]) 
+    # Check for optional IHTPFLAG line (present in newer IWFM versions)
+    # Then KDEB, then NOUTH. Read lines until we find one tagged with / NOUTH
+    # or that appears to be the NOUTH line.
+    # Strategy: read the next non-comment line. If it's followed by FACTXY and
+    # GWHYDOUTFL, it's NOUTH. Otherwise, it's IHTPFLAG or KDEB — keep reading.
+    _, line_index = read_next_line_value(file_lines, line_index, column=0)
+    # Read remaining lines between FNGWFL and NOUTH by checking for NOUTH marker
+    while line_index < len(file_lines):
+        line_text = file_lines[line_index]
+        # Check if the line after this one (skipping comments) contains FACTXY
+        # which would confirm this line is NOUTH
+        peek_idx = line_index + 1
+        while peek_idx < len(file_lines) and file_lines[peek_idx].strip() and \
+              file_lines[peek_idx].strip()[0] in comments:
+            peek_idx += 1
+        if peek_idx < len(file_lines) and 'FACTXY' in file_lines[peek_idx].upper():
+            break
+        # Also check inline comment for NOUTH
+        if 'NOUTH' in line_text.upper():
+            break
+        # Not NOUTH yet, advance to next non-comment line
+        _, line_index = read_next_line_value(file_lines, line_index, column=0)
 
-    # hydrographs
+    nouth = int(file_lines[line_index].split()[0])             # number of hydrograph locations
+
+    factxy_str, line_index = read_next_line_value(file_lines, line_index, column=0)
+    factxy = float(factxy_str)                                 # (X,Y) scale factor
+
+    gwhyd_str, line_index = read_next_line_value(file_lines, line_index, column=0)
+    gw_dict['gwhyd'] = get_name(file_lines[line_index])
+
+    # hydrographs - build dictionary: {well_name: (order, layer, x, y)}
+    # IHYDTYP == 0: ID  HYDTYP  LAYER  X  Y  NAME  (6 fields)
+    # IHYDTYP == 1: ID  HYDTYP  LAYER  NODE_NO  NAME  (5 fields)
     _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
-    hydrographs = []
+    hydrographs = {}
     for i in range(nouth):
         if re.search(file_lines[line_index].split()[0], comments):
             line_index += 1   # if line starts with comment character, skip it
-        hydrographs.append(file_lines[line_index].split()[0])
+        fields = file_lines[line_index].split()
+        order = int(fields[0])
+        hydtyp = int(fields[1])
+        layer = int(fields[2])
+        if hydtyp == 0:
+            # ID  HYDTYP  LAYER  X  Y  NAME
+            x = float(fields[3])
+            y = float(fields[4])
+            name = fields[5] if len(fields) > 5 else f"Well_{order}"
+        else:
+            # ID  HYDTYP  LAYER  NODE_NO  NAME
+            x = 0.0
+            y = 0.0
+            name = fields[4] if len(fields) > 4 else f"Well_{order}"
+        hydrographs[name] = (order, layer, x, y)
         line_index += 1
     if verbose: print(f' ==> {gw_file} has {nouth} hydrograph(s)')
 
@@ -269,21 +322,78 @@ def iwfm_read_gw(gw_file, verbose=False):
                 Kv[node][layer] = float(values[4])
                 line_index += 1
 
+    # -- Anomaly in Hydraulic Conductivity --
     _, line_index = read_next_line_value(file_lines, line_index - 1, column=0)
     if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
-    nebk = int(file_lines[line_index].split()[0])                 # anomaly lines
+    nebk = int(file_lines[line_index].split()[0])                 # anomaly count
     if verbose: print(f' ==> {nebk=}')
-    _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=nebk+4)
 
-    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+    # Skip FACT, TUNITH, and nebk anomaly data lines (nebk + 2 non-comment lines)
+    _, line_index = read_next_line_value(file_lines, line_index, column=0, skip_lines=nebk + 2)
+    if verbose: print(f' ==> After anomaly section, line_index={line_index}: {file_lines[line_index][:80]}')
 
-    # initial condition
+    # Check if this is IFLAGRF (Groundwater Return Flow) or FACTHP (Initial Conditions)
+    # IFLAGRF is an integer 0 or 1; FACTHP is a float conversion factor (typically 1.0)
+    # Distinguish by checking the inline comment or by checking if the line after this
+    # one contains FACTHP-style data (node IDs with head values)
+    current_val = file_lines[line_index].split()[0]
+    line_upper = file_lines[line_index].upper()
+
+    if 'IFLAGRF' in line_upper or 'RETURN' in line_upper:
+        # Explicit IFLAGRF line
+        iflagrf = int(current_val)
+        if verbose: print(f' ==> {iflagrf=}')
+        if iflagrf == 1:
+            _, line_index = read_next_line_value(file_lines, line_index, column=0, skip_lines=nodes)
+        else:
+            _, line_index = read_next_line_value(file_lines, line_index, column=0)
+        if verbose: print(f' ==> After return flow, line_index={line_index}: {file_lines[line_index][:80]}')
+    elif 'FACTHP' in line_upper:
+        # No IFLAGRF section, this is already FACTHP
+        pass
+    else:
+        # Heuristic: check if the value is 0 or 1 (IFLAGRF) vs a float like 1.0
+        # Look at the next few non-comment lines for structure clues
+        try:
+            test_val = int(current_val)
+            # Check if the next non-comment line looks like return flow data (ID TYPDEST DEST)
+            # or initial condition data (ID HEAD1 HEAD2 ...)
+            peek_idx = line_index + 1
+            while peek_idx < len(file_lines) and file_lines[peek_idx].strip() and \
+                  file_lines[peek_idx].strip()[0] in comments:
+                peek_idx += 1
+            if peek_idx < len(file_lines):
+                peek_parts = file_lines[peek_idx].split()
+                # Return flow data has 3 columns (ID, TYPDEST, DEST)
+                # Init cond data has layers+1 columns (ID, HEAD1, ..., HEADn)
+                if test_val in (0, 1) and len(peek_parts) == 3:
+                    # Likely IFLAGRF
+                    iflagrf = test_val
+                    if verbose: print(f' ==> {iflagrf=} (detected)')
+                    if iflagrf == 1:
+                        _, line_index = read_next_line_value(file_lines, line_index, column=0, skip_lines=nodes)
+                    else:
+                        _, line_index = read_next_line_value(file_lines, line_index, column=0)
+                    if verbose: print(f' ==> After return flow, line_index={line_index}: {file_lines[line_index][:80]}')
+                # else: not IFLAGRF, fall through to FACTHP
+        except ValueError:
+            pass  # Not an integer, must be FACTHP
+
+    # -- Initial Groundwater Head Values --
+    # FACTHP line
+    facthp = float(file_lines[line_index].split()[0])
+    if verbose: print(f' ==> {facthp=}')
+
+    # Read initial heads: ID  HP[1]  HP[2]  ...  HP[layers]
+    _, line_index = read_next_line_value(file_lines, line_index, column=0)
+    if verbose: print(f' ==> Init cond start at line_index={line_index}: {file_lines[line_index][:80]}')
+
     init_cond = []
     for node in range(nodes):
-        temp, items = [], file_lines[line_index].split()
-        temp.append(int(items[0]))
+        items = file_lines[line_index].split()
+        temp = [int(items[0])]
         for l in range(layers):
-            temp.append(float(items[l+1]))
+            temp.append(float(items[l + 1]))
         init_cond.append(temp)
         line_index += 1
     if verbose: print(' ==> leaving iwfm_read_gw.py <==')

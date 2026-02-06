@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 # ** Incomplete **
-import datetime, bisect
+import bisect
 import iwfm
 
 class simhyds:

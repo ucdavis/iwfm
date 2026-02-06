@@ -1,6 +1,6 @@
 # simhyds_file.py
 # Class of methods for working with IWFM simulation hydrographs
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,8 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-# ** Incomplete **
-import datetime, bisect
+import bisect
 import iwfm
 
 class simhyds:
@@ -40,25 +39,55 @@ class simhyds:
             for i in range(1, len(line)):
                 line[i] = float(line[i])
             self.sim_vals.append(line)
-        #print(f' ==> symhyds.sim_vals read {len(self.sim_vals)} hydrographs ')
-        #print(f' ==> each with {len(self.sim_vals[0])} data points ')
-        print(f' ==> self.sim_dates[0:3]: {self.sim_dates[0:3]} ')
 
     def sim_head(self, date, col):
+        ''' sim_head() - Get interpolated head value at a specific date
+
+        Parameters
+        ----------
+        date : str
+            Date string to get head value for
+        col : int
+            Column index for the hydrograph
+
+        Returns
+        -------
+        float
+            Interpolated head value
+
+        Raises
+        ------
+        ValueError
+            If date is outside the simulation period or no data available
+        '''
+        if not self.sim_dates:
+            raise ValueError("No simulation data available")
+
         try:
             dt = iwfm.safe_parse_date(date, 'date parameter')
         except ValueError as e:
             raise ValueError(f"Invalid date parameter in sim_head: {str(e)}") from e
-        closest = min(self.sim_dates, key=lambda d: abs(d - dt))
-        after  = bisect.bisect_left(self.sim_dates,dt)
-        
-        print(f' ==> date: {date}, dt: {dt}')
-        print(f' ==> closest: {closest}')
-        print(f' ==> self.sim_dates[after]: {self.sim_dates[after]}')
 
-        if self.sim_dates[after] > dt:
+        # Check if date is outside simulation period
+        if dt < self.sim_dates[0]:
+            raise ValueError(f"Date {date} is before simulation start date {self.sim_dates[0]}")
+        if dt > self.sim_dates[-1]:
+            raise ValueError(f"Date {date} is after simulation end date {self.sim_dates[-1]}")
+
+        # Find position using binary search
+        after = bisect.bisect_left(self.sim_dates, dt)
+
+        # Handle exact match at end of list
+        if after >= len(self.sim_dates):
+            after = len(self.sim_dates) - 1
+
+        # Determine before and after indices for interpolation
+        if self.sim_dates[after] == dt:
+            # Exact match - no interpolation needed
+            return self.sim_vals[after][col]
+        elif self.sim_dates[after] > dt:
             before = after - 1
-        else: 
+        else:
             before, after = after, after + 1
 
         # numerator: days to observed value
@@ -67,8 +96,8 @@ class simhyds:
         # denominator: days between simulated values
         den = (self.sim_dates[after] - self.sim_dates[before]).days
 
-        print(f' ==> num: {num}, den = {den}')
-        print(f' ==> num: {num}, den = {den}')
+        if den == 0:
+            return self.sim_vals[before][col]
 
         return self.sim_vals[before][col] + (
             self.sim_vals[after][col] - self.sim_vals[before][col]
@@ -81,13 +110,19 @@ class simhyds:
         return self.sim_vals[row][0]
 
     def start_date(self):
+        if not self.sim_vals:
+            return None
         return self.sim_vals[0][0]
 
     def end_date(self):
-        return self.sim_vals[len(self.sim_vals) - 1][0]
+        if not self.sim_vals:
+            return None
+        return self.sim_vals[-1][0]
 
     def nlines(self):
         return len(self.sim_vals)
 
     def ncols(self):
+        if not self.sim_vals:
+            return 0
         return len(self.sim_vals[0])
