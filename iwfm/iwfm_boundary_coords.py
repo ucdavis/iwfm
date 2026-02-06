@@ -1,6 +1,6 @@
 # iwfm_boundary_coords.py
 # Return (x,y) list for the nodes on the bounding polygon
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ def iwfm_boundary_coords(node_filename, elem_filename):
         (x,y) list for the nodes on the bounding polygon
     
     '''
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as igis
 
     node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_filename)

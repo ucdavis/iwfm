@@ -38,7 +38,6 @@ def interp_val(obs_date,early_date,early_val,late_date,late_val):
         simulated value interpolated to obs_date
     
     '''
-    from datetime import date, datetime
     if early_date == obs_date:
         return early_val
     elif late_date == obs_date:

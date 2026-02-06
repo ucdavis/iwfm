@@ -1,6 +1,6 @@
 # utm_2_latlon.py
 # Reproject from UTM to geographic coordinates
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -42,4 +42,4 @@ def utm_2_latlon(easting, northing, zone, band='U'):
     '''
     import utm
 
-    return utm.to_latlon(northing, easting, zone, band)
+    return utm.to_latlon(easting, northing, zone, band)

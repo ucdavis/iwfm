@@ -47,7 +47,6 @@ def sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=No
 
     '''
     import iwfm
-    from pathlib import Path
     from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']

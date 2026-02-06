@@ -18,7 +18,6 @@
 # -----------------------------------------------------------------------------
 
 
-from typing import Type
 
 
 def sub_st_bp_file(old_filename, new_filename, elem_list, snode_list, verbose=False):

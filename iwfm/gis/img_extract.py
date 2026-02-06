@@ -1,6 +1,6 @@
 # img_extract.py
 # Automatically extract features of a threshold image to a shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@ def img_extract(source, target):
         extracted features
         
     '''
-    import gdal as gdal
-    import ogr as ogr
-    import osr as osr
+    from osgeo import gdal
+    from osgeo import ogr
+    from osgeo import osr
 
     srcDS = gdal.Open(source)
     band = srcDS.GetRasterBand(1)

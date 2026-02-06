@@ -25,7 +25,6 @@
 import geopandas as gpd
 import sys
 import iwfm.debug as idb
-import iwfm.gis as igis
 import iwfm as iwfm
 
 def map_to_shp(param_table, header, gdf, out_shp_name, verbose=False):

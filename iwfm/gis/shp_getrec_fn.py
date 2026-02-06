@@ -1,6 +1,6 @@
 # shp_getrec_fn.py
 # Returns the item in column of field_name for record i for a PyShp shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,9 +35,10 @@ def shp_getrec_fn(f, i, field_name):
     The requested item (undetermined type)
 
     '''
-    import iwfm as iwfm
+    from iwfm.shp_fieldnames import shp_fieldnames
+    from iwfm.gis.shp_getrec import shp_getrec
 
-    field_names = iwfm.shp_fieldnames(f)
-    record = iwfm.gis.shp_getrec(f, i)
+    field_names = shp_fieldnames(f)
+    record = shp_getrec(f, i)
     position = field_names.index(field_name)
     return record[position]

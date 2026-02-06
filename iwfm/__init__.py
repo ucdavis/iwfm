@@ -21,6 +21,9 @@
 from iwfm.iwfm_model import iwfm_model, IWFMModelError
 from iwfm.gw_well_lay_elev import gw_well_lay_elev
 
+# -- Model metadata access (recommended - cross-platform) --
+from iwfm.model import open_model, Model
+
 # -- IWFM model file ---------------------------------------
 from iwfm.iwfm_read_model_file import iwfm_read_model_file
 from iwfm.sim_info import sim_info
@@ -100,7 +103,6 @@ from iwfm.igsm_read_lake import igsm_read_lake
 from iwfm.igsm_read_streams import igsm_read_streams
 
 # -- IWFM budget and zbudget files ------------------------
-from iwfm.buds2xl import buds2xl
 from iwfm.budget_info import budget_info
 from iwfm.iwfm_read_bud import iwfm_read_bud
 from iwfm.bud2csv import bud2csv
@@ -112,15 +114,14 @@ from iwfm.simhyd_obs import simhyd_obs
 from iwfm.wdl_meas_stats import wdl_meas_stats
 from iwfm.wdl_ts_4_wells import wdl_ts_4_wells
 from iwfm.read_hyd_dict import read_hyd_dict
+from iwfm.read_sim_hyd import read_sim_hyd
 from iwfm.read_sim_hyds import read_sim_hyds
 
 # --- plotting methods --for IWFM output ------------------
 from iwfm.read_obs_smp import read_obs_smp
 from iwfm.read_sim_wells import read_sim_wells
-from iwfm.read_sim_hyds import read_sim_hyds
 from iwfm.hyd_diff import hyd_diff
 from iwfm.write_smp import write_smp
-from iwfm.read_obs import read_obs
 from iwfm.pdf_combine import pdf_combine
 from iwfm.bnds2mask import bnds2mask
 

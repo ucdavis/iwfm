@@ -83,8 +83,7 @@ if __name__ == '__main__':
     ''' Run ppk2fac_trans() from command line '''
 
     import sys
-    import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         factors_file  = sys.argv[1]

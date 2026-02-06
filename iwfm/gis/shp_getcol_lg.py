@@ -1,6 +1,6 @@
 # shp_getcol_lg.py
 # Returns one column for a PyShp shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,11 +34,12 @@ def shp_getcol_lg(f, col):
         items from specified column
 
     '''
-    import iwfm as iwfm
+    from iwfm.shp_recno import shp_recno
+    from iwfm.gis.shp_getrec_lg import shp_getrec_lg
 
-    recs = iwfm.shp_recno(f)
+    recs = shp_recno(f)
     data = []
     for i in range(recs):
-        r = iwfm.gis.shp_getrec_lg(f, i)
+        r = shp_getrec_lg(f, i)
         data.append(r[col])
     return data

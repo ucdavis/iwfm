@@ -1,6 +1,6 @@
 # shp_getcol.py
 # Returns one column for a PyShp shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,11 +33,12 @@ def shp_getcol(f, col):
        items from specified column
 
     '''
-    import iwfm as iwfm
+    from iwfm.shp_recno import shp_recno
+    from iwfm.gis.shp_getrec import shp_getrec
 
-    recs = iwfm.shp_recno(f)
+    recs = shp_recno(f)
     data = []
     for i in range(recs):
-        r = iwfm.gis.shp_getrec(f, i)
+        r = shp_getrec(f, i)
         data.append(r[col])
     return data

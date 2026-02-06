@@ -62,7 +62,6 @@ from iwfm.calib.headdiff_hyds import headdiff_hyds
 from iwfm.calib.headdiff_read import headdiff_read
 from iwfm.calib.hyds_missed import hyds_missed
 from iwfm.calib.read_obs_wells import read_obs_wells
-from iwfm.calib.read_sim_heads import read_sim_heads
 from iwfm.calib.sim_4_sites import sim_4_sites
 from iwfm.calib.well_pairs_2_obs_list import well_pairs_2_obs_list
 

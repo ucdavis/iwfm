@@ -34,7 +34,7 @@ def sub_remove_items(file_lines, line_index, items, skip=0):
         list of existing model compnents (elements, nodes, stream nodes, etc) in submodel
 
     skip : int, default=0
-        turn command-line output on or offnumber of lines to skip in addition to comments
+        number of lines to skip in addition to comments
 
     Returns
     -------
@@ -42,7 +42,6 @@ def sub_remove_items(file_lines, line_index, items, skip=0):
         ending line number after processing
 
     '''
-    import iwfm
     from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']

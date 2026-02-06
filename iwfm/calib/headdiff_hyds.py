@@ -18,7 +18,6 @@
 
 from math import ceil
 from iwfm import dts2days
-from iwfm.calib.to_smp_ins import to_smp_ins
 
 
 def headdiff_hyds(hdiff_pairs, hdiff_data, rthresh, ts_func, start_date, verbose=False):

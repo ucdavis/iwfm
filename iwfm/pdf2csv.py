@@ -1,7 +1,7 @@
 # pdf2csv.py
 # Read a PDF file and write tables to a csv file
 # info and gwhyd_sim columns, and returns the dictionary
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ def pdf2csv(input_file, output_file, verbose=False, log_file='pdf2csv.log'):
     nothing
 
     '''
-    import tabula
+    from tabula.io import convert_into
     import warnings
     import logging
 
@@ -57,7 +57,7 @@ def pdf2csv(input_file, output_file, verbose=False, log_file='pdf2csv.log'):
         warnings.simplefilter("always")
 
         try:
-            tabula.convert_into(input_file, output_file, output_format='csv', pages='all')
+            convert_into(input_file, output_file, output_format='csv', pages='all')
 
             # Log any warnings
             for warning in w:

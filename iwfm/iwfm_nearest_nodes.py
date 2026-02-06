@@ -1,7 +1,7 @@
 # iwfm_nearest_nodes.py
 # Read a file with (x,y) locations and an IWFM node file, and write a file with
 # the nearest node to each (x,y) point
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ def iwfm_nearest_nodes(filename, node_set):
     number of points processed
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     output_filename = filename[0 : filename.find('.')] + '_nearest_nodes.out'
     with open(output_filename, 'w') as output_file:
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     ' Run iwfm_nearest_nodes() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         node_file  = sys.argv[1]

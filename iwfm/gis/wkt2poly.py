@@ -1,6 +1,6 @@
 # wkt2poly.py
 # Convert WKT-format text string into polygon
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ def wkt2poly(intxt):
         Polygon
 
     '''
-    import wkt
+    from shapely import wkt
 
     wktPoly = intxt
     return wkt.loads(wktPoly)

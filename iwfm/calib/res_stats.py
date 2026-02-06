@@ -18,14 +18,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import os
-import sys
-import csv
-import numpy as np
-import scipy as sci
 import iwfm
 import iwfm.calib as icalib
-from math import sqrt, fabs
 
 
 def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):

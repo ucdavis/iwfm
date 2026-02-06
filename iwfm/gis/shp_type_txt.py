@@ -1,6 +1,6 @@
 # shp_type_txt.py
 # Returns text string of shape type for PyShp shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@ def shp_type_txt(shp):
     shape type : str
 
     '''
-    import iwfm as iwfm
+    from iwfm.gis.shp_type import shp_type
 
-    type = iwfm.shp_type(shp)
+    type = shp_type(shp)
     if type == 1:
         return 'POINT'
     elif type == 3:

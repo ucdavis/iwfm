@@ -37,7 +37,6 @@ def read_param_table_ints(file_lines, line_index, lines):
         A list of parameters
     """
 
-    import iwfm 
 
     params = []
     if int(file_lines[line_index].split()[0]) == 0:                  # one set of parameter values for all elements

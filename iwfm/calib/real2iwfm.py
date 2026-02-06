@@ -212,7 +212,6 @@ def real2iwfm(verbose=False):
 
     '''
 
-    import sys
     import iwfm
 
     param_types = ['PKH', 'PS', 'PN', 'PV', 'PL', 'SCE', 'SCI']

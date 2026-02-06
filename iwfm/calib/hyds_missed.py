@@ -55,7 +55,6 @@ def hyds_missed(sim_sites,obs_sites):
         observation sites not in sim_sites
 
     '''
-    import iwfm as iwfm
     sim_miss = items_not_in_second_list(sim_sites,obs_sites)
     obs_miss = items_not_in_second_list(obs_sites,sim_sites)
     return sim_miss, obs_miss

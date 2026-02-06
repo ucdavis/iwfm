@@ -88,7 +88,6 @@ if __name__ == "__main__":
     ''' Run map_divs2shp() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm.gis as igis
     import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line

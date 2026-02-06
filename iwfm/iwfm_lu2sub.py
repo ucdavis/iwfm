@@ -50,7 +50,7 @@ def iwfm_lu2sub(
     nothing
     
     '''
-    import sys, re, os
+    import sys, re
     import iwfm
     from iwfm.file_utils import read_next_line_value
 

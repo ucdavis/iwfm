@@ -109,8 +109,6 @@ def replace_params(gw_params, gw_data, param_line):
         A list containing the groundwater data file contents w/new parameters.
     
     '''
-    import iwfm
-
     param_len = len(gw_params)
 
     gw_data[param_line:param_line + param_len] = gw_params

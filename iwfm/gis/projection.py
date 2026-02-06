@@ -31,7 +31,6 @@ def projection(shapename, epsg=26910, verbose=False):
     -------
     nothing
     '''
-    import os
 
     # -- NAD 83 UTM 10, CA ---------------------------------------------------
     if epsg == 26910:

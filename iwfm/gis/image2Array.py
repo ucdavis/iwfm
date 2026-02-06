@@ -29,7 +29,6 @@ def image2Array(i):
     a : GDAL array
 
     '''
-    import numpy
     from osgeo import gdal_array as gdal_array
 
     a = gdal_array.numpy.fromstring(i.tobytes(), 'b')

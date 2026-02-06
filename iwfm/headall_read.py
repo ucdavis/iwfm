@@ -84,7 +84,6 @@ def headall_read(input_file, skip=5, verbose=False):
 if __name__ == '__main__':
     ' Run headall_read() from command line '
     import sys
-    import os
     import iwfm.debug as idb
     import iwfm as iwfm
 

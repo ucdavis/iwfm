@@ -49,10 +49,8 @@ def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
     nothing
 
     '''
-    import sys
     import shapefile
     import pyproj
-    from shapely.geometry import Polygon  # mapping no longer needed
 
     import iwfm as iwfm
 

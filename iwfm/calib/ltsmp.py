@@ -72,7 +72,6 @@ if __name__ == "__main__":
     import sys
     import iwfm
     import iwfm.debug as idb
-    from pathlib import Path
   
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file  = sys.argv[1]

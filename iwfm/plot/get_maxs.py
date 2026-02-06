@@ -44,8 +44,7 @@ def get_maxs(dataset):
                 maxs[i] = coord
 
     #  Maximums rounded up
-    for coord in maxs:
-        coord = math.ceil(coord)
+    maxs = [math.ceil(coord) for coord in maxs]
 
     return maxs
 

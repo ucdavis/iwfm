@@ -17,42 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-def read_sim_hyd(gwhyd_file):
-    ''' read_sim_hyd() - Read simulated values from an IWFM output hydrograph file
-            to numpy array
-
-    Parameters
-    ----------
-    gwhyd_file : string
-        input file name
-
-    Returns
-    -------
-    gwhyd_sim : numpy array
-        hydrograph values from the hydrograph file
-
-    '''
-    import numpy as np
-    import iwfm
-
-    with open(gwhyd_file) as f:
-        gwhyd_lines = (f.read().splitlines())
-    gwhyd_lines = [word.replace('_24:00', ' ') for word in gwhyd_lines]
-
-    gwhyd_sim = []
-    for j in range(9, len(gwhyd_lines)):
-        items = gwhyd_lines[j].split()
-        date_str = items.pop(0)
-        try:
-            date_dt = iwfm.safe_parse_date(date_str, f'{gwhyd_file} line {j+1}')
-        except ValueError as e:
-            raise ValueError(f"Error reading {gwhyd_file} line {j+1}: {str(e)}") from e
-        temp = [date_dt]                   # date
-        alist = [float(x) for x in items]       # values to floats
-        temp.extend(alist)
-        gwhyd_sim.append(temp)
-
-    return np.array(gwhyd_sim)
+from iwfm.read_sim_hyd import read_sim_hyd
 
 
 def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
@@ -80,7 +45,6 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
     
     '''
 
-    import datetime
     import iwfm
     import iwfm.calib as ical
 

@@ -44,7 +44,6 @@ def elems2shp_csv(elem_nodes, node_coord_dict, shapename='elems.shp', epsg=26910
 
     import shapefile
     import pyproj
-    from shapely.geometry import Polygon  # mapping no longer needed
     from pyproj import CRS
 
     # Create list of element polygons

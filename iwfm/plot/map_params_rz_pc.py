@@ -94,8 +94,6 @@ def map_params_rz_pc(node_file_name, elem_file_name, out_name, rz_pc_file_name,
     nothing
 
     '''                
-    import iwfm
-    import iwfm.gis as igis
 
     elem_centroids, boundary_coords, crops_pc, param_vals_pc, param_types_pc = get_params_rz_pc(node_file_name, 
                 elem_file_name, rz_pc_file_name, verbose=verbose)

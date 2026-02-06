@@ -1,6 +1,6 @@
 # shp_getrow.py
 # Returns one row or record for a PyShp shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,6 +33,6 @@ def shp_getrow(inshape, rec):
     one row record
     
     '''
-    import iwfm as iwfm
+    from iwfm.gis.shp_getrec import shp_getrec
 
-    return iwfm.gis.shp_getrec(inshape, rec)
+    return shp_getrec(inshape, rec)

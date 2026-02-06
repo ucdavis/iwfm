@@ -1,6 +1,6 @@
 # obs_smp.py
 # Return observation bore sample info for sites in sim_sites
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # Based on a PEST utility written by John Doherty
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ def obs_smp(obs_lines,sim_sites):
         observation sites not used in simulation
 
     '''
-    from datetime import date, datetime
+    from datetime import date
 
     missing, obs_data, obs_sites = [], [], []
     for line in obs_lines:

@@ -44,8 +44,7 @@ def get_mins(dataset):
                 mins[i] = coord
 
     #   Minimums rounded down
-    for coord in mins:
-        coord = math.floor(coord)
+    mins = [math.floor(coord) for coord in mins]
 
     return mins
 

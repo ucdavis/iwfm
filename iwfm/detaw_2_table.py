@@ -81,7 +81,6 @@ if __name__ == '__main__':
     ' Run detaw_2_table() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         dir_name = sys.argv[1]

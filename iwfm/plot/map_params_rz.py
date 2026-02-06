@@ -394,9 +394,6 @@ def map_params_rz(node_file_name, elem_file_name, out_name, rz_file_name,
 # Run map_params_rz() from command line
 if __name__ == "__main__":
     import sys
-    import numpy as np
-    import geopandas as gpd
-    import os
     import iwfm.plot as iplot
     import iwfm
     import iwfm.debug as idb

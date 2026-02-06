@@ -55,7 +55,7 @@ def histogram(data, name, unit, file, method='auto'):
     plt.title(f'Histogram of {name} ({unit})')
 
     #  Save histogram to file
-    plt.savefig(file_name)
+    plt.savefig(file)
 
     return hist, bins
 

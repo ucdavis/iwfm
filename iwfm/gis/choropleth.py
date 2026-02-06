@@ -18,7 +18,7 @@
 
 import shapefile  # pyshp
 from PIL import Image, ImageDraw
-import iwfm
+from iwfm.gis.world2screen import world2screen
 import math
 
 def choropleth(infile,fieldname1,fieldname2,iwidth=600,
@@ -81,7 +81,7 @@ def choropleth(infile,fieldname1,fieldname2,iwidth=600,
         R, G, B = int(205 - weight), int(215 - weight), int(245 - weight)
         pixels = []
         for x, y in shp.shape.points:
-            (px, py) = iwfm.gis.world2screen(inShp.bbox, iwidth, iheight, x, y)
+            (px, py) = world2screen(inShp.bbox, iwidth, iheight, x, y)
             pixels.append((px, py))
         draw.polygon(pixels, outline=(255, 255, 255), fill=(R, G, B))
     if savename:

@@ -53,7 +53,6 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
-    from pathlib import Path
 
     if verbose: print(f"Entered sub_gw_bc_file() with {old_filename}")
 

@@ -40,9 +40,6 @@ def iwfm_read_uz_params(uz_file, verbose=False):
 
     uz_dict, params = iwfm.iwfm_read_uz(uz_file, verbose=verbose)
     
-    data = params
-    #data = [pd, pn, pi, pk, prhc, ic]
-
-
-    return data
+    #params = [pd, pn, pi, pk, prhc, ic]
+    return params
 

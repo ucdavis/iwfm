@@ -1,6 +1,6 @@
 # raster_open.py
 # Open a raster file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -30,6 +30,6 @@ def raster_open(infile):
     raster :  raster as GDAL object
 
     '''
-    import gdal
+    from osgeo import gdal
 
     return gdal.Open(infile)

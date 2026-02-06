@@ -134,9 +134,8 @@ def read_params(param_types, verbose=False):
 
     '''
 
-    import sys
     import iwfm
-    
+
     # read new parameter values
     parvals, parnodes, count = [], [], 0
     for ptype in param_types:

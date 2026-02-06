@@ -38,7 +38,6 @@ def iwfm_read_elements(elem_file, verbose=False):
         subregion for each element
 
     '''
-    import re
     import iwfm
     from iwfm.file_utils import read_next_line_value
 

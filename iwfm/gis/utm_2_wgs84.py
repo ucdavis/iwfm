@@ -1,6 +1,6 @@
 # utm_2_wgs84.py
 # Reproject from UTM to geographic coordinates
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ def utm_2_wgs84(zone, easting, northing):
     band = 'N' if northing >= 0 else 'M'
 
     # Convert UTM to lat/lon (returns lat, lon)
-    lat, lon = utm.to_latlon(northing, easting, zone, band)
+    lat, lon = utm.to_latlon(easting, northing, zone, band)
 
     # Return in original format: (lon, lat, altitude)
     return (lon, lat, 0)

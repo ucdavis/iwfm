@@ -1,6 +1,6 @@
 # iwfm_read_gw_params.py
 # read IWFM simulation groundwater file groundwater parameters
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,9 +32,7 @@ def iwfm_read_gw_params(gw_file):
         A list containing parameter values. It consists of 13 sublists, each representing a different parameter.
           
     '''
-    import iwfm as iwfm
-    import numpy as np
-    import re
+    import iwfm
 
     iwfm.file_test(gw_file)
 

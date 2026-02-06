@@ -36,7 +36,6 @@ def pest_res_stats(pest_res_file, verbose=False):
 
     '''
     import numpy as np
-    import iwfm as iwfm
 
     # read pest results file
     with open(pest_res_file) as f:

@@ -79,7 +79,6 @@ if __name__ == '__main__':
     import sys, os
     import iwfm
     import iwfm.calib as ical
-    import iwfm.debug as idbg
 
     verbose = False
 
@@ -109,7 +108,9 @@ if __name__ == '__main__':
     obs = ical.smp_read(obs_file)                             # read observed values
     if verbose: print(f'  Read {len(obs):,} observations.')
 
-    gwhyd_sim, dates = ical.read_sim_heads(gwhyd_file)        # read simulated hydrograph
+    sim_array = iwfm.read_sim_hyd(gwhyd_file)                  # read simulated hydrograph
+    dates = list(sim_array[:, 0])                              # extract dates from column 0
+    gwhyd_sim = sim_array[:, 1:].astype(float).tolist()        # extract values as list of lists
 
     sim_obs = sim_obs_list(obs, well_dict, gwhyd_sim, dates)  # compare simulated and observed values
 

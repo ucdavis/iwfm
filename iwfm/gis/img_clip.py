@@ -1,6 +1,6 @@
 # img_clip.py
 # Clips a raster file to a shapefile clipping mask
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -36,10 +36,10 @@ def img_clip(raster, clipshape, outfile):
     nothing
 
     '''
-    from osgeo import gdal_array as gdal_array
-    import gdal as gdal
+    from osgeo import gdal_array
+    from osgeo import gdal
     import shapefile  # pyshp
-    from PIL import Image, ImageDraw, ImageOps  # pillow
+    from PIL import Image, ImageDraw  # pillow
     import iwfm.gis as igis
 
     if clipshape[-4:] != '.shp':

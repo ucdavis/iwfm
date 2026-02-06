@@ -57,8 +57,6 @@ def logtrans(q, zero_offset=-2.0, neg_val=1e-9, roundoff=4):
 if __name__ == '__main__':
     ' Run logtrans() from command line '
     import sys
-    import iwfm.debug as idb
-    import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         q = float(sys.argv[1])

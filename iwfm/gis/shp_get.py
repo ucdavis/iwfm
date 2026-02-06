@@ -1,6 +1,6 @@
 # shp_get.py
 # Open a shapefile with PyShp
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -30,6 +30,6 @@ def shp_get(infile):
     shp : Shapefile object
 
     '''
-    import iwfm as iwfm
+    from iwfm.gis.shp_get_PyShp import shp_get_PyShp
 
-    return iwfm.gis.shp_get_PyShp(infile)
+    return shp_get_PyShp(infile)

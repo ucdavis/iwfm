@@ -44,13 +44,11 @@ def print_exe_time(start, end, verbose=1):
              'ss.s seconds'
  
     '''
-    import iwfm
-
     diff = str(end - start).split(':')
     secs = str(round(float(diff[2]), 1))
     if int(diff[0]) > 0:
-        hours = iwfm.pad_front(str(int(diff[0])), 2, '0') + ':'
-        mins = iwfm.pad_front(str(int(diff[1])), 2, '0') + ':'
+        hours = str(int(diff[0])).zfill(2) + ':'
+        mins = str(int(diff[1])).zfill(2) + ':'
     elif int(diff[1]) > 0:
         hours = ''
         mins = f'{int(diff[1])} min '

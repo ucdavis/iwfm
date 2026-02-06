@@ -1,6 +1,6 @@
 # headall2shp.py
 # Read headall.out file and nodal coordinates file and create shapefiles of heads
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -53,8 +53,8 @@ def headall2shp(heads_file, pre_file, out_date, basename, label='Heads', units='
     
     '''
     import os
+    import iwfm
     import iwfm.gis as igis
-
 
     pre_path, pre_proc = os.path.split(pre_file)
     pre_dict, _ = iwfm.iwfm_read_preproc(pre_file)
@@ -66,6 +66,9 @@ def headall2shp(heads_file, pre_file, out_date, basename, label='Heads', units='
     data, layers, dates, nodes = iwfm.headall_read(heads_file)
 
     # find index of out_date in dates
+    if out_date not in dates:
+        print(f'  Error: Date {out_date} not found in {heads_file}')
+        return
     index = dates.index(out_date)
 
     # -- coordinates

@@ -1,6 +1,6 @@
 # shp_get_OGR.py
 # Open a shapefile with OGR
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ def shp_get_OGR(infile, verbose=False):
     shape :  shapefile as OGR object
     
     '''
-    import ogr as ogr
+    from osgeo import ogr
 
     shape = ogr.Open(infile)
     if verbose:

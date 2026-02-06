@@ -1,6 +1,6 @@
 # grid_contour.py
 # Use GDAL and OGR to create a contour shapefile
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@ def grid_contour(source, target):
     nothing
 
     '''
-    import ogr as ogr
-    import gdal as gdal
+    from osgeo import ogr
+    from osgeo import gdal
 
     if target[-4:] != '.shp':
         target += '.shp'

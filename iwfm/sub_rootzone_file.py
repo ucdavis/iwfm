@@ -50,7 +50,6 @@ def sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=N
 
     '''
     import iwfm
-    from pathlib import Path
     from iwfm.file_utils import read_next_line_value
 
     comments = ['C','c','*','#']

@@ -37,7 +37,7 @@ def get_boundary_coords(elem_nodes, node_coords):
 
     '''
 
-    from shapely.geometry import Polygon, mapping
+    from shapely.geometry import mapping
     import iwfm.gis as igis
 
 

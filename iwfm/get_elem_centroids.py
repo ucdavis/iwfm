@@ -36,7 +36,6 @@ def get_elem_centroids(elem_ids, elem_nodes, node_coords):
         list of element centroids
 
     '''
-    import sys
 
     elem_centroids = []
     for elem_id, nodes in zip(elem_ids, elem_nodes):

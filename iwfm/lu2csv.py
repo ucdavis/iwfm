@@ -76,7 +76,6 @@ def lu2csv(inFileName, skip=4, verbose=False):
 if __name__ == "__main__":
     " Run lu2csv() from command line "
     import sys
-    import os
     import iwfm.debug as idb
     import iwfm as iwfm
 

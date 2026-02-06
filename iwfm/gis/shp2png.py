@@ -40,7 +40,7 @@ def shp2png(shape, outname, iwidth=400, iheight=600):
     nothing
     
     '''
-    from PIL import Image, ImageDraw, ImageOps
+    from PIL import Image, ImageDraw
 
     xdist = shape.bbox[2] - shape.bbox[0]
     ydist = shape.bbox[3] - shape.bbox[1]

@@ -1,6 +1,6 @@
 # __init__.py for iwfm.debug package
 # Classes, methods and functions for debugging scripts to use IWFM and IGSM files
-# Copyright (C) 2018-2021 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 # program/function timer
 from iwfm.debug.exe_time import exe_time
 from iwfm.debug.print_exe_time import print_exe_time
+from iwfm.debug.timer import timer
 
 # test dictionary
 from iwfm.debug.test_dict import test_dict

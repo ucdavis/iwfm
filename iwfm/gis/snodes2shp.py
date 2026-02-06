@@ -49,7 +49,6 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
     import iwfm as iwfm
     import shapefile
     import pyproj
-    from shapely.geometry import Point  # mapping no longer needed
 
     shapename = f'{shape_name}_StreamNodes'  # remove .shp extension
 

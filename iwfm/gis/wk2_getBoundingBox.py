@@ -1,6 +1,6 @@
 # wk2_getBoundingBox.py
 # Get bounding polygon
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ def wk2_getBoundingBox(wkt):
     poly : bounding box
     
     '''
-    import ogr
+    from osgeo import ogr
 
     poly = ogr.CreateGeometryFromWkt(wkt)
 

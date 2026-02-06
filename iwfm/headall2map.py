@@ -1,6 +1,6 @@
 # headall2map.py
 # Read headall.out file and nodal coordinates file and produce head maps
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ def headall2map(heads_file, pre_file, bnds_file, out_date, basename, label='Head
     '''
     import os
     import numpy as np
+    import iwfm
     import iwfm.plot as iplot
 
     pre_path, pre_proc = os.path.split(pre_file)
@@ -72,6 +73,9 @@ def headall2map(heads_file, pre_file, bnds_file, out_date, basename, label='Head
     data, layers, dates, nodes = iwfm.headall_read(heads_file)
 
     # find index of out_date in dates
+    if out_date not in dates:
+        print(f'  Error: Date {out_date} not found in {heads_file}')
+        return
     index = dates.index(out_date)
 
     # map heads for each layer for out_date

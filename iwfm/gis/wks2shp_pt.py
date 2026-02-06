@@ -46,7 +46,7 @@ def wks2shp_pt(inwksheet, outshp, sheet_index=0):
 
     '''
     import xlrd
-    import iwfm
+    from iwfm.gis.shp_get_writer import shp_get_writer
 
     # Validate inputs
     if not isinstance(inwksheet, str):
@@ -75,7 +75,7 @@ def wks2shp_pt(inwksheet, outshp, sheet_index=0):
 
     # Create shapefile writer with proper error handling
     try:
-        w = iwfm.gis.shp_get_writer(outshp, 'POINT')  # open shapefile writer
+        w = shp_get_writer(outshp, 'POINT')  # open shapefile writer
 
         # Move data to shapefile table
         for i in range(sheet.ncols):  # read the header row

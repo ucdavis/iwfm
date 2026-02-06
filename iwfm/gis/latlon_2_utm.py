@@ -49,7 +49,6 @@ if __name__ == '__main__':
     '''
     import sys
     import csv
-    import numpy as np
     import iwfm.debug as idb
     import iwfm as iwfm
 

@@ -18,7 +18,7 @@
 
 import colorsys
 import numpy as np
-from PIL import Image, ImageDraw, ImageOps  # pillow
+from PIL import Image, ImageOps  # pillow
 try:
     from osgeo import gdal_array
 except ImportError:

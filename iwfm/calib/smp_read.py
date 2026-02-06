@@ -30,8 +30,6 @@ def smp_read(smp_file_name):
     obs : list
         list of lists of observed values
     '''
-    from datetime import datetime
-
     import iwfm
 
     with open(smp_file_name) as f:

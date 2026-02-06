@@ -1,6 +1,6 @@
 # elem2boundingpoly.py
 # Create shapely Polygon of boundary for an IWFM model
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import iwfm as iwfm
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 

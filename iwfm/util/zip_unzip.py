@@ -1,6 +1,6 @@
 # zip_unzip.py
 # unzip a zip file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,7 +37,10 @@ def zip_unzip(filename, verbose=False):
 
     with open(filename, 'rb') as zip:
         zipList = zipfile.ZipFile(zip)
-        for name in zipList.namelist()[1:]:
+        for name in zipList.namelist():
+            # Skip directories (they end with '/')
+            if name.endswith('/'):
+                continue
             with open(name, 'wb') as out:
                 out.write(zipList.read(name))
     if verbose:
