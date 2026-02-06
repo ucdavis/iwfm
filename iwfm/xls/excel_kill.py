@@ -1,6 +1,6 @@
 # excel_kill.py
-# close Excel application
-# Copyright (C) 2020-2023 University of California
+# Close Excel application (DEPRECATED)
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,22 +16,27 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import warnings
+from loguru import logger
+
+
 def excel_kill(excel):
-    ''' excel_kill() - close Excel application
-    
+    """Close Excel application.
+
+    .. deprecated::
+        Use :func:`iwfm.xls.close_workbook` instead.
+
     Parameters
     ----------
-    excel : COM object
-        Excel application object
+    excel : object
+        Excel application object.
+    """
+    warnings.warn(
+        "excel_kill() is deprecated. Use close_workbook() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    logger.warning("Deprecated function excel_kill() called - use close_workbook() instead")
 
-    Returns
-    -------
-    nothing
-    
-    '''
-    excel.DisplayAlerts = False  # return to defaults
-    excel.Visible = False
-
-    excel.Quit()
-    excel = None
-
+    from iwfm.xls import _get_backend_module
+    return _get_backend_module().excel_kill(excel)

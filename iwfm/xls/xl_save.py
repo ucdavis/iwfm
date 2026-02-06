@@ -1,6 +1,6 @@
 # xl_save.py
-# Saves the excel workbook
-# Copyright (C) 2020-2021 University of California
+# Saves the excel workbook (DEPRECATED)
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,23 +16,29 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import warnings
+from loguru import logger
 
-def xl_save(wb, excel_file_name):  
-    ''' xl_save() - Save the excel workbook
+
+def xl_save(wb, excel_file_name):
+    """Save the excel workbook.
+
+    .. deprecated::
+        Use :func:`iwfm.xls.save_workbook` instead.
 
     Parameters
     ----------
-    wb : obj
-        Excel workbook object
-
+    wb : object
+        Excel workbook object.
     excel_file_name : str
-        Name of output excel file
+        Name of output excel file.
+    """
+    warnings.warn(
+        "xl_save() is deprecated. Use save_workbook() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    logger.warning("Deprecated function xl_save() called - use save_workbook() instead")
 
-    Returns
-    -------
-    nothing
-
-    '''
-    import os
-    wb.SaveAs(os.path.join(os.getcwd(), excel_file_name))
-    
+    from iwfm.xls import _get_backend_module
+    return _get_backend_module().save_workbook(wb, excel_file_name)

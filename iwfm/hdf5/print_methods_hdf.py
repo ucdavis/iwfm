@@ -34,7 +34,7 @@ def print_methods_hdf(filename, spacing=20, verbose=False):
 
     '''
     import h5py
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(filename)
 
@@ -67,8 +67,7 @@ def print_methods_hdf(filename, spacing=20, verbose=False):
 if __name__ == '__main__':
     '''methods_hdf() from command line '''
     import sys
-    import os
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as dbg
 
 

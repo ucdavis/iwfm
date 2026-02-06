@@ -18,7 +18,15 @@
 
 
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
+
+# Check if pywfm is available
+try:
+    import pywfm  # noqa: F401
+    del pywfm
+    HAS_PYWFM = True
+except ImportError:
+    HAS_PYWFM = False
 
 
 def test_get_zbudget_elemids_elemids_initialized():
@@ -42,8 +50,8 @@ def test_get_zbudget_elemids_has_todo():
     assert 'TODO' in source
 
 
-@patch('iwfm.hdf5.get_zbudget_elemids.IWFMZBudget')
-def test_get_zbudget_elemids_basic(mock_iwfm_zbudget, tmp_path):
+@pytest.mark.skipif(not HAS_PYWFM, reason="pywfm not installed")
+def test_get_zbudget_elemids_basic(tmp_path):
     '''Test basic functionality of get_zbudget_elemids.'''
     from iwfm.hdf5.get_zbudget_elemids import get_zbudget_elemids
 
@@ -71,8 +79,8 @@ def test_get_zbudget_elemids_basic(mock_iwfm_zbudget, tmp_path):
     assert result == []
 
 
-@patch('iwfm.hdf5.get_zbudget_elemids.IWFMZBudget')
-def test_get_zbudget_elemids_verbose(mock_iwfm_zbudget, tmp_path, capsys):
+@pytest.mark.skipif(not HAS_PYWFM, reason="pywfm not installed")
+def test_get_zbudget_elemids_verbose(tmp_path, capsys):
     '''Test get_zbudget_elemids with verbose output.'''
     from iwfm.hdf5.get_zbudget_elemids import get_zbudget_elemids
 

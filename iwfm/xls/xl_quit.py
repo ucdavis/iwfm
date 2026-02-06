@@ -1,6 +1,6 @@
 # xl_quit.py
-# Closes the excel application
-# Copyright (C) 2020-2021 University of California
+# Closes the excel application (DEPRECATED)
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,21 +16,27 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import warnings
+from loguru import logger
+
 
 def xl_quit(excel):
-    ''' xl_quit() - Gracefully close the excel application 
+    """Gracefully close the excel application.
+
+    .. deprecated::
+        Use :func:`iwfm.xls.close_workbook` instead.
 
     Parameters
     ----------
-    excel : excel object
-    
-    Returns
-    -------
-    nothing
+    excel : object
+        Excel application object.
+    """
+    warnings.warn(
+        "xl_quit() is deprecated. Use close_workbook() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    logger.warning("Deprecated function xl_quit() called - use close_workbook() instead")
 
-    '''
-    excel.DisplayAlerts = False  # return to defaults
-    excel.Visible = False
-    excel.Application.Quit()
-    excel = None
-
+    from iwfm.xls import _get_backend_module
+    return _get_backend_module().xl_quit(excel)

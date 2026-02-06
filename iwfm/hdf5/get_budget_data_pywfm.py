@@ -1,7 +1,8 @@
-# get_budget_data.py 
+# get_budget_data_pywfm.py
 # open an IWFM Budget HDF file and retreive all of the data
 # using DWR's PyWFM package to interface wth the IWFM DLL
-# Copyright (C) 2018-2023 University of California
+# DEPRECATED: Use get_budget_data_h5.py instead for cross-platform support
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -58,9 +59,16 @@ def get_budget_data(bud_file,
         Titles (3 items) for each location
     
     '''
-    
+    import warnings
+    warnings.warn(
+        "get_budget_data from get_budget_data_pywfm is deprecated. "
+        "Use iwfm.hdf5.get_budget_data (h5py version) instead for cross-platform support.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
     from pywfm import IWFMBudget
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(bud_file)                        # test that input file exists
     bud = IWFMBudget(bud_file)                      # open budget HDF file

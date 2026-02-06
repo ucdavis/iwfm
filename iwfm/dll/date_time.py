@@ -35,7 +35,7 @@ def date_time(iwfm_dll):
 
     '''
 
-    from ctypes import byref, c_int, create_string_buffer, sizeof
+    from ctypes import byref, c_int, create_string_buffer
 
     buff = 'MM/DD/YYYY_hh:mm'
     date_time, status = create_string_buffer(buff.encode('utf-8')), c_int(-1)

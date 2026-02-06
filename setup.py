@@ -33,11 +33,11 @@ setup(
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
         packages=find_packages(),
-        install_requires= ['area', 'bs4', 'folium', 'fpdf', 'geocoder', 
-            'geojson', 'geopandas', 'matplotlib', 'numpy', 'ogr', 'osmnx', 
-            'pandas', 'pathlib', 'pillow', 'pngcanvas', 'pynmea', 'pypdf2', 
-            'pyshp', 'python_dateutil', 'rasterio', 'requests', 'scipy', 
-            'statistics', 'utm', 'xlrd'
+        install_requires= ['area', 'bs4', 'folium', 'fpdf', 'geocoder',
+            'geojson', 'geopandas', 'loguru', 'matplotlib', 'numpy', 'ogr',
+            'openpyxl', 'osmnx', 'pandas', 'pathlib', 'pillow', 'pngcanvas',
+            'pynmea', 'pypdf2', 'pyshp', 'python_dateutil', 'rasterio',
+            'requests', 'scipy', 'statistics', 'utm', 'xlrd'
             # add any additional packages that need to be installed along with your package. Eg: 'qgis'
         ],
         python_requires='~=3.8',

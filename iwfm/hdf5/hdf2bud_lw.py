@@ -20,7 +20,6 @@
 import sys
 import os
 import numpy as np
-from datetime import datetime, timedelta
 
 try:
     import h5py

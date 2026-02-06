@@ -1,7 +1,6 @@
 # write_2_excel.py
-# Writes a 3D array as 2D tables (row=elements x col=time_steps)
-# to an excel workbook with sheets # of worksheets
-# Copyright (C) 2020-2021 University of California
+# Writes a 3D array as 2D tables to an excel workbook
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,56 +16,76 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import warnings
+from loguru import logger
+
 
 def write_2_excel(file_base_name, data, sheets, elements, time_steps, dates, data_type='Crop'):
-    ''' write_2_excel() - Write a 3D array as 2D tables (row=elements
-        x col=time_steps) to an excel workbook with sheets # of worksheets
+    """Write a 3D array as 2D tables to an excel workbook.
+
+    .. deprecated::
+        Use :func:`iwfm.xls.create_workbook`, :func:`iwfm.xls.add_worksheet`,
+        :func:`iwfm.xls.write_cells`, and :func:`iwfm.xls.save_workbook` instead.
 
     Parameters
     ----------
     file_base_name : str
-        base name of output file
-    
+        Base name of output file (without .xlsx extension).
     data : list
-        data to be written
-    
+        3D array of data [sheets][elements][time_steps].
     sheets : int
-        number of sheets
-    
-    elements : list
-        model element numbers
-    
+        Number of sheets.
+    elements : int
+        Number of elements (rows of data).
     time_steps : int
-        number of time steps
-    
+        Number of time steps.
     dates : list
-        dates corresponding to time steps
-    
-    data_type : str
-        type of information
+        Dates corresponding to time steps.
+    data_type : str, default='Crop'
+        Type of information (used in sheet names).
+    """
+    warnings.warn(
+        "write_2_excel() is deprecated. Use create_workbook(), add_worksheet(), "
+        "write_cells(), save_workbook() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    logger.warning("Deprecated function write_2_excel() called")
 
-    Returns
-    -------
-    nothing
+    from iwfm.xls import create_workbook, add_worksheet, save_workbook, close_workbook
 
-    '''
-    import xlsxwriter
+    # Create workbook
+    wkbkname = f'{file_base_name}.xlsx'
+    workbook = create_workbook(wkbkname)
 
-    # Create an Excel writer using XlsxWriter as the engine.
-    wkbkname = ''.join([file_base_name, '.xlsx'])
-    workbook = xlsxwriter.Workbook(wkbkname)
-    worksheets = ['' for x in range(sheets)]  # empty list
-    # write to the workbook
+    # Remove default sheet (we'll add our own)
+    if hasattr(workbook, 'active'):
+        default_sheet = workbook.active
+
+    logger.info(f"Writing {sheets} sheets to {wkbkname}")
+
     for i in range(sheets):
-        # Create a worksheet and name it
-        worksheets[i] = workbook.add_worksheet(''.join([data_type, str(i + 1)]))  
-        worksheets[i].write(0, 0, ''.join([data_type, str(i + 1)]))  # header label
-        worksheets[i].write(1, 0, 'WYr')  #  write header row
-        for k in range(time_steps):  # write dates in first column
-            worksheets[i].write(1, k + 1, int(dates[k].year))
-        for j in range(elements):  # write data
-            worksheets[i].write(j + 2, 0, j + 1)
+        # Create worksheet
+        sheet_name = f'{data_type}{i + 1}'
+        ws = add_worksheet(workbook, name=sheet_name)
+
+        # Write header
+        ws.cell(row=1, column=1, value=sheet_name)
+        ws.cell(row=2, column=1, value='WYr')
+
+        # Write dates in header row
+        for k in range(time_steps):
+            ws.cell(row=2, column=k + 2, value=int(dates[k].year))
+
+        # Write data
+        for j in range(elements):
+            ws.cell(row=j + 3, column=1, value=j + 1)
             for k in range(time_steps):
-                worksheets[i].write(j + 2, k + 1, float(data[i][j][k]))
-    workbook.close()
-    
+                ws.cell(row=j + 3, column=k + 2, value=float(data[i][j][k]))
+
+        logger.debug(f"Wrote sheet '{sheet_name}': {elements} rows x {time_steps} cols")
+
+    save_workbook(workbook)
+    close_workbook(workbook)
+
+    logger.info(f"Saved workbook: {wkbkname}")

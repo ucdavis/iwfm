@@ -1,6 +1,6 @@
 # excel_new_workbook.py
-# open a new Excel workbook with one sheet
-# Copyright (C) 2020-2023 University of California
+# Open a new Excel workbook with one sheet (DEPRECATED)
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,22 +16,32 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import warnings
+from loguru import logger
+
+
 def excel_new_workbook(excel):
-    ''' excel_new_workbook() - open a new Excel workbook with one sheet
-    
+    """Open a new Excel workbook with one sheet.
+
+    .. deprecated::
+        Use :func:`iwfm.xls.create_workbook` instead.
+
     Parameters
     ----------
-    excel : COM object
-        Excel application object
+    excel : object
+        Excel application object.
 
     Returns
     -------
-    workbook : Excel workbook COM object
-        Output Excel file open for writing
-    
-    '''
+    workbook : object
+        Excel workbook object.
+    """
+    warnings.warn(
+        "excel_new_workbook() is deprecated. Use create_workbook() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    logger.warning("Deprecated function excel_new_workbook() called - use create_workbook() instead")
 
-    workbook = excel.Workbooks.Add()
-
-    return workbook
-
+    from iwfm.xls import _get_backend_module
+    return _get_backend_module().excel_new_workbook(excel)

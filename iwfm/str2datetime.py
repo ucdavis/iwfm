@@ -29,7 +29,7 @@ def str2datetime(s):
     d : datetime object
         
     '''
-    from datetime import date, datetime
+    from datetime import datetime
   
     d = s.split('/')
     return datetime(int(d[2]), int(d[0]), int(d[1]))

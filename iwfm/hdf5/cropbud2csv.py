@@ -148,11 +148,16 @@ def cropbud2csv(bud_file_ag, bud_file_pond, outfile, write_header=True, verbose=
     -------
     nothing
     """
-    import iwfm.hdf5 as hdf5
+    # Import directly from module files to avoid circular dependency
+    # (iwfm.hdf5.__init__.py imports from this file)
+    try:
+        from iwfm.hdf5.get_budget_data_h5 import get_budget_data
+    except ImportError:
+        from iwfm.hdf5.get_budget_data_pywfm import get_budget_data
 
     # get data from budget files
-    ag_budget_data   = hdf5.get_budget_data(bud_file_ag,   verbose=verbose) # (loc_names, column_headers, loc_values)
-    pond_budget_data = hdf5.get_budget_data(bud_file_pond, verbose=verbose) # (loc_names, column_headers, loc_values)
+    ag_budget_data = get_budget_data(bud_file_ag, verbose=verbose)      # (loc_names, column_headers, loc_values)
+    pond_budget_data = get_budget_data(bud_file_pond, verbose=verbose)  # (loc_names, column_headers, loc_values)
     
     # write data to CSV file
     with open(outfile, 'w') as f:

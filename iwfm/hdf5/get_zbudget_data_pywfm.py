@@ -1,6 +1,7 @@
-# get_zbudget_data.py 
+# get_zbudget_data_pywfm.py
 # open an IWFM ZBudget HDF file and Zones file and retreive all of the data
 # using DWR's PyWFM package to interface wth the IWFM DLL
+# DEPRECATED: Use get_zbudget_data_h5.py instead for cross-platform support
 # Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -55,7 +56,14 @@ def get_zbudget_data(zbud_file, zone_file, area_units = 'ACRES',
     -------
     nothing
     '''
-    
+    import warnings
+    warnings.warn(
+        "get_zbudget_data from get_zbudget_data_pywfm is deprecated. "
+        "Use iwfm.hdf5.get_zbudget_data (h5py version) instead for cross-platform support.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
     from pywfm import IWFMZBudget
     import iwfm
 

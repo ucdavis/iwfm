@@ -1,6 +1,6 @@
 # excel_init.py
-# initialize the Excel application
-# Copyright (C) 2020-2023 University of California
+# Initialize the Excel application (DEPRECATED)
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,24 +16,34 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import warnings
+from loguru import logger
+
+
 def excel_init(visible=False, display_alerts=False):
-    ''' excel_init() - initialize the Excel application
-    
+    """Initialize the Excel application.
+
+    .. deprecated::
+        Use :func:`iwfm.xls.create_workbook` instead.
+
     Parameters
     ----------
-    none
+    visible : bool, default=False
+        Whether Excel window is visible.
+    display_alerts : bool, default=False
+        Whether to display Excel alerts.
 
     Returns
     -------
-    excel : COM object
-        Excel application object
-    
-    '''
-    import win32com.client as win32  # pywin32
+    excel : object
+        Excel application object (or proxy in openpyxl mode).
+    """
+    warnings.warn(
+        "excel_init() is deprecated. Use create_workbook() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    logger.warning("Deprecated function excel_init() called - use create_workbook() instead")
 
-    # open new Excel workbook
-    excel = win32.DispatchEx('Excel.Application')            # new excel workbook
-    excel.Visible = visible
-    excel.DisplayAlerts = display_alerts
-
-    return excel
+    from iwfm.xls import _get_backend_module
+    return _get_backend_module().excel_init(visible, display_alerts)

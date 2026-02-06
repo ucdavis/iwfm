@@ -38,7 +38,7 @@ def get_node_ids(iwfm_dll):
 
     '''
 
-    from ctypes import byref, c_int, c_double
+    from ctypes import byref, c_int
     import iwfm.dll as idll
 
     nnodes = idll.get_nnodes(iwfm_dll)[0]

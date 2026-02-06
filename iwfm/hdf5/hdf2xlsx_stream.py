@@ -20,7 +20,6 @@
 import sys
 import os
 import numpy as np
-from datetime import datetime, timedelta
 
 try:
     import h5py
@@ -45,7 +44,7 @@ except ImportError:
 
 try:
     import openpyxl
-    from openpyxl.styles import Font, Alignment, numbers
+    from openpyxl.styles import Font, Alignment
 except ImportError:
     print("Error: openpyxl module not found")
     print("Install with: pip install openpyxl")

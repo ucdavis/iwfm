@@ -44,7 +44,6 @@ if __name__ == '__main__':
     ' Run dll_init() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         dll_path = sys.argv[1]

@@ -39,7 +39,7 @@ def get_timespecs(iwfm_dll):
     '''
 
     #from ctypes import c_int, create_string_buffer
-    from ctypes import byref, c_int, create_string_buffer, sizeof
+    from ctypes import byref, c_int, create_string_buffer
     import iwfm.dll as idll
 
     n_timesteps = idll.get_timesteps(iwfm_dll)[0]

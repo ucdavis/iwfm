@@ -31,7 +31,7 @@ def read_hdf5(filename, verbose=False):
 
     '''
     import h5py
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(filename)
 

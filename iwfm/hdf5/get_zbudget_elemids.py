@@ -50,9 +50,6 @@ def get_zbudget_elemids(zbud, zones_file, area_conversion_factor=0.0000229568411
         List of element IDs
     '''
     
-    from pywfm import IWFMZBudget
-    import iwfm
-
     zbud.generate_zone_list_from_file(zone_definition_file=zones_file)
 
     n_zones = zbud.get_n_zones()

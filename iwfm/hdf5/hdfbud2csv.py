@@ -302,9 +302,14 @@ def hdfbud2csv(bud_file, outfile, write_header=True, verbose=False):
     -------
     nothing
     """
-    import iwfm.hdf5 as hdf5
+    # Import directly from module files to avoid circular dependency
+    # (iwfm.hdf5.__init__.py imports from this file)
+    try:
+        from iwfm.hdf5.get_budget_data_h5 import get_budget_data
+    except ImportError:
+        from iwfm.hdf5.get_budget_data_pywfm import get_budget_data
 
-    budget_data   = hdf5.get_budget_data(bud_file, verbose=verbose) # (loc_names, column_headers, loc_values)
+    budget_data = get_budget_data(bud_file, verbose=verbose)  # (loc_names, column_headers, loc_values)
     
     with open(outfile, 'w') as f:
         process_budget_data(f, budget_data[0], budget_data[1], budget_data[2], budget_data[3],

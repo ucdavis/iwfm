@@ -115,7 +115,6 @@ def date_index(inval, start_date):
 if __name__ == "__main__":
     " Run date_index() from command line "
     import sys
-    import iwfm
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         inval = sys.argv[1]

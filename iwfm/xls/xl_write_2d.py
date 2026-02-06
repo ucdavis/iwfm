@@ -1,6 +1,6 @@
 # xl_write_2d.py
-# Writes 2D array to excel workbook
-# Copyright (C) 2020-2021 University of California
+# Writes 2D array to excel workbook (DEPRECATED)
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,34 +16,36 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+import warnings
+from loguru import logger
+
 
 def xl_write_2d(output, wb, row=1, col=1, sheet=0):
-    '''xl_write() - Write a 2D array to an existing excel workbook
+    """Write a 2D array to an existing excel workbook.
+
+    .. deprecated::
+        Use :func:`iwfm.xls.write_cells` instead.
 
     Parameters
     ----------
     output : list
-        2D array of data
-    
-    wb : obj
-        Excel workbook object
-    
-    row : int
-        top column of write area
-    
-    col : int
-        left column of write area
-    
-    sheet : int
-        worksheet number to write to
+        2D array of data.
+    wb : object
+        Excel workbook object.
+    row : int, default=1
+        Top row of write area.
+    col : int, default=1
+        Left column of write area.
+    sheet : int, default=0
+        Worksheet number to write to.
+    """
+    warnings.warn(
+        "xl_write_2d() is deprecated. Use get_worksheet() and write_cells() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    logger.warning("Deprecated function xl_write_2d() called - use write_cells() instead")
 
-    Returns
-    -------
-    nothing
-    
-    '''
-    ss = wb.Worksheets(sheet)  # select the worksheet for this table
-    # paste in
-    ss.Range(ss.Cells(row, col), ss.Cells(row + len(output) - 1, len(output[0]))
-        ).Value = output  
-    return
+    from iwfm.xls import _get_backend_module, get_worksheet
+    ws = get_worksheet(wb, sheet)
+    return _get_backend_module().write_cells(ws, output, start_row=row, start_col=col)

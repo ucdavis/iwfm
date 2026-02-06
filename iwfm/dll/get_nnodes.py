@@ -36,7 +36,6 @@ def get_nnodes(iwfm_dll):
     '''
 
     from ctypes import byref, c_int
-    import iwfm.dll as idll
 
     nnodes, status = c_int(-1),  c_int(-1)
 

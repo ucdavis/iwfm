@@ -1,6 +1,6 @@
 # secs_between.py
 # Seconds between two datetime dates
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -24,14 +24,14 @@ def secs_between(start, end):
     ----------
     start : datetime object
         starting time
-        
+
     end : datetime object
         ending time
 
     Returns
     -------
     number of seconds as float
-    
+
     '''
-    diff = str(end - start).split(":")
-    return int(diff[0]) * 3600 + int(diff[1]) * 60 + round(float(diff[2]), 1)
+    diff = end - start
+    return round(diff.total_seconds(), 1)

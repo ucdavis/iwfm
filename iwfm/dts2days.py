@@ -34,7 +34,7 @@ def dts2days(dates, start_date):
         each is a dates item - start_date
 
     '''
-    from datetime import date, datetime
+    from datetime import datetime
 
     if isinstance(dates, datetime): # there's only one item, not a list
         out = (dates - start_date).days
