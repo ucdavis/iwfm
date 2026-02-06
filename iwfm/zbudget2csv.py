@@ -2,7 +2,7 @@
 # Write IWFM ZBudget data for a set of Zones to a csv file
 # For Groundwater ZBudgets, remove the inter-zone flows as these are different 
 # for each zone.
-# Copyright (C) 2018-2023 University of California
+# Copyright (C) 2018-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

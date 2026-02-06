@@ -156,6 +156,37 @@ def download_data_table(files):
     return info
 
 
+def get_cdec(files):
+    ''' get_cdec() - Download and format data tables from CDEC websites.
+
+    This is the main entry point for downloading CDEC data. It downloads
+    the raw data tables and formats them into standard CSV format.
+
+    Parameters
+    ----------
+    files : list
+        List of information about each file in the form [Name, Data Source, url]
+
+    Returns
+    -------
+    info : list
+        List of information about the saved files in the form [Name, Data Source]
+
+    Raises
+    ------
+    ValueError
+        If files list is invalid
+    '''
+    if not isinstance(files, list) or not files:
+        raise ValueError(
+            f"files must be a non-empty list, got {type(files).__name__}"
+        )
+
+    info = download_data_table(files)
+    format_file(info)
+    return info
+
+
 def format_file(info):
     ''' format_file() - Save a data table from a website into a csv file. Prints status.
 
