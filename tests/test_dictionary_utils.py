@@ -19,7 +19,6 @@
 
 import tempfile
 import os
-import pytest
 import iwfm
 
 

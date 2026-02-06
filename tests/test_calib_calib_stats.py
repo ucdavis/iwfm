@@ -18,7 +18,7 @@
 
 
 import pytest
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from pathlib import Path
 import numpy as np
 from datetime import datetime
@@ -81,7 +81,7 @@ def test_calib_stats_spacing_fixed():
 
 def test_read_sim_hyd_function_signature():
     '''Test that read_sim_hyd has correct function signature.'''
-    from iwfm.calib.calib_stats import read_sim_hyd
+    from iwfm.read_sim_hyd import read_sim_hyd
     import inspect
 
     sig = inspect.signature(read_sim_hyd)
@@ -93,7 +93,7 @@ def test_read_sim_hyd_function_signature():
 
 def test_read_sim_hyd_basic(tmp_path):
     '''Test basic functionality of read_sim_hyd.'''
-    from iwfm.calib.calib_stats import read_sim_hyd
+    from iwfm.read_sim_hyd import read_sim_hyd
 
     # Create a mock hydrograph file
     hyd_file = tmp_path / 'test_hyd.out'
@@ -125,7 +125,7 @@ def test_read_sim_hyd_basic(tmp_path):
 
 def test_read_sim_hyd_handles_24_00_time(tmp_path):
     '''Test that read_sim_hyd handles _24:00 time format.'''
-    from iwfm.calib.calib_stats import read_sim_hyd
+    from iwfm.read_sim_hyd import read_sim_hyd
 
     # Create a mock hydrograph file with _24:00 format
     hyd_file = tmp_path / 'test_hyd.out'

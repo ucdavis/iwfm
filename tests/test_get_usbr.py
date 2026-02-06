@@ -1,6 +1,6 @@
 # test_get_usbr.py
 # unit tests for get_usbr functions (using polars and tabula)
-# Copyright (C) 2025-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

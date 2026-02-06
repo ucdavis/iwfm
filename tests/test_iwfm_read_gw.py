@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # test_iwfm_read_gw.py
 # Unit tests for iwfm_read_gw.py
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -539,11 +539,14 @@ class TestIwfmReadGw:
 
             gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
-            # Verify hydrographs
+            # Verify hydrographs (now a dict: {name: (order, layer, x, y)})
             assert len(hydrographs_out) == 3
-            assert hydrographs_out[0] == "1"
-            assert hydrographs_out[1] == "2"
-            assert hydrographs_out[2] == "3"
+            assert "Well1" in hydrographs_out
+            assert "Well2" in hydrographs_out
+            assert "Well3" in hydrographs_out
+            assert hydrographs_out["Well1"][0] == 1  # order
+            assert hydrographs_out["Well2"][0] == 2
+            assert hydrographs_out["Well3"][0] == 3
 
         finally:
             os.unlink(temp_file)

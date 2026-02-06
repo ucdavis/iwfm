@@ -17,7 +17,6 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
 
 
 def test_iwfm_strat_arrays_has_run_removed():

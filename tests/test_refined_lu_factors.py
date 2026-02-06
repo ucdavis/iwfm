@@ -1,6 +1,6 @@
 # test_refined_lu_factors.py
 # unit tests for refined_lu_factors function
-# Copyright (C) 2025-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import pytest
 from pathlib import Path
 from unittest.mock import patch
 

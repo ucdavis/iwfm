@@ -1,6 +1,6 @@
 # test_get_cdec.py
 # unit tests for get_cdec functions (using polars and BeautifulSoup)
-# Copyright (C) 2025-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

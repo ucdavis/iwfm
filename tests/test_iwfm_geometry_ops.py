@@ -1,10 +1,32 @@
+# test_iwfm_geometry_ops.py
+# Tests for iwfm geometry operations
+# Copyright (C) 2026 University of California
+# -----------------------------------------------------------------------------
+# This information is free; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This work is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# For a copy of the GNU General Public License, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# -----------------------------------------------------------------------------
+
+"""
+Tests for iwfm geometry operations
+
+"""
+
 import unittest
 import sys
 import os
 import tempfile
 import shutil
 from pathlib import Path
-import time
 
 # Add the parent directory to the path and import iwfm
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

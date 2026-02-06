@@ -17,8 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 import iwfm.gis
 
 

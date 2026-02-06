@@ -17,9 +17,6 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
-from unittest.mock import Mock, patch
-
 
 def test_headdiff_hyds_imports():
     '''Test that headdiff_hyds imports required functions (verifies fixes).'''

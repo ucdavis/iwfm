@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # test_iwfm_read_rz_file_names.py
 # Unit tests for iwfm_read_rz_file_names.py
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import pytest
 import tempfile
 import os
 

@@ -1,6 +1,6 @@
 # test_sub_st_bp_file.py
 # Tests for sub_st_bp_file function
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

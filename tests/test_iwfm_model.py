@@ -17,7 +17,6 @@
 # -----------------------------------------------------------------------------
 import pytest
 from pathlib import Path
-import os
 
 import iwfm
 

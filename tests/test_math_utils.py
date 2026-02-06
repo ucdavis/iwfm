@@ -18,7 +18,6 @@
 """Tests for mathematical utility functions in the iwfm package."""
 
 import math
-import pytest
 import iwfm
 
 

@@ -16,9 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import pytest
 import numpy as np
-from datetime import datetime, date
+from datetime import datetime
 import iwfm.calib as calib
 from iwfm.calib.compare import compare
 

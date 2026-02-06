@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # test_gis_igsm2shp.py
 # Unit tests for gis/igsm2shp.py
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

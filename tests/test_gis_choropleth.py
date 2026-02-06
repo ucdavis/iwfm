@@ -18,7 +18,7 @@
 
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from pathlib import Path
 import sys
 import importlib.util
@@ -56,9 +56,9 @@ def test_choropleth_imports():
     choropleth_path = Path(__file__).parent.parent / 'iwfm' / 'gis' / 'choropleth.py'
     source = choropleth_path.read_text()
 
-    # Should have 'import iwfm' not 'import iwfm as iwfm'
+    # Should use direct import, not 'import iwfm' or 'import iwfm as iwfm'
     assert 'import iwfm as iwfm' not in source
-    assert 'import iwfm' in source
+    assert 'from iwfm.gis.world2screen import world2screen' in source
     # ImageOps should not be imported (unused)
     assert 'ImageOps' not in source
 

@@ -19,7 +19,6 @@
 
 import pytest
 import time
-from unittest.mock import patch
 
 
 def test_timer_imports():

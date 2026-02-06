@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # test_file_utils.py
 # Unit tests for iwfm/file_utils.py utility functions
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

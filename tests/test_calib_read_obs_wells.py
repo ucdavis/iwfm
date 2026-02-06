@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # test_calib_read_obs_wells.py
 # Unit tests for calib/read_obs_wells.py
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by

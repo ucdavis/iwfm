@@ -17,10 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
-from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
-import iwfm.calib
 
 
 def test_res_stats_import_iwfm():
@@ -30,7 +27,8 @@ def test_res_stats_import_iwfm():
     from pathlib import Path
 
     # Import the module to ensure it's loaded, then get it from sys.modules
-    from iwfm.calib import res_stats as res_stats_func
+    from iwfm.calib import res_stats as res_stats_func  # noqa: F401
+    del res_stats_func
     res_stats_module = sys.modules['iwfm.calib.res_stats']
     module_file = Path(res_stats_module.__file__)
 

@@ -17,7 +17,6 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
 from unittest.mock import Mock
 
 
@@ -38,7 +37,7 @@ def test_method_fns_basic():
     mock_shp.test_method = lambda: None
     mock_shp.another_method = lambda: None
 
-    result = method_fns(mock_shp)
+    result = method_fns('test.shp', mock_shp)
 
     # Should return list of methods
     assert isinstance(result, list)

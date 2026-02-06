@@ -1,6 +1,6 @@
 # test_plot_utils.py
 # unit tests for plot utility functions in the iwfm package
-# Copyright (C) 2025 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-import math
 from importlib.util import spec_from_file_location, module_from_spec
 from pathlib import Path
 import numpy as np
@@ -43,30 +42,34 @@ def test_get_maxs_basic():
     data = [[1.5, 2.3, 10.0], [3.2, 1.1, 5.0], [2.8, 4.9, 15.0]]
     maxs = get_maxs(data)
     assert len(maxs) == 3
-    assert maxs[0] == 3.2
-    assert maxs[1] == 4.9
-    assert maxs[2] == 15.0
+    # Values are rounded up (ceil)
+    assert maxs[0] == 4  # ceil(3.2)
+    assert maxs[1] == 5  # ceil(4.9)
+    assert maxs[2] == 15  # ceil(15.0)
 
 
 def test_get_maxs_single_item():
     data = [[100.0, -50.0, 25.5]]
     maxs = get_maxs(data)
-    assert maxs == [100.0, -50.0, 25.5]
+    # Values are rounded up (ceil)
+    assert maxs == [100, -50, 26]  # ceil values
 
 
 def test_get_mins_basic():
     data = [[1.5, 2.3, 10.0], [3.2, 1.1, 5.0], [2.8, 4.9, 15.0]]
     mins = get_mins(data)
     assert len(mins) == 3
-    assert mins[0] == 1.5
-    assert mins[1] == 1.1
-    assert mins[2] == 5.0
+    # Values are rounded down (floor)
+    assert mins[0] == 1  # floor(1.5)
+    assert mins[1] == 1  # floor(1.1)
+    assert mins[2] == 5  # floor(5.0)
 
 
 def test_get_mins_single_item():
     data = [[100.0, -50.0, 25.5]]
     mins = get_mins(data)
-    assert mins == [100.0, -50.0, 25.5]
+    # Values are rounded down (floor)
+    assert mins == [100, -50, 25]  # floor values
 
 
 def test_flip_y_modifies_y_coordinate():
@@ -190,7 +193,53 @@ def test_data_to_color_normalization():
         
     except ImportError as e:
         if "matplotlib" in str(e).lower():
-            pytest.skip("matplotlib not available - this is an optional dependency") 
+            pytest.skip("matplotlib not available - this is an optional dependency")
         else:
             raise
+
+
+# --------------------------------------------------------------------------
+# Tests for histogram function
+# --------------------------------------------------------------------------
+
+def test_histogram_import():
+    """Test that histogram can be imported from iwfm.plot."""
+    from iwfm.plot import histogram
+    assert callable(histogram)
+
+
+def test_histogram_direct_import():
+    """Test direct import from histogram module."""
+    from iwfm.plot.histogram import histogram
+    assert callable(histogram)
+
+
+def test_histogram_has_docstring():
+    """Test that histogram has documentation."""
+    from iwfm.plot.histogram import histogram
+    assert histogram.__doc__ is not None
+
+
+def test_histogram_function_signature():
+    """Test that histogram has correct function signature."""
+    from iwfm.plot.histogram import histogram
+    import inspect
+
+    sig = inspect.signature(histogram)
+    params = list(sig.parameters.keys())
+
+    assert 'data' in params
+    assert 'name' in params
+    assert 'unit' in params
+    assert 'file' in params
+    assert 'method' in params
+
+
+def test_histogram_default_method():
+    """Test that histogram default method is 'auto'."""
+    from iwfm.plot.histogram import histogram
+    import inspect
+
+    sig = inspect.signature(histogram)
+    assert sig.parameters['method'].default == 'auto'
 

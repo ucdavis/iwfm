@@ -17,8 +17,6 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
-from pathlib import Path
 
 
 def test_read_settings_imports():

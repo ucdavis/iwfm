@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # test_sub_rz_urban_file.py
 # Unit tests for sub_rz_urban_file.py
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 
 import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 import iwfm
 

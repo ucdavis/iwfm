@@ -17,9 +17,6 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
-from pathlib import Path
-import iwfm
 
 
 def test_write_smp_basic(tmp_path):

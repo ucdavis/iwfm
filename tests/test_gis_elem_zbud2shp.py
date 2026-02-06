@@ -17,8 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import patch, MagicMock
 
 
 def test_elem_zbud2shp_imports():
@@ -45,8 +44,6 @@ def test_elem_zbud2shp_count_initialized():
 @patch('geopandas.read_file')
 def test_elem_zbud2shp_basic(mock_gpd_read, tmp_path):
     '''Test basic functionality of elem_zbud2shp.'''
-    from iwfm.gis.elem_zbud2shp import elem_zbud2shp
-
     # Create mock budget file content
     budget_content = [
         '# Header',

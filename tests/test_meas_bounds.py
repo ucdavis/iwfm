@@ -17,8 +17,6 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
-from pathlib import Path
 
 
 def test_meas_bounds_dead_code_commented():

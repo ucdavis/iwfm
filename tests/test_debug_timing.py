@@ -19,7 +19,6 @@ from datetime import datetime, timedelta
 
 import pytest
 
-import iwfm
 import iwfm.debug as debug
 
 

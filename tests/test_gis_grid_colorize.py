@@ -17,7 +17,6 @@
 # -----------------------------------------------------------------------------
 
 
-import pytest
 from unittest.mock import patch, Mock
 import numpy as np
 

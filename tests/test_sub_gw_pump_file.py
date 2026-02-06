@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # test_sub_gw_pump_file.py
 # Unit tests for sub_gw_pump_file.py
-# Copyright (C) 2020-2026 University of California
+# Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@ import pytest
 import tempfile
 import os
 from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 
 def create_pump_file(well_file, epump_file, prate_file, pumpout_file=''):
