@@ -60,8 +60,8 @@ def pest_res_stats(pest_res_file, verbose=False):
         obs.append([name,0,0,0,0,0,''])  # name, n, mean, bias, rmse, stdev, group
 
     # cycle through pest_res and accumulate values
-    for i in range(0, len(pest_res)-1):
-        for j in range(0, len(names)-1):
+    for i in range(0, len(pest_res)):
+        for j in range(0, len(names)):
             if pest_res[i][0] == names[j]:                          # name
                 obs[j][1] += 1                                      # n
                 obs[j][2] += float(pest_res[i][2])                  # mean accumulator
@@ -81,8 +81,8 @@ def pest_res_stats(pest_res_file, verbose=False):
             obs[i][4] = -999                                            # rmse
 
     # cycle through pest_res and calculate stdev
-    for i in range(0, len(pest_res)-1):
-        for j in range(0, len(names)-1):
+    for i in range(0, len(pest_res)):
+        for j in range(0, len(names)):
             if pest_res[i][0] == names[j]:                          # name
                 obs[j][5] += (float(pest_res[i][2])-obs[j][2])**2   # stdev accumulator
     for i in range(0, len(obs)):

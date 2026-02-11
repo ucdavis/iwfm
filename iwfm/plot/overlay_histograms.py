@@ -133,10 +133,10 @@ if __name__ == "__main__":
     image_name = f"histogram_{params[param_index1]}{layer1}_vs_{params[param_index2]}{layer2}.{format}"
 
     #  Read all relevant values from Groundwater.dat
-    values = iwfm.read_gw_params(gw_file)
+    values = iwfm.iwfm_read_gw_params(gw_file)
 
-    data1 = values[param_index1][layer1]
-    data2 = values[param_index2][layer2]
+    data1 = [node[layer1] for node in values[param_index1]]
+    data2 = [node[layer2] for node in values[param_index2]]
 
     idb.exe_time()  # initialize timer
 

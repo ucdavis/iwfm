@@ -17,15 +17,12 @@
 # -----------------------------------------------------------------------------
 
 import numpy as np
-from iwfm import read_gw_params
+
 
 def do_avgonly(smp_in, ins_lines, pcf_lines):
     smp_out = smp_in
-    
-    # Read the groundwater parameters file to get the number of layers and nodes
-    nlayers, nnodes = read_gw_params(smp_in)
-    
+
     # Calculate average values for each node in each layer
     smp_out[:, 3:] = np.mean(smp_out[:, 3:], axis=1).reshape(-1, 1)
-  
+
     return smp_out, ins_lines, pcf_lines

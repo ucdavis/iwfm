@@ -64,9 +64,9 @@ if __name__ == "__main__":
     
     #  Groundwater file info / Replace with info of file you want to plot
     gw_file = "C2VSimCG_Groundwater1974.dat"
-    data = iwfm.read_gw_params(gw_file)
+    data = iwfm.iwfm_read_gw_params(gw_file)
     params = ["kh", "ss", "sy", "kq", "kv"]
-    full_names = ["Hydraulic Conductivity", "Specific Storage", "Specific Yield", "Aquitard Vertical Hydraulic Conductivity", "Aquifer Vertical Hydraulic onductivity"]
+    full_names = ["Hydraulic Conductivity", "Specific Storage", "Specific Yield", "Aquitard Vertical Hydraulic Conductivity", "Aquifer Vertical Hydraulic Conductivity"]
     units = ["L/T", "1/L", "L/L", "L/T", "L/T"]
 
     #  Plotting specifications / Replace with specifications of parameter you want to plot
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     unit = units[param]
     file_name = f"histogram_{params[param]}{layer}.png"
 
-    #  Plot data / May need to change if data does not require 2 parameters
-    data_to_plot = data[param][layer]
+    #  Plot data
+    data_to_plot = [node[layer] for node in data[param]]
     histogram(data_to_plot, full_name, unit, file_name)
 

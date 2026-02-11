@@ -114,17 +114,31 @@ def _register_commands():
     Register all command groups.
     Power/dev visibility is handled inside each group.
     """
-    from iwfm.calib import calib
-    from iwfm.gis import gis
-    from iwfm.xls import xls
-    from iwfm.debug import debug
+    try:
+        from iwfm.calib import calib
+        app.add_typer(calib.app, name="calib", help="Model calibration commands")
+    except (ImportError, AttributeError):
+        pass
 
-    app.add_typer(calib.app, name="calib", help="Model calibration commands")
-    app.add_typer(gis.app, name="gis", help="GIS-related utilities")
-    app.add_typer(xls.app, name="xls", help="Excel import/export utilities")
-    app.add_typer(debug.app, name="debug", help="Developer and diagnostic commands",
-         hidden=not get_context().user_level.is_dev(),
-     )
+    try:
+        from iwfm.gis import gis
+        app.add_typer(gis.app, name="gis", help="GIS-related utilities")
+    except (ImportError, AttributeError):
+        pass
+
+    try:
+        from iwfm.xls import xls
+        app.add_typer(xls.app, name="xls", help="Excel import/export utilities")
+    except (ImportError, AttributeError):
+        pass
+
+    try:
+        from iwfm.debug import debug
+        app.add_typer(debug.app, name="debug", help="Developer and diagnostic commands",
+             hidden=not get_context().user_level.is_dev(),
+         )
+    except (ImportError, AttributeError):
+        pass
 
 
 _register_commands()

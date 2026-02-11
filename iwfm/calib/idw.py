@@ -67,7 +67,7 @@ def idw(x, y, elem, nnodes, nlayers, nodexy, elevations, debug=0):
         print(f'      =>  nodexy: \t{nodexy}')
         print(f'      =>  elevations: \t{elevations}')
 
-    interp_values = [[0.0 for _ in nnodes] for _ in nlayers]
+    interp_values = [[0.0 for _ in range(len(nnodes))] for _ in range(nlayers)]
 
     if debug:
         print(f'      =>  interp_values: \t{interp_values}')

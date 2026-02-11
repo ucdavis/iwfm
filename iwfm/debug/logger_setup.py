@@ -23,9 +23,9 @@ from datetime import datetime
 try:
     from loguru import logger
 except ImportError:
-    print("Error: loguru module not found")
-    print("Install with: pip install loguru")
-    sys.exit(1)
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning("loguru module not found; falling back to standard logging. Install with: pip install loguru")
 
 
 def setup_debug_logger(log_prefix=None):

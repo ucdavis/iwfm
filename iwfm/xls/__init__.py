@@ -91,7 +91,7 @@ write_budget_data = _backend_module.write_budget_data
 # These issue warnings and delegate to the backend
 # -----------------------------------------------------------------------------
 
-from iwfm.xlsx.buds2xl import buds2xl
+from iwfm.xls.buds2xl import buds2xl
 from iwfm.xls.excel_init import excel_init
 from iwfm.xls.excel_new_workbook import excel_new_workbook
 from iwfm.xls.excel_kill import excel_kill

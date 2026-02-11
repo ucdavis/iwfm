@@ -53,7 +53,7 @@ def smp_format( infile, nwidth=20, verbose=False):
         date = items[1].split('/')
         for i in range(len(date)):
             date[i] = int(date[i])
-        date = iwfm.date2text(date[0],date[1],date[2])        # convert date from text m/d/yy to mm/dd/yyyy
+        date = iwfm.date2text(date[1],date[0],date[2])        # convert date from text m/d/yy to mm/dd/yyyy
         smp_out = str(f'{iwfm.pad_back(items[0],nwidth)} {date}  0:00:00 {items[3]}')
         out_lines.append(smp_out)
 
