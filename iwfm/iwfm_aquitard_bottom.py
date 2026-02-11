@@ -1,6 +1,6 @@
 # iwfm_aquitard_bottom.py
 # extract aquitard bottom from IWFM stratigraphy information
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ def iwfm_aquitard_bottom(strat):
     aquitard_bot : list
         wquitard bottom altitude for each model layer and node
     '''
-    import iwfm as iwfm
+    import iwfm
 
     (
         aquitard_thick,

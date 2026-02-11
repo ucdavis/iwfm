@@ -65,7 +65,6 @@ from iwfm.iwfm_read_rz_params import iwfm_read_rz_params
 from iwfm.iwfm_read_rz_file_names import iwfm_read_rz_file_names
 from iwfm.iwfm_read_uz_params import iwfm_read_uz_params
 from iwfm.iwfm_read_gw_params import iwfm_read_gw_params
-from iwfm.read_gw_params import read_gw_params
 
 # -- IWFM simulation files --------------------------------
 from iwfm.iwfm_read_sim import iwfm_read_sim

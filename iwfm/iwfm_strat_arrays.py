@@ -18,10 +18,8 @@
 
 
 def iwfm_strat_arrays(strat):
-    ''' iwfm_strat_arrays() - Read IWFM nodal stratigraphy information 
+    ''' iwfm_strat_arrays() - Read IWFM nodal stratigraphy information
         into individual arrays
-
-    TODO: change to a class to hold static variables after first call
 
     Parameters
     ----------
@@ -49,10 +47,7 @@ def iwfm_strat_arrays(strat):
         aquifer bottom altitude by model layer and node
 
     '''
-    # Note: Removed broken has_run static variable check - see TODO about converting to class
-
-    nlayers = int((len(strat[0]) - 1) / 2)
-    elevation = [i[0] for i in strat]
+    nlayers = (len(strat[0]) - 2) // 2
 
     aquitard_thick = []  # initialize arrays
     aquifer_thick = []
@@ -64,20 +59,19 @@ def iwfm_strat_arrays(strat):
     for i in range(0, len(strat)):  # cycle through stratigraphy of each node
         Tthick,Athick,AttElev,AtbElev,AqtElev,AqbElev  = [],[],[],[],[],[]
 
-        l, depth = strat[i], 0
-        this_node = l.pop(0)
-        lse = float(l.pop(0))
+        lse = float(strat[i][1])
+        depth = 0
 
         for j in range(0, nlayers):
             AttElev.append(lse - depth)
 
-            t = strat[i][2 * j]
+            t = strat[i][2 + 2 * j]
             Tthick.append(t)
             depth += t
             AtbElev.append(lse - depth)
             AqtElev.append(lse - depth)
 
-            a = strat[i][2 * j + 1]
+            a = strat[i][2 + 2 * j + 1]
             Athick.append(a)
             depth += a
             AqbElev.append(lse - depth)

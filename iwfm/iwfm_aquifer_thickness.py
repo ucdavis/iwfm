@@ -1,6 +1,6 @@
 # iwfm_aquifer_thickness.py
 # extract aquifer thicknesses from IWFM stratigraphy information
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -31,7 +31,14 @@ def iwfm_aquifer_thickness(strat):
     aquifer_thick : list
         aquifer thickness for each model layer and node
     '''
-    import iwfm as iwfm
+    import iwfm
 
-    _, aquifer_thick, _ = iwfm.iwfm_strat_arrays(strat)
+    (
+        aquitard_thick,
+        aquifer_thick,
+        aquitard_top,
+        aquitard_bot,
+        aquifer_top,
+        aquifer_bot,
+    ) = iwfm.iwfm_strat_arrays(strat)
     return aquifer_thick
