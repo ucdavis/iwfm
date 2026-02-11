@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # logger_setup.py
-# Setup loguru logger for HDF5 conversion scripts
+# Setup loguru logger for iwfm package
 # Copyright (C) 2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
@@ -22,6 +22,7 @@ from datetime import datetime
 
 try:
     from loguru import logger
+    logger.remove()  # silence loguru's default stderr handler
 except ImportError:
     import logging
     logger = logging.getLogger(__name__)
@@ -107,3 +108,37 @@ def setup_debug_logger(log_prefix=None):
     logger.info(f"Debug logging enabled - writing to {log_filename}")
 
     return log_filename
+
+
+def parse_cli_flags():
+    """Strip --debug and --quiet flags from sys.argv, enable logging if --debug.
+
+    This utility is designed for __main__ blocks that use sys.argv for positional
+    arguments. It removes the flag arguments from sys.argv so existing positional
+    argument logic is unchanged.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    verbose : bool
+        True unless --quiet was passed
+    debug : bool
+        True if --debug was passed
+
+    Examples
+    --------
+    >>> # In a __main__ block:
+    >>> from iwfm.debug import parse_cli_flags
+    >>> verbose, debug = parse_cli_flags()
+    """
+    debug = '--debug' in sys.argv
+    quiet = '--quiet' in sys.argv
+    if debug:
+        sys.argv.remove('--debug')
+        setup_debug_logger()
+    if quiet:
+        sys.argv.remove('--quiet')
+    return not quiet, debug

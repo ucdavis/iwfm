@@ -167,12 +167,13 @@ def cropbud2csv(bud_file_ag, bud_file_pond, outfile, write_header=True, verbose=
                         verbose=verbose)
 
 
-
-
 if __name__ == '__main__':
     ' Run from command line '
     import sys
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
  
     if len(sys.argv) > 1:  # arguments are listed on the command line
         bud_file_ag   = sys.argv[1]
@@ -190,6 +191,5 @@ if __name__ == '__main__':
     cropbud2csv(bud_file_ag, bud_file_pond, outfile)
 
     idb.exe_time()  # print elapsed time
-
 
 

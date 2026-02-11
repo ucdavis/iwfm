@@ -44,7 +44,7 @@ def headall2dtw(heads_file, pre_file, output_root, verbose=False):
     '''
     import numpy as np
     import os
-    import iwfm as iwfm
+    import iwfm
 
     pre_path, pre_proc = os.path.split(pre_file)
     pre_dict, _ = iwfm.iwfm_read_preproc(pre_file)
@@ -89,7 +89,10 @@ if __name__ == '__main__':
     ' Run headall2dtw() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         heads_file = sys.argv[1]
@@ -107,6 +110,6 @@ if __name__ == '__main__':
 
     idb.exe_time()  # initialize timer
 
-    headall2dtw(heads_file, pre_file, output_root, verbose=True)
+    headall2dtw(heads_file, pre_file, output_root, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

@@ -43,7 +43,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     '''
 
     import os
-    import iwfm as iwfm
+    import iwfm
     import iwfm.gis as igis
 
     topdir = os.getcwd()
@@ -104,7 +104,10 @@ if __name__ == '__main__':
     ' Run iwfm2shp() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     epsg=26910	# default UTM 10N (CA)
 
@@ -123,6 +126,6 @@ if __name__ == '__main__':
     iwfm.file_test(input_file)
 
     idb.exe_time()  # initialize timer
-    iwfm2shp(input_file, output_basename, epsg, verbose=True)
+    iwfm2shp(input_file, output_basename, epsg, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

@@ -47,7 +47,7 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
     '''
     import datetime
     import sys
-    import iwfm as iwfm
+    import iwfm
 
     # find the base name and extension
     land_use_file_base = land_use_file[0 : land_use_file.find('.')]
@@ -206,7 +206,10 @@ if __name__ == '__main__':
     '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     output_file_type = 'dat'  # default output file type
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -219,6 +222,6 @@ if __name__ == '__main__':
     iwfm.file_test(input_file)
 
     idb.exe_time()  # initialize timer
-    lu2tables(input_file, output_file_type, verbose=True)
+    lu2tables(input_file, output_file_type, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

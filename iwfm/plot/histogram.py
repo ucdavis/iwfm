@@ -62,6 +62,9 @@ def histogram(data, name, unit, file, method='auto'):
 
 if __name__ == "__main__":
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     
     #  Groundwater file info / Replace with info of file you want to plot
     gw_file = "C2VSimCG_Groundwater1974.dat"

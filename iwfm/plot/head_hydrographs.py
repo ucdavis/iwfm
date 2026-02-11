@@ -459,6 +459,9 @@ if __name__ == '__main__':
 
     # Verify input files exist
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     iwfm.file_test(gw_file)
     if obs_file is not None:
         iwfm.file_test(obs_file)
@@ -466,7 +469,7 @@ if __name__ == '__main__':
         iwfm.file_test(simfile)
 
     exe_time()  # initialize timer
-    pdfs = plot_all_hydrographs(gw_file, obs_file, sim_files, plot_title, verbose=True)
+    pdfs = plot_all_hydrographs(gw_file, obs_file, sim_files, plot_title, verbose=verbose)
     count = len(pdfs)
     print(f"Created {count} hydrograph PDF files")
     exe_time()  # print elapsed time

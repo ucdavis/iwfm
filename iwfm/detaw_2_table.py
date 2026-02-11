@@ -81,6 +81,9 @@ if __name__ == '__main__':
     ' Run detaw_2_table() from command line '
     import sys
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         dir_name = sys.argv[1]
@@ -90,5 +93,5 @@ if __name__ == '__main__':
         outfile_name = input('Output file name: ')
 
     idb.exe_time()  # initialize timer
-    detaw_2_table(dir_name, outfile_name, verbose=True)
+    detaw_2_table(dir_name, outfile_name, verbose=verbose)
     idb.exe_time()  # print elapsed time

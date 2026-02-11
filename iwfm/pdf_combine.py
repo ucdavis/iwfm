@@ -67,6 +67,9 @@ if __name__ == "__main__":
   " Run from command line "
   import sys, os
   import iwfm.debug as idb
+  from iwfm.debug import parse_cli_flags
+
+  verbose, debug = parse_cli_flags()
 
   start_dir = os.getcwd()   
 
@@ -90,7 +93,7 @@ if __name__ == "__main__":
 #if __name__ == '__main__':
 #    ' Run pdf_combine() from command line '
 #    import sys
-#    import iwfm as iwfm
+#    import iwfm
 #    import iwfm.debug as idb
 #
 #    # read arguments from command line

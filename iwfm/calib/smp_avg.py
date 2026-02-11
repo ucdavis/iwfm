@@ -86,6 +86,9 @@ if __name__ == "__main__":
     ''' Run smp_avg() from command line '''
     import sys
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     # read arguments from command line
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -97,7 +100,7 @@ if __name__ == "__main__":
         save_name = input('Output file name: ')
 
     idb.exe_time()  # initialize timer
-    averages = smp_avg(smp_file, verbose=True)
+    averages = smp_avg(smp_file, verbose=verbose)
 
     with open(save_name, 'w') as f:
         for item in averages:

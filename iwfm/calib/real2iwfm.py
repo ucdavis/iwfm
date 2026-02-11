@@ -188,7 +188,6 @@ def read_overwrite_file(overwrite_file, nnodes, nlay, param_types, verbose=False
 # --------------------------------------------------------------------------------
 
 
-
 def real2iwfm(verbose=False):
     '''  real2iwfm() - prompts the user for the no. of layers (nlay) in
          and IWFM model application; and the no. of parameter types (ntype)
@@ -288,13 +287,15 @@ def real2iwfm(verbose=False):
 # --------------------------------------------------------------------------------
 
 
-
 if __name__ == "__main__":
     ''' Run real2iwfm() from command line '''
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     idb.exe_time()  # initialize timer
-    real2iwfm(verbose=True)
+    real2iwfm(verbose=verbose)
     print('\n')
     idb.exe_time()  # print elapsed time
 

@@ -122,6 +122,9 @@ if __name__ == "__main__":
     import sys
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file = sys.argv[1]
@@ -133,6 +136,6 @@ if __name__ == "__main__":
     iwfm.file_test(input_file)
 
     idb.exe_time()  # initialize timer
-    igsm2shp(input_file, output_basename, verbose=True)
+    igsm2shp(input_file, output_basename, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

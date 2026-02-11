@@ -222,6 +222,9 @@ def read_line_values_to_dict(lines, start_index, keys, column=0, skip_lines=0):
 
 if __name__ == '__main__':
     # Simple tests
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     print("Testing file_utils.py functions...")
 
     # Test read_next_line_value

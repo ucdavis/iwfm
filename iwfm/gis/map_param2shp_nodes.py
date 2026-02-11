@@ -105,7 +105,10 @@ if __name__ == "__main__":
     ''' Run map_param2shp_nodes() from command line using groundwater file'''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     args = sys.argv
 
@@ -125,19 +128,19 @@ if __name__ == "__main__":
 
     layers, Kh, Ss, Sy, Kq, Kv = iwfm.get_gw_params(gw_file_name)
 
-    map_param2shp_nodes('Kh', Kh, node_shp_name, out_shp_name, layers, verbose=True)   
+    map_param2shp_nodes('Kh', Kh, node_shp_name, out_shp_name, layers, verbose=verbose)   
 
-    map_param2shp_nodes('Kv', Kv, node_shp_name, out_shp_name, layers, verbose=True)   
+    map_param2shp_nodes('Kv', Kv, node_shp_name, out_shp_name, layers, verbose=verbose)   
 
-    map_param2shp_nodes('Kq', Kq, node_shp_name, out_shp_name, layers, verbose=True)   
+    map_param2shp_nodes('Kq', Kq, node_shp_name, out_shp_name, layers, verbose=verbose)   
 
-    map_param2shp_nodes('Sy', Sy, node_shp_name, out_shp_name, layers, verbose=True)   
+    map_param2shp_nodes('Sy', Sy, node_shp_name, out_shp_name, layers, verbose=verbose)   
 
-    map_param2shp_nodes('Ss', Ss, node_shp_name, out_shp_name, layers, verbose=True)   
+    map_param2shp_nodes('Ss', Ss, node_shp_name, out_shp_name, layers, verbose=verbose)   
 
     # read another parameter from another file
 
     # map the parameter to a shapefile
-    #map_param2shp_nodes('par_name', par_vals, node_shp_name, out_shp_name, verbose=True)   
+    #map_param2shp_nodes('par_name', par_vals, node_shp_name, out_shp_name, verbose=verbose)   
 
     idb.exe_time()                                                  # print elapsed time

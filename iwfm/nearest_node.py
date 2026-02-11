@@ -38,7 +38,7 @@ def nearest_node(point, node_set):
         number of nearest node
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     dist, nearest = 9.9e30, -1
     for j in range(0, len(node_set)):
@@ -55,6 +55,9 @@ if __name__ == '__main__':
     import sys
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         node_file = sys.argv[1]

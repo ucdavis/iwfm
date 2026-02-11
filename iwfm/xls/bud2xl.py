@@ -111,6 +111,9 @@ if __name__ == '__main__':
     import sys
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:
         budget_file = sys.argv[1]
@@ -124,6 +127,6 @@ if __name__ == '__main__':
     iwfm.file_test(excel_file)
 
     idb.exe_time()
-    bud2xl(budget_file, excel_file, verbose=True)
+    bud2xl(budget_file, excel_file, verbose=verbose)
 
     idb.exe_time()

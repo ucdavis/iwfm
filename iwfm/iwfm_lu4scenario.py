@@ -218,7 +218,10 @@ if __name__ == '__main__':
     ' Run iwfm_lu4scenario() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         out_base_name = sys.argv[1]

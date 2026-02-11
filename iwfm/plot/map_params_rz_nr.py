@@ -62,7 +62,6 @@ def get_params_rz_nr(node_file_name, elem_file_name, rz_nr_file_name, verbose=Fa
     return elem_centroids, boundary_coords, crops_nr, param_vals_nr, param_types_nr
 
 
-
 def map_params_rz_nr(node_file_name, elem_file_name, out_name, rz_nr_file_name, 
                   format='tiff', point_width=100, verbose=False):
     ''' map_params_rz_nr() - Create a colored image map representing native and riparian rootzone parameters
@@ -168,6 +167,9 @@ if __name__ == "__main__":
     import iwfm
     import iwfm.plot as iplot
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     point_width_default = 100
     point_width = point_width_default
@@ -201,7 +203,6 @@ if __name__ == "__main__":
 
     idb.exe_time()  # initialize timer
 
-    verbose = True
 
     count = map_params_rz_nr(node_file_name, elem_file_name, out_name, rz_nr_file_name, 
                         format=format, point_width=point_width, verbose=verbose)

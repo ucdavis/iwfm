@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import warnings
-from loguru import logger
+from iwfm.debug.logger_setup import logger
 
 
 def write_2_excel(file_base_name, data, sheets, elements, time_steps, dates, data_type='Crop'):

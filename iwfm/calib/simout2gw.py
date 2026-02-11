@@ -116,7 +116,6 @@ def replace_params(gw_params, gw_data, param_line):
     return gw_data
 
 
-
 def simout2gw(simout_file, gw_in_file, output_file):
     ''' simout2gw() - Read groundwater parameters from SimulationMessages.out 
         file, replace parameters in template groundwater.dat file, and write to
@@ -152,14 +151,15 @@ def simout2gw(simout_file, gw_in_file, output_file):
             out_file.write(f'{item}\n')
 
 
-
 if __name__ == "__main__":
     ''' Run simout2gw() from command line '''
-    verbose=True
 
     import sys
     import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
   
     if len(sys.argv) > 1:  # arguments are listed on the command line
         simout_file  = sys.argv[1]

@@ -85,7 +85,10 @@ if __name__ == "__main__":
     ''' Run map_param2shp_elems() from command line using rootzone file'''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     args = sys.argv
 
@@ -107,6 +110,6 @@ if __name__ == "__main__":
 
     param_vals = iwfm.iwfm_read_rz_params(rz_file_name)                 # Read rootzone parameters
 
-    map_param2shp_elems(param_types, param_vals, elem_shp_name, out_shp_name, verbose=True)   
+    map_param2shp_elems(param_types, param_vals, elem_shp_name, out_shp_name, verbose=verbose)   
 
     idb.exe_time()                                                      # print elapsed time

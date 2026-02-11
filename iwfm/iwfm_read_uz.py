@@ -214,7 +214,6 @@ def iwfm_read_uz(file, verbose=False):
            len(uz_lines[line_index + ne]) > 2 and
            uz_lines[line_index + ne][0] != 'C'):
         ne += 1
-        #print(f' ==> {ne=}\t{uz_lines[line_index + ne]=}\t{len(uz_lines[line_index + ne])=}')
 
     if line_index + ne >= len(uz_lines):
         raise ValueError(

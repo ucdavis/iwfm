@@ -47,7 +47,7 @@ def headall2surfer(node_coords, data, dates, out_dates, output_base, verbose=Fal
         Number of output files written
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     count = 0
 
@@ -67,6 +67,9 @@ if __name__ == '__main__':
     import os
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     args = sys.argv[1:]  # get command line arguments
     if len(sys.argv) > 1:  # arguments are listed on the command line

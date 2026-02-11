@@ -19,6 +19,7 @@
 # ** Incomplete **
 import bisect
 import iwfm
+from iwfm.debug.logger_setup import logger
 
 class simhyds:
 
@@ -40,9 +41,9 @@ class simhyds:
             for i in range(1, len(line)):
                 line[i] = float(line[i])
             self.sim_vals.append(line)
-        #print(f' ==> symhyds.sim_vals read {len(self.sim_vals)} hydrographs ')
-        #print(f' ==> each with {len(self.sim_vals[0])} data points ')
-        print(f' ==> self.sim_dates[0:3]: {self.sim_dates[:3]} ')
+        logger.debug(f'simhyds.sim_vals read {len(self.sim_vals)} hydrographs')
+        logger.debug(f'each with {len(self.sim_vals[0])} data points')
+        logger.debug(f'self.sim_dates[0:3]: {self.sim_dates[:3]}')
 
     def sim_head(self, date, col):
         try:
@@ -52,9 +53,9 @@ class simhyds:
         closest = min(self.sim_dates, key=lambda d: abs(d - dt))
         after  = bisect.bisect_left(self.sim_dates,dt)
         
-        print(f' ==> date: {date}, dt: {dt}')
-        print(f' ==> closest: {closest}')
-        print(f' ==> self.sim_dates[after]: {self.sim_dates[after]}')
+        logger.debug(f'{date=}, {dt=}')
+        logger.debug(f'{closest=}')
+        logger.debug(f'self.sim_dates[after]: {self.sim_dates[after]}')
 
         if self.sim_dates[after] > dt:
             before = after - 1
@@ -67,8 +68,7 @@ class simhyds:
         # denominator: days between simulated values
         den = (self.sim_dates[after] - self.sim_dates[before]).days
 
-        print(f' ==> num: {num}, den = {den}')
-        print(f' ==> num: {num}, den = {den}')
+        logger.debug(f'{num=}, {den=}')
 
         return self.sim_vals[before][col] + (
             self.sim_vals[after][col] - self.sim_vals[before][col]

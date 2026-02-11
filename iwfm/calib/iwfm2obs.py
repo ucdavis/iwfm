@@ -218,9 +218,12 @@ def iwfm2obs(verbose=False):
 if __name__ == "__main__":
     ''' Run iwfm2obs() from command line '''
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     idb.exe_time()  # initialize timer
-    iwfm2obs(verbose=True)
+    iwfm2obs(verbose=verbose)
 
     print(' ') # clean screen
     idb.exe_time()  # print elapsed time

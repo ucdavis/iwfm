@@ -69,12 +69,14 @@ def gw_hyd_annual(gwhyd_file):
     return out_name, start_len, len(out_lines) - start_index
 
 
-
 if __name__ == '__main__':
     ' Run gw_hyd_reduce() from command line '
     import sys
     import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     args = sys.argv
 

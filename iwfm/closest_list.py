@@ -91,12 +91,14 @@ def nearest(a, B):
     return c
 
 
-
 if __name__ == "__main__":
     " Run closest_list() from command line "
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         inpfile_1 = sys.argv[1]
@@ -120,7 +122,7 @@ if __name__ == "__main__":
     B = file_lines[1:]  # split off header
 
     idb.exe_time()  # initialize timer
-    C = closest_list(A, B, verbose=True)
+    C = closest_list(A, B, verbose=verbose)
 
 
     with open(outfile, 'w') as f:

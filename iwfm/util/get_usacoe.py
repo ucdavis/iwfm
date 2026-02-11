@@ -378,6 +378,9 @@ if __name__ == "__main__":
     
     """Run the main script to extract text from websites and save it to CSV files.
     
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     WARNING: if 'Name' property is the same for any file(s), their output csv file will have the same name and be overwritten.
 
     NOTE: The 'files' list expects information about each website in the form of a list. Each sublist should contain 

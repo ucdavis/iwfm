@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import warnings
-from loguru import logger
+from iwfm.debug.logger_setup import logger
 
 
 def xl_write_2d(output, wb, row=1, col=1, sheet=0):

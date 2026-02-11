@@ -473,6 +473,9 @@ def extract_data_to_csv(excel_file):
 if __name__ == "__main__":
     # TODO: Add command line arguments
 
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     year = input("Which year's CVP END OF WATER YEAR REPORT would you like? ")
 
     pdf_url = f'https://www.usbr.gov/mp/cvo/vungvari/dayrpt09_{year}.pdf'

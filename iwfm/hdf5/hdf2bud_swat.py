@@ -28,19 +28,7 @@ except ImportError:
     print("Install with: pip install h5py")
     sys.exit(1)
 
-try:
-    from loguru import logger
-except ImportError:
-    print("Error: loguru module not found")
-    print("Install with: pip install loguru")
-    sys.exit(1)
-
-try:
-    from iwfm.debug import setup_debug_logger
-except ImportError:
-    print("Error: iwfm.debug module not found")
-    print("Make sure iwfm package is installed")
-    sys.exit(1)
+from iwfm.debug.logger_setup import logger, setup_debug_logger
 
 
 def hdf2bud_swat(hdf_file, output_file,

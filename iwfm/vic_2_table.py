@@ -121,6 +121,9 @@ if __name__ == "__main__":
     import sys
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         factorsFileName = sys.argv[1]
@@ -134,7 +137,7 @@ if __name__ == "__main__":
     iwfm.file_test(factorsFileName)
 
     idb.exe_time()  # initialize timer
-    vic_2_table(factorsFileName, output_file, col, verbose=True)
+    vic_2_table(factorsFileName, output_file, col, verbose=verbose)
 
     print(f'  Read {factorsFileName} and wrote {output_file}.')  # update cli
     idb.exe_time()  # print elapsed time

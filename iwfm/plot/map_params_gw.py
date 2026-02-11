@@ -80,9 +80,6 @@ def plot_one(param_name, plot_data, bounding_poly, layer, basename, units='', po
     return count
 
 
-
-
-
 def map_params_gw(param_type, param_values, node_coords, layers, bounding_poly, strat, format='tiff', basename='gw_param_map',
                    point_width=100, verbose=False):
     ''' map_params_gw() - Create PNG images of groundwater parameters from an IWFM simulation
@@ -169,11 +166,13 @@ if __name__ == "__main__":
     import iwfm
     import iwfm.gis as igis
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     point_width_default = 100
     point_width = point_width_default
 
-    verbose = True
 
     args = sys.argv
 

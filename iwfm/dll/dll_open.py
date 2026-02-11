@@ -51,7 +51,7 @@ def dll_open(iwfm_dll, pre_file, sim_file, routed_streams=1, for_inquiry=1):
 
     #import ctypes
     from ctypes import byref, c_int, create_string_buffer, sizeof
-    import iwfm as iwfm
+    import iwfm
 
     iwfm.file_test(pre_file)
     iwfm.file_test(sim_file)
@@ -73,8 +73,11 @@ if __name__ == '__main__':
     ' Run dll_open() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
     import iwfm.dll as idll
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     #import iwfm.dll as dll
 
     if len(sys.argv) > 1:  # arguments are listed on the command line

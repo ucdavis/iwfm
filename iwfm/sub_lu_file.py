@@ -97,16 +97,15 @@ def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     return
 
 
-
-
-
 if __name__ == "__main__":
     ''' Run sub_lu_file() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
 
-    verbose = True
+    verbose, debug = parse_cli_flags()
+
 
     if len(sys.argv) > 1:               # arguments are listed on the command line
         in_filename     = sys.argv[1]   # original land use file

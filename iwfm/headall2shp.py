@@ -89,13 +89,14 @@ def headall2shp(heads_file, pre_file, out_date, basename, label='Heads', units='
         
 
 
-
-
 if __name__ == '__main__':
     ' Run headall2map() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         heads_file = sys.argv[1]
@@ -113,6 +114,6 @@ if __name__ == '__main__':
 
     idb.exe_time()  # initialize timer
 
-    headall2shp(heads_file, pre_file, out_date, basename, verbose=True)
+    headall2shp(heads_file, pre_file, out_date, basename, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

@@ -26,7 +26,7 @@ Install openpyxl for cross-platform support: pip install openpyxl
 """
 
 import warnings
-from loguru import logger
+from iwfm.debug.logger_setup import logger
 
 # Issue deprecation warning on import
 warnings.warn(

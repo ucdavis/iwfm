@@ -98,6 +98,9 @@ if __name__ == '__main__':
     import sys
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         heads_file = sys.argv[1]

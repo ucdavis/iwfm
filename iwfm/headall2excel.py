@@ -126,8 +126,11 @@ if __name__ == '__main__':
     ' Run headall2excel() from command line '
     import sys
     import os
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as dbg
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     
     args = sys.argv[1:]  # get command line arguments
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -168,7 +171,7 @@ if __name__ == '__main__':
         node_coords[i][1] *= factor
         node_coords[i][2] *= factor
 
-    count = headall2excel(node_coords, data, dates, out_dates, outfile_name, verbose=True)
+    count = headall2excel(node_coords, data, dates, out_dates, outfile_name, verbose=verbose)
 
     print(f'  Created {outfile_name} with {count} worksheets.')
 

@@ -68,13 +68,14 @@ def ltsmp(input_file, output_file, zero_offset=36.0, neg_val=0.001):
             out_file.write(f'{out_lines[i]}\n')
 
 
-
-
 if __name__ == "__main__":
     ''' Run ltsmp() from command line '''
     import sys
     import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
   
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file  = sys.argv[1]

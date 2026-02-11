@@ -25,7 +25,7 @@
 import geopandas as gpd
 import sys
 import iwfm.debug as idb
-import iwfm as iwfm
+import iwfm
 
 def map_to_shp(param_table, header, gdf, out_shp_name, verbose=False):
     ''' map_to_shp() - Map a parameter table to a shapefile
@@ -111,10 +111,12 @@ def map_elempump(elempump_file_name, elem_shp_name, out_shp_root, verbose=False)
     if verbose: print(f'  Created elemental pumping shapefile {out_shp_name}')
 
 
-
 if __name__ == "__main__":
     ''' Run mam_elempump() from command line '''
 
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     if len(sys.argv) > 1:  # arguments are listed on the command line
         elempump_file_name = sys.argv[1]
         elem_shp_name      = sys.argv[2]
@@ -131,6 +133,6 @@ if __name__ == "__main__":
 
     out_shp_name = out_shp_root + '_ElemPump'
 
-    map_elempump(elempump_file_name, elem_shp_name, out_shp_root, verbose=True)    # Add element pumping to shapefile of IWFM model elements
+    map_elempump(elempump_file_name, elem_shp_name, out_shp_root, verbose=verbose)    # Add element pumping to shapefile of IWFM model elements
 
     idb.exe_time()                                          # print elapsed time

@@ -34,7 +34,7 @@ def file_2_bak(filename, force=1):
 
     '''
     import os
-    import iwfm as iwfm
+    import iwfm
 
     if os.path.isfile(filename):  # if the file exists...
         newfile = os.path.splitext(filename)[0] + '.bak'
@@ -44,6 +44,9 @@ def file_2_bak(filename, force=1):
 if __name__ == '__main__':
     ''' Run file_2_bak() from command line '''
     import sys
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file = sys.argv[1]

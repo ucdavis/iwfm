@@ -193,6 +193,9 @@ if __name__ == "__main__":
     import iwfm
     import iwfm.plot as iplot
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     point_width_default = 100
     point_width = point_width_default
@@ -226,7 +229,6 @@ if __name__ == "__main__":
 
     idb.exe_time()  # initialize timer
 
-    verbose = True
 
     count = map_params_rz_urban(node_file_name, elem_file_name, out_name, rz_ur_file_name, 
                         format=format, point_width=point_width, verbose=verbose)

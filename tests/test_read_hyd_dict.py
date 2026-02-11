@@ -203,18 +203,25 @@ class TestReadHydDict:
         with pytest.raises(SystemExit):
             iwfm.read_hyd_dict(str(nonexistent))
 
-    def test_verbose_output(self, tmp_path, capsys):
-        """Test verbose output shows messages."""
+    def test_debug_logger_output(self, tmp_path):
+        """Test that logger.debug messages are emitted for Enter/Leave traces."""
+        from iwfm.debug.logger_setup import logger
         gw_file = tmp_path / "groundwater.dat"
         hydrograph_data = [
             (1, 0, 1, 100.0, 200.0, "WELL")
         ]
         create_gw_dat_file(gw_file, 1, hydrograph_data)
 
-        iwfm.read_hyd_dict(str(gw_file), verbose=True)
+        messages = []
+        handler_id = logger.add(lambda msg: messages.append(str(msg)), level="DEBUG")
+        try:
+            iwfm.read_hyd_dict(str(gw_file), verbose=True)
+        finally:
+            logger.remove(handler_id)
 
-        captured = capsys.readouterr()
-        assert "read_hyd_dict" in captured.out
+        combined = " ".join(messages)
+        assert "Entered read_hyd_dict()" in combined
+        assert "Leaving read_hyd_dict()" in combined
 
     def test_no_verbose_output(self, tmp_path, capsys):
         """Test that verbose=False produces no output."""

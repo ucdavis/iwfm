@@ -42,7 +42,6 @@ def latlon_2_utm(lat, lon):
     return utm.from_latlon(np.array(lat), np.array(lon))
 
 
-
 if __name__ == '__main__':
     ''' Run latlon_2_utm() from command line 
         File format: ID, Latitude, Longitude
@@ -50,7 +49,10 @@ if __name__ == '__main__':
     import sys
     import csv
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         infile  = sys.argv[1]

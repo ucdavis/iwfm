@@ -85,6 +85,9 @@ if __name__ == "__main__":
     import sys
     import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     params = ["kh", "ss", "sy", "kq", "kv"]
     valid_formats = ['eps', 'jpeg', 'jpg', 'pdf', 'pgf', 'png', 'ps', 'raw', 'rgba', 'svg', 'svgz', 'tif', 'tiff', 'webp']

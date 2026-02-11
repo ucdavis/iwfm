@@ -20,7 +20,6 @@
 # -----------------------------------------------------------------------------
 
 
-
 def adjust_headers(headers):
     ''' adjust_headers() - Replace each column header string with 
             a truncated code for use as a database field name
@@ -224,9 +223,6 @@ def adjust_headers(headers):
     headers = [w.replace('DeepPerc (-)', 'DeepPerc') for w in headers]
 
 
-
-
-
     return headers
 
 def process_budget_data(f, loc_names, column_headers, loc_values, titles, write_header=False, verbose=False):
@@ -316,11 +312,13 @@ def hdfbud2csv(bud_file, outfile, write_header=True, verbose=False):
                         write_header=write_header, verbose=verbose)
 
 
-
 if __name__ == '__main__':
     ' Run from command line '
     import sys
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
  
     if len(sys.argv) > 1:  # arguments are listed on the command line
         bud_file = sys.argv[1]
@@ -336,6 +334,5 @@ if __name__ == '__main__':
     hdfbud2csv(bud_file, outfile)
 
     idb.exe_time()  # print elapsed time
-
 
 

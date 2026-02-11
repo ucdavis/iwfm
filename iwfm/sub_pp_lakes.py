@@ -43,7 +43,6 @@ def sub_pp_lakes(lake_file, elem_list):
 
     have_lake = False
 
-    #print(f'  ==> elem_list: {elem_list}')
     elems = [int(e[0]) for e in elem_list]
 
     iwfm.file_test(lake_file)

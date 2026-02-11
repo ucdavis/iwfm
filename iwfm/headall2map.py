@@ -103,13 +103,14 @@ def headall2map(heads_file, pre_file, bnds_file, out_date, basename, label='Head
         
 
 
-
-
 if __name__ == '__main__':
     ' Run headall2map() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         heads_file = sys.argv[1]

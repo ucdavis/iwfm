@@ -66,7 +66,6 @@ def map_params_rz(node_file_name, elem_file_name, out_name, rz_file_name,
     boundary_coords = igis.get_boundary_coords(elem_nodes, node_coords)
 
 
-
     # Read parameter values from rootzone files
     param_vals_rz = iwfm.iwfm_read_rz_params(rz_file_name[0])                          # Read rootzone parameters
     param_types_rz = ['wp', 'fc', 'tn', 'lambda', 'ksoil', 'rhc', 'cprise', 'irne', 'frne', 'imsrc', 'typdest', 'dest', 'kponded']
@@ -386,9 +385,7 @@ def map_params_rz(node_file_name, elem_file_name, out_name, rz_file_name,
         if verbose: print(f'  Wrote Initial Conditions')
 
 
-
     return count
-
 
 
 # Run map_params_rz() from command line
@@ -397,6 +394,9 @@ if __name__ == "__main__":
     import iwfm.plot as iplot
     import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     point_width_default = 100
     point_width = point_width_default
@@ -450,7 +450,6 @@ if __name__ == "__main__":
 
     idb.exe_time()  # initialize timer
 
-    verbose = True
 
     count = map_params_rz(node_file_name, elem_file_name, out_name, rz_file_names, 
                         format=format, point_width=point_width, verbose=verbose)

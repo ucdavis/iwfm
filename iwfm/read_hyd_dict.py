@@ -18,6 +18,9 @@
 # -----------------------------------------------------------------------------
 
 
+from iwfm.debug.logger_setup import logger
+
+
 def read_hyd_dict(gw_dat_file, verbose=False):
     ''' read_hyd_dict() - Read hydrograph info from Groundwater.dat file and build
         a dictionary of groundwater hydrograph info
@@ -39,7 +42,7 @@ def read_hyd_dict(gw_dat_file, verbose=False):
     import iwfm
     from iwfm.file_utils import read_next_line_value
 
-    if verbose: print(f"Entered read_hyd_dict() with {gw_dat_file}")
+    logger.debug(f"Entered read_hyd_dict() with {gw_dat_file}")
 
     well_dict = {}
     iwfm.file_test(gw_dat_file)
@@ -65,6 +68,6 @@ def read_hyd_dict(gw_dat_file, verbose=False):
         well_dict[items[0]] = items[1:]
         line_index += 1
 
-    if verbose: print(f"Leaving read_hyd_dict()")
+    logger.debug("Leaving read_hyd_dict()")
 
     return well_dict

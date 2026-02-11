@@ -43,6 +43,9 @@ if __name__ == "__main__":
     import sys
     from dateutil.parser import parse
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         date1 = sys.argv[1]

@@ -88,7 +88,10 @@ if __name__ == "__main__":
     ''' Run map_divs2shp() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         divspec_file_name  = sys.argv[1]
@@ -108,6 +111,6 @@ if __name__ == "__main__":
 
     out_shp_name = out_shp_root + '_DelivArea'
 
-    map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=True)    # Add diversion areas to shapefile of IWFM model elements
+    map_divs2shp(deliv_area_ids, deliv_areas, elem_shp_name, out_shp_name, verbose=verbose)    # Add diversion areas to shapefile of IWFM model elements
 
     idb.exe_time()                                          # print elapsed time

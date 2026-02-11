@@ -340,6 +340,9 @@ if __name__ == "__main__":
     from shapely import geometry
     from iwfm.debug import exe_time
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) < 5:
         print("Usage: python iwfm_map_params.py <sim_file> <pre_file> <param_type> <image_basename> [layer] [contour] [output_dir]")

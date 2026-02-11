@@ -96,6 +96,9 @@ if __name__ == "__main__":
     ''' Run fac2iwfm() from command line '''
     import sys
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     # read arguments from command line
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -117,7 +120,7 @@ if __name__ == "__main__":
 
     idb.exe_time()  # initialize timer
 
-    fac2iwfm(pp_file_name, param_file_name, save_name, rlow, rhigh, empty, verbose=True)
+    fac2iwfm(pp_file_name, param_file_name, save_name, rlow, rhigh, empty, verbose=verbose)
 
     print('\n')
     idb.exe_time()  # print elapsed time

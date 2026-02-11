@@ -26,7 +26,7 @@ Excel read/write support.
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font, Alignment
-from loguru import logger
+from iwfm.debug.logger_setup import logger
 
 
 def create_workbook(filename=None):

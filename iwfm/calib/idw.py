@@ -1,6 +1,6 @@
 # idw.py
 # Inverse distance weighting... for what?
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # -----------------------------------------------------------------------------
 
 # ** INFOMPLETE ** #
+
+from iwfm.debug.logger_setup import logger
 
 
 def idw(x, y, elem, nnodes, nlayers, nodexy, elevations, debug=0):
@@ -59,61 +61,37 @@ def idw(x, y, elem, nnodes, nlayers, nodexy, elevations, debug=0):
     import numpy as np
 
     # inverse distance weighting
-    if debug:
-        print('\n  ==> iwfm.idw()')
-        print(f'      =>  elem: \t{elem}')
-        print(f'      =>  nnodes: \t{nnodes}')
-        print(f'      =>  nlayers: \t{nlayers}')
-        print(f'      =>  nodexy: \t{nodexy}')
-        print(f'      =>  elevations: \t{elevations}')
+    logger.debug(f'iwfm.idw() {elem=} {nnodes=} {nlayers=} {nodexy=} {elevations=}')
 
     interp_values = [[0.0 for _ in range(len(nnodes))] for _ in range(nlayers)]
 
-    if debug:
-        print(f'      =>  interp_values: \t{interp_values}')
+    logger.debug(f'{interp_values=}')
 
     for i in range(nlayers):
-        if debug:
-            print(f'\n      =>  i: \t{i}')
+        logger.debug(f'{i=}')
         wgt = 0
         for j in range(len(nnodes)):  # for each node of element
-            if debug:
-                print(f'\n      =>  j: \t{j}')
+            logger.debug(f'{j=}')
             # if elem > 0:   # all ObsElem > 0
             nodeID = nnodes[i]
-            if debug:
-                print(f'      =>  nodeID: \t{nodeID}')
+            logger.debug(f'{nodeID=}')
             if nodeID > 0:
-                if debug:
-                    print(f'      =>  x, y: \t{x}, {y}')
-                if debug:
-                    print(f'      =>  nodexy[j]: \t{nodexy[j]}')
+                logger.debug(f'{x=}, {y=}, {nodexy[j]=}')
                 distance = float(
                     np.sqrt((x - nodexy[j][0]) ** 2 + (y - nodexy[j][1]) ** 2)
                 )
-                if debug:
-                    print(f'      =>  distance: \t{distance}')
+                logger.debug(f'{distance=}')
                 wgt_tmp = 1.0 / distance
-                if debug:
-                    print(f'      =>  wgt_tmp: \t{wgt_tmp}')
+                logger.debug(f'{wgt_tmp=}')
                 wgt += wgt_tmp
                 for k in range(nlayers):
-                    if debug:
-                        print(f'      =>  i: {i} \tk: {k}')
-                    if debug:
-                        print(f'      =>  interp_values[i][k]: \t{interp_values[i][k]}')
-                    if debug:
-                        print(f'      =>  elevations[i][k]: \t{elevations[i][k]}')
+                    logger.debug(f'{i=} {k=} {interp_values[i][k]=} {elevations[i][k]=}')
                     interp_values[i][k] += wgt_tmp * elevations[i][k]
-                    if debug:
-                        print(f'      =>  interp_values[i][k]: \t{interp_values[i][k]}')
-        if debug:
-            print(f'      =>  wgt: \t{wgt}')
+                    logger.debug(f'{interp_values[i][k]=}')
+        logger.debug(f'{wgt=}')
         for k in range(nlayers):
             interp_values[i][k] = interp_values[i][k] / wgt
-        if debug:
-            print(f'      =>  interp_values: \t{interp_values}')
+        logger.debug(f'{interp_values=}')
 
-    if debug:
-        print('\n  ** incomplete: IDW.py **')
+    logger.debug('** incomplete: IDW.py **')
     return interp_values

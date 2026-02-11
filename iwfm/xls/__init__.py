@@ -33,7 +33,7 @@ Legacy API (deprecated):
 """
 
 import warnings
-from loguru import logger
+from iwfm.debug.logger_setup import logger
 
 # -----------------------------------------------------------------------------
 # Backend Selection

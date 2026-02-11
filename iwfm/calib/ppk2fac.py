@@ -179,15 +179,16 @@ def write_factors(factors_outfile, pp_file, pp_list, node_list, ppoints, weights
     return count
 
 
-
 if __name__ == '__main__':
     ''' Run ppk2fac_idw2() from command line '''
 
     import sys
     import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
 
-    verbose = True
+    verbose, debug = parse_cli_flags()
+
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         pp_file          = sys.argv[1]

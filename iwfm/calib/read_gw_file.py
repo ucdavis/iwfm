@@ -135,8 +135,10 @@ if __name__ == "__main__":
     ''' Run read_gw_file() from command line '''
     import sys
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
 
-    verbose = True
+    verbose, debug = parse_cli_flags()
+
 
     # read arguments from command line
     if len(sys.argv) > 1:  # arguments are listed on the command line

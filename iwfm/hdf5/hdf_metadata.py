@@ -37,16 +37,7 @@ try:
 except ImportError:
     h5py = None
 
-try:
-    from loguru import logger
-except ImportError:
-    # Fallback for no loguru - create dummy logger
-    class DummyLogger:
-        def debug(self, msg): pass
-        def info(self, msg): pass
-        def warning(self, msg): pass
-        def error(self, msg): pass
-    logger = DummyLogger()
+from iwfm.debug.logger_setup import logger
 
 from iwfm.hdf5.hdf_metadata_base import HdfBackend, HdfMetadata
 from iwfm.hdf5.hdf_exceptions import BackendNotAvailableError, DataSourceError

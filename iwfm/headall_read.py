@@ -17,6 +17,9 @@
 # -----------------------------------------------------------------------------
 
 
+from iwfm.debug.logger_setup import logger
+
+
 def headall_read(input_file, skip=5, verbose=False):
     ''' headall_read() - Reads an IWFM HeadAll.out file and returns
         the data as floats, with lists of dates and model nodes and
@@ -56,13 +59,13 @@ def headall_read(input_file, skip=5, verbose=False):
     nodes = file_lines[line].split()  
     nodes.pop(0)  
     nodes.pop(0)  
-    if verbose: print(f' ==> nodes[0:4]: {nodes[:5]}')
+    logger.debug(f'nodes[0:4]: {nodes[:5]}')
 
     line += 1
     layers = 1
     while file_lines[line + layers][0] == ' ':
         layers += 1
-    if verbose: print(f' ==> {layers=}')
+    logger.debug(f'{layers=}')
 
     data, dates = [], []
 
@@ -85,7 +88,10 @@ if __name__ == '__main__':
     ' Run headall_read() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     args = sys.argv[1:]  # get command line arguments
     if len(sys.argv) > 1:  # arguments are listed on the command line

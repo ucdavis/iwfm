@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import warnings
-from loguru import logger
+from iwfm.debug.logger_setup import logger
 
 
 def excel_init(visible=False, display_alerts=False):

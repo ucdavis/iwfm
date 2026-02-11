@@ -134,6 +134,9 @@ if __name__ == '__main__':
 
     '''
 
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     if len(sys.argv) > 1:  # arguments are listed on the command line
         land_use_file = sys.argv[1]
         elem_shp_name = sys.argv[2]
@@ -151,6 +154,6 @@ if __name__ == '__main__':
 
     idb.exe_time()  # initialize timer
 
-    map_lu(land_use_file, elem_shp_name, out_shp_name, verbose=True)
+    map_lu(land_use_file, elem_shp_name, out_shp_name, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

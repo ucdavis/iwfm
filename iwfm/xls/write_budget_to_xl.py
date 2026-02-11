@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 import warnings
-from loguru import logger
+from iwfm.debug.logger_setup import logger
 
 
 def write_budget_to_xl(wb, budget_data):

@@ -113,6 +113,9 @@ if __name__ == '__main__':
     import sys
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     args = sys.argv
 
@@ -136,7 +139,6 @@ if __name__ == '__main__':
 
     lu_factors = iwfm.refined_lu_factors(orig_elems_file,refined_elems_file,elem2elem_file)
 
-    verbose = True
     iwfm_lu2refined(in_lu_file, lu_factors, verbose=verbose)
     
     idb.exe_time()  # print elapsed time

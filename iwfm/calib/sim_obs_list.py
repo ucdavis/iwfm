@@ -79,6 +79,9 @@ if __name__ == '__main__':
     import sys, os
     import iwfm
     import iwfm.calib as ical
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     verbose = False
 

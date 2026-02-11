@@ -28,6 +28,7 @@ from iwfm.debug.check_key import check_key
 
 # logging
 from iwfm.debug.logger_setup import setup_debug_logger
+from iwfm.debug.logger_setup import parse_cli_flags
 
 # system and python version information
 from iwfm.debug.this_sys import this_sys

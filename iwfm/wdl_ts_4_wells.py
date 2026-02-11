@@ -77,7 +77,10 @@ if __name__ == '__main__':
     ' Run wdl_ts_4_wells() from command line'
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         station_file = sys.argv[1]
@@ -90,6 +93,6 @@ if __name__ == '__main__':
     iwfm.file_test(waterlevel_file)
 
     idb.exe_time()  # initialize timer
-    iwfm.wdl_ts_4_wells(station_file, waterlevel_file, verbose=True)
+    iwfm.wdl_ts_4_wells(station_file, waterlevel_file, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

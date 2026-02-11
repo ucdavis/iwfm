@@ -17,7 +17,6 @@
 #-----------------------------------------------------------------------------
 
 
-
 def pest_res_stats(pest_res_file, verbose=False):
     ''' pest_res_stats() - Read a PEST .res file, and print a text file with the 
     RMSE and bias of each observation site
@@ -105,8 +104,11 @@ def pest_res_stats(pest_res_file, verbose=False):
 
 if __name__ == "__main__":
     import sys
-    import iwfm as iwfm
+    import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         pest_res_file = sys.argv[1]

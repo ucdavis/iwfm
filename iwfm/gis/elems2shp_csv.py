@@ -97,10 +97,12 @@ if __name__ == "__main__":
     ''' Run elems2shp_csv from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     args = sys.argv
-    verbose=True
     epsg=26910
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -126,7 +128,6 @@ if __name__ == "__main__":
 
     # Wtrite elements to shapefile
     elems2shp_csv(elem_nodes, node_coord_dict, shapename=shapename, epsg=epsg, verbose=verbose)
-
 
 
     idb.exe_time()                                          # print elapsed time

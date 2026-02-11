@@ -81,6 +81,9 @@ def iwfm_exe_time(infile='SimulationMessages.out',outfile='exe_time.smp'):
 if __name__ == "__main__":
     ''' Run iwfm_exe_time() from command line '''
 
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
     infile='SimulationMessages.out'
     outfile='exe_time.smp'
     time = iwfm_exe_time(infile,outfile)

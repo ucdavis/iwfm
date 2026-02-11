@@ -37,6 +37,9 @@ def cfs2afd(cfs):
 if __name__ == "__main__":
     " Run cfs2afd() from command line "
     import sys
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # argument is listed on the command line
         cfs = sys.argv[1]

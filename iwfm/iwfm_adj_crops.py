@@ -73,7 +73,7 @@ def iwfm_adj_crops(
     nothing
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     elem_zones = iwfm.read_lu_change_zones(in_zone_file)
 
@@ -140,7 +140,10 @@ if __name__ == '__main__':
     ' Run iwfm_adj_crops() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         in_year = sys.argv[1]

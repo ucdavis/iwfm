@@ -60,7 +60,10 @@ def file_2_list(filename, slice_end=0, slice_start=0, skip=0):
 if __name__ == '__main__':
     ' Run file_2_list() from command line '
     import sys
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         input_file = sys.argv[1]

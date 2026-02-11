@@ -112,7 +112,10 @@ if __name__ == '__main__':
     ' Run iwfm_lu2sub() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         elem_file = sys.argv[1]
@@ -128,6 +131,6 @@ if __name__ == '__main__':
     iwfm.file_test(lu_file)
 
     idb.exe_time()  # initialize timer
-    iwfm_lu2sub(elem_file, lu_file, out_file, verbose=True)
+    iwfm_lu2sub(elem_file, lu_file, out_file, verbose=verbose)
 
     idb.exe_time()  # print elapsed time

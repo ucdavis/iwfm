@@ -115,6 +115,9 @@ def date_index(inval, start_date):
 if __name__ == "__main__":
     " Run date_index() from command line "
     import sys
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         inval = sys.argv[1]

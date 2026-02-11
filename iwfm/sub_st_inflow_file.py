@@ -62,7 +62,6 @@ def sub_st_inflow_file(old_filename, new_filename, snode_list, verbose=False):
     _, line_index = read_next_line_value(inflow_lines, line_index - 1, column=0, skip_lines=5)  # skip factors
 
     for j in range(0, ninflows):
-        #print(f'  ==> inflow_lines[line_index]: {inflow_lines[line_index]}')
         t = inflow_lines[line_index].split()
         if int(t[0]) not in snode_list:
             t[0] = '0'

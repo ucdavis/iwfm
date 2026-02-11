@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+from iwfm.debug.logger_setup import logger
+
+
 def print_methods_hdf(filename, spacing=20, verbose=False):
     '''print_methods_hdf() - print dll methods for an hdf file
 
@@ -47,7 +50,7 @@ def print_methods_hdf(filename, spacing=20, verbose=False):
 
     methodList = []
     for method_name in dir(object):
-        print(f'  ==> {method_name=}')
+        logger.debug(f'{method_name=}')
         try:
             if callable(getattr(object, method_name)):
                 methodList.append(str(method_name))
@@ -69,6 +72,9 @@ if __name__ == '__main__':
     import sys
     import iwfm
     import iwfm.debug as dbg
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
@@ -76,13 +82,13 @@ if __name__ == '__main__':
     else:  # ask for file names from terminal
         filename    = input('IWFM HDF file name: ')
 
-    print(f'  ==> {filename=}')
+    logger.debug(f'{filename=}')
 
     iwfm.file_test(filename)
 
     dbg.exe_time()  # initialize timer
 
-    methods = print_methods_hdf(filename, verbose=True)
+    methods = print_methods_hdf(filename, verbose=verbose)
 
     print(f'  Read {len(methods):,} methods from {filename}.')
 

@@ -116,12 +116,14 @@ def well_pairs_2_obs_list(well_pair_file, obs_file, days=15, verbose=False):
     return well_count, obs_count, output_file
 
 
-
 if __name__ == '__main__':
     ' Run well_pairs_2_obs_list() from command line '
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         well_pair_file  = sys.argv[1]

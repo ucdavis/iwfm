@@ -18,6 +18,9 @@
 # -----------------------------------------------------------------------------
 
 
+from iwfm.debug.logger_setup import logger
+
+
 def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, debug=False):
     '''iwfm_sub_sim.py - Read in a list of element pairs for a submodel.
     Use existing model Elements, Nodes, Stream specification and stratigraphy
@@ -171,13 +174,10 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
 
     # -- process submodel Lake file
     if have_lake:
-        if verbose:                
-            print('\n   ==> TO DO: Lake process files')
+        logger.debug('TO DO: Lake process files')
 
     if verbose:
         print(" ")
-
-
 
 
     # -- write new simulation main input file
@@ -194,8 +194,10 @@ if __name__ == "__main__":
     import sys
     import iwfm.debug as idb
     import iwfm
+    from iwfm.debug import parse_cli_flags
 
-    verbose = True
+    verbose, debug = parse_cli_flags()
+
 
     if len(sys.argv) > 1:              # arguments are listed on the command line
         in_sim_file = sys.argv[1]      # old model simulaiton.in file

@@ -132,12 +132,14 @@ def iwfm_read_elempump(elempump_file_name, elem_ids, ag=1, ur=2, comment=0, verb
     return elempump_ag, elempump_ur, elempump_other, header
 
 
-
 if __name__ == "__main__":
     ''' Run iwfm_read_elempump() from command line '''
     import sys
     import iwfm.debug as idb
-    import iwfm as iwfm
+    import iwfm
+    from iwfm.debug import parse_cli_flags
+
+    verbose, debug = parse_cli_flags()
 
     if len(sys.argv) > 1:  # arguments are listed on the command line
         elempump_file_name = sys.argv[1]

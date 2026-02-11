@@ -16,6 +16,9 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+from iwfm.debug.logger_setup import logger
+
+
 def get_name(s):
     ''' get_name() - Read an IWFM Simulation Groundwater file and return
         a dictionary of sub-process file names, and arrays of parameters
@@ -184,48 +187,48 @@ def iwfm_read_gw(gw_file, verbose=False):
             name = fields[4] if len(fields) > 4 else f"Well_{order}"
         hydrographs[name] = (order, layer, x, y)
         line_index += 1
-    if verbose: print(f' ==> {gw_file} has {nouth} hydrograph(s)')
+    logger.debug(f'{gw_file} has {nouth} hydrograph(s)')
 
     # element face flow - skip
     _, line_index = read_next_line_value(file_lines, line_index - 1, column=0)
     noutf = int(file_lines[line_index].split()[0])                      # Element Face Flow lines
-    if verbose: print(f' ==> {gw_file} has {noutf} face flow line(s)')
+    logger.debug(f'{gw_file} has {noutf} face flow line(s)')
     _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=noutf + 2)
 
-    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+    logger.debug(f'file_lines[{line_index}] = {file_lines[line_index]}')
     ngroup = int(file_lines[line_index].split()[0])                      # skip to Parameter Groups
-    
-    if verbose: print(f' ==> {gw_file} has {ngroup} parameter group(s)')
+
+    logger.debug(f'{gw_file} has {ngroup} parameter group(s)')
 
     _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=2)
-    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+    logger.debug(f'file_lines[{line_index}] = {file_lines[line_index]}')
 
     # units
     tunitkh = file_lines[line_index].split()[0]                         # time unit for aquifer Kh
     line_index += 1
-    if verbose: print(f' ==> {tunitkh=}')
+    logger.debug(f'{tunitkh=}')
     tunitv = file_lines[line_index].split()[0]                          # time unit for aquitard Kv
     line_index += 1
-    if verbose: print(f' ==> {tunitv=}')
+    logger.debug(f'{tunitv=}')
     tunitl = file_lines[line_index].split()[0]                          # time unit for aquifer Kv
     units=[tunitkh, tunitv, tunitl]
-    if verbose: print(f' ==> {tunitl=}')
+    logger.debug(f'{tunitl=}')
 
     _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
-    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+    logger.debug(f'file_lines[{line_index}] = {file_lines[line_index]}')
 
     if ngroup > 0:                                                      # read parameter grid
         _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
-        if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+        logger.debug(f'file_lines[{line_index}] = {file_lines[line_index]}')
 
         nodes = int(file_lines[line_index].split()[0])                  # number of parametric grid nodes
         _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=1)
         nep = int(file_lines[line_index].split()[0])                    # number of parametric grid elements
-        if verbose: print(f' ==> {nodes=}')
-        if verbose: print(f' ==> {nep=}')
+        logger.debug(f'{nodes=}')
+        logger.debug(f'{nep=}')
 
         _, line_index = read_next_line_value(file_lines, line_index - 1, column=0, skip_lines=nep+1)
-        if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+        logger.debug(f'file_lines[{line_index}] = {file_lines[line_index]}')
 
         # how many layers?
         layers = 1
@@ -243,8 +246,8 @@ def iwfm_read_gw(gw_file, verbose=False):
                     f"Unexpected end of file while determining layers at line {line_index}"
                 )
 
-        if verbose: print(f' ==> {layers=}')
-        if verbose: print(f' ==> {nodes=}')
+        logger.debug(f'{layers=}')
+        logger.debug(f'{nodes=}')
 
         # initialize parameter arrays
         node_id = [0 for row in range(nodes)]
@@ -324,13 +327,13 @@ def iwfm_read_gw(gw_file, verbose=False):
 
     # -- Anomaly in Hydraulic Conductivity --
     _, line_index = read_next_line_value(file_lines, line_index - 1, column=0)
-    if verbose: print(f' ==> file_lines[{line_index}] = {file_lines[line_index]}')
+    logger.debug(f'file_lines[{line_index}] = {file_lines[line_index]}')
     nebk = int(file_lines[line_index].split()[0])                 # anomaly count
-    if verbose: print(f' ==> {nebk=}')
+    logger.debug(f'{nebk=}')
 
     # Skip FACT, TUNITH, and nebk anomaly data lines (nebk + 2 non-comment lines)
     _, line_index = read_next_line_value(file_lines, line_index, column=0, skip_lines=nebk + 2)
-    if verbose: print(f' ==> After anomaly section, line_index={line_index}: {file_lines[line_index][:80]}')
+    logger.debug(f'After anomaly section, line_index={line_index}: {file_lines[line_index][:80]}')
 
     # Check if this is IFLAGRF (Groundwater Return Flow) or FACTHP (Initial Conditions)
     # IFLAGRF is an integer 0 or 1; FACTHP is a float conversion factor (typically 1.0)
@@ -342,12 +345,12 @@ def iwfm_read_gw(gw_file, verbose=False):
     if 'IFLAGRF' in line_upper or 'RETURN' in line_upper:
         # Explicit IFLAGRF line
         iflagrf = int(current_val)
-        if verbose: print(f' ==> {iflagrf=}')
+        logger.debug(f'{iflagrf=}')
         if iflagrf == 1:
             _, line_index = read_next_line_value(file_lines, line_index, column=0, skip_lines=nodes)
         else:
             _, line_index = read_next_line_value(file_lines, line_index, column=0)
-        if verbose: print(f' ==> After return flow, line_index={line_index}: {file_lines[line_index][:80]}')
+        logger.debug(f'After return flow, line_index={line_index}: {file_lines[line_index][:80]}')
     elif 'FACTHP' in line_upper:
         # No IFLAGRF section, this is already FACTHP
         pass
@@ -369,12 +372,12 @@ def iwfm_read_gw(gw_file, verbose=False):
                 if test_val in (0, 1) and len(peek_parts) == 3:
                     # Likely IFLAGRF
                     iflagrf = test_val
-                    if verbose: print(f' ==> {iflagrf=} (detected)')
+                    logger.debug(f'{iflagrf=} (detected)')
                     if iflagrf == 1:
                         _, line_index = read_next_line_value(file_lines, line_index, column=0, skip_lines=nodes)
                     else:
                         _, line_index = read_next_line_value(file_lines, line_index, column=0)
-                    if verbose: print(f' ==> After return flow, line_index={line_index}: {file_lines[line_index][:80]}')
+                    logger.debug(f'After return flow, line_index={line_index}: {file_lines[line_index][:80]}')
                 # else: not IFLAGRF, fall through to FACTHP
         except ValueError:
             pass  # Not an integer, must be FACTHP
@@ -382,11 +385,11 @@ def iwfm_read_gw(gw_file, verbose=False):
     # -- Initial Groundwater Head Values --
     # FACTHP line
     facthp = float(file_lines[line_index].split()[0])
-    if verbose: print(f' ==> {facthp=}')
+    logger.debug(f'{facthp=}')
 
     # Read initial heads: ID  HP[1]  HP[2]  ...  HP[layers]
     _, line_index = read_next_line_value(file_lines, line_index, column=0)
-    if verbose: print(f' ==> Init cond start at line_index={line_index}: {file_lines[line_index][:80]}')
+    logger.debug(f'Init cond start at line_index={line_index}: {file_lines[line_index][:80]}')
 
     init_cond = []
     for node in range(nodes):
@@ -396,6 +399,6 @@ def iwfm_read_gw(gw_file, verbose=False):
             temp.append(float(items[l + 1]))
         init_cond.append(temp)
         line_index += 1
-    if verbose: print(' ==> leaving iwfm_read_gw.py <==')
+    logger.debug('leaving iwfm_read_gw.py')
 
     return gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy

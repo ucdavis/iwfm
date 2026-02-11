@@ -239,8 +239,10 @@ if __name__ == '__main__':
     import pickle
     import iwfm
     import iwfm.debug as idb
+    from iwfm.debug import parse_cli_flags
 
-    verbose = True
+    verbose, debug = parse_cli_flags()
+
 
     if len(sys.argv) > 1:
         hdf_file = sys.argv[1]
