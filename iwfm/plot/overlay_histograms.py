@@ -69,6 +69,7 @@ def overlay_histograms(data1, data2, file_name, label1='Data 1', label2='Data 2'
 
     plt.grid(True)
     plt.savefig(file_name, format=format)
+    plt.close()
 
 #    plt.save options, potential future use
 #    plt.savefig(file_name, 

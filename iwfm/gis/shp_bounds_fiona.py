@@ -36,9 +36,8 @@ def shp_bounds_fiona(filename, verbose=False):
     '''
     import fiona
 
-    f = fiona.open(filename)
-    b = f.bounds
-    f = None   # release memory
+    with fiona.open(filename) as f:
+        b = f.bounds
     if verbose:
         print(f' Shapefile {filename} bounds: {b}')
     return b

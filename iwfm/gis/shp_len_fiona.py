@@ -34,7 +34,6 @@ def shp_len_fiona(filename):
     '''
     import fiona
 
-    f = fiona.open(filename)
-    l = len(f)
-    f = None
+    with fiona.open(filename) as f:
+        l = len(f)
     return l

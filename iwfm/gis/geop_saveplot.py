@@ -40,4 +40,5 @@ def geop_saveplot(gdf, outname, **kwargs):
     '''
     gdf.plot(**kwargs)
     plt.savefig(outname)
+    plt.close()
     return

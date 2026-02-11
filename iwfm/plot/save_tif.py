@@ -47,6 +47,7 @@ def save_plot(fig, filename):
 
     # (3) save as TIFF
     png2.save(filename)
+    png2.close()
     png1.close()
     
 

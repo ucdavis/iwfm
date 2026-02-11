@@ -34,7 +34,6 @@ def shp_coords_fiona(filename):
     '''
     import fiona
 
-    f = fiona.open(filename)
-    c = f.crs
-    f = None
+    with fiona.open(filename) as f:
+        c = f.crs
     return c

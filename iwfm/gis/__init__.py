@@ -98,7 +98,6 @@ from iwfm.gis.shp_geomtype import shp_geomtype
 
 from iwfm.gis.shp_get_OGR import shp_get_OGR
 
-from iwfm.gis.shp_get_fiona import shp_get_fiona
 from iwfm.gis.shp_schema_print_fiona import shp_schema_print_fiona
 from iwfm.gis.shp_driver_type import shp_driver_type
 from iwfm.gis.shp_bounds_fiona import shp_bounds_fiona
@@ -134,9 +133,6 @@ from iwfm.gis.mysql_insert_record import mysql_insert_record
 # -- GeoPDF methods ---------------------------------------
 from iwfm.gis.geopdf_create import geopdf_create
 from iwfm.gis.geopdf_draw_rect_ex import geopdf_draw_rect_ex
-
-# -- Rasterio methods -------------------------------------
-from iwfm.gis.rasterio_open import rasterio_open
 
 # -- OSMnx methods ----------------------------------------
 # Open Street Map + NetworkX

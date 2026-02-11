@@ -37,4 +37,5 @@ def geop_plot(gdf, **kwargs):
     '''
     fig = gdf.plot(**kwargs)
     plt.show()
+    plt.close()
     return
