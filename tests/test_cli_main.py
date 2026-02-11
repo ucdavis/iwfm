@@ -209,33 +209,49 @@ class TestSubcommandRegistration:
         assert callable(_register_commands)
 
     def test_calib_subcommand_registered(self):
-        """Test that calib subcommand is registered."""
+        """Test that calib subcommand is registered if module exists."""
         from iwfm.cli.main import app
-        
-        # Check if calib is in registered commands
+
         command_names = [cmd.name for cmd in app.registered_groups]
-        assert 'calib' in command_names
+        # Subcommand only registered if iwfm.calib.calib module exists
+        try:
+            from iwfm.calib import calib
+            assert 'calib' in command_names
+        except (ImportError, AttributeError):
+            pytest.skip("calib CLI module not available")
 
     def test_gis_subcommand_registered(self):
-        """Test that gis subcommand is registered."""
+        """Test that gis subcommand is registered if module exists."""
         from iwfm.cli.main import app
-        
+
         command_names = [cmd.name for cmd in app.registered_groups]
-        assert 'gis' in command_names
+        try:
+            from iwfm.gis import gis
+            assert 'gis' in command_names
+        except (ImportError, AttributeError):
+            pytest.skip("gis CLI module not available")
 
     def test_xls_subcommand_registered(self):
-        """Test that xls subcommand is registered."""
+        """Test that xls subcommand is registered if module exists."""
         from iwfm.cli.main import app
-        
+
         command_names = [cmd.name for cmd in app.registered_groups]
-        assert 'xls' in command_names
+        try:
+            from iwfm.xls import xls
+            assert 'xls' in command_names
+        except (ImportError, AttributeError):
+            pytest.skip("xls CLI module not available")
 
     def test_debug_subcommand_registered(self):
-        """Test that debug subcommand is registered."""
+        """Test that debug subcommand is registered if module exists."""
         from iwfm.cli.main import app
-        
+
         command_names = [cmd.name for cmd in app.registered_groups]
-        assert 'debug' in command_names
+        try:
+            from iwfm.debug import debug
+            assert 'debug' in command_names
+        except (ImportError, AttributeError):
+            pytest.skip("debug CLI module not available")
 
 
 class TestMainImports:

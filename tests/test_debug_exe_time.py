@@ -109,18 +109,21 @@ class TestExeTime:
         assert "seconds" in captured.out
 
     def test_multiple_subsequent_calls(self, capsys):
-        """Test multiple subsequent calls."""
+        """Test multiple subsequent calls after reset."""
         import iwfm.debug.exe_time as exe_time_module
         exe_time_module._exe_time_instance = None
-        
+
         from iwfm.debug.exe_time import exe_time
-        
-        exe_time()  # First call
-        exe_time()  # Second call
-        exe_time()  # Third call
-        
+
+        capsys.readouterr()  # flush any prior output
+
+        exe_time()  # First call - sets start
+        capsys.readouterr()  # clear buffer (should be empty, but guards against ordering)
+
+        exe_time()  # Second call - prints elapsed
+        exe_time()  # Third call - prints elapsed
+
         captured = capsys.readouterr()
-        # Should have printed elapsed time twice
         assert captured.out.count("Elapsed time") == 2
 
 

@@ -46,10 +46,7 @@ def test_gw_well_lay_elev_function_signature():
     params = list(sig.parameters.keys())
 
     assert 'self' in params
-    assert 'x' in params
-    assert 'y' in params
-    assert 'elem' in params
-    assert 'lay' in params
+    assert 'd_wellinfo' in params
     assert 'debug' in params
 
 

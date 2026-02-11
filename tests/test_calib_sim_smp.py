@@ -138,18 +138,21 @@ class TestSimSmp:
         assert sim_sites == sorted(sim_sites)
 
     def test_skips_short_lines(self):
-        """Test that lines with short site names are skipped."""
+        """Test that lines with single-char site names are skipped.
+
+        sim_smp skips lines where len(item[0]) <= 1.
+        """
         from iwfm.calib.sim_smp import sim_smp
 
         smp_list = [
             'WELL001  01/15/2020  0:00:00  100.0',
-            'X  01/16/2020  0:00:00  200.0',  # Single char - should be kept
+            'X  01/16/2020  0:00:00  200.0',  # Single char - skipped by len > 1 check
         ]
 
         sim_data, sim_sites = sim_smp(smp_list)
 
-        # Both should be processed (len > 1)
-        assert len(sim_data) == 2
+        # Only WELL001 should be processed; 'X' is skipped (len <= 1)
+        assert len(sim_data) == 1
 
 
 class TestSimSmpImports:

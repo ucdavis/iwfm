@@ -271,11 +271,12 @@ class TestItemsNotInSecondList:
 
     def test_uses_set_difference(self):
         """Test that function uses efficient set difference."""
-        from iwfm.calib import hyds_missed as module
+        import importlib
+        module = importlib.import_module('iwfm.calib.hyds_missed')
         import inspect
-        
+
         source = inspect.getsource(module.items_not_in_second_list)
-        
+
         # Should use set operations
         assert 'set(' in source
         assert 'set1 - set2' in source or 'difference' in source

@@ -26,12 +26,12 @@ Example files used for testing:
 - Hydrograph file 1: iwfm/tests/C2VSimCG-2021/Results/C2VSimCG_Hydrographs_GW.out
 - Hydrograph file 2: iwfm/tests/C2VSimCG-2021/Results/C2VSimCG_Hydrographs_GW_mod.out
 
-C2VSimCG hydrograph file characteristics:
-- 514 total lines
+C2VSimCG hydrograph file characteristics (truncated test data):
+- 22 total lines (file 1), 514 total lines (file 2)
 - 9 header lines (lines 0-8)
-- 505 data lines (lines 9-513) corresponding to timesteps
-- 9169 hydrograph columns (plus date column)
+- 13 data lines (lines 9-21) corresponding to timesteps in file 1
 - Date format: MM/DD/YYYY_HH:MM
+- Date range: 09/30/1973 to 09/30/1974
 
 The function:
 - Reads both hydrograph files
@@ -316,23 +316,23 @@ class TestHydDiffC2VSimCGSpecific:
     """Test C2VSimCG-specific expectations."""
 
     def test_c2vsimcg_line_count(self):
-        """Test that C2VSimCG hydrograph file has 514 lines."""
+        """Test that C2VSimCG hydrograph file has 22 lines (truncated test data)."""
         with open(EXAMPLE_HYD_FILE_1) as f:
             lines = f.readlines()
 
-        assert len(lines) == 514
+        assert len(lines) == 22
 
     def test_c2vsimcg_data_line_count(self):
-        """Test that C2VSimCG has 505 data lines (timesteps)."""
+        """Test that C2VSimCG has 13 data lines (truncated test data)."""
         with open(EXAMPLE_HYD_FILE_1) as f:
             lines = f.readlines()
 
         # Data lines start at line 10 (index 9)
         data_lines = lines[9:]
-        assert len(data_lines) == 505
+        assert len(data_lines) == 13
 
-    def test_c2vsimcg_output_has_505_timesteps(self):
-        """Test that output has 505 data lines."""
+    def test_c2vsimcg_output_has_13_timesteps(self):
+        """Test that output has 13 data lines (truncated test data)."""
         with tempfile.TemporaryDirectory() as temp_dir:
             outname = os.path.join(temp_dir, 'diff_output.out')
 
@@ -342,10 +342,10 @@ class TestHydDiffC2VSimCGSpecific:
                 lines = f.readlines()
 
             data_lines = lines[9:]
-            assert len(data_lines) == 505
+            assert len(data_lines) == 13
 
     def test_c2vsimcg_date_range(self):
-        """Test that C2VSimCG date range is correct in output."""
+        """Test that C2VSimCG date range is correct in output (truncated test data)."""
         with tempfile.TemporaryDirectory() as temp_dir:
             outname = os.path.join(temp_dir, 'diff_output.out')
 
@@ -358,9 +358,9 @@ class TestHydDiffC2VSimCGSpecific:
             first_date = lines[9].split()[0]
             assert first_date.startswith('09/30/1973')
 
-            # Last data line should start with 09/30/2015
+            # Last data line should start with 09/30/1974 (truncated test data)
             last_date = lines[-1].split()[0]
-            assert last_date.startswith('09/30/2015')
+            assert last_date.startswith('09/30/1974')
 
 
 @pytest.mark.skipif(not EXAMPLE_FILES_EXIST,

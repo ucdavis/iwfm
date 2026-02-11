@@ -23,8 +23,8 @@ def test_index_date_same_date_zero():
 
 
 def test_index_date_simple_forward():
-    # Implementation returns 2 for one-day forward (per internal counting)
-    assert iwfm.index_date("10/02/1984", start_date="10/01/1984") == 2
+    # Returns number of days between dates (datetime difference)
+    assert iwfm.index_date("10/02/1984", start_date="10/01/1984") == 1
 
 
 def test_index_date_across_years():

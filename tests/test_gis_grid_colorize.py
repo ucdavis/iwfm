@@ -17,44 +17,53 @@
 # -----------------------------------------------------------------------------
 
 
+import importlib
 from unittest.mock import patch, Mock
 import numpy as np
+
+
+def _get_grid_colorize_module():
+    """Get the actual grid_colorize module (not the function shadowed by __init__.py)."""
+    return importlib.import_module('iwfm.gis.grid_colorize')
 
 
 def test_grid_colorize_imports():
     '''Test that grid_colorize imports colorsys (verifies fix).'''
     # This verifies the fix: added 'import colorsys'
-    from iwfm.gis.grid_colorize import colorsys
+    mod = _get_grid_colorize_module()
 
-    assert colorsys is not None
-    assert hasattr(colorsys, 'hsv_to_rgb')
+    assert hasattr(mod, 'colorsys')
+    assert hasattr(mod.colorsys, 'hsv_to_rgb')
 
 
-@patch('iwfm.gis.grid_colorize.ImageOps')
-@patch('iwfm.gis.grid_colorize.Image')
-@patch('iwfm.gis.grid_colorize.np')
-def test_grid_colorize_basic(mock_np, mock_Image, mock_ImageOps, tmp_path):
+def test_grid_colorize_basic(tmp_path):
     '''Test basic functionality of grid_colorize.'''
-    from iwfm.gis.grid_colorize import grid_colorize
+    mod = _get_grid_colorize_module()
 
-    # Create mock array from loadtxt
-    mock_array = np.array([[0, 50, 100], [150, 200, 255]])
-    mock_np.loadtxt.return_value = mock_array
+    with patch.object(mod, 'ImageOps') as mock_ImageOps, \
+         patch.object(mod, 'Image') as mock_Image, \
+         patch.object(mod, 'np') as mock_np:
 
-    # Create mock PIL image
-    mock_image = Mock()
-    mock_image.convert.return_value = mock_image
-    mock_Image.fromarray.return_value = mock_image
+        from iwfm.gis.grid_colorize import grid_colorize
 
-    # Mock ImageOps operations
-    mock_ImageOps.equalize.return_value = mock_image
-    mock_ImageOps.autocontrast.return_value = mock_image
+        # Create mock array from loadtxt
+        mock_array = np.array([[0, 50, 100], [150, 200, 255]])
+        mock_np.loadtxt.return_value = mock_array
 
-    source = tmp_path / 'input.asc'
-    target = tmp_path / 'output.png'
+        # Create mock PIL image
+        mock_image = Mock()
+        mock_image.convert.return_value = mock_image
+        mock_Image.fromarray.return_value = mock_image
 
-    # Create a proper ASCII DEM file for testing
-    ascii_dem_content = '''ncols 3
+        # Mock ImageOps operations
+        mock_ImageOps.equalize.return_value = mock_image
+        mock_ImageOps.autocontrast.return_value = mock_image
+
+        source = tmp_path / 'input.asc'
+        target = tmp_path / 'output.png'
+
+        # Create a proper ASCII DEM file for testing
+        ascii_dem_content = '''ncols 3
 nrows 2
 xllcorner 0
 yllcorner 0
@@ -62,18 +71,18 @@ cellsize 1
 NODATA_value -9999
 0 50 100
 150 200 255'''
-    source.write_text(ascii_dem_content)
+        source.write_text(ascii_dem_content)
 
-    grid_colorize(str(source), str(target))
+        grid_colorize(str(source), str(target))
 
-    # Verify the function called the expected methods
-    mock_np.loadtxt.assert_called_once_with(str(source), skiprows=6)
-    mock_Image.fromarray.assert_called_once()
-    mock_image.convert.assert_called_once_with("L")
-    mock_ImageOps.equalize.assert_called_once()
-    mock_ImageOps.autocontrast.assert_called_once()
-    mock_image.putpalette.assert_called_once()
-    mock_image.save.assert_called_once_with(str(target))
+        # Verify the function called the expected methods
+        mock_np.loadtxt.assert_called_once_with(str(source), skiprows=6)
+        mock_Image.fromarray.assert_called_once()
+        mock_image.convert.assert_called_once_with("L")
+        mock_ImageOps.equalize.assert_called_once()
+        mock_ImageOps.autocontrast.assert_called_once()
+        mock_image.putpalette.assert_called_once()
+        mock_image.save.assert_called_once_with(str(target))
 
 
 def test_grid_colorize_function_signature():

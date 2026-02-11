@@ -17,44 +17,54 @@
 # -----------------------------------------------------------------------------
 
 
+import importlib
 from unittest.mock import patch, Mock
+
+
+def _get_geop_plot_module():
+    """Get the actual geop_plot module (not the function shadowed by __init__.py)."""
+    return importlib.import_module('iwfm.gis.geop_plot')
 
 
 def test_geop_plot_imports():
     '''Test that geop_plot imports matplotlib.pyplot (verifies fix).'''
     # This verifies the fix: added 'import matplotlib.pyplot as plt'
-    from iwfm.gis.geop_plot import plt
+    mod = _get_geop_plot_module()
 
-    assert plt is not None
-    assert hasattr(plt, 'show')
+    assert hasattr(mod, 'plt')
+    assert hasattr(mod.plt, 'show')
 
 
-@patch('iwfm.gis.geop_plot.plt')
-def test_geop_plot_basic(mock_plt):
+def test_geop_plot_basic():
     '''Test basic functionality of geop_plot.'''
-    from iwfm.gis.geop_plot import geop_plot
+    mod = _get_geop_plot_module()
 
-    # Create mock geopandas dataframe
-    mock_gdf = Mock()
-    mock_gdf.plot.return_value = Mock()
+    with patch.object(mod, 'plt') as mock_plt:
+        from iwfm.gis.geop_plot import geop_plot
 
-    geop_plot(mock_gdf)
+        # Create mock geopandas dataframe
+        mock_gdf = Mock()
+        mock_gdf.plot.return_value = Mock()
 
-    mock_gdf.plot.assert_called_once()
-    mock_plt.show.assert_called_once()
+        geop_plot(mock_gdf)
+
+        mock_gdf.plot.assert_called_once()
+        mock_plt.show.assert_called_once()
 
 
-@patch('iwfm.gis.geop_plot.plt')
-def test_geop_plot_with_args(mock_plt):
+def test_geop_plot_with_args():
     '''Test geop_plot with arguments passed to plot.'''
-    from iwfm.gis.geop_plot import geop_plot
+    mod = _get_geop_plot_module()
 
-    mock_gdf = Mock()
-    mock_gdf.plot.return_value = Mock()
+    with patch.object(mod, 'plt') as mock_plt:
+        from iwfm.gis.geop_plot import geop_plot
 
-    geop_plot(mock_gdf, column='value', cmap='viridis')
+        mock_gdf = Mock()
+        mock_gdf.plot.return_value = Mock()
 
-    mock_gdf.plot.assert_called_once()
+        geop_plot(mock_gdf, column='value', cmap='viridis')
+
+        mock_gdf.plot.assert_called_once()
 
 
 def test_geop_plot_function_signature():

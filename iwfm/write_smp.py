@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-from iwfm import filename_ext
+from iwfm.filename_ext import filename_ext
 
 
 def write_smp(output_filename, lines):

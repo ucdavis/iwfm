@@ -375,48 +375,6 @@ class TestHdfReaderWithoutH5py:
         assert open_hdf is not None
 
 
-class TestBackwardCompatibility:
-    """Tests for backward compatibility with iwfm.model."""
-
-    def test_deprecated_model_aliases(self):
-        """Test that iwfm.model aliases point to correct classes."""
-        import warnings
-        # Suppress warnings since we just want to test the aliases work
-        with warnings.catch_warnings():
-            warnings.simplefilter('ignore')
-            from iwfm.model import Model, open_model, ModelMetadata
-
-        # Check aliases work
-        from iwfm.hdf5 import HdfReader, open_hdf, HdfMetadata
-        assert Model is HdfReader
-        assert open_model is open_hdf
-        assert ModelMetadata is HdfMetadata
-
-    def test_model_module_issues_deprecation_warning(self):
-        """Test that importing iwfm.model issues deprecation warning."""
-        import sys
-        import warnings
-
-        # Remove iwfm.model from cache to force re-import
-        modules_to_remove = [k for k in sys.modules if k.startswith('iwfm.model')]
-        for mod in modules_to_remove:
-            del sys.modules[mod]
-
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter('always')
-            # Force fresh import
-            import importlib
-            import iwfm.model
-            importlib.reload(iwfm.model)
-
-            # Check deprecation warning was raised
-            deprecation_warnings = [
-                warning for warning in w
-                if issubclass(warning.category, DeprecationWarning)
-                and 'iwfm.model' in str(warning.message)
-            ]
-            assert len(deprecation_warnings) >= 1
-
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

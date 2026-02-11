@@ -115,12 +115,11 @@ class TestBud2Csv:
 
 class TestBuds2Xl:
     """Test the buds2xl function (limited testing due to complexity)."""
-    
+
     def test_buds2xl_function_exists(self):
         """Test that buds2xl function exists and can be called."""
-        # This is a minimal test just to verify the function exists
-        assert hasattr(iwfm, 'buds2xl')
-        assert callable(getattr(iwfm, 'buds2xl'))
+        from iwfm.xls.buds2xl import buds2xl
+        assert callable(buds2xl)
     
     def test_buds2xl_with_mock_file(self):
         """Test buds2xl with a mock budget file."""
@@ -199,30 +198,39 @@ C Location print list
             except Exception as e:
                 pytest.fail(f"iwfm_read_bud failed to parse mock budget file: {e}")
             
-            # Now test the full buds2xl function, which may fail due to dependencies
+            # Now test the full buds2xl function, which may fail due to dependencies.
+            # When the HDF5 file doesn't exist, file_missing() calls sys.exit()
+            # which raises SystemExit (a BaseException, not an Exception).
             try:
-                result = iwfm.buds2xl(temp_file, verbose=False)
+                from iwfm.xls.buds2xl import buds2xl
+                result = buds2xl(temp_file, verbose=False)
                 # If it somehow succeeds, that's acceptable
                 assert result is None
-                
+
+            except SystemExit:
+                # Expected - file_missing() calls sys.exit() when the HDF5 file
+                # referenced in the budget file doesn't exist. This means the
+                # budget .in file was parsed successfully by iwfm_read_bud.
+                pass
+
             except (ImportError, ModuleNotFoundError) as e:
                 # Expected if Excel/HDF5 dependencies are missing
                 if any(dep in str(e) for dep in ["win32com", "h5py", "xlwings", "openpyxl"]):
-                    # This is acceptable - the function parsed the file but can't continue 
-                    # due to missing dependencies. The important part is that it didn't 
+                    # This is acceptable - the function parsed the file but can't continue
+                    # due to missing dependencies. The important part is that it didn't
                     # fail on the file format parsing.
                     pass
                 else:
                     pytest.fail(f"Unexpected ImportError: {e}")
-                    
+
             except FileNotFoundError as e:
-                # Expected - the HDF5 file doesn't exist, but this means the 
+                # Expected - the HDF5 file doesn't exist, but this means the
                 # budget file was parsed successfully
                 if "test_budget.hdf5" in str(e):
                     pass
                 else:
                     pytest.fail(f"Unexpected FileNotFoundError: {e}")
-                    
+
             except Exception as e:
                 # Any other exception indicates a problem with the function
                 pytest.fail(f"buds2xl function failed unexpectedly: {e}")

@@ -17,48 +17,58 @@
 # -----------------------------------------------------------------------------
 
 
+import importlib
 from unittest.mock import patch, Mock
+
+
+def _get_geop_saveplot_module():
+    """Get the actual geop_saveplot module (not the function shadowed by __init__.py)."""
+    return importlib.import_module('iwfm.gis.geop_saveplot')
 
 
 def test_geop_saveplot_imports():
     '''Test that geop_saveplot imports matplotlib.pyplot (verifies fix).'''
     # This verifies the fix: added 'import matplotlib.pyplot as plt'
-    from iwfm.gis.geop_saveplot import plt
+    mod = _get_geop_saveplot_module()
 
-    assert plt is not None
-    assert hasattr(plt, 'savefig')
+    assert hasattr(mod, 'plt')
+    assert hasattr(mod.plt, 'savefig')
 
 
-@patch('iwfm.gis.geop_saveplot.plt')
-def test_geop_saveplot_basic(mock_plt, tmp_path):
+def test_geop_saveplot_basic(tmp_path):
     '''Test basic functionality of geop_saveplot.'''
-    from iwfm.gis.geop_saveplot import geop_saveplot
+    mod = _get_geop_saveplot_module()
 
-    # Create mock geopandas dataframe
-    mock_gdf = Mock()
-    mock_gdf.plot.return_value = Mock()
+    with patch.object(mod, 'plt') as mock_plt:
+        from iwfm.gis.geop_saveplot import geop_saveplot
 
-    outfile = tmp_path / 'plot.png'
+        # Create mock geopandas dataframe
+        mock_gdf = Mock()
+        mock_gdf.plot.return_value = Mock()
 
-    geop_saveplot(mock_gdf, str(outfile))
+        outfile = tmp_path / 'plot.png'
 
-    mock_gdf.plot.assert_called_once()
-    mock_plt.savefig.assert_called_once()
+        geop_saveplot(mock_gdf, str(outfile))
+
+        mock_gdf.plot.assert_called_once()
+        mock_plt.savefig.assert_called_once()
 
 
-@patch('iwfm.gis.geop_saveplot.plt')
-def test_geop_saveplot_with_args(mock_plt, tmp_path):
+def test_geop_saveplot_with_args(tmp_path):
     '''Test geop_saveplot with plot arguments.'''
-    from iwfm.gis.geop_saveplot import geop_saveplot
+    mod = _get_geop_saveplot_module()
 
-    mock_gdf = Mock()
-    mock_gdf.plot.return_value = Mock()
+    with patch.object(mod, 'plt') as mock_plt:
+        from iwfm.gis.geop_saveplot import geop_saveplot
 
-    outfile = tmp_path / 'plot.png'
+        mock_gdf = Mock()
+        mock_gdf.plot.return_value = Mock()
 
-    geop_saveplot(mock_gdf, str(outfile), column='value', cmap='plasma')
+        outfile = tmp_path / 'plot.png'
 
-    mock_gdf.plot.assert_called_once()
+        geop_saveplot(mock_gdf, str(outfile), column='value', cmap='plasma')
+
+        mock_gdf.plot.assert_called_once()
 
 
 def test_geop_saveplot_function_signature():

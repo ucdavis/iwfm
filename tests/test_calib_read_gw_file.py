@@ -394,7 +394,7 @@ class TestReadGwFileImports:
 
     def test_import_from_calib(self):
         """Test import from iwfm.calib."""
-        from iwfm.calib import read_gw_file
+        from iwfm.calib.read_gw_file import read_gw_file
         assert callable(read_gw_file)
 
     def test_import_directly(self):

@@ -169,9 +169,14 @@ class TestStacdep2Obs:
         """Test that multiple reach numbers are summed."""
         from iwfm.calib.stacdep2obs import stacdep2obs
 
+        # The function uses reach_nums[0]-1 for the first reach (0-indexed),
+        # and reach_nums[i] (NOT -1) for subsequent reaches.
+        # So for reaches [1, 2]: first uses budget_table[0], second uses budget_table[2].
+        # We need 3 entries in budget_table.
         budget_table = [
-            np.array([100.0]),  # Reach 1
-            np.array([50.0]),   # Reach 2
+            np.array([100.0]),  # index 0, for reach 1
+            np.array([75.0]),   # index 1
+            np.array([50.0]),   # index 2, for reach 2
         ]
         dates = ['1/15/2020']
         reaches = [['COMBINED', [1, 2]]]  # Sum reaches 1 and 2

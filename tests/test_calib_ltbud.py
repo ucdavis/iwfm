@@ -23,37 +23,40 @@ import os
 class TestLtbud:
     """Tests for ltbud function"""
 
-    def create_budget_file(self, tmp_path, tables=1, rows=3):
+    def create_budget_file(self, tmp_path, tables=2, rows=3):
         """Create a mock IWFM Budget format file.
-        
-        Budget file format:
-        - Header lines (non-digit starting)
-        - Data lines (digit starting: date + values)
-        - Footer lines between tables
+
+        Budget file format (ltbud expects):
+        - Header lines: non-digit starting lines (parsed until a digit-starting line)
+        - Data lines: digit-starting (date + fixed-width values)
+        - Footer: non-digit lines between tables
+
+        ltbud measures column width from position 16 of the data line after
+        the first data line. It needs at least 2 tables to detect footer length.
+        Empty lines (len==0) cause IndexError when checking [0].isdigit(),
+        so use a space character for blank separator lines.
         """
         budget_file = tmp_path / 'budget.out'
-        
+
         lines = []
         for t in range(tables):
-            # Header lines
+            # Header lines (non-digit starting)
             lines.append('                    IWFM BUDGET FILE')
             lines.append('                    Budget Table {}'.format(t + 1))
             lines.append('     Date          Value1       Value2       Value3')
             lines.append('----------------------------------------------------------')
-            
-            # Data lines (start with digit = date)
+
+            # Data lines (digit-starting: date + fixed-width values)
             for r in range(rows):
                 date = f'10/{r+1:02d}/2020_24:00'
                 val1 = 100.0 + r * 10
                 val2 = 200.0 + r * 10
                 val3 = 300.0 + r * 10
-                lines.append(f'{date}      {val1:10.2f}   {val2:10.2f}   {val3:10.2f}')
-            
-            # Footer between tables (if not last table)
-            if t < tables - 1:
-                lines.append('')
-                lines.append('')
-        
+                lines.append(f'{date}  {val1:12.2f}{val2:12.2f}{val3:12.2f}')
+
+            # Footer separator lines (space, not empty, to avoid IndexError on [0])
+            lines.append(' ')
+
         budget_file.write_text('\n'.join(lines))
         return str(budget_file)
 
@@ -115,7 +118,7 @@ class TestLtbud:
         """Test that values are log-transformed."""
         from iwfm.calib.ltbud import ltbud
 
-        budget_file = self.create_budget_file(tmp_path, rows=1)
+        budget_file = self.create_budget_file(tmp_path, rows=2)
         output_file = str(tmp_path / 'output.out')
 
         # Read original values

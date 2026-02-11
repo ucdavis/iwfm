@@ -362,9 +362,10 @@ class TestKrigeImports:
 
     def test_uses_scipy(self):
         """Test that function uses scipy for distance calculation."""
-        from iwfm.calib import krige as module
+        import importlib
+        module = importlib.import_module('iwfm.calib.krige')
         import inspect
-        
+
         source = inspect.getsource(module.krige)
         assert 'cdist' in source
 

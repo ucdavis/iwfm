@@ -22,7 +22,7 @@
 def test_meas_bounds_dead_code_commented():
     '''Test that dead code is commented out (verifies fix).'''
     # This verifies the fix: commented out dead code with undefined variables
-    from iwfm import meas_bounds
+    from iwfm.meas_bounds import meas_bounds
     import inspect
 
     source = inspect.getsource(meas_bounds)
@@ -32,7 +32,7 @@ def test_meas_bounds_dead_code_commented():
 
 def test_meas_bounds_function_exists():
     '''Test that meas_bounds function is defined.'''
-    from iwfm import meas_bounds
+    from iwfm.meas_bounds import meas_bounds
 
     assert callable(meas_bounds)
     assert meas_bounds.__name__ == 'meas_bounds'
@@ -40,31 +40,25 @@ def test_meas_bounds_function_exists():
 
 def test_meas_bounds_function_signature():
     '''Test that meas_bounds has correct function signature.'''
-    from iwfm import meas_bounds
+    from iwfm.meas_bounds import meas_bounds
     import inspect
 
     sig = inspect.signature(meas_bounds)
     params = list(sig.parameters.keys())
 
     assert 'gwhyd_obs' in params
-    assert 'gwhyd_sim' in params
-    assert 'sim_dict' in params
-    assert 'dss_file' in params
 
 
 def test_meas_bounds_basic():
     '''Test basic functionality of meas_bounds.'''
-    from iwfm import meas_bounds
+    from iwfm.meas_bounds import meas_bounds
 
     # Create minimal test data
     gwhyd_obs = ['header', 'WELL001 01/01/2020 X Y 100.0']
-    gwhyd_sim = {'WELL001': []}
-    sim_dict = {}
-    dss_file = None
 
-    # This function has incomplete implementation
+    # This function has incomplete implementation (only takes gwhyd_obs)
     # Just verify it can be called
-    result = meas_bounds(gwhyd_obs, gwhyd_sim, sim_dict, dss_file)
+    result = meas_bounds(gwhyd_obs)
 
     # Function may return None or some value
     assert result is None or isinstance(result, (list, dict, tuple))

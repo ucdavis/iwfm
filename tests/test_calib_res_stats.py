@@ -41,38 +41,45 @@ def test_res_stats_import_iwfm():
 
 def test_res_stats_imports():
     '''Test that all required modules are imported.'''
-    from iwfm.calib.res_stats import sqrt, fabs
+    import importlib
+    module = importlib.import_module('iwfm.calib.res_stats')
 
-    assert sqrt is not None
-    assert fabs is not None
+    # res_stats.py imports iwfm and iwfm.calib as icalib
+    assert hasattr(module, 'iwfm')
+    assert hasattr(module, 'icalib')
 
 
-@patch('iwfm.calib.res_stats.iwfm')
-def test_res_stats_with_mocked_data(mock_iwfm, tmp_path):
+def test_res_stats_with_mocked_data(tmp_path):
     '''Test res_stats with mocked IWFM data structures.'''
-    from iwfm.calib.res_stats import res_stats
+    import importlib
 
-    # Create mock files
-    pest_smp_file = tmp_path / 'test.smp'
-    gwhyd_info_file = tmp_path / 'info.dat'
-    gwhyd_file = tmp_path / 'gwhyd.out'
+    # Ensure the module is loaded so it appears in sys.modules
+    mod = importlib.import_module('iwfm.calib.res_stats')
 
-    # Create minimal file content
-    pest_smp_file.write_text('WELL001  01/15/2020  12:00:00  100.5\n')
-    gwhyd_info_file.write_text('header\nWELL001  data\n')
-    gwhyd_file.write_text('header\ndata\n')
+    with patch.object(mod, 'iwfm') as mock_iwfm:
+        from iwfm.calib.res_stats import res_stats
 
-    # Mock iwfm functions
-    mock_iwfm.iwfm_read_sim_hyds.return_value = {'WELL001': Mock()}
-    mock_iwfm.read_obs.return_value = [['01/15/2020', 100.0]]
+        # Create mock files
+        pest_smp_file = tmp_path / 'test.smp'
+        gwhyd_info_file = tmp_path / 'info.dat'
+        gwhyd_file = tmp_path / 'gwhyd.out'
 
-    mock_simhyd = MagicMock()
-    mock_simhyd.sim_head.return_value = 101.0
-    mock_iwfm.iwfm_read_sim_hyds.return_value = {'WELL001': mock_simhyd}
+        # Create minimal file content
+        pest_smp_file.write_text('WELL001  01/15/2020  12:00:00  100.5\n')
+        gwhyd_info_file.write_text('header\nWELL001  data\n')
+        gwhyd_file.write_text('header\ndata\n')
 
-    # This would normally calculate statistics
-    # For now, just verify imports work
-    assert res_stats is not None
+        # Mock iwfm functions
+        mock_iwfm.iwfm_read_sim_hyds.return_value = {'WELL001': Mock()}
+        mock_iwfm.read_obs.return_value = [['01/15/2020', 100.0]]
+
+        mock_simhyd = MagicMock()
+        mock_simhyd.sim_head.return_value = 101.0
+        mock_iwfm.iwfm_read_sim_hyds.return_value = {'WELL001': mock_simhyd}
+
+        # This would normally calculate statistics
+        # For now, just verify imports work
+        assert res_stats is not None
 
 
 def test_res_stats_function_exists():

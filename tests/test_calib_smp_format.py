@@ -146,7 +146,7 @@ class TestSmpFormatImports:
 
     def test_import_from_calib(self):
         """Test import from iwfm.calib."""
-        from iwfm.calib import smp_format
+        from iwfm.calib.smp_format import smp_format
         assert callable(smp_format)
 
     def test_import_directly(self):

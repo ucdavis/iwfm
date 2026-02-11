@@ -17,21 +17,21 @@
 # -----------------------------------------------------------------------------
 
 import pytest
+import importlib
 import polars as pl
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 from bs4 import BeautifulSoup
 
 
+def _get_cdec_module():
+    """Get the actual get_cdec module (not the function shadowed by __init__.py)."""
+    return importlib.import_module('iwfm.util.get_cdec')
+
+
 def _load_functions():
-    """Load the get_cdec functions dynamically."""
-    from importlib.util import spec_from_file_location, module_from_spec
-    base = Path(__file__).resolve().parents[1] / "iwfm" / "util" / "get_cdec.py"
-    spec = spec_from_file_location("get_cdec", str(base))
-    assert spec is not None, "Failed to load module specification"
-    mod = module_from_spec(spec)
-    assert spec and spec.loader
-    spec.loader.exec_module(mod)
+    """Load the get_cdec functions from the module."""
+    mod = _get_cdec_module()
     return (
         getattr(mod, "parse_html_table"),
         getattr(mod, "save_table_as_csv"),
@@ -205,70 +205,80 @@ class TestSaveTableAsCsv:
 class TestDownloadDataTable:
     """Tests for the download_data_table function."""
 
-    @patch('iwfm.util.get_cdec.requests.get')
-    def test_successful_download(self, mock_get, tmp_path, capsys, monkeypatch):
+    def test_successful_download(self, tmp_path, capsys, monkeypatch):
         """Test successful download and save."""
         # Change to tmp_path so files are created there
         monkeypatch.chdir(tmp_path)
 
-        html_content = b"""
-        <html><body>
-        <table>
-            <tr><th>Date</th><th>Value</th></tr>
-            <tr><td>2022-01</td><td>100</td></tr>
-        </table>
-        </body></html>
-        """
-        mock_response = MagicMock()
-        mock_response.content = html_content
-        mock_get.return_value = mock_response
+        mod = _get_cdec_module()
+        with patch.object(mod, 'requests') as mock_requests:
+            html_content = b"""
+            <html><body>
+            <table>
+                <tr><th>Date</th><th>Value</th></tr>
+                <tr><td>2022-01</td><td>100</td></tr>
+            </table>
+            </body></html>
+            """
+            mock_response = MagicMock()
+            mock_response.content = html_content
+            mock_requests.get.return_value = mock_response
 
-        files = [["Test File", "Test Source", "http://example.com/data"]]
-        result = download_data_table(files)
+            files = [["Test File", "Test Source", "http://example.com/data"]]
+            result = download_data_table(files)
 
-        assert result == [["test_file_raw.csv", "Test Source"]]
-        mock_get.assert_called_once_with("http://example.com/data", timeout=30)
+            assert result == [["test_file_raw.csv", "Test Source"]]
+            mock_requests.get.assert_called_once_with("http://example.com/data", timeout=30)
 
-    @patch('iwfm.util.get_cdec.requests.get')
-    def test_no_table_found(self, mock_get, tmp_path, capsys, monkeypatch):
+    def test_no_table_found(self, tmp_path, capsys, monkeypatch):
         """Test handling when no table found in HTML."""
         monkeypatch.chdir(tmp_path)
 
-        mock_response = MagicMock()
-        mock_response.content = b"<html><body>No tables here</body></html>"
-        mock_get.return_value = mock_response
+        mod = _get_cdec_module()
+        with patch.object(mod, 'requests') as mock_requests:
+            mock_response = MagicMock()
+            mock_response.content = b"<html><body>No tables here</body></html>"
+            mock_requests.get.return_value = mock_response
 
-        files = [["Empty", "Source", "http://example.com/empty"]]
-        result = download_data_table(files)
+            files = [["Empty", "Source", "http://example.com/empty"]]
+            result = download_data_table(files)
 
-        captured = capsys.readouterr()
-        assert "No tables found" in captured.out
-        assert result == [["empty_raw.csv", "Source"]]
+            captured = capsys.readouterr()
+            assert "No tables found" in captured.out
+            assert result == [["empty_raw.csv", "Source"]]
 
-    @patch('iwfm.util.get_cdec.requests.get')
-    def test_timeout_handling(self, mock_get, capsys):
+    def test_timeout_handling(self, capsys):
         """Test handling of request timeout."""
         import requests
-        mock_get.side_effect = requests.exceptions.Timeout()
 
-        files = [["Timeout Test", "Source", "http://example.com/slow"]]
-        result = download_data_table(files)
+        mod = _get_cdec_module()
+        with patch.object(mod, 'requests') as mock_requests:
+            # Ensure the mock has the proper exception classes
+            mock_requests.exceptions = requests.exceptions
+            mock_requests.get.side_effect = requests.exceptions.Timeout()
 
-        captured = capsys.readouterr()
-        assert "timed out" in captured.out
-        assert result == [["timeout_test_raw.csv", "Source"]]
+            files = [["Timeout Test", "Source", "http://example.com/slow"]]
+            result = download_data_table(files)
 
-    @patch('iwfm.util.get_cdec.requests.get')
-    def test_connection_error(self, mock_get, capsys):
+            captured = capsys.readouterr()
+            assert "timed out" in captured.out
+            assert result == [["timeout_test_raw.csv", "Source"]]
+
+    def test_connection_error(self, capsys):
         """Test handling of connection error."""
         import requests
-        mock_get.side_effect = requests.exceptions.ConnectionError()
 
-        files = [["Conn Test", "Source", "http://example.com/fail"]]
-        result = download_data_table(files)
+        mod = _get_cdec_module()
+        with patch.object(mod, 'requests') as mock_requests:
+            # Ensure the mock has the proper exception classes
+            mock_requests.exceptions = requests.exceptions
+            mock_requests.get.side_effect = requests.exceptions.ConnectionError()
 
-        captured = capsys.readouterr()
-        assert "Connection error" in captured.out
+            files = [["Conn Test", "Source", "http://example.com/fail"]]
+            result = download_data_table(files)
+
+            captured = capsys.readouterr()
+            assert "Connection error" in captured.out
 
     def test_filename_formatting(self):
         """Test that filenames are correctly formatted."""
@@ -338,12 +348,12 @@ class TestGetCdecEdgeCases:
         """Test processing multiple files."""
         monkeypatch.chdir(tmp_path)
 
-        @patch('iwfm.util.get_cdec.requests.get')
-        def run_test(mock_get):
+        mod = _get_cdec_module()
+        with patch.object(mod, 'requests') as mock_requests:
             html = b"<table><tr><th>A</th></tr><tr><td>1</td></tr></table>"
             mock_response = MagicMock()
             mock_response.content = html
-            mock_get.return_value = mock_response
+            mock_requests.get.return_value = mock_response
 
             files = [
                 ["File One", "Source 1", "http://example.com/1"],
@@ -354,8 +364,6 @@ class TestGetCdecEdgeCases:
             assert len(result) == 2
             assert result[0][0] == "file_one_raw.csv"
             assert result[1][0] == "file_two_raw.csv"
-
-        run_test()
 
     def test_table_with_mixed_th_td_headers(self):
         """Test parsing table with mixed th and td in header row."""

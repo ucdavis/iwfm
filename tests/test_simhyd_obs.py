@@ -369,7 +369,7 @@ class TestSimhydObsRealFile:
             assert isinstance(result[0][i], float)
 
     def test_real_file_first_values(self):
-        """Test known values from the real file."""
+        """Test known values from the real file (truncated test data)."""
         test_file = os.path.join(
             os.path.dirname(__file__),
             'C2VSimCG-2021',
@@ -382,13 +382,13 @@ class TestSimhydObsRealFile:
 
         result = iwfm.simhyd_obs(test_file)
 
-        # First data line from file inspection:
-        # 09/30/1973_24:00         478.8368    371.7239    367.5474    367.5474
+        # First data line from truncated test file:
+        # 09/30/1973_24:00          28.3519    -35.2681    -16.6453    -46.3417
         # After _24:00 replacement, date becomes "09/30/1973"
         assert "09/30/1973" in result[0][0]
-        assert abs(result[0][1] - 478.8368) < 0.001
-        assert abs(result[0][2] - 371.7239) < 0.001
-        assert abs(result[0][3] - 367.5474) < 0.001
+        assert abs(result[0][1] - 28.3519) < 0.001
+        assert abs(result[0][2] - (-35.2681)) < 0.001
+        assert abs(result[0][3] - (-16.6453)) < 0.001
 
     def test_real_file_date_transformation(self):
         """Test that _24:00 is properly removed from dates in real file."""

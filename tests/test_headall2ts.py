@@ -25,10 +25,10 @@ time series with one CSV file for each layer.
 Example files used for testing:
 - HeadAll file: iwfm/tests/C2VSimCG-2021/Results/C2VSimCG_GW_HeadAll.out
 
-C2VSimCG model characteristics:
+C2VSimCG model characteristics (truncated test data):
 - 1,393 nodes
 - 4 layers
-- Date range: 09/30/1973 to 09/30/2015 (505 timesteps)
+- Date range: 09/30/1973 to 09/30/1974 (13 timesteps)
 
 Output format:
 - One CSV file per layer (e.g., basename_1.csv, basename_2.csv, etc.)
@@ -198,7 +198,7 @@ class TestHeadall2TsOutputContent:
             assert len(df) == 1393
 
     def test_csv_has_correct_number_of_columns(self):
-        """Test that CSV files have correct number of columns (1 + 505 dates)."""
+        """Test that CSV files have correct number of columns (1 + 13 dates)."""
         with tempfile.TemporaryDirectory() as temp_dir:
             output_base = os.path.join(temp_dir, 'heads_ts')
 
@@ -208,8 +208,8 @@ class TestHeadall2TsOutputContent:
             csv_file = f'{output_base}_1.csv'
             df = pl.read_csv(csv_file)
 
-            # 1 Node column + 505 date columns
-            assert len(df.columns) == 506
+            # 1 Node column + 13 date columns (truncated test data)
+            assert len(df.columns) == 14
 
     def test_node_ids_are_sequential(self):
         """Test that Node IDs are present and sequential (1 to 1393)."""
@@ -410,7 +410,7 @@ class TestHeadall2TsC2VSimCGSpecific:
             assert len(df) == 1393
 
     def test_c2vsimcg_date_range(self):
-        """Test that C2VSimCG date range is correct."""
+        """Test that C2VSimCG date range is correct (truncated test data)."""
         with tempfile.TemporaryDirectory() as temp_dir:
             output_base = os.path.join(temp_dir, 'heads_ts')
 
@@ -424,11 +424,11 @@ class TestHeadall2TsC2VSimCGSpecific:
             # First date should be 09/30/1973
             assert date_cols[0] == '09/30/1973'
 
-            # Last date should be 09/30/2015
-            assert date_cols[-1] == '09/30/2015'
+            # Last date should be 09/30/1974 (truncated test data)
+            assert date_cols[-1] == '09/30/1974'
 
     def test_c2vsimcg_timestep_count(self):
-        """Test that C2VSimCG has 505 timesteps."""
+        """Test that C2VSimCG has 13 timesteps (truncated test data)."""
         with tempfile.TemporaryDirectory() as temp_dir:
             output_base = os.path.join(temp_dir, 'heads_ts')
 
@@ -439,4 +439,4 @@ class TestHeadall2TsC2VSimCGSpecific:
 
             date_cols = [c for c in df.columns if c != 'Node']
 
-            assert len(date_cols) == 505
+            assert len(date_cols) == 13

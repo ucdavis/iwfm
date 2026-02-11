@@ -21,6 +21,7 @@ import tempfile
 import os
 
 import iwfm
+from iwfm.xls.buds2xl import buds2xl
 
 
 def create_budget_input_file(factlou, unitlou, factarou, unitarou, factvolou, unitvolou,
@@ -100,9 +101,8 @@ class TestBuds2xlFunctionExists:
     """Test that the buds2xl function exists and is callable."""
 
     def test_buds2xl_exists(self):
-        """Test that buds2xl function exists in the iwfm module."""
-        assert hasattr(iwfm, 'buds2xl')
-        assert callable(getattr(iwfm, 'buds2xl'))
+        """Test that buds2xl function exists and is callable."""
+        assert callable(buds2xl)
 
 
 class TestBuds2xlInputFileParsing:
@@ -304,13 +304,11 @@ class TestBuds2xlWithRealInputFile:
         if not os.path.exists(budget_input_path):
             pytest.skip("Budget input test file not found")
 
-        # buds2xl should fail because the HDF5 files don't exist at relative paths
-        # or Excel COM is not available (non-Windows)
-        with pytest.raises(Exception):
-            # This will fail because:
-            # 1. HDF5 files are at relative paths that don't resolve
-            # 2. On non-Windows, Excel COM interface is not available
-            iwfm.buds2xl(budget_input_path, verbose=False)
+        # buds2xl should fail because the HDF5 files don't exist at relative paths.
+        # file_missing() calls sys.exit() which raises SystemExit (a BaseException,
+        # not an Exception), so we must catch SystemExit specifically.
+        with pytest.raises(SystemExit):
+            buds2xl(budget_input_path, verbose=False)
 
 
 class TestBuds2xlOutputTypes:
@@ -339,9 +337,10 @@ class TestBuds2xlOutputTypes:
             with os.fdopen(fd, 'w') as f:
                 f.write(content)
 
-            # Should fail on missing HDF file or Excel, not on type parameter
-            with pytest.raises(Exception):
-                iwfm.buds2xl(temp_file, type='xlsx', verbose=False)
+            # Should fail with SystemExit on missing HDF file (file_missing
+            # calls sys.exit()), not on the type parameter itself
+            with pytest.raises(SystemExit):
+                buds2xl(temp_file, type='xlsx', verbose=False)
 
         finally:
             if os.path.exists(temp_file):
@@ -370,9 +369,10 @@ class TestBuds2xlOutputTypes:
             with os.fdopen(fd, 'w') as f:
                 f.write(content)
 
-            # Should fail on missing HDF file, not on type parameter
-            with pytest.raises(Exception):
-                iwfm.buds2xl(temp_file, type='csv', verbose=False)
+            # Should fail with SystemExit on missing HDF file (file_missing
+            # calls sys.exit()), not on the type parameter itself
+            with pytest.raises(SystemExit):
+                buds2xl(temp_file, type='csv', verbose=False)
 
         finally:
             if os.path.exists(temp_file):
@@ -386,7 +386,7 @@ class TestBuds2xlErrorHandling:
         """Test that buds2xl raises error for missing input file."""
         # The function calls sys.exit() when file is missing
         with pytest.raises(SystemExit):
-            iwfm.buds2xl("nonexistent_budget_file.in", verbose=False)
+            buds2xl("nonexistent_budget_file.in", verbose=False)
 
     def test_empty_budget_list(self):
         """Test buds2xl with zero budgets in file."""
@@ -412,7 +412,7 @@ class TestBuds2xlErrorHandling:
             # With 0 budgets, should complete without processing any files
             # This may or may not raise an exception depending on implementation
             try:
-                iwfm.buds2xl(temp_file, verbose=False)
+                buds2xl(temp_file, verbose=False)
             except Exception:
                 # Either completing without error or raising is acceptable
                 pass
@@ -448,9 +448,10 @@ class TestBuds2xlVerboseMode:
             with os.fdopen(fd, 'w') as f:
                 f.write(content)
 
-            # Should fail on HDF/Excel, not on verbose parameter
-            with pytest.raises(Exception):
-                iwfm.buds2xl(temp_file, verbose=False)
+            # Should fail with SystemExit on missing HDF file (file_missing
+            # calls sys.exit()), not on the verbose parameter itself
+            with pytest.raises(SystemExit):
+                buds2xl(temp_file, verbose=False)
 
         finally:
             if os.path.exists(temp_file):
@@ -479,9 +480,10 @@ class TestBuds2xlVerboseMode:
             with os.fdopen(fd, 'w') as f:
                 f.write(content)
 
-            # Should fail on HDF/Excel, not on verbose parameter
-            with pytest.raises(Exception):
-                iwfm.buds2xl(temp_file, verbose=True)
+            # Should fail with SystemExit on missing HDF file (file_missing
+            # calls sys.exit()), not on the verbose parameter itself
+            with pytest.raises(SystemExit):
+                buds2xl(temp_file, verbose=True)
 
         finally:
             if os.path.exists(temp_file):

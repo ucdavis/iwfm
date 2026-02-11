@@ -646,7 +646,7 @@ class TestSimhydsRealFile:
         assert start.year == 1973
 
     def test_real_file_known_first_values(self):
-        """Test known first values from real file."""
+        """Test known first values from real file (truncated test data)."""
         test_file = os.path.join(
             os.path.dirname(__file__),
             'C2VSimCG-2021',
@@ -659,10 +659,10 @@ class TestSimhydsRealFile:
 
         hyds = iwfm.simhyds(test_file)
 
-        # From file inspection: 478.8368, 371.7239, 367.5474
-        assert abs(hyds.get_head(0, 1) - 478.8368) < 0.001
-        assert abs(hyds.get_head(0, 2) - 371.7239) < 0.001
-        assert abs(hyds.get_head(0, 3) - 367.5474) < 0.001
+        # From truncated test file: 28.3519, -35.2681, -16.6453
+        assert abs(hyds.get_head(0, 1) - 28.3519) < 0.001
+        assert abs(hyds.get_head(0, 2) - (-35.2681)) < 0.001
+        assert abs(hyds.get_head(0, 3) - (-16.6453)) < 0.001
 
     def test_real_file_date_method(self):
         """Test date method with real file."""

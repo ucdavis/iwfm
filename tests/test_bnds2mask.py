@@ -19,18 +19,30 @@
 from iwfm.bnds2mask import bnds2mask
 
 def test_bnds2mask():
-    """Test the bnds2mask function."""
-    # Example input data for the test
-    example_bnds = [
-        [0, 0],
-        [0, 1],
-        [1, 1],
-        [1, 0]
+    """Test the bnds2mask function.
+
+    bnds2mask(bnds_d, coords) takes:
+    - bnds_d: list of boundary node IDs (integers)
+    - coords: list of [node_id, x, y]
+    Returns a list of (x, y) tuples forming a closed polygon.
+    """
+    # Boundary node IDs in order
+    bnds_d = [1, 2, 3, 4]
+
+    # Node coordinates: [node_id, x, y]
+    coords = [
+        [1, 0.0, 0.0],
+        [2, 1.0, 0.0],
+        [3, 1.0, 1.0],
+        [4, 0.0, 1.0],
     ]
-    expected_output = "Expected output based on the function's logic"
 
-    # Call the function with the example input
-    result = bnds2mask(example_bnds)
+    result = bnds2mask(bnds_d, coords)
 
-    # Assert the result matches the expected output
-    assert result == expected_output, f"Expected {expected_output}, but got {result}"
+    # Result should be a closed polygon (5 points: 4 nodes + closing point)
+    assert len(result) == 5
+    assert result[0] == (0.0, 0.0)
+    assert result[1] == (1.0, 0.0)
+    assert result[2] == (1.0, 1.0)
+    assert result[3] == (0.0, 1.0)
+    assert result[4] == result[0]  # polygon is closed

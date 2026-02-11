@@ -170,7 +170,7 @@ class TestSimObsListImports:
 
     def test_import_from_calib(self):
         """Test import from iwfm.calib."""
-        from iwfm.calib import sim_obs_list
+        from iwfm.calib.sim_obs_list import sim_obs_list
         assert callable(sim_obs_list)
 
     def test_import_directly(self):

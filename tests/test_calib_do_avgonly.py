@@ -22,20 +22,15 @@ import numpy as np
 
 class TestDoAvgonly:
     """Tests for do_avgonly function.
-    
-    Note: The current implementation of do_avgonly has a potential issue where
-    it calls read_gw_params(smp_in) expecting (nlayers, nnodes) but read_gw_params
-    returns (kh, ss, sy, kq, kv). The tests below focus on the averaging logic
-    which is the core functionality.
+
+    The tests below focus on the averaging logic which is the core functionality.
     """
 
     def test_returns_three_items(self):
         """Test that do_avgonly returns smp_out, ins_lines, pcf_lines."""
         from iwfm.calib.do_avgonly import do_avgonly
 
-        # Create mock input - needs to be a valid file path for read_gw_params
-        # Since read_gw_params result is not actually used in the averaging,
-        # we can test with a simple array if we mock or handle the error
+        # Create mock input - a simple numpy array for the averaging logic
         
         # For now, test the function signature expectation
         import inspect
@@ -245,9 +240,10 @@ class TestDoAvgonlyFunctionSignature:
 
     def test_imports_numpy(self):
         """Test that module imports numpy."""
-        from iwfm.calib import do_avgonly as module
+        import importlib
+        module = importlib.import_module('iwfm.calib.do_avgonly')
         import inspect
-        
+
         source = inspect.getsource(module)
         assert 'import numpy' in source
 
@@ -262,40 +258,16 @@ class TestDoAvgonlyFunctionSignature:
         pass  # Skip for now as docstring is missing
 
 
-class TestDoAvgonlyKnownIssues:
-    """Tests documenting known issues in do_avgonly."""
+class TestDoAvgonlyFunction:
+    """Tests for do_avgonly averaging logic."""
 
-    def test_read_gw_params_call_documented(self):
-        """Document that read_gw_params is called with smp_in.
-        
-        This appears to be a bug or incomplete implementation:
-        - read_gw_params expects a file path
-        - smp_in is a numpy array
-        - read_gw_params returns (kh, ss, sy, kq, kv) not (nlayers, nnodes)
-        """
+    def test_no_gw_params_dependency(self):
+        """Verify do_avgonly no longer depends on read_gw_params."""
         from iwfm.calib import do_avgonly as module
         import inspect
-        
-        source = inspect.getsource(module)
-        
-        # Document that this call exists
-        assert 'read_gw_params(smp_in)' in source
-        
-        # Document expected return value mismatch
-        assert 'nlayers, nnodes = read_gw_params' in source
 
-    def test_nlayers_nnodes_unused(self):
-        """Document that nlayers and nnodes are assigned but not used."""
-        from iwfm.calib import do_avgonly as module
-        import inspect
-        
         source = inspect.getsource(module)
-        
-        # The variables are assigned
-        assert 'nlayers, nnodes = ' in source
-        
-        # But they're not used in the averaging logic
-        # (the averaging uses smp_out directly)
+        assert 'read_gw_params' not in source
 
 
 if __name__ == '__main__':

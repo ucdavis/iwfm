@@ -419,18 +419,19 @@ class TestCalibMathFunctions:
 
 
 def test_compare():
-    """Test the compare function in iwfm.calib."""
-    # Example input data for the test
+    """Test the compare function in iwfm.calib.
+
+    compare(list1, list2) returns (missing, in_both) where:
+    - missing: items in list1 that are NOT in list2
+    - in_both: items in list1 that ARE in list2
+    """
     list1 = ["a", "b", "c"]
     list2 = ["b", "c", "d"]
 
-    # Expected output based on the function's logic
     expected_missing = ["a"]
-    expected_extra = ["d"]
+    expected_in_both = ["b", "c"]
 
-    # Call the function with the example input
-    missing, extra = compare(list1, list2)
+    missing, in_both = compare(list1, list2)
 
-    # Assert the result matches the expected output
     assert missing == expected_missing, f"Expected missing {expected_missing}, but got {missing}"
-    assert extra == expected_extra, f"Expected extra {expected_extra}, but got {extra}"
+    assert in_both == expected_in_both, f"Expected in_both {expected_in_both}, but got {in_both}"

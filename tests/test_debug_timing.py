@@ -51,13 +51,15 @@ def test_exe_time_two_calls_prints_elapsed(capsys):
     assert "Elapsed time" in out
 
 
-def test_timer_decorator_current_behavior_nameerror():
-    # Import timer directly from its module since package __init__ doesn't expose it
-    from iwfm.debug.timer import timer  # type: ignore
-    # Current implementation references wraps without import; expect NameError at decoration
-    with pytest.raises(NameError):
-        @timer
-        def add(a, b):
-            return a + b
+def test_timer_decorator_works():
+    """Test that the timer decorator wraps a function and returns correct result."""
+    from iwfm.debug.timer import timer
+
+    @timer
+    def add(a, b):
+        return a + b
+
+    assert add(2, 3) == 5
+    assert add.__name__ == 'add'
 
 
