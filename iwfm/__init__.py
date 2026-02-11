@@ -21,18 +21,14 @@
 from iwfm.iwfm_model import iwfm_model, IWFMModelError
 from iwfm.gw_well_lay_elev import gw_well_lay_elev
 
-# -- Model metadata access (recommended - cross-platform) --
-from iwfm.model import open_model, Model
 
 # -- IWFM model file ---------------------------------------
-from iwfm.iwfm_read_model_file import iwfm_read_model_file
 from iwfm.sim_info import sim_info
 
 # -- IWFM preprocessor files -------------------------------
 from iwfm.iwfm_read_preproc import iwfm_read_preproc
 from iwfm.iwfm_read_elements import iwfm_read_elements
 from iwfm.iwfm_read_nodes import iwfm_read_nodes
-from iwfm.iwfm_read_chars import iwfm_read_chars
 from iwfm.iwfm_read_lake import iwfm_read_lake
 from iwfm.iwfm_read_streams import iwfm_read_streams
 from iwfm.iwfm_read_strat import iwfm_read_strat
