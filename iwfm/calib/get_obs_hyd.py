@@ -41,7 +41,7 @@ def get_obs_hyd(obs_file,start_date):
 
     '''
 
-    import iwfm as iwfm
+    import iwfm
 
     with open(obs_file) as f:
         obs_lines = f.read().splitlines()                         # obs_lines has observations to match

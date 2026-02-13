@@ -31,7 +31,7 @@ def file_test(filename):
     
     '''
     import os
-    import iwfm as iwfm
+    import iwfm
 
     if not os.path.isfile(filename):  # test that input file exists
         iwfm.file_missing(filename)

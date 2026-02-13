@@ -39,8 +39,8 @@ def shp2png_poly(shape, outfile, iwidth=800, iheight=600):
     nothing
 
     '''
-    import iwfm as iwfm
-    import pngcanvas as pngcanvas
+    import iwfm
+    import pngcanvas
 
     shp = iwfm.shp_read(shape)  
     

@@ -29,7 +29,7 @@ def text_date(text):
     -------
     date string in MM/DD/YYYY format
     '''
-    import iwfm as iwfm
+    import iwfm
 
     m = iwfm.month(text)
     d = iwfm.day(text)

@@ -47,7 +47,7 @@ def to_smp_ins(obs_site,obs_dt,obs_val,ts):   # put into smp and ins strings
 
     '''
 
-    import iwfm as iwfm
+    import iwfm
 
     smp = str(f'{iwfm.pad_back(obs_site,20)} {obs_dt.strftime("%m/%d/%Y")}  0:00:00 {iwfm.pad_front(round(obs_val,6),22)}')
     ins = str(f'L1  [{obs_site}_{iwfm.pad_front(ts,3,"0")}]42:70')

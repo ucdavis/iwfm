@@ -34,7 +34,7 @@ def dicu2table(data_file, verbose=False):
     nothing
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     # find the base name and extension
     data_file_base = data_file[0 : data_file.find('.')]

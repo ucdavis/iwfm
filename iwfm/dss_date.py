@@ -33,7 +33,7 @@ def dss_date(date):
         date as string in DSS format
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     mo = iwfm.pad_front(date.month, 2, '0')  # expand to 2-digits
     dy = iwfm.pad_front(date.day, 2, '0')  # expand to 2-digits

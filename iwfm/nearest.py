@@ -37,7 +37,7 @@ def nearest(d_nodes, x, y):
         node ID of node closest to (x,y)
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     point = [x, y]
     dist = 9.9e30

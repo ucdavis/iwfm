@@ -43,7 +43,7 @@ def write_results(name, date, meas, sim, start_date):
     nothing
     
     '''
-    import iwfm as iwfm
+    import iwfm
 
     output_filename = name + '_obs.out'
     with open(output_filename, 'w') as output_file:

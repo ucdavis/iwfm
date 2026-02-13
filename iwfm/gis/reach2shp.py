@@ -47,7 +47,7 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import shapefile
     import pyproj
 

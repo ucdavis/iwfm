@@ -52,7 +52,7 @@ def igsm_elem2shp(elem_nodes,node_coords,elem_char,lake_elems,shape_name,
     import shapefile
     import pyproj
 
-    import iwfm as iwfm
+    import iwfm
 
     elem_shapename = f'{shape_name}_Elements'  # remove .shp extension
 

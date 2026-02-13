@@ -41,7 +41,7 @@ def get_gw_params(gw_file):
         groundwater parameters
     
         '''
-    import iwfm as iwfm
+    import iwfm
     import numpy as np
 
     #  Read all relevant values from Groundwater.dat

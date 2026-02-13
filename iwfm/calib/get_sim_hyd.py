@@ -42,7 +42,7 @@ def get_sim_hyd(nt,file_name,start_date):
         days since start date for each row of sim_hyd
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import numpy as np
 
     with open(file_name) as f:

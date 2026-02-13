@@ -31,7 +31,7 @@ def shp2wkt(shapefile):
         shaefile description in WKT format
 
     '''
-    import iwfm as iwfm
+    import iwfm
 
     shape = iwfm.shp_get_OGR(shapefile)
     layer = shape.GetLayer()

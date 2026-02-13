@@ -54,7 +54,7 @@ def elem2shp(elem_ids, elem_nodes, node_coord_dict, elem_sub, lakes, shape_name,
     '''
     import shapefile
     import pyproj
-    import iwfm as iwfm
+    import iwfm
 
     shapename = f'{shape_name}_Elements.shp'
 

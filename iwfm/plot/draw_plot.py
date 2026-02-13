@@ -62,7 +62,7 @@ def draw_plot( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name, well_info,
     nothing
 
     '''
-    import iwfm as iwfm
+    import iwfm
     import matplotlib
 
     # Force matplotlib to not use any Xwindows backend.
