@@ -20,6 +20,7 @@
 import pytest
 import tempfile
 import os
+from iwfm.dataclasses import PreprocessorFiles
 
 
 def create_pp_file(preout, elem_file, node_file, strat_file, stream_file, lake_file=''):
@@ -91,13 +92,15 @@ class TestSubPpFile:
         """Test error handling for non-existent file"""
         from iwfm.sub.pp_file import sub_pp_file
 
-        pre_dict = {'lake_file': ''}
-        pre_dict_new = {'prename': 'new.in', 'preout': 'out.bin', 'elem_file': 'elem.dat',
-                        'node_file': 'node.dat', 'strat_file': 'strat.dat',
-                        'stream_file': 'stream.dat', 'lake_file': ''}
+        pre_files = PreprocessorFiles(lake_file='')
+        pre_files_new = PreprocessorFiles(
+            prename='new.in', preout='out.bin', elem_file='elem.dat',
+            node_file='node.dat', strat_file='strat.dat',
+            stream_file='stream.dat', lake_file='',
+        )
 
         with pytest.raises(SystemExit):
-            sub_pp_file('nonexistent_file.in', pre_dict, pre_dict_new)
+            sub_pp_file('nonexistent_file.in', pre_files, pre_files_new)
 
     def test_basic_file_replacement(self):
         """Test basic file name replacement"""
@@ -117,20 +120,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': ''}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            sub_pp_file(in_file, pre_dict, pre_dict_new)
+            sub_pp_file(in_file, pre_files, pre_files_new)
 
             assert os.path.exists(new_file)
 
@@ -162,20 +165,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': 'old_lake.dat'}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': 'new_lake.dat'
-            }
+            pre_files = PreprocessorFiles(lake_file='old_lake.dat')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='new_lake.dat',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            sub_pp_file(in_file, pre_dict, pre_dict_new, has_lake=True)
+            sub_pp_file(in_file, pre_files, pre_files_new, has_lake=True)
 
             assert os.path.exists(new_file)
 
@@ -203,21 +206,21 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': 'old_lake.dat'}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='old_lake.dat')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
             # has_lake=False means the lake file line should be blanked
-            sub_pp_file(in_file, pre_dict, pre_dict_new, has_lake=False)
+            sub_pp_file(in_file, pre_files, pre_files_new, has_lake=False)
 
             assert os.path.exists(new_file)
 
@@ -246,20 +249,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': ''}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            sub_pp_file(in_file, pre_dict, pre_dict_new)
+            sub_pp_file(in_file, pre_files, pre_files_new)
 
             with open(new_file) as f:
                 new_content = f.read()
@@ -285,20 +288,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': ''}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            sub_pp_file(in_file, pre_dict, pre_dict_new)
+            sub_pp_file(in_file, pre_files, pre_files_new)
 
             with open(new_file) as f:
                 new_content = f.read()
@@ -325,20 +328,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': ''}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            result = sub_pp_file(in_file, pre_dict, pre_dict_new)
+            result = sub_pp_file(in_file, pre_files, pre_files_new)
 
             assert result is None
 
@@ -360,20 +363,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': ''}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            sub_pp_file(in_file, pre_dict, pre_dict_new)
+            sub_pp_file(in_file, pre_files, pre_files_new)
 
             with open(new_file) as f:
                 new_content = f.read()
@@ -404,20 +407,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': ''}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': '..\\Simulation\\new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='..\\Simulation\\new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            sub_pp_file(in_file, pre_dict, pre_dict_new)
+            sub_pp_file(in_file, pre_files, pre_files_new)
 
             assert os.path.exists(new_file)
 
@@ -445,20 +448,20 @@ class TestSubPpFile:
 
             new_file = os.path.join(tmpdir, 'new_pp.in')
 
-            pre_dict = {'lake_file': ''}
-            pre_dict_new = {
-                'prename': new_file,
-                'preout': 'new_output.bin',
-                'elem_file': 'new_elem.dat',
-                'node_file': 'new_node.dat',
-                'strat_file': 'new_strat.dat',
-                'stream_file': 'new_stream.dat',
-                'lake_file': ''
-            }
+            pre_files = PreprocessorFiles(lake_file='')
+            pre_files_new = PreprocessorFiles(
+                prename=new_file,
+                preout='new_output.bin',
+                elem_file='new_elem.dat',
+                node_file='new_node.dat',
+                strat_file='new_strat.dat',
+                stream_file='new_stream.dat',
+                lake_file='',
+            )
 
             from iwfm.sub.pp_file import sub_pp_file
 
-            sub_pp_file(in_file, pre_dict, pre_dict_new)
+            sub_pp_file(in_file, pre_files, pre_files_new)
 
             with open(new_file) as f:
                 new_content = f.read()

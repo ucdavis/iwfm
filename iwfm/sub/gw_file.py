@@ -19,17 +19,17 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim_base_path=None, verbose=False):
+def sub_gw_file(sim_files, sim_files_new, node_list, elem_list, bounding_poly, sim_base_path=None, verbose=False):
     '''sub_gw_file() - Read the original groundwater main file, determine
         which elements are in the submodel, and write out a new file, then
         modifies the other groundwater component files
 
     Parameters
     ----------
-    sim_dict : dictionary
+    sim_files : SimulationFiles
         existing model file names
 
-    sim_dict_new : str
+    sim_files_new : SimulationFiles
         new submodel file names
 
     node_list : list of ints
@@ -58,7 +58,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
     from pathlib import Path
     import sys
 
-    if verbose: print(f"Entered sub_gw_file() with {sim_dict.get('gw_file', 'N/A')}")
+    if verbose: print(f"Entered sub_gw_file() with {sim_files.gw_file}")
 
     comments = ['C', 'c', '*', '#']
     nodes = []
@@ -70,12 +70,12 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         elems.append(int(e[0]))
 
     # Check if groundwater file exists
-    if 'gw_file' not in sim_dict:
-        print('\n*** ERROR: Groundwater file path not found in simulation dictionary.')
+    if not sim_files.gw_file:
+        print('\n*** ERROR: Groundwater file path not specified in simulation files.')
         print('    Check that the simulation input file specifies a groundwater file.')
         sys.exit(1)
 
-    gw_file_path = sim_dict['gw_file']
+    gw_file_path = sim_files.gw_file
     iwfm.file_test(gw_file_path)
 
     # Determine base path for resolving relative file paths in groundwater file
@@ -105,7 +105,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         bc_file = bc_file.replace('\\', '/')
         # Resolve relative path from simulation file directory
         bc_file = str(base_path / bc_file)
-        gw_lines[line_index] = '   ' + sim_dict_new['bc_file'] + '.dat		        / BCFL'
+        gw_lines[line_index] = '   ' + sim_files_new.bc_file + '.dat		        / BCFL'
     gw_dict['bc_file'] = bc_file
 
     # tile drain file
@@ -120,7 +120,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         td_file = td_file.replace('\\', '/')
         # Resolve relative path from simulation file directory
         td_file = str(base_path / td_file)
-        gw_lines[line_index] = '   ' + sim_dict_new['drain_file'] + '.dat		        / TDFL'
+        gw_lines[line_index] = '   ' + sim_files_new.drain_file + '.dat		        / TDFL'
     gw_dict['drain_file'] = td_file
 
     # pumping file
@@ -135,7 +135,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         pump_file = pump_file.replace('\\', '/')
         # Resolve relative path from simulation file directory
         pump_file = str(base_path / pump_file)
-        gw_lines[line_index] = '   ' + sim_dict_new['pump_file'] + '.dat		        / PUMPFL'
+        gw_lines[line_index] = '   ' + sim_files_new.pump_file + '.dat		        / PUMPFL'
     gw_dict['pump_file'] = pump_file
 
     # subsidence file
@@ -150,7 +150,7 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
         subs_file = subs_file.replace('\\', '/')
         # Resolve relative path from simulation file directory
         subs_file = str(base_path / subs_file)
-        gw_lines[line_index] = '   ' + sim_dict_new['sub_file'] + '.dat		        / SUBSFL'
+        gw_lines[line_index] = '   ' + sim_files_new.sub_file + '.dat		        / SUBSFL'
     gw_dict['subs_file'] = subs_file
 
     # -- hydrograph section --
@@ -242,29 +242,29 @@ def sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim
 
     # -- boundary conditions file --
     if have_bc:
-        iwfm.sub_gw_bc_file(bc_file, sim_dict_new, nodes, elems, bounding_poly, base_path, verbose=verbose)
+        iwfm.sub_gw_bc_file(bc_file, sim_files_new, nodes, elems, bounding_poly, base_path, verbose=verbose)
 
     # -- tile drain file --
     if have_td:
-        have_td = iwfm.sub_gw_td_file(td_file, sim_dict_new['drain_file'], node_list, verbose=verbose)
+        have_td = iwfm.sub_gw_td_file(td_file, sim_files_new.drain_file, node_list, verbose=verbose)
     if have_td == False:
         gw_lines[tile_line] = '                                         / TDFL'
 
     # -- pumping files --
     if have_pump:
-        iwfm.sub_gw_pump_file(pump_file, sim_dict_new, elems, bounding_poly, base_path, verbose=verbose)
+        iwfm.sub_gw_pump_file(pump_file, sim_files_new, elems, bounding_poly, base_path, verbose=verbose)
 
     # -- subsidence file --
     if have_subs:
-        iwfm.sub_gw_subs_file(subs_file, sim_dict_new['sub_file'], node_list, bounding_poly, verbose=verbose)
+        iwfm.sub_gw_subs_file(subs_file, sim_files_new.sub_file, node_list, bounding_poly, verbose=verbose)
 
     gw_lines.append('')
 
-    with open(sim_dict_new['gw_file'], 'w') as outfile:
+    with open(sim_files_new.gw_file, 'w') as outfile:
         outfile.write('\n'.join(gw_lines))
 
     if verbose:
-        print(f'  Wrote groundwater main file {sim_dict_new["gw_file"]}')
+        print(f'  Wrote groundwater main file {sim_files_new.gw_file}')
         print(f"Leaving sub_gw_file()")
 
     return

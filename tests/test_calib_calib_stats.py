@@ -23,6 +23,8 @@ from pathlib import Path
 import numpy as np
 from datetime import datetime
 
+from iwfm.dataclasses import WellInfo
+
 
 def test_calib_stats_imports():
     '''Test that calib_stats imports are clean (verifies fix).'''
@@ -180,10 +182,10 @@ def test_calib_stats_basic(tmp_path):
         [datetime(2020, 1, 1), 100.0, 200.0],
     ])
 
-    # Mock gw_hyd_dict with proper structure: [col, X, Y, Layer]
+    # Mock gw_hyd_dict with proper structure: WellInfo instances
     mock_gw_hyd_dict = {
-        'WELL001': [1, 100.5, 200.3, 1],
-        'WELL002': [2, 150.7, 250.9, 2]
+        'WELL001': WellInfo(column=1, x=100.5, y=200.3, layer=1, name='well001'),
+        'WELL002': WellInfo(column=2, x=150.7, y=250.9, layer=2, name='well002'),
     }
 
     with patch('iwfm.safe_parse_date', side_effect=lambda d, _: datetime.strptime(d.split()[0], '%m/%d/%Y')):
@@ -215,8 +217,8 @@ def test_calib_stats_uses_local_gw_hyd_dict(tmp_path):
     gwhyd_info_file.write_text('dummy')
     gwhyd_file.write_text('dummy')
 
-    # Mock gw_hyd_dict with proper structure: [col, X, Y, Layer]
-    mock_gw_hyd_dict = {'WELL001': [1, 100.5, 200.3, 1]}
+    # Mock gw_hyd_dict with proper structure: WellInfo instances
+    mock_gw_hyd_dict = {'WELL001': WellInfo(column=1, x=100.5, y=200.3, layer=1, name='well001')}
     mock_simhyd = np.array([[datetime(2020, 1, 1), 100.0]])
 
     with patch('iwfm.safe_parse_date', return_value=datetime(2020, 1, 1)):
@@ -250,8 +252,8 @@ def test_calib_stats_verbose_mode(tmp_path, capsys):
 
     mock_simhyd = np.array([[datetime(2020, 1, 1), 100.0]])
 
-    # Mock gw_hyd_dict with proper structure: [col, X, Y, Layer]
-    mock_gw_hyd_dict = {'WELL001': [1, 100.5, 200.3, 1]}
+    # Mock gw_hyd_dict with proper structure: WellInfo instances
+    mock_gw_hyd_dict = {'WELL001': WellInfo(column=1, x=100.5, y=200.3, layer=1, name='well001')}
 
     with patch('iwfm.safe_parse_date', return_value=datetime(2020, 1, 1)):
         with patch('iwfm.read_hyd_dict', return_value=mock_gw_hyd_dict):
@@ -280,8 +282,8 @@ def test_calib_stats_output_file_format(tmp_path):
     gwhyd_info_file.write_text('dummy')
     gwhyd_file.write_text('dummy')
 
-    # Mock gw_hyd_dict with proper structure: [col, X, Y, Layer]
-    mock_gw_hyd_dict = {'WELL001': [1, 100.5, 200.3, 1]}
+    # Mock gw_hyd_dict with proper structure: WellInfo instances
+    mock_gw_hyd_dict = {'WELL001': WellInfo(column=1, x=100.5, y=200.3, layer=1, name='well001')}
 
     with patch('iwfm.safe_parse_date', return_value=datetime(2020, 1, 1)):
         with patch('iwfm.read_hyd_dict', return_value=mock_gw_hyd_dict):
@@ -326,10 +328,10 @@ def test_calib_stats_handles_multiple_wells(tmp_path):
         [datetime(2020, 1, 2), 101.0, 201.0],
     ])
 
-    # Mock gw_hyd_dict with proper structure: [col, X, Y, Layer]
+    # Mock gw_hyd_dict with proper structure: WellInfo instances
     mock_gw_hyd_dict = {
-        'WELL001': [1, 100.5, 200.3, 1],
-        'WELL002': [2, 150.7, 250.9, 2]
+        'WELL001': WellInfo(column=1, x=100.5, y=200.3, layer=1, name='well001'),
+        'WELL002': WellInfo(column=2, x=150.7, y=250.9, layer=2, name='well002'),
     }
 
     with patch('iwfm.safe_parse_date', side_effect=lambda d, _: datetime.strptime(d.split()[0], '%m/%d/%Y')):

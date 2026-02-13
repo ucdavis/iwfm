@@ -68,8 +68,8 @@ def iwfm2obs(verbose=False):
         # name/type     main_file                smp_obs       smp_out       ins_out       pcf_out       proc wrins rthresh colid skips
         'Streams':     [sim_file_d['stream']   ,'st_obs.smp','st_temp.smp','st_temp.ins','st_temp.pcf',True,True, 0,      1,    [ 6,6]],
         'Groundwater': [sim_file_d['gw']       ,'gw_obs.smp','gw_temp.smp','gw_temp.ins','gw_temp.pcf',True,True, 0,      5,    [20,2]],
-        'Subsidence':  [gw_file_d['subsidence'],'sb_obs.smp','sb_temp.smp','sb_temp.ins','sb_temp.pcf',True,True, 0,      5,    [ 5,2]],
-        'Tile drains': [gw_file_d['tiledrain'] ,'td_obs.smp','td_temp.smp','td_temp.ins','td_temp.pcf',True,True, 0,      2,    [-1,3]]
+        'Subsidence':  [gw_file_d.subs_file    ,'sb_obs.smp','sb_temp.smp','sb_temp.ins','sb_temp.pcf',True,True, 0,      5,    [ 5,2]],
+        'Tile drains': [gw_file_d.drain_file   ,'td_obs.smp','td_temp.smp','td_temp.ins','td_temp.pcf',True,True, 0,      2,    [-1,3]]
     }
 
     # == Get other inputs via prompts -------------------------------------------------------------

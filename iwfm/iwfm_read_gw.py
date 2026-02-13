@@ -54,7 +54,7 @@ def iwfm_read_gw(gw_file, verbose=False):
 
     Returns
     -------
-    gw_dict : dictionary
+    gw_files : GroundwaterFiles
         Groundwater sub-process file names
 
     node_id : list
@@ -98,29 +98,30 @@ def iwfm_read_gw(gw_file, verbose=False):
     import numpy as np
     import re
     from iwfm.file_utils import read_next_line_value
+    from iwfm.dataclasses import GroundwaterFiles
 
     iwfm.file_test(gw_file)
 
-    comments, gw_dict = 'Cc*#', {}
+    comments = 'Cc*#'
 
     with open(gw_file) as f:
         file_lines = f.read().splitlines()
 
     # get sub-process file names (or 'none' if not present)
     _, line_index = read_next_line_value(file_lines, 0, column=0)
-    gw_dict['bc'] = get_name(file_lines[line_index]) 
+    bc_file = get_name(file_lines[line_index])
 
     line_index += 1
-    gw_dict['tiledrain'] = get_name(file_lines[line_index]) 
+    drain_file = get_name(file_lines[line_index])
 
     line_index += 1
-    gw_dict['pumping'] = get_name(file_lines[line_index]) 
+    pump_file = get_name(file_lines[line_index])
 
     line_index += 1
-    gw_dict['subsidence'] = get_name(file_lines[line_index]) 
+    subs_file = get_name(file_lines[line_index])
 
     line_index += 10
-    gw_dict['headall'] = get_name(file_lines[line_index])
+    headall = get_name(file_lines[line_index])
 
     # Read past output file options to find NOUTH
     # The number of lines between headall and NOUTH varies by IWFM version
@@ -161,7 +162,7 @@ def iwfm_read_gw(gw_file, verbose=False):
     factxy = float(factxy_str)                                 # (X,Y) scale factor
 
     gwhyd_str, line_index = read_next_line_value(file_lines, line_index, column=0)
-    gw_dict['gwhyd'] = get_name(file_lines[line_index])
+    # gwhyd output file name is parsed but not included in GroundwaterFiles
 
     # hydrographs - build dictionary: {well_name: (order, layer, x, y)}
     # IHYDTYP == 0: ID  HYDTYP  LAYER  X  Y  NAME  (6 fields)
@@ -401,4 +402,12 @@ def iwfm_read_gw(gw_file, verbose=False):
         line_index += 1
     logger.debug('leaving iwfm_read_gw.py')
 
-    return gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy
+    gw_files = GroundwaterFiles(
+        bc_file=bc_file,
+        drain_file=drain_file,
+        pump_file=pump_file,
+        subs_file=subs_file,
+        headall=headall,
+    )
+
+    return gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy

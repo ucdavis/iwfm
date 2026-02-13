@@ -100,8 +100,8 @@ class TestHeadall2SurferOutputFiles:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             # Use first date
@@ -126,8 +126,8 @@ class TestHeadall2SurferOutputFiles:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             # Use first 3 dates
@@ -152,8 +152,8 @@ class TestHeadall2SurferOutputFiles:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             # Use first date
@@ -184,8 +184,8 @@ class TestHeadall2SurferOutputContent:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -207,8 +207,8 @@ class TestHeadall2SurferOutputContent:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -235,8 +235,8 @@ class TestHeadall2SurferOutputContent:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -262,8 +262,8 @@ class TestHeadall2SurferOutputContent:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -288,8 +288,8 @@ class TestHeadall2SurferOutputContent:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -320,8 +320,8 @@ class TestHeadall2SurferReturnValue:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = dates[:5]
@@ -342,8 +342,8 @@ class TestHeadall2SurferReturnValue:
 
             # Get node coordinates
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             # Use dates that don't exist in data
@@ -367,8 +367,8 @@ class TestHeadall2SurferDateHandling:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -386,8 +386,8 @@ class TestHeadall2SurferDateHandling:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[-1]]
@@ -405,8 +405,8 @@ class TestHeadall2SurferDateHandling:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             # Mix of valid and invalid dates
@@ -429,8 +429,8 @@ class TestHeadall2SurferDateHandling:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             # All invalid dates
@@ -451,8 +451,8 @@ class TestHeadall2SurferDateHandling:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = []
@@ -475,8 +475,8 @@ class TestHeadall2SurferVerbose:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -495,8 +495,8 @@ class TestHeadall2SurferVerbose:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -523,8 +523,8 @@ class TestHeadall2SurferOutputPath:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -545,8 +545,8 @@ class TestHeadall2SurferOutputPath:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -570,8 +570,8 @@ class TestHeadall2SurferC2VSimCGSpecific:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]
@@ -594,8 +594,8 @@ class TestHeadall2SurferC2VSimCGSpecific:
             data, layers, dates, nodes = iwfm.headall_read(EXAMPLE_HEADALL_FILE)
 
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             out_dates = [dates[0]]

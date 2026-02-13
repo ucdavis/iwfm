@@ -29,11 +29,12 @@ def hyd_dict(gwhyd_info_file):
     Returns
     -------
     well_dict : dictionary
-        key = well name (i.e. state well ID), value = well information,
+        key = well name (i.e. state well ID), value = WellInfo instance
 
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
+    from iwfm.dataclasses import WellInfo
 
     well_dict = {}
     iwfm.file_test(gwhyd_info_file)
@@ -48,7 +49,6 @@ def hyd_dict(gwhyd_info_file):
     _, line_index = read_next_line_value(gwhyd_info, line_index, column=0, skip_lines=2)
 
     for _ in range(nouth):
-        items = []
         line = gwhyd_info[line_index].split()
 
         # Handle both HYDTYP formats:
@@ -57,22 +57,23 @@ def hyd_dict(gwhyd_info_file):
         if len(line) >= 6:
             # HYDTYP=0 format with X-Y coordinates
             well_name = line[5].lower()
-            items.append(well_name)        # well name = key
-            items.append(int(line[0]))     # column number in hydrograph file
-            items.append(float(line[3]))   # x
-            items.append(float(line[4]))   # y
-            items.append(int(line[2]))     # model layer
-            items.append(well_name)        # well name
+            well_dict[well_name] = WellInfo(
+                column=int(line[0]),
+                x=float(line[3]),
+                y=float(line[4]),
+                layer=int(line[2]),
+                name=well_name,
+            )
         else:
             # HYDTYP=1 format with node number
             well_name = line[4].lower()
-            items.append(well_name)        # well name = key
-            items.append(int(line[0]))     # column number in hydrograph file
-            items.append(0.0)              # x (not available for node format)
-            items.append(0.0)              # y (not available for node format)
-            items.append(int(line[2]))     # model layer
-            items.append(well_name)        # well name
+            well_dict[well_name] = WellInfo(
+                column=int(line[0]),
+                x=0.0,
+                y=0.0,
+                layer=int(line[2]),
+                name=well_name,
+            )
 
-        well_dict[items[0]] = items[1:]
         line_index += 1
     return well_dict

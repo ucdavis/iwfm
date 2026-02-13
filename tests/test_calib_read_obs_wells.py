@@ -92,23 +92,23 @@ class TestReadObsWells:
 
             # Verify first well data
             well1 = result['S_380313N1219426W001%1']
-            assert well1[0] == 1, f"Expected column 1, got {well1[0]}"
-            assert well1[1] == 592798.7048, f"Expected x=592798.7048, got {well1[1]}"
-            assert well1[2] == 4209815.426, f"Expected y=4209815.426, got {well1[2]}"
-            assert well1[3] == 1, f"Expected layer 1, got {well1[3]}"
-            assert well1[4] == 's_380313n1219426w001%1', "Expected lowercase name"
+            assert well1.column == 1, f"Expected column 1, got {well1.column}"
+            assert well1.x == 592798.7048, f"Expected x=592798.7048, got {well1.x}"
+            assert well1.y == 4209815.426, f"Expected y=4209815.426, got {well1.y}"
+            assert well1.layer == 1, f"Expected layer 1, got {well1.layer}"
+            assert well1.name == 's_380313n1219426w001%1', "Expected lowercase name"
 
             # Verify second well (same location, different layer)
             well2 = result['S_380313N1219426W001%2']
-            assert well2[0] == 2, f"Expected column 2, got {well2[0]}"
-            assert well2[3] == 2, f"Expected layer 2, got {well2[3]}"
+            assert well2.column == 2, f"Expected column 2, got {well2.column}"
+            assert well2.layer == 2, f"Expected layer 2, got {well2.layer}"
 
             # Verify different location well
             well4 = result['S_381150N1215899W001%1']
-            assert well4[0] == 4, f"Expected column 4, got {well4[0]}"
-            assert well4[1] == 622426.4231
-            assert well4[2] == 4296803.182
-            assert well4[3] == 1
+            assert well4.column == 4, f"Expected column 4, got {well4.column}"
+            assert well4.x == 622426.4231
+            assert well4.y == 4296803.182
+            assert well4.layer == 1
 
         finally:
             os.unlink(temp_file)
@@ -128,11 +128,11 @@ class TestReadObsWells:
             assert len(result) == 1
             assert 'TESTWELL001' in result
             well = result['TESTWELL001']
-            assert well[0] == 1  # column
-            assert well[1] == 592798.7  # x
-            assert well[2] == 4209815.4  # y
-            assert well[3] == 1  # layer
-            assert well[4] == 'testwell001'  # lowercase name
+            assert well.column == 1  # column
+            assert well.x == 592798.7  # x
+            assert well.y == 4209815.4  # y
+            assert well.layer == 1  # layer
+            assert well.name == 'testwell001'  # lowercase name
 
         finally:
             os.unlink(temp_file)
@@ -172,10 +172,10 @@ class TestReadObsWells:
             result = read_obs_wells(temp_file)
 
             assert len(result) == 4
-            assert result['WELL_L1'][3] == 1  # layer 1
-            assert result['WELL_L2'][3] == 2  # layer 2
-            assert result['WELL_L3'][3] == 3  # layer 3
-            assert result['WELL_L4'][3] == 4  # layer 4
+            assert result['WELL_L1'].layer == 1  # layer 1
+            assert result['WELL_L2'].layer == 2  # layer 2
+            assert result['WELL_L3'].layer == 3  # layer 3
+            assert result['WELL_L4'].layer == 4  # layer 4
 
         finally:
             os.unlink(temp_file)
@@ -202,8 +202,8 @@ class TestReadObsWells:
             assert 'USGS-123456789' in result
 
             # Verify lowercase versions are stored
-            assert result['State_Well_001'][4] == 'state_well_001'
-            assert result['34N/02W-15H001M'][4] == '34n/02w-15h001m'
+            assert result['State_Well_001'].name == 'state_well_001'
+            assert result['34N/02W-15H001M'].name == '34n/02w-15h001m'
 
         finally:
             os.unlink(temp_file)
@@ -220,16 +220,16 @@ class TestReadObsWells:
         try:
             result = read_obs_wells(temp_file)
 
-            # Verify structure: [column, x, y, layer, lowercase_name]
+            # Verify structure: WellInfo(column, x, y, layer, name)
+            from iwfm.dataclasses import WellInfo
             well = result['TEST_WELL']
-            assert isinstance(well, list)
-            assert len(well) == 5
+            assert isinstance(well, WellInfo)
 
-            assert isinstance(well[0], int)    # column number
-            assert isinstance(well[1], float)  # x coordinate
-            assert isinstance(well[2], float)  # y coordinate
-            assert isinstance(well[3], int)    # layer
-            assert isinstance(well[4], str)    # lowercase name
+            assert isinstance(well.column, int)    # column number
+            assert isinstance(well.x, float)       # x coordinate
+            assert isinstance(well.y, float)       # y coordinate
+            assert isinstance(well.layer, int)     # layer
+            assert isinstance(well.name, str)      # lowercase name
 
         finally:
             os.unlink(temp_file)
@@ -262,17 +262,17 @@ class TestReadObsWells:
         # Verify first well from the file if it exists
         if 'S_380313N1219426W001%1' in result:
             well = result['S_380313N1219426W001%1']
-            assert well[0] == 1  # column 1
-            assert abs(well[1] - 592798.7048) < 0.01  # x coordinate
-            assert abs(well[2] - 4209815.426) < 0.01  # y coordinate
-            assert well[3] == 1  # layer 1
-            assert well[4] == 's_380313n1219426w001%1'  # lowercase
+            assert well.column == 1  # column 1
+            assert abs(well.x - 592798.7048) < 0.01  # x coordinate
+            assert abs(well.y - 4209815.426) < 0.01  # y coordinate
+            assert well.layer == 1  # layer 1
+            assert well.name == 's_380313n1219426w001%1'  # lowercase
 
         # Check that dictionary structure is correct
+        from iwfm.dataclasses import WellInfo
         for key, value in result.items():
             assert isinstance(key, str)
-            assert isinstance(value, list)
-            assert len(value) == 5  # [column, x, y, layer, lowercase_name]
+            assert isinstance(value, WellInfo)
 
 
 if __name__ == '__main__':

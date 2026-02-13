@@ -161,20 +161,20 @@ C column layer x y well_name
             # Check specific well data
             assert 'well_01' in result
             well_01_data = result['well_01']
-            assert well_01_data[0] == 1    # column number
-            assert well_01_data[1] == 100.0  # x coordinate
-            assert well_01_data[2] == 200.0  # y coordinate
-            assert well_01_data[3] == 1    # model layer
-            assert well_01_data[4] == 'well_01'  # well name
-            
+            assert well_01_data.column == 1    # column number
+            assert well_01_data.x == 100.0  # x coordinate
+            assert well_01_data.y == 200.0  # y coordinate
+            assert well_01_data.layer == 1    # model layer
+            assert well_01_data.name == 'well_01'  # well name
+
             # Check another well
             assert 'well_04' in result
             well_04_data = result['well_04']
-            assert well_04_data[0] == 4
-            assert well_04_data[1] == 250.0
-            assert well_04_data[2] == 350.0
-            assert well_04_data[3] == 2
-            assert well_04_data[4] == 'well_04'
+            assert well_04_data.column == 4
+            assert well_04_data.x == 250.0
+            assert well_04_data.y == 350.0
+            assert well_04_data.layer == 2
+            assert well_04_data.name == 'well_04'
             
         finally:
             os.unlink(file_path)

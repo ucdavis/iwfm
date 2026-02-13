@@ -83,7 +83,7 @@ def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
     meas.append(head_obs[0][3])
 
     # use hyd_dict to find the column no for this obs well in simhyd_obs
-    simhyd_col = int(hyd_dict.get(name)[0])
+    simhyd_col = int(hyd_dict.get(name).column)
     print(f' => simhyd_col: {simhyd_col}')
 
     # calculate the simulated value for this observation
@@ -110,7 +110,7 @@ def res_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
                 j += 1
                 new_name = head_obs[j][0]
             name = new_name
-            simhyd_col = (hyd_dict.get(name)[0])
+            simhyd_col = (hyd_dict.get(name).column)
 
         date = head_obs[j][1]
         dates.append(date)

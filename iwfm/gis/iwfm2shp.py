@@ -48,39 +48,39 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
 
     topdir = os.getcwd()
 
-    pre_dict, have_lake = iwfm.iwfm_read_preproc(main_file)
+    pre_files, have_lake = iwfm.iwfm_read_preproc(main_file)
     if verbose:
         print(f'  Read preprocessor file {main_file}')
 
-    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(pre_dict['elem_file']) 
+    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(pre_files.elem_file) 
     if verbose:
-        print(f'  Read nodes of {len(elem_nodes):,} elements from {pre_dict["elem_file"]}')
+        print(f'  Read nodes of {len(elem_nodes):,} elements from {pre_files.elem_file}')
 
-    node_coords, node_list, factor = iwfm.iwfm_read_nodes(pre_dict['node_file'], factor = 1)
+    node_coords, node_list, factor = iwfm.iwfm_read_nodes(pre_files.node_file, factor = 1)
     if verbose:
-        print(f'  Read coordinates of {len(node_coords):,} nodes from {pre_dict["node_file"]}')
+        print(f'  Read coordinates of {len(node_coords):,} nodes from {pre_files.node_file}')
 
     node_coord_dict = {row[0]: row[1:] for row in node_coords}  # list to dictionary
 
-    node_strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
+    node_strat, nlayers = iwfm.iwfm_read_strat(pre_files.strat_file, node_coords)
     if verbose:
-        print(f'  Read stratigraphy for {len(node_strat):,} nodes from {pre_dict["strat_file"]}')
+        print(f'  Read stratigraphy for {len(node_strat):,} nodes from {pre_files.strat_file}')
 
     if have_lake:
-        n_lake_elems, lakes = iwfm.iwfm_read_lake(pre_dict['lake_file'])  
+        n_lake_elems, lakes = iwfm.iwfm_read_lake(pre_files.lake_file)  
         if verbose:
             if len(lakes) > 1:
-                print(f'  Read info for {len(lakes):,} lakes from {pre_dict["lake_file"]}')
+                print(f'  Read info for {len(lakes):,} lakes from {pre_files.lake_file}')
             elif len(lakes) == 1:
-                print(f'  Read info for {len(lakes):,} lake from {pre_dict["lake_file"]}')
+                print(f'  Read info for {len(lakes):,} lake from {pre_files.lake_file}')
     else:
         n_lake_elems, lakes = 0, None
         if verbose:
             print('  No lakes file')
 
-    reach_list, snodes_list, stnodes_dict, nsnodes, rating_dict = iwfm.iwfm_read_streams(pre_dict['stream_file'])
+    reach_list, snodes_list, stnodes_dict, nsnodes, rating_dict = iwfm.iwfm_read_streams(pre_files.stream_file)
     if verbose:
-        print(f'  Read info for {len(reach_list):,} stream reaches and {nsnodes:,} stream nodes from {pre_dict["stream_file"]}')
+        print(f'  Read info for {len(reach_list):,} stream reaches and {nsnodes:,} stream nodes from {pre_files.stream_file}')
 
     if verbose:
         print(' ')

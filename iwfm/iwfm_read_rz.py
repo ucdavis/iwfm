@@ -30,13 +30,14 @@ def iwfm_read_rz(rz_file, verbose=False):
 
     Returns
     -------
-    rz_dict : dictionary
-        dictionary of existing model file names
+    rz_files : RootzoneFiles
+        dataclass of existing model rootzone file names
 
     """
 
     import iwfm
     from iwfm.file_utils import read_next_line_value
+    from iwfm.dataclasses import RootzoneFiles
 
     if verbose: print(f"Entered iwfm_read_rz() with {rz_file}")
 
@@ -44,22 +45,28 @@ def iwfm_read_rz(rz_file, verbose=False):
     with open(rz_file) as f:
         rz_lines = f.read().splitlines()                # open and read input file
 
-    rz_dict = {}
+    np_file, line_index = read_next_line_value(rz_lines, -1, skip_lines=4)  # non-ponded ag file
 
-    rz_dict['np_file'], line_index = read_next_line_value(rz_lines, -1, skip_lines=4)  # non-ponded ag file
+    p_file, line_index = read_next_line_value(rz_lines, line_index)   # ponded ag file
 
-    rz_dict['p_file'], line_index = read_next_line_value(rz_lines, line_index)   # ponded ag file
+    ur_file, line_index = read_next_line_value(rz_lines, line_index)  # urban file
 
-    rz_dict['ur_file'], line_index = read_next_line_value(rz_lines, line_index)  # urban file
+    nr_file, line_index = read_next_line_value(rz_lines, line_index)  # native and riparian file
 
-    rz_dict['nr_file'], line_index = read_next_line_value(rz_lines, line_index)  # native and riparian file
+    rf_file, line_index = read_next_line_value(rz_lines, line_index)  # return flow file
 
-    rz_dict['rf_file'], line_index = read_next_line_value(rz_lines, line_index)  # return flow file
+    ru_file, line_index = read_next_line_value(rz_lines, line_index)  # reuse file
 
-    rz_dict['ru_file'], line_index = read_next_line_value(rz_lines, line_index)  # reuse file
-
-    rz_dict['ir_file'], line_index = read_next_line_value(rz_lines, line_index)  # irrigation period file
+    ir_file, line_index = read_next_line_value(rz_lines, line_index)  # irrigation period file
 
     if verbose: print(f"Leaving iwfm_read_rz()")
 
-    return rz_dict
+    return RootzoneFiles(
+        np_file=np_file,
+        p_file=p_file,
+        ur_file=ur_file,
+        nr_file=nr_file,
+        rf_file=rf_file,
+        ru_file=ru_file,
+        ir_file=ir_file,
+    )

@@ -108,13 +108,13 @@ class TestHydDictFileReading:
             assert len(well_dict) == 1
             assert "well_001" in well_dict
 
-            # Verify well info: [column, x, y, layer, name]
+            # Verify well info: WellInfo(column, x, y, layer, name)
             info = well_dict["well_001"]
-            assert info[0] == 1  # column number
-            assert abs(info[1] - 592798.7048) < 0.01  # x
-            assert abs(info[2] - 4209815.426) < 0.01  # y
-            assert info[3] == 1  # layer
-            assert info[4] == "well_001"  # name
+            assert info.column == 1  # column number
+            assert abs(info.x - 592798.7048) < 0.01  # x
+            assert abs(info.y - 4209815.426) < 0.01  # y
+            assert info.layer == 1  # layer
+            assert info.name == "well_001"  # name
 
         finally:
             os.unlink(temp_file)
@@ -164,11 +164,11 @@ class TestHydDictFileReading:
             assert "node_1304" in well_dict
 
             info = well_dict["node_1304"]
-            assert info[0] == 1  # column
-            assert info[1] == 0.0  # x (not available for node format)
-            assert info[2] == 0.0  # y (not available for node format)
-            assert info[3] == 1  # layer
-            assert info[4] == "node_1304"  # name
+            assert info.column == 1  # column
+            assert info.x == 0.0  # x (not available for node format)
+            assert info.y == 0.0  # y (not available for node format)
+            assert info.layer == 1  # layer
+            assert info.name == "node_1304"  # name
 
         finally:
             os.unlink(temp_file)
@@ -195,17 +195,17 @@ class TestHydDictFileReading:
 
             # Verify X-Y coordinate well
             xy_info = well_dict["well_xy"]
-            assert xy_info[0] == 1  # column
-            assert abs(xy_info[1] - 592798.7048) < 0.01  # x
-            assert abs(xy_info[2] - 4209815.426) < 0.01  # y
-            assert xy_info[3] == 1  # layer
+            assert xy_info.column == 1  # column
+            assert abs(xy_info.x - 592798.7048) < 0.01  # x
+            assert abs(xy_info.y - 4209815.426) < 0.01  # y
+            assert xy_info.layer == 1  # layer
 
             # Verify node number well
             node_info = well_dict["well_node"]
-            assert node_info[0] == 2  # column
-            assert node_info[1] == 0.0  # x (not available)
-            assert node_info[2] == 0.0  # y (not available)
-            assert node_info[3] == 2  # layer
+            assert node_info.column == 2  # column
+            assert node_info.x == 0.0  # x (not available)
+            assert node_info.y == 0.0  # y (not available)
+            assert node_info.layer == 2  # layer
 
         finally:
             os.unlink(temp_file)
@@ -231,10 +231,10 @@ class TestHydDictFileReading:
             assert len(well_dict) == 4
 
             # Verify layers are correctly assigned
-            assert well_dict["layer1_well"][3] == 1
-            assert well_dict["layer2_well"][3] == 2
-            assert well_dict["layer3_well"][3] == 3
-            assert well_dict["layer4_well"][3] == 4
+            assert well_dict["layer1_well"].layer == 1
+            assert well_dict["layer2_well"].layer == 2
+            assert well_dict["layer3_well"].layer == 3
+            assert well_dict["layer4_well"].layer == 4
 
         finally:
             os.unlink(temp_file)
@@ -257,9 +257,9 @@ class TestHydDictFileReading:
             well_dict = hyd_dict(temp_file)
 
             # Verify column numbers match ID field
-            assert well_dict["col5"][0] == 5
-            assert well_dict["col10"][0] == 10
-            assert well_dict["col15"][0] == 15
+            assert well_dict["col5"].column == 5
+            assert well_dict["col10"].column == 10
+            assert well_dict["col15"].column == 15
 
         finally:
             os.unlink(temp_file)
@@ -287,8 +287,8 @@ class TestHydDictFileReading:
             assert "lowercase_well" in well_dict
 
             # Verify stored names are also lowercase
-            assert well_dict["uppercase_well"][4] == "uppercase_well"
-            assert well_dict["mixedcase_well"][4] == "mixedcase_well"
+            assert well_dict["uppercase_well"].name == "uppercase_well"
+            assert well_dict["mixedcase_well"].name == "mixedcase_well"
 
         finally:
             os.unlink(temp_file)
@@ -328,8 +328,8 @@ class TestHydDictFileReading:
 
             info = well_dict["precise_well"]
             # Coordinates should be within floating point precision
-            assert abs(info[1] - 592798.7048) < 1e-6
-            assert abs(info[2] - 4209815.426) < 1e-6
+            assert abs(info.x - 592798.7048) < 1e-6
+            assert abs(info.y - 4209815.426) < 1e-6
 
         finally:
             os.unlink(temp_file)

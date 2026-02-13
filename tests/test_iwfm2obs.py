@@ -20,6 +20,7 @@ import numpy as np
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 from scipy.interpolate import interp1d
+from iwfm.dataclasses import GroundwaterFiles
 
 
 def _load_iwfm2obs():
@@ -143,7 +144,7 @@ class TestIwfm2obsWithMocks:
             'gw': 'gw.dat',
         }
         mock_read_gw.return_value = (
-            {'subsidence': 'none', 'tiledrain': 'none'},
+            GroundwaterFiles(subs_file='none', drain_file='none'),
             [1, 2], 2, [], [], [], [], [], [], 'ft', [], 1.0
         )
 

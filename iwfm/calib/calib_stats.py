@@ -109,19 +109,19 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
     meas_all.append(measured)
 
     # use hyd_dict to find the column no for this obs well in simhyd_obs
-    simhyd_col = int(gw_hyd_dict.get(name)[0])
+    simhyd_col = int(gw_hyd_dict.get(name).column)
 
     # calculate the simulated value for this observation
     sim_head = ical.sim_equiv(simhyd, date, simhyd_col)
-    sim.append(sim_head)    
-    sim_all.append(sim_head)    
-    
+    sim.append(sim_head)
+    sim_all.append(sim_head)
+
     # move through the head observations
     j, final = 1, 1
     while j < len(head_obs):
         new_name = head_obs[j][0]
         if new_name != name:  # new well name, finalize info for the last well
-    
+
             if verbose:
                 print(f'  Calculating RMSE and Bias for {name}')
             # calculate rmse and bias
@@ -146,7 +146,7 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
             if j >= len(head_obs):
                 break
             name = new_name
-            simhyd_col = int(gw_hyd_dict.get(name)[0])
+            simhyd_col = int(gw_hyd_dict.get(name).column)
     
         names_all.append(name)
 

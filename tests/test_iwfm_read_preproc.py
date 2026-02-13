@@ -88,37 +88,37 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # Get temp file directory for path comparison
             temp_dir = Path(temp_file).parent
 
             # Verify all file paths are present and resolved to absolute paths
-            assert 'preout' in pre_dict
-            assert 'elem_file' in pre_dict
-            assert 'node_file' in pre_dict
-            assert 'strat_file' in pre_dict
-            assert 'stream_file' in pre_dict
-            assert 'lake_file' in pre_dict
+            assert 'preout' in pre_files
+            assert 'elem_file' in pre_files
+            assert 'node_file' in pre_files
+            assert 'strat_file' in pre_files
+            assert 'stream_file' in pre_files
+            assert 'lake_file' in pre_files
 
             # Verify paths are absolute
-            assert Path(pre_dict['preout']).is_absolute()
-            assert Path(pre_dict['elem_file']).is_absolute()
-            assert Path(pre_dict['node_file']).is_absolute()
-            assert Path(pre_dict['strat_file']).is_absolute()
-            assert Path(pre_dict['stream_file']).is_absolute()
-            assert Path(pre_dict['lake_file']).is_absolute()
+            assert Path(pre_files['preout']).is_absolute()
+            assert Path(pre_files['elem_file']).is_absolute()
+            assert Path(pre_files['node_file']).is_absolute()
+            assert Path(pre_files['strat_file']).is_absolute()
+            assert Path(pre_files['stream_file']).is_absolute()
+            assert Path(pre_files['lake_file']).is_absolute()
 
             # Verify lake file flag
             assert have_lake is True
 
             # Verify file names are correct (basename)
-            assert Path(pre_dict['preout']).name == "Preprocessor.out"
-            assert Path(pre_dict['elem_file']).name == "Elements.dat"
-            assert Path(pre_dict['node_file']).name == "Nodes.dat"
-            assert Path(pre_dict['strat_file']).name == "Stratigraphy.dat"
-            assert Path(pre_dict['stream_file']).name == "Streams.dat"
-            assert Path(pre_dict['lake_file']).name == "Lakes.dat"
+            assert Path(pre_files['preout']).name == "Preprocessor.out"
+            assert Path(pre_files['elem_file']).name == "Elements.dat"
+            assert Path(pre_files['node_file']).name == "Nodes.dat"
+            assert Path(pre_files['strat_file']).name == "Stratigraphy.dat"
+            assert Path(pre_files['stream_file']).name == "Streams.dat"
+            assert Path(pre_files['lake_file']).name == "Lakes.dat"
 
         finally:
             os.unlink(temp_file)
@@ -141,20 +141,20 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # Verify lake file flag is False
             assert have_lake is False
 
             # Verify lake_file is empty string
-            assert pre_dict['lake_file'] == ''
+            assert pre_files['lake_file'] == ''
 
             # Verify other files still present
-            assert 'preout' in pre_dict
-            assert 'elem_file' in pre_dict
-            assert 'node_file' in pre_dict
-            assert 'strat_file' in pre_dict
-            assert 'stream_file' in pre_dict
+            assert 'preout' in pre_files
+            assert 'elem_file' in pre_files
+            assert 'node_file' in pre_files
+            assert 'strat_file' in pre_files
+            assert 'stream_file' in pre_files
 
         finally:
             os.unlink(temp_file)
@@ -177,18 +177,18 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             temp_dir = Path(temp_file).resolve().parent
 
             # All paths should be absolute
             for key in ['preout', 'elem_file', 'node_file', 'strat_file', 'stream_file', 'lake_file']:
-                assert Path(pre_dict[key]).is_absolute()
+                assert Path(pre_files[key]).is_absolute()
 
             # Verify paths are in temp directory (resolve both for symlink handling)
-            assert Path(pre_dict['preout']).resolve().parent == temp_dir
-            assert Path(pre_dict['elem_file']).resolve().parent == temp_dir
-            assert Path(pre_dict['node_file']).resolve().parent == temp_dir
+            assert Path(pre_files['preout']).resolve().parent == temp_dir
+            assert Path(pre_files['elem_file']).resolve().parent == temp_dir
+            assert Path(pre_files['node_file']).resolve().parent == temp_dir
 
         finally:
             os.unlink(temp_file)
@@ -211,15 +211,15 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # Verify backslashes are converted to forward slashes and paths are absolute
-            assert Path(pre_dict['preout']).is_absolute()
-            assert Path(pre_dict['elem_file']).is_absolute()
+            assert Path(pre_files['preout']).is_absolute()
+            assert Path(pre_files['elem_file']).is_absolute()
 
             # Verify file names are correct
-            assert Path(pre_dict['preout']).name == "Preprocessor.out"
-            assert Path(pre_dict['elem_file']).name == "Elements.dat"
+            assert Path(pre_files['preout']).name == "Preprocessor.out"
+            assert Path(pre_files['elem_file']).name == "Elements.dat"
 
         finally:
             os.unlink(temp_file)
@@ -253,12 +253,12 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # Should read correctly despite comment lines
             assert have_lake is True
-            assert Path(pre_dict['preout']).name == "Preprocessor.out"
-            assert Path(pre_dict['elem_file']).name == "Elements.dat"
+            assert Path(pre_files['preout']).name == "Preprocessor.out"
+            assert Path(pre_files['elem_file']).name == "Elements.dat"
 
         finally:
             os.unlink(temp_file)
@@ -293,22 +293,22 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # Verify data structure
             assert have_lake is False
-            assert pre_dict['lake_file'] == ''
+            assert pre_files['lake_file'] == ''
 
             # Verify file names
-            assert Path(pre_dict['preout']).name == "C2VSimCG_Preprocessor.out"
-            assert Path(pre_dict['elem_file']).name == "C2VSimCG_Elements.dat"
-            assert Path(pre_dict['node_file']).name == "C2VSimCG_Nodes.dat"
-            assert Path(pre_dict['strat_file']).name == "C2VSimCG_Stratigraphy.dat"
-            assert Path(pre_dict['stream_file']).name == "C2VSimCG_Streams.dat"
+            assert Path(pre_files['preout']).name == "C2VSimCG_Preprocessor.out"
+            assert Path(pre_files['elem_file']).name == "C2VSimCG_Elements.dat"
+            assert Path(pre_files['node_file']).name == "C2VSimCG_Nodes.dat"
+            assert Path(pre_files['strat_file']).name == "C2VSimCG_Stratigraphy.dat"
+            assert Path(pre_files['stream_file']).name == "C2VSimCG_Streams.dat"
 
             # Verify all paths are absolute
-            assert Path(pre_dict['preout']).is_absolute()
-            assert Path(pre_dict['elem_file']).is_absolute()
+            assert Path(pre_files['preout']).is_absolute()
+            assert Path(pre_files['elem_file']).is_absolute()
 
         finally:
             os.unlink(temp_file)
@@ -331,18 +331,18 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # All paths should be absolute
-            assert Path(pre_dict['preout']).is_absolute()
-            assert Path(pre_dict['elem_file']).is_absolute()
-            assert Path(pre_dict['node_file']).is_absolute()
-            assert Path(pre_dict['strat_file']).is_absolute()
-            assert Path(pre_dict['stream_file']).is_absolute()
+            assert Path(pre_files['preout']).is_absolute()
+            assert Path(pre_files['elem_file']).is_absolute()
+            assert Path(pre_files['node_file']).is_absolute()
+            assert Path(pre_files['strat_file']).is_absolute()
+            assert Path(pre_files['stream_file']).is_absolute()
 
             # Verify no lake file
             assert have_lake is False
-            assert pre_dict['lake_file'] == ''
+            assert pre_files['lake_file'] == ''
 
         finally:
             os.unlink(temp_file)
@@ -368,11 +368,11 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # Verify long file names are read correctly
-            assert Path(pre_dict['preout']).name == long_preout
-            assert Path(pre_dict['elem_file']).name == long_elem
+            assert Path(pre_files['preout']).name == long_preout
+            assert Path(pre_files['elem_file']).name == long_elem
 
         finally:
             os.unlink(temp_file)
@@ -395,12 +395,12 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
             # Verify file names with spaces are read correctly
             # Note: split()[0] in the function will only get first part before space
-            assert Path(pre_dict['preout']).name == "Preprocessor"
-            assert Path(pre_dict['elem_file']).name == "Element"
+            assert Path(pre_files['preout']).name == "Preprocessor"
+            assert Path(pre_files['elem_file']).name == "Element"
 
         finally:
             os.unlink(temp_file)
@@ -423,15 +423,15 @@ class TestIwfmReadPreproc:
         try:
             from iwfm.iwfm_read_preproc import iwfm_read_preproc
 
-            pre_dict, have_lake = iwfm_read_preproc(temp_file)
+            pre_files, have_lake = iwfm_read_preproc(temp_file)
 
-            # Verify dictionary has exactly 6 keys
-            assert len(pre_dict) == 6
+            # Verify dataclass has exactly 7 fields (including prename)
+            assert len(pre_files) == 7
 
             # Verify all required keys are present
-            required_keys = ['preout', 'elem_file', 'node_file', 'strat_file', 'stream_file', 'lake_file']
+            required_keys = ['prename', 'preout', 'elem_file', 'node_file', 'strat_file', 'stream_file', 'lake_file']
             for key in required_keys:
-                assert key in pre_dict
+                assert key in pre_files
 
             # Verify have_lake is boolean
             assert isinstance(have_lake, bool)

@@ -1,6 +1,6 @@
 # test_iwfm_read_sim.py
 # unit test for iwfm_read_sim function in the iwfm package
-# Copyright (C) 2025 University of California
+# Copyright (C) 2025-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -42,88 +42,89 @@ def sim_file_exists():
 
 def test_iwfm_read_sim_loads_successfully(sim_file_exists):
     """Test that iwfm_read_sim can read the C2VSimCG simulation file."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
-    # Verify a dictionary was returned
-    assert sim_dict is not None
-    assert isinstance(sim_dict, dict)
+    # Verify a SimulationFiles instance was returned
+    from iwfm.dataclasses import SimulationFiles
+    assert sim_files is not None
+    assert isinstance(sim_files, SimulationFiles)
 
 
 def test_iwfm_read_sim_has_required_keys(sim_file_exists):
     """Test that all required keys are present in the returned dictionary."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
-    # Check for required file path keys
+    # Check for required file path keys (using SimulationFiles field names)
     required_keys = [
-        'preout',      # Preprocessor output
-        'gw',          # Groundwater
-        'stream',      # Stream
-        'lake',        # Lake
-        'rootzone',    # Root zone
-        'smallwatershed',  # Small watershed
-        'unsat',       # Unsaturated zone
-        'irrfrac',     # Irrigation fractions
-        'supplyadj',   # Supply adjustment
-        'precip',      # Precipitation
-        'et',          # Evapotranspiration
-        'start',       # Start date
-        'step',        # Time step
-        'end'          # End date
+        'preout',       # Preprocessor output
+        'gw_file',      # Groundwater
+        'stream_file',  # Stream
+        'lake_file',    # Lake
+        'root_file',    # Root zone
+        'swshed_file',  # Small watershed
+        'unsat_file',   # Unsaturated zone
+        'irrfrac',      # Irrigation fractions
+        'supplyadj',    # Supply adjustment
+        'precip',       # Precipitation
+        'et',           # Evapotranspiration
+        'start',        # Start date
+        'step',         # Time step
+        'end'           # End date
     ]
 
     for key in required_keys:
-        assert key in sim_dict, f"Missing required key: {key}"
+        assert key in sim_files, f"Missing required key: {key}"
 
 
 def test_iwfm_read_sim_file_paths_not_empty(sim_file_exists):
     """Test that required file paths are not empty."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
     # These files should exist in C2VSimCG
-    required_files = ['preout', 'gw', 'precip', 'et', 'rootzone', 'unsat']
+    required_files = ['preout', 'gw_file', 'precip', 'et', 'root_file', 'unsat_file']
 
     for key in required_files:
-        assert sim_dict[key] != '', f"File path for {key} should not be empty"
-        assert sim_dict[key] is not None, f"File path for {key} should not be None"
+        assert sim_files[key] != '', f"File path for {key} should not be empty"
+        assert sim_files[key] is not None, f"File path for {key} should not be None"
 
 
 def test_iwfm_read_sim_optional_files(sim_file_exists):
     """Test that optional files are handled correctly."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
     # C2VSimCG has streams but not lakes
-    assert sim_dict['stream'] != ''  # C2VSimCG has streams
+    assert sim_files.stream_file != ''  # C2VSimCG has streams
 
     # Lake is optional and C2VSimCG doesn't have it
     # It should be an empty string or handled gracefully
-    assert 'lake' in sim_dict  # Key should exist even if empty
+    assert 'lake_file' in sim_files  # Field should exist even if empty
 
 
 def test_iwfm_read_sim_date_fields(sim_file_exists):
     """Test that date and time step fields are read correctly."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
     # Check date fields are not empty
-    assert sim_dict['start'] != '', "Start date should not be empty"
-    assert sim_dict['end'] != '', "End date should not be empty"
-    assert sim_dict['step'] != '', "Time step should not be empty"
+    assert sim_files['start'] != '', "Start date should not be empty"
+    assert sim_files['end'] != '', "End date should not be empty"
+    assert sim_files['step'] != '', "Time step should not be empty"
 
     # C2VSimCG uses MM/DD/YYYY format
     # Start should be 10/01/1921 (water year 1922)
     # End should be 09/30/2015 (water year 2015)
-    assert '/' in sim_dict['start'], "Start date should contain '/'"
-    assert '/' in sim_dict['end'], "End date should contain '/'"
+    assert '/' in sim_files['start'], "Start date should contain '/'"
+    assert '/' in sim_files['end'], "End date should contain '/'"
 
 
 def test_iwfm_read_sim_specific_values(sim_file_exists):
     """Test specific expected values from C2VSimCG simulation file."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
     # Check specific file names we know exist
-    assert 'C2VSimCG_PreprocessorOut.bin' in sim_dict['preout']
-    assert 'C2VSimCG_Groundwater' in sim_dict['gw']
-    assert 'C2VSimCG_Precip.dat' in sim_dict['precip']
-    assert 'C2VSimCG_ET.dat' in sim_dict['et']
+    assert 'C2VSimCG_PreprocessorOut.bin' in sim_files.preout
+    assert 'C2VSimCG_Groundwater' in sim_files.gw_file
+    assert 'C2VSimCG_Precip.dat' in sim_files.precip
+    assert 'C2VSimCG_ET.dat' in sim_files.et
 
 
 # ============================================================================
@@ -197,16 +198,16 @@ C Above line is empty - should fail for start date
 def test_iwfm_read_sim_minimal_valid_file(sim_file_exists):
     """Test that iwfm_read_sim returns a valid dictionary structure."""
     # Use the actual C2VSimCG file to test - we've already verified it loads
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
-    # Verify all required keys are present
-    required_keys = ['preout', 'gw', 'stream', 'lake', 'rootzone', 'smallwatershed',
-                     'unsat', 'irrfrac', 'supplyadj', 'precip', 'et',
+    # Verify all required keys are present (using SimulationFiles field names)
+    required_keys = ['preout', 'gw_file', 'stream_file', 'lake_file', 'root_file', 'swshed_file',
+                     'unsat_file', 'irrfrac', 'supplyadj', 'precip', 'et',
                      'start', 'step', 'end']
 
     for key in required_keys:
-        assert key in sim_dict, f"Missing key: {key}"
-        assert isinstance(sim_dict[key], str), f"Value for {key} should be string"
+        assert key in sim_files, f"Missing key: {key}"
+        assert isinstance(sim_files[key], str), f"Value for {key} should be string"
 
 
 # ============================================================================
@@ -262,12 +263,12 @@ C Skip line
     p = tmp_path / "backslash_sim.in"
     p.write_text(sim_with_backslash)
 
-    sim_dict = iwfm.iwfm_read_sim(str(p))
+    sim_files = iwfm.iwfm_read_sim(str(p))
 
     # Should successfully read the file
-    assert sim_dict is not None
-    assert sim_dict['preout'] is not None
-    assert sim_dict['gw'] is not None
+    assert sim_files is not None
+    assert sim_files.preout is not None
+    assert sim_files.gw_file is not None
 
 
 # ============================================================================
@@ -276,9 +277,9 @@ C Skip line
 
 def test_iwfm_read_sim_returns_strings(sim_file_exists):
     """Test that all values in the dictionary are strings."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
-    for key, value in sim_dict.items():
+    for key, value in sim_files.items():
         assert isinstance(value, str), f"Value for {key} should be a string, got {type(value)}"
 
 
@@ -288,18 +289,18 @@ def test_iwfm_read_sim_returns_strings(sim_file_exists):
 
 def test_iwfm_read_sim_matches_file_content(sim_file_exists):
     """Test that parsed values match expected content from C2VSimCG file."""
-    sim_dict = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
+    sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
     # Based on the file content we saw earlier, verify key values
     # The C2VSimCG model runs from WY 1973-2015 (based on actual file)
 
     # Check that we got valid date-like strings
-    assert len(sim_dict['start']) > 0
-    assert len(sim_dict['end']) > 0
+    assert len(sim_files['start']) > 0
+    assert len(sim_files['end']) > 0
 
     # Check that time step is a recognizable IWFM time step
     # Common values: 1MON, 1DAY, etc. (abbreviated in the file)
-    assert 'MON' in sim_dict['step'] or 'DAY' in sim_dict['step']
+    assert 'MON' in sim_files['step'] or 'DAY' in sim_files['step']
 
 
 if __name__ == "__main__":

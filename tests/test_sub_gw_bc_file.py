@@ -21,6 +21,7 @@ import pytest
 import tempfile
 import os
 from pathlib import Path
+from iwfm.dataclasses import SimulationFiles
 
 
 def create_bc_file(spfl_file, sphd_file, ghd_file, cghd_file, tsbc_file, noutb=0, bhydoutfl=''):
@@ -121,14 +122,14 @@ class TestSubGwBcFile:
                 f.write(content)
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'new_spfl',
-                'sphd_file': 'new_sphd',
-                'ghd_file': 'new_ghd',
-                'cghd_file': 'new_cghd',
-                'tsbc_file': 'new_tsbc'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='new_spfl',
+                sphd_file='new_sphd',
+                ghd_file='new_ghd',
+                cghd_file='new_cghd',
+                tsbc_file='new_tsbc'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
 
@@ -136,7 +137,7 @@ class TestSubGwBcFile:
             from shapely.geometry import Polygon
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_bc_file(old_file, sim_dict_new, [1, 2, 3], [1, 2], bounding_poly)
+            sub_gw_bc_file(old_file, sim_files_new, [1, 2, 3], [1, 2], bounding_poly)
 
             # Verify output file was created
             assert os.path.exists(new_bc_file)
@@ -178,14 +179,14 @@ class TestSubGwBcFile:
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
             new_cghd_file = os.path.join(tmpdir, 'new_cghd.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'new_spfl',
-                'sphd_file': 'new_sphd',
-                'ghd_file': 'new_ghd',
-                'cghd_file': new_cghd_file,
-                'tsbc_file': 'new_tsbc'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='new_spfl',
+                sphd_file='new_sphd',
+                ghd_file='new_ghd',
+                cghd_file=new_cghd_file,
+                tsbc_file='new_tsbc'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
@@ -193,7 +194,7 @@ class TestSubGwBcFile:
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
             # Only nodes 100 and 300 are in submodel
-            sub_gw_bc_file(old_file, sim_dict_new, [100, 300], [1, 2], bounding_poly,
+            sub_gw_bc_file(old_file, sim_files_new, [100, 300], [1, 2], bounding_poly,
                           base_path=Path(tmpdir))
 
             # Verify main BC file was created
@@ -236,21 +237,21 @@ class TestSubGwBcFile:
                 f.write(content)
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'NewModel_SpFlow',
-                'sphd_file': 'NewModel_SpHead',
-                'ghd_file': 'NewModel_GHD',
-                'cghd_file': 'NewModel_CGHD',
-                'tsbc_file': 'NewModel_TSBC'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='NewModel_SpFlow',
+                sphd_file='NewModel_SpHead',
+                ghd_file='NewModel_GHD',
+                cghd_file='NewModel_CGHD',
+                tsbc_file='NewModel_TSBC'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_bc_file(old_file, sim_dict_new, [1, 2, 3], [1, 2], bounding_poly)
+            sub_gw_bc_file(old_file, sim_files_new, [1, 2, 3], [1, 2], bounding_poly)
 
             # Verify output file content
             with open(new_bc_file) as f:
@@ -272,21 +273,21 @@ class TestSubGwBcFile:
                 f.write(content)
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'new_spfl',
-                'sphd_file': 'new_sphd',
-                'ghd_file': 'new_ghd',
-                'cghd_file': 'new_cghd',
-                'tsbc_file': 'new_tsbc'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='new_spfl',
+                sphd_file='new_sphd',
+                ghd_file='new_ghd',
+                cghd_file='new_cghd',
+                tsbc_file='new_tsbc'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_bc_file(old_file, sim_dict_new, [1, 2, 3], [1, 2], bounding_poly)
+            sub_gw_bc_file(old_file, sim_files_new, [1, 2, 3], [1, 2], bounding_poly)
 
             with open(new_bc_file) as f:
                 new_content = f.read()
@@ -305,14 +306,14 @@ class TestSubGwBcFile:
                 f.write(content)
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'new_spfl',
-                'sphd_file': 'new_sphd',
-                'ghd_file': 'new_ghd',
-                'cghd_file': 'new_cghd',
-                'tsbc_file': 'new_tsbc'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='new_spfl',
+                sphd_file='new_sphd',
+                ghd_file='new_ghd',
+                cghd_file='new_cghd',
+                tsbc_file='new_tsbc'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
@@ -320,7 +321,7 @@ class TestSubGwBcFile:
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
             # Should not raise an error with verbose=True
-            sub_gw_bc_file(old_file, sim_dict_new, [1, 2, 3], [1, 2], bounding_poly, verbose=True)
+            sub_gw_bc_file(old_file, sim_files_new, [1, 2, 3], [1, 2], bounding_poly, verbose=True)
 
             assert os.path.exists(new_bc_file)
 
@@ -347,14 +348,14 @@ class TestSubGwBcFile:
                 f.write(content)
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'new_spfl',
-                'sphd_file': 'new_sphd',
-                'ghd_file': 'new_ghd',
-                'cghd_file': 'new_cghd',
-                'tsbc_file': 'new_tsbc'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='new_spfl',
+                sphd_file='new_sphd',
+                ghd_file='new_ghd',
+                cghd_file='new_cghd',
+                tsbc_file='new_tsbc'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
@@ -362,7 +363,7 @@ class TestSubGwBcFile:
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
             # Should parse correctly despite various comment styles
-            sub_gw_bc_file(old_file, sim_dict_new, [1, 2, 3], [1, 2], bounding_poly)
+            sub_gw_bc_file(old_file, sim_files_new, [1, 2, 3], [1, 2], bounding_poly)
 
             assert os.path.exists(new_bc_file)
 
@@ -405,14 +406,14 @@ class TestSubGwBcFile:
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
             new_cghd_file = os.path.join(tmpdir, 'new_cghd.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'NewModel_SpFlow',
-                'sphd_file': 'NewModel_SpHead',
-                'ghd_file': 'NewModel_GHD',
-                'cghd_file': new_cghd_file,
-                'tsbc_file': 'NewModel_TSBC'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='NewModel_SpFlow',
+                sphd_file='NewModel_SpHead',
+                ghd_file='NewModel_GHD',
+                cghd_file=new_cghd_file,
+                tsbc_file='NewModel_TSBC'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
@@ -420,7 +421,7 @@ class TestSubGwBcFile:
             bounding_poly = Polygon([(0, 0), (1000, 0), (1000, 1000), (0, 1000)])
 
             # Only nodes 123 and 124 are in submodel
-            sub_gw_bc_file(old_file, sim_dict_new, [123, 124], [1, 2], bounding_poly,
+            sub_gw_bc_file(old_file, sim_files_new, [123, 124], [1, 2], bounding_poly,
                           base_path=Path(tmpdir))
 
             # Verify files were created
@@ -433,17 +434,17 @@ class TestSubGwBcFile:
         from shapely.geometry import Polygon
 
         bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
-        sim_dict_new = {
-            'bc_file': 'new_bc.dat',
-            'spfl_file': 'new_spfl',
-            'sphd_file': 'new_sphd',
-            'ghd_file': 'new_ghd',
-            'cghd_file': 'new_cghd',
-            'tsbc_file': 'new_tsbc'
-        }
+        sim_files_new = SimulationFiles(
+            bc_file='new_bc.dat',
+            spfl_file='new_spfl',
+            sphd_file='new_sphd',
+            ghd_file='new_ghd',
+            cghd_file='new_cghd',
+            tsbc_file='new_tsbc'
+        )
 
         with pytest.raises(SystemExit):
-            sub_gw_bc_file('nonexistent_file.dat', sim_dict_new, [1, 2, 3], [1, 2], bounding_poly)
+            sub_gw_bc_file('nonexistent_file.dat', sim_files_new, [1, 2, 3], [1, 2], bounding_poly)
 
     def test_returns_none(self):
         """Test that function returns None"""
@@ -455,21 +456,21 @@ class TestSubGwBcFile:
                 f.write(content)
 
             new_bc_file = os.path.join(tmpdir, 'new_bc.dat')
-            sim_dict_new = {
-                'bc_file': new_bc_file,
-                'spfl_file': 'new_spfl',
-                'sphd_file': 'new_sphd',
-                'ghd_file': 'new_ghd',
-                'cghd_file': 'new_cghd',
-                'tsbc_file': 'new_tsbc'
-            }
+            sim_files_new = SimulationFiles(
+                bc_file=new_bc_file,
+                spfl_file='new_spfl',
+                sphd_file='new_sphd',
+                ghd_file='new_ghd',
+                cghd_file='new_cghd',
+                tsbc_file='new_tsbc'
+            )
 
             from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            result = sub_gw_bc_file(old_file, sim_dict_new, [1, 2, 3], [1, 2], bounding_poly)
+            result = sub_gw_bc_file(old_file, sim_files_new, [1, 2, 3], [1, 2], bounding_poly)
 
             assert result is None
 

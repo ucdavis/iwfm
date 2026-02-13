@@ -20,6 +20,7 @@
 import pytest
 import tempfile
 import os
+from iwfm.dataclasses import SimulationFiles
 
 
 def create_gw_file(bc_file, td_file, pump_file, subs_file, nouth, hydrographs,
@@ -186,28 +187,28 @@ class TestSubGwFile:
     """Tests for sub_gw_file function"""
 
     def test_missing_gw_file_key(self):
-        """Test error when gw_file key is missing from sim_dict"""
+        """Test error when gw_file key is missing from sim_files"""
         from iwfm.sub.gw_file import sub_gw_file
         from shapely.geometry import Polygon
 
-        sim_dict = {}  # Missing 'gw_file' key
-        sim_dict_new = {'gw_file': 'new_gw.dat'}
+        sim_files = SimulationFiles()  # Missing 'gw_file' value (empty string)
+        sim_files_new = SimulationFiles(gw_file='new_gw.dat')
         bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
         with pytest.raises(SystemExit):
-            sub_gw_file(sim_dict, sim_dict_new, [1, 2], [[1], [2]], bounding_poly)
+            sub_gw_file(sim_files, sim_files_new, [1, 2], [[1], [2]], bounding_poly)
 
     def test_file_not_found(self):
         """Test error handling for non-existent groundwater file"""
         from iwfm.sub.gw_file import sub_gw_file
         from shapely.geometry import Polygon
 
-        sim_dict = {'gw_file': 'nonexistent_file.dat'}
-        sim_dict_new = {'gw_file': 'new_gw.dat'}
+        sim_files = SimulationFiles(gw_file='nonexistent_file.dat')
+        sim_files_new = SimulationFiles(gw_file='new_gw.dat')
         bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
         with pytest.raises(SystemExit):
-            sub_gw_file(sim_dict, sim_dict_new, [1, 2], [[1], [2]], bounding_poly)
+            sub_gw_file(sim_files, sim_files_new, [1, 2], [[1], [2]], bounding_poly)
 
     def test_all_files_blank(self):
         """Test GW file with all sub-files blank"""
@@ -244,14 +245,14 @@ class TestSubGwFile:
                 f.write(content)
 
             new_gw_file = os.path.join(tmpdir, 'new_gw.dat')
-            sim_dict = {'gw_file': old_file}
-            sim_dict_new = {
-                'gw_file': new_gw_file,
-                'bc_file': os.path.join(tmpdir, 'new_bc'),
-                'drain_file': os.path.join(tmpdir, 'new_drain'),
-                'pump_file': os.path.join(tmpdir, 'new_pump'),
-                'sub_file': os.path.join(tmpdir, 'new_sub')
-            }
+            sim_files = SimulationFiles(gw_file=old_file)
+            sim_files_new = SimulationFiles(
+                gw_file=new_gw_file,
+                bc_file=os.path.join(tmpdir, 'new_bc'),
+                drain_file=os.path.join(tmpdir, 'new_drain'),
+                pump_file=os.path.join(tmpdir, 'new_pump'),
+                sub_file=os.path.join(tmpdir, 'new_sub')
+            )
 
             from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
@@ -263,7 +264,7 @@ class TestSubGwFile:
             node_list = [1, 2, 3]
             elem_list = [[1], [2]]  # Element list format: [[elem_id], ...]
 
-            sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly)
+            sub_gw_file(sim_files, sim_files_new, node_list, elem_list, bounding_poly)
 
             # Verify output file was created
             assert os.path.exists(new_gw_file)
@@ -298,14 +299,14 @@ class TestSubGwFile:
                 f.write(content)
 
             new_gw_file = os.path.join(tmpdir, 'new_gw.dat')
-            sim_dict = {'gw_file': old_file}
-            sim_dict_new = {
-                'gw_file': new_gw_file,
-                'bc_file': os.path.join(tmpdir, 'new_bc'),
-                'drain_file': os.path.join(tmpdir, 'new_drain'),
-                'pump_file': os.path.join(tmpdir, 'new_pump'),
-                'sub_file': os.path.join(tmpdir, 'new_sub')
-            }
+            sim_files = SimulationFiles(gw_file=old_file)
+            sim_files_new = SimulationFiles(
+                gw_file=new_gw_file,
+                bc_file=os.path.join(tmpdir, 'new_bc'),
+                drain_file=os.path.join(tmpdir, 'new_drain'),
+                pump_file=os.path.join(tmpdir, 'new_pump'),
+                sub_file=os.path.join(tmpdir, 'new_sub')
+            )
 
             from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
@@ -316,7 +317,7 @@ class TestSubGwFile:
             node_list = [1, 2]
             elem_list = [[1], [2]]
 
-            sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly)
+            sub_gw_file(sim_files, sim_files_new, node_list, elem_list, bounding_poly)
 
             # Verify output file
             with open(new_gw_file) as f:
@@ -360,14 +361,14 @@ class TestSubGwFile:
                 f.write(content)
 
             new_gw_file = os.path.join(tmpdir, 'new_gw.dat')
-            sim_dict = {'gw_file': old_file}
-            sim_dict_new = {
-                'gw_file': new_gw_file,
-                'bc_file': os.path.join(tmpdir, 'new_bc'),
-                'drain_file': os.path.join(tmpdir, 'new_drain'),
-                'pump_file': os.path.join(tmpdir, 'new_pump'),
-                'sub_file': os.path.join(tmpdir, 'new_sub')
-            }
+            sim_files = SimulationFiles(gw_file=old_file)
+            sim_files_new = SimulationFiles(
+                gw_file=new_gw_file,
+                bc_file=os.path.join(tmpdir, 'new_bc'),
+                drain_file=os.path.join(tmpdir, 'new_drain'),
+                pump_file=os.path.join(tmpdir, 'new_pump'),
+                sub_file=os.path.join(tmpdir, 'new_sub')
+            )
 
             from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
@@ -378,7 +379,7 @@ class TestSubGwFile:
             node_list = [1, 3]
             elem_list = [[1], [2]]
 
-            sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly)
+            sub_gw_file(sim_files, sim_files_new, node_list, elem_list, bounding_poly)
 
             # Verify output file exists
             assert os.path.exists(new_gw_file)
@@ -416,14 +417,14 @@ class TestSubGwFile:
                 f.write(content)
 
             new_gw_file = os.path.join(tmpdir, 'new_gw.dat')
-            sim_dict = {'gw_file': old_file}
-            sim_dict_new = {
-                'gw_file': new_gw_file,
-                'bc_file': os.path.join(tmpdir, 'new_bc'),
-                'drain_file': os.path.join(tmpdir, 'new_drain'),
-                'pump_file': os.path.join(tmpdir, 'new_pump'),
-                'sub_file': os.path.join(tmpdir, 'new_sub')
-            }
+            sim_files = SimulationFiles(gw_file=old_file)
+            sim_files_new = SimulationFiles(
+                gw_file=new_gw_file,
+                bc_file=os.path.join(tmpdir, 'new_bc'),
+                drain_file=os.path.join(tmpdir, 'new_drain'),
+                pump_file=os.path.join(tmpdir, 'new_pump'),
+                sub_file=os.path.join(tmpdir, 'new_sub')
+            )
 
             from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
@@ -434,7 +435,7 @@ class TestSubGwFile:
             # Only elements 10 and 30 are in submodel
             elem_list = [[10], [30]]
 
-            sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly)
+            sub_gw_file(sim_files, sim_files_new, node_list, elem_list, bounding_poly)
 
             # Verify output file
             with open(new_gw_file) as f:
@@ -466,14 +467,14 @@ class TestSubGwFile:
                 f.write(content)
 
             new_gw_file = os.path.join(tmpdir, 'new_gw.dat')
-            sim_dict = {'gw_file': old_file}
-            sim_dict_new = {
-                'gw_file': new_gw_file,
-                'bc_file': os.path.join(tmpdir, 'new_bc'),
-                'drain_file': os.path.join(tmpdir, 'new_drain'),
-                'pump_file': os.path.join(tmpdir, 'new_pump'),
-                'sub_file': os.path.join(tmpdir, 'new_sub')
-            }
+            sim_files = SimulationFiles(gw_file=old_file)
+            sim_files_new = SimulationFiles(
+                gw_file=new_gw_file,
+                bc_file=os.path.join(tmpdir, 'new_bc'),
+                drain_file=os.path.join(tmpdir, 'new_drain'),
+                pump_file=os.path.join(tmpdir, 'new_pump'),
+                sub_file=os.path.join(tmpdir, 'new_sub')
+            )
 
             from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
@@ -481,7 +482,7 @@ class TestSubGwFile:
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
             # Should not raise an error with verbose=True
-            sub_gw_file(sim_dict, sim_dict_new, [1, 2], [[1]], bounding_poly, verbose=True)
+            sub_gw_file(sim_files, sim_files_new, [1, 2], [[1]], bounding_poly, verbose=True)
 
             assert os.path.exists(new_gw_file)
 
@@ -508,21 +509,21 @@ class TestSubGwFile:
                 f.write(content)
 
             new_gw_file = os.path.join(tmpdir, 'new_gw.dat')
-            sim_dict = {'gw_file': old_file}
-            sim_dict_new = {
-                'gw_file': new_gw_file,
-                'bc_file': os.path.join(tmpdir, 'new_bc'),
-                'drain_file': os.path.join(tmpdir, 'new_drain'),
-                'pump_file': os.path.join(tmpdir, 'new_pump'),
-                'sub_file': os.path.join(tmpdir, 'new_sub')
-            }
+            sim_files = SimulationFiles(gw_file=old_file)
+            sim_files_new = SimulationFiles(
+                gw_file=new_gw_file,
+                bc_file=os.path.join(tmpdir, 'new_bc'),
+                drain_file=os.path.join(tmpdir, 'new_drain'),
+                pump_file=os.path.join(tmpdir, 'new_pump'),
+                sub_file=os.path.join(tmpdir, 'new_sub')
+            )
 
             from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            result = sub_gw_file(sim_dict, sim_dict_new, [1, 2], [[1]], bounding_poly)
+            result = sub_gw_file(sim_files, sim_files_new, [1, 2], [[1]], bounding_poly)
 
             assert result is None
 
@@ -549,21 +550,21 @@ class TestSubGwFile:
                 f.write(content)
 
             new_gw_file = os.path.join(tmpdir, 'new_gw.dat')
-            sim_dict = {'gw_file': old_file}
-            sim_dict_new = {
-                'gw_file': new_gw_file,
-                'bc_file': os.path.join(tmpdir, 'NewModel_BC'),
-                'drain_file': os.path.join(tmpdir, 'NewModel_Drain'),
-                'pump_file': os.path.join(tmpdir, 'NewModel_Pump'),
-                'sub_file': os.path.join(tmpdir, 'NewModel_Sub')
-            }
+            sim_files = SimulationFiles(gw_file=old_file)
+            sim_files_new = SimulationFiles(
+                gw_file=new_gw_file,
+                bc_file=os.path.join(tmpdir, 'NewModel_BC'),
+                drain_file=os.path.join(tmpdir, 'NewModel_Drain'),
+                pump_file=os.path.join(tmpdir, 'NewModel_Pump'),
+                sub_file=os.path.join(tmpdir, 'NewModel_Sub')
+            )
 
             from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_file(sim_dict, sim_dict_new, [1, 2], [[1]], bounding_poly)
+            sub_gw_file(sim_files, sim_files_new, [1, 2], [[1]], bounding_poly)
 
             # Verify output file was created
             assert os.path.exists(new_gw_file)

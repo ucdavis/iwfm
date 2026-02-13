@@ -57,9 +57,9 @@ def headall2shp(heads_file, pre_file, out_date, basename, label='Heads', units='
     import iwfm.gis as igis
 
     pre_path, pre_proc = os.path.split(pre_file)
-    pre_dict, _ = iwfm.iwfm_read_preproc(pre_file)
+    pre_files, _ = iwfm.iwfm_read_preproc(pre_file)
 
-    node_file = os.path.join(pre_path, pre_dict['node_file'])
+    node_file = os.path.join(pre_path, pre_files.node_file)
     node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
     # -- get heads

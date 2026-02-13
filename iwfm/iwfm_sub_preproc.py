@@ -42,8 +42,8 @@ def iwfm_sub_preproc(
 
     Returns
     -------
-    pre_dict_new : dict
-        dictionary of submodel preprocessor file names
+    pre_files_new : PreprocessorFiles
+        PreprocessorFiles dataclass of submodel preprocessor file names
 
     sub_elem_list : ints
         list of existing model elements in submodel
@@ -70,12 +70,12 @@ def iwfm_sub_preproc(
     from iwfm.debug.logger_setup import logger
 
     # -- get list of file names from preprocessor input file
-    pre_dict, have_lake = iwfm.iwfm_read_preproc(in_pp_file)
+    pre_files, have_lake = iwfm.iwfm_read_preproc(in_pp_file)
     if verbose:
         print(f'  Read preprocessor file {in_pp_file}')
 
     # -- create list of new file names
-    pre_dict_new = iwfm.new_pp_dict(out_base_name)
+    pre_files_new = iwfm.new_pp_files(out_base_name)
 
     # -- read submodel elements
     sub_elem_list, new_srs, elem_dict, rev_elem_dict = iwfm.get_elem_list(elem_pairs_file)
@@ -90,7 +90,7 @@ def iwfm_sub_preproc(
         print(f'  Read submodel element pairs file {elem_pairs_file}')
 
     # -- determine submodel nodes
-    sub_node_list = iwfm.sub_pp_node_list(pre_dict['elem_file'], sub_elem_list)
+    sub_node_list = iwfm.sub_pp_node_list(pre_files.elem_file, sub_elem_list)
     try:
         with open(out_base_name + '_nodes.bin', 'wb') as f:
             pickle.dump(sub_node_list, f)  # dump sub_node_list to file
@@ -102,7 +102,7 @@ def iwfm_sub_preproc(
         print('  Compiled list of submodel nodes')
 
     # -- get submodel node coordinates
-    node_coord, node_list, factor = iwfm.iwfm_read_nodes(pre_dict['node_file'])
+    node_coord, node_list, factor = iwfm.iwfm_read_nodes(pre_files.node_file)
 
     i = 0
     while i < len(node_coord):
@@ -123,7 +123,7 @@ def iwfm_sub_preproc(
 
     # -- determine submodel stream nodes
     reach_info, snode_dict, rattab_dict, rating_header, stream_aq, sub_snodes = iwfm.sub_pp_streams(
-        pre_dict['stream_file'], sub_node_list
+        pre_files.stream_file, sub_node_list
     )
 
     # dump sub_nodes to file
@@ -149,7 +149,7 @@ def iwfm_sub_preproc(
 
     # -- determine submodel lakes
     if have_lake:
-        lake_info, have_lake = iwfm.sub_pp_lakes(pre_dict['lake_file'], sub_elem_list)
+        lake_info, have_lake = iwfm.sub_pp_lakes(pre_files.lake_file, sub_elem_list)
         # dump lake_info to file
         try:
             with open(out_base_name + '_lakes.bin', 'wb') as f:
@@ -180,13 +180,13 @@ def iwfm_sub_preproc(
         print(' ')
 
     # -- write new node file
-    iwfm.sub_pp_node_file(pre_dict['node_file'], pre_dict_new['node_file'], sub_node_list)
+    iwfm.sub_pp_node_file(pre_files.node_file, pre_files_new.node_file, sub_node_list)
     if verbose:
-        print(f'  Wrote submodel node file {pre_dict_new["node_file"]}')
+        print(f'  Wrote submodel node file {pre_files_new.node_file}')
 
     # -- write new element file
     elem_nodes = iwfm.sub_pp_elem_file(
-        pre_dict['elem_file'], pre_dict_new['elem_file'], sub_elem_list, new_srs
+        pre_files.elem_file, pre_files_new.elem_file, sub_elem_list, new_srs
     )
     try:
         with open(out_base_name + '_elemnodes.bin', 'wb') as f:
@@ -196,19 +196,19 @@ def iwfm_sub_preproc(
         raise
     logger.debug(f'Wrote pickle file {out_base_name}_elemnodes.bin')
     if verbose:
-        print(f'  Wrote submodel element file {pre_dict_new["elem_file"]}')
+        print(f'  Wrote submodel element file {pre_files_new.elem_file}')
 
     # -- write new stratigraphy file
     iwfm.sub_pp_strat_file(
-        pre_dict['strat_file'], pre_dict_new['strat_file'], sub_node_list
+        pre_files.strat_file, pre_files_new.strat_file, sub_node_list
     )
     if verbose:
-        print(f'  Wrote submodel stratigraphy file {pre_dict_new["strat_file"]}')
+        print(f'  Wrote submodel stratigraphy file {pre_files_new.strat_file}')
 
     # -- write new stream specification file
     iwfm.sub_pp_stream_file(
-        pre_dict['stream_file'],
-        pre_dict_new['stream_file'],
+        pre_files.stream_file,
+        pre_files_new.stream_file,
         snode_dict,
         reach_info,
         rattab_dict,
@@ -216,27 +216,27 @@ def iwfm_sub_preproc(
         stream_aq,
     )
     if verbose:
-        print(f'  Wrote submodel stream specification file {pre_dict_new["stream_file"]}')
+        print(f'  Wrote submodel stream specification file {pre_files_new.stream_file}')
 
     # -- write new lake file
     if have_lake:
         iwfm.sub_pp_lake_file(
-            pre_dict['lake_file'], pre_dict_new['lake_file'], lake_info
+            pre_files.lake_file, pre_files_new.lake_file, lake_info
         )
         if verbose:
             print(
-                f'  Wrote submodel lake specification file {pre_dict_new["lake_file"]}'
+                f'  Wrote submodel lake specification file {pre_files_new.lake_file}'
             )
 
     # -- write new preprocesor main input file
-    iwfm.sub_pp_file(in_pp_file, pre_dict, pre_dict_new, have_lake)
+    iwfm.sub_pp_file(in_pp_file, pre_files, pre_files_new, have_lake)
     if verbose:
-        print(f'  Wrote submodel preprocessor file {pre_dict_new["prename"]}')
+        print(f'  Wrote submodel preprocessor file {pre_files_new.prename}')
 
     if have_lake == False:
         lake_info=[]
     logger.info(f'Completed submodel preprocessing for {out_base_name}')
-    return pre_dict_new, sub_elem_list, new_srs, elem_dict, sub_node_list, snode_dict, lake_info
+    return pre_files_new, sub_elem_list, new_srs, elem_dict, sub_node_list, snode_dict, lake_info
     
 
 if __name__ == "__main__":

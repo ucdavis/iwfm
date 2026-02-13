@@ -22,6 +22,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import iwfm
+from iwfm.dataclasses import SimulationFiles
 
 
 def create_urban_file_content(nelems, elem_ids, include_initial_cond=True,
@@ -163,17 +164,17 @@ class TestSubRzUrbanFileBasic:
         new_file = tmp_path / "new_urban.dat"
         new_area_file = tmp_path / "new_ura"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_file)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_file)
+        )
 
         # Include all elements
         elems = elem_ids
 
         # Mock sub_lu_file since it processes the area file separately
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elems,
                                    base_path=tmp_path, verbose=False)
 
         # Verify output file was created
@@ -209,16 +210,16 @@ class TestSubRzUrbanFileBasic:
         new_file = tmp_path / "new_urban.dat"
         new_area_file = tmp_path / "new_ura"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_file)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_file)
+        )
 
         # Include only subset of elements
         elems = [2, 4, 6, 8]
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elems,
                                    base_path=tmp_path, verbose=False)
 
         # Verify output file was created
@@ -256,16 +257,16 @@ class TestSubRzUrbanFileBasic:
         new_file = tmp_path / "new_urban.dat"
         new_area_file = tmp_path / "new_ura"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_file)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_file)
+        )
 
         # Empty submodel - no elements
         elems = []
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elems,
                                    base_path=tmp_path, verbose=False)
 
         # Verify output file was created (even if empty of element data)
@@ -297,13 +298,13 @@ class TestSubRzUrbanFileAreaFile:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "NewSubmodel_UrbanArea"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elem_ids,
                                    base_path=tmp_path, verbose=False)
 
         # Verify the output file contains the new area file name
@@ -333,15 +334,15 @@ class TestSubRzUrbanFileAreaFile:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         elems = [1, 3]
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elems,
                                    base_path=tmp_path, verbose=False)
 
             # Verify sub_lu_file was called
@@ -377,13 +378,13 @@ class TestSubRzUrbanFileVerbose:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elem_ids,
                                    base_path=tmp_path, verbose=True)
 
         captured = capsys.readouterr()
@@ -411,13 +412,13 @@ class TestSubRzUrbanFileVerbose:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elem_ids,
                                    base_path=tmp_path, verbose=False)
 
         captured = capsys.readouterr()
@@ -450,13 +451,13 @@ class TestSubRzUrbanFileEdgeCases:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elem_ids,
                                    base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -483,16 +484,16 @@ class TestSubRzUrbanFileEdgeCases:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         # Include subset of elements
         elems = [10, 20, 30, 40, 50]
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elems,
                                    base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -519,16 +520,16 @@ class TestSubRzUrbanFileEdgeCases:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         # Include subset of non-sequential elements
         elems = [10, 100]
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elems,
                                    base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -556,13 +557,13 @@ class TestSubRzUrbanFileEdgeCases:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elem_ids,
                                    base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -575,16 +576,16 @@ class TestSubRzUrbanFileNotFound:
         """Test that SystemExit is raised for missing file."""
         nonexistent_file = str(tmp_path / "nonexistent_urban.dat")
 
-        sim_dict_new = {
-            'ur_file': str(tmp_path / 'new_urban.dat'),
-            'ura_file': str(tmp_path / 'new_area')
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(tmp_path / 'new_urban.dat'),
+            ura_file=str(tmp_path / 'new_area')
+        )
 
         elems = [1, 2, 3]
 
         # The iwfm.file_test() function calls sys.exit() when file is not found
         with pytest.raises(SystemExit):
-            iwfm.sub_rz_urban_file(nonexistent_file, sim_dict_new, elems, verbose=False)
+            iwfm.sub_rz_urban_file(nonexistent_file, sim_files_new, elems, verbose=False)
 
 
 class TestSubRzUrbanFilePathHandling:
@@ -614,13 +615,13 @@ class TestSubRzUrbanFilePathHandling:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elem_ids,
                                    base_path=tmp_path, verbose=False)
 
             # sub_lu_file should be called with forward-slash path
@@ -696,16 +697,16 @@ class TestSubRzUrbanFileRealFormat:
         new_file = tmp_path / "new_urban.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'ur_file': str(new_file),
-            'ura_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            ur_file=str(new_file),
+            ura_file=str(new_area_base)
+        )
 
         # Include only elements 2 and 4
         elems = [2, 4]
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_urban_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_urban_file(str(old_file), sim_files_new, elems,
                                    base_path=tmp_path, verbose=False)
 
         assert new_file.exists()

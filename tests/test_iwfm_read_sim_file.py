@@ -53,36 +53,37 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             # Verify return type
-            assert isinstance(sim_dict, dict)
+            from iwfm.dataclasses import SimulationFiles
+            assert isinstance(sim_files, SimulationFiles)
             assert isinstance(have_lake, bool)
 
             # Verify lake is present
             assert have_lake is True
 
-            # Verify dictionary contents
-            assert 'preout' in sim_dict
-            assert 'gw_file' in sim_dict
-            assert 'stream_file' in sim_dict
-            assert 'lake_file' in sim_dict
-            assert 'root_file' in sim_dict
-            assert 'swshed_file' in sim_dict
-            assert 'unsat_file' in sim_dict
-            assert 'precip_file' in sim_dict
-            assert 'et_file' in sim_dict
+            # Verify fields are accessible
+            assert 'preout' in sim_files
+            assert 'gw_file' in sim_files
+            assert 'stream_file' in sim_files
+            assert 'lake_file' in sim_files
+            assert 'root_file' in sim_files
+            assert 'swshed_file' in sim_files
+            assert 'unsat_file' in sim_files
+            assert 'precip' in sim_files
+            assert 'et' in sim_files
 
             # Verify file names
-            assert sim_dict['preout'] == 'PreprocessorOut.bin'
-            assert sim_dict['gw_file'] == 'Groundwater.dat'
-            assert sim_dict['stream_file'] == 'Streams.dat'
-            assert sim_dict['lake_file'] == 'Lake.dat'
-            assert sim_dict['root_file'] == 'RootZone.dat'
-            assert sim_dict['swshed_file'] == 'SWatersheds.dat'
-            assert sim_dict['unsat_file'] == 'Unsat.dat'
-            assert sim_dict['precip_file'] == 'Precip.dat'
-            assert sim_dict['et_file'] == 'ET.dat'
+            assert sim_files.preout == 'PreprocessorOut.bin'
+            assert sim_files.gw_file == 'Groundwater.dat'
+            assert sim_files.stream_file == 'Streams.dat'
+            assert sim_files.lake_file == 'Lake.dat'
+            assert sim_files.root_file == 'RootZone.dat'
+            assert sim_files.swshed_file == 'SWatersheds.dat'
+            assert sim_files.unsat_file == 'Unsat.dat'
+            assert sim_files.precip == 'Precip.dat'
+            assert sim_files.et == 'ET.dat'
 
         finally:
             os.unlink(temp_file)
@@ -113,17 +114,17 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             # Verify lake is not present
             assert have_lake is False
 
             # Verify lake file is empty string
-            assert sim_dict['lake_file'] == ''
+            assert sim_files['lake_file'] == ''
 
             # Verify other files are still present
-            assert sim_dict['preout'] == 'PreprocessorOut.bin'
-            assert sim_dict['gw_file'] == 'Groundwater.dat'
+            assert sim_files['preout'] == 'PreprocessorOut.bin'
+            assert sim_files['gw_file'] == 'Groundwater.dat'
 
         finally:
             os.unlink(temp_file)
@@ -159,17 +160,18 @@ class TestIwfmReadSimFile:
             assert isinstance(result, tuple)
             assert len(result) == 2
 
-            sim_dict, have_lake = result
+            sim_files, have_lake = result
 
             # Verify types
-            assert isinstance(sim_dict, dict)
+            from iwfm.dataclasses import SimulationFiles
+            assert isinstance(sim_files, SimulationFiles)
             assert isinstance(have_lake, bool)
 
-            # Verify dictionary has all required keys
+            # Verify all required keys are accessible
             required_keys = ['preout', 'gw_file', 'stream_file', 'lake_file',
-                           'root_file', 'swshed_file', 'unsat_file', 'precip_file', 'et_file']
+                           'root_file', 'swshed_file', 'unsat_file', 'precip', 'et']
             for key in required_keys:
-                assert key in sim_dict
+                assert key in sim_files
 
         finally:
             os.unlink(temp_file)
@@ -204,11 +206,11 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             # Should read correctly despite comment lines
-            assert sim_dict['preout'] == 'PreprocessorOut.bin'
-            assert sim_dict['gw_file'] == 'Groundwater.dat'
+            assert sim_files['preout'] == 'PreprocessorOut.bin'
+            assert sim_files['gw_file'] == 'Groundwater.dat'
 
         finally:
             os.unlink(temp_file)
@@ -242,15 +244,15 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             # Verify data structure
             assert have_lake is False
-            assert sim_dict['preout'] == 'C2VSimCG_PreprocessorOut.bin'
-            assert 'C2VSimCG_Groundwater.dat' in sim_dict['gw_file']
-            assert 'C2VSimCG_Streams.dat' in sim_dict['stream_file']
-            assert sim_dict['lake_file'] == ''
-            assert 'C2VSimCG_RootZone.dat' in sim_dict['root_file']
+            assert sim_files['preout'] == 'C2VSimCG_PreprocessorOut.bin'
+            assert 'C2VSimCG_Groundwater.dat' in sim_files['gw_file']
+            assert 'C2VSimCG_Streams.dat' in sim_files['stream_file']
+            assert sim_files['lake_file'] == ''
+            assert 'C2VSimCG_RootZone.dat' in sim_files['root_file']
 
         finally:
             os.unlink(temp_file)
@@ -280,13 +282,13 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             # Verify file paths include directory prefixes
-            assert 'GW.dat' in sim_dict['gw_file']
-            assert 'Stream.dat' in sim_dict['stream_file']
-            assert 'Lake.dat' in sim_dict['lake_file']
-            assert 'RZ.dat' in sim_dict['root_file']
+            assert 'GW.dat' in sim_files['gw_file']
+            assert 'Stream.dat' in sim_files['stream_file']
+            assert 'Lake.dat' in sim_files['lake_file']
+            assert 'RZ.dat' in sim_files['root_file']
 
         finally:
             os.unlink(temp_file)
@@ -316,12 +318,12 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             # Verify file paths are read correctly with backslashes
-            assert 'GW.dat' in sim_dict['gw_file']
-            assert 'Stream.dat' in sim_dict['stream_file']
-            assert 'Lake.dat' in sim_dict['lake_file']
+            assert 'GW.dat' in sim_files['gw_file']
+            assert 'Stream.dat' in sim_files['stream_file']
+            assert 'Lake.dat' in sim_files['lake_file']
 
         finally:
             os.unlink(temp_file)
@@ -351,19 +353,18 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
-            # Verify all 9 keys are present
-            assert len(sim_dict) == 9
-            assert sim_dict['preout'] == 'file1.bin'
-            assert sim_dict['gw_file'] == 'file2.dat'
-            assert sim_dict['stream_file'] == 'file3.dat'
-            assert sim_dict['lake_file'] == 'file4.dat'
-            assert sim_dict['root_file'] == 'file5.dat'
-            assert sim_dict['swshed_file'] == 'file6.dat'
-            assert sim_dict['unsat_file'] == 'file7.dat'
-            assert sim_dict['precip_file'] == 'file10.dat'
-            assert sim_dict['et_file'] == 'file11.dat'
+            # Verify key fields are populated
+            assert sim_files.preout == 'file1.bin'
+            assert sim_files.gw_file == 'file2.dat'
+            assert sim_files.stream_file == 'file3.dat'
+            assert sim_files.lake_file == 'file4.dat'
+            assert sim_files.root_file == 'file5.dat'
+            assert sim_files.swshed_file == 'file6.dat'
+            assert sim_files.unsat_file == 'file7.dat'
+            assert sim_files.precip == 'file10.dat'
+            assert sim_files.et == 'file11.dat'
 
         finally:
             os.unlink(temp_file)
@@ -393,10 +394,10 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             assert have_lake is True
-            assert sim_dict['lake_file'] == 'Lake.dat'
+            assert sim_files['lake_file'] == 'Lake.dat'
 
         finally:
             os.unlink(temp_file)
@@ -426,10 +427,10 @@ class TestIwfmReadSimFile:
         try:
             from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
 
-            sim_dict, have_lake = iwfm_read_sim_file(temp_file)
+            sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             assert have_lake is False
-            assert sim_dict['lake_file'] == ''
+            assert sim_files['lake_file'] == ''
 
         finally:
             os.unlink(temp_file)

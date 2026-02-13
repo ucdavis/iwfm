@@ -20,6 +20,7 @@ import pytest
 import os
 from unittest.mock import patch
 import iwfm
+from iwfm.dataclasses import SimulationFiles
 
 
 def create_streams_file_no_subfiles():
@@ -174,40 +175,40 @@ class TestSubStreamsFileBasic:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101], [102], [103]]
         sub_snodes = [101, 102, 103, 104]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        assert os.path.exists(sim_dict_new['stream_file'])
+        assert os.path.exists(sim_files_new.stream_file)
 
     def test_returns_none(self, tmp_path):
         """Test that function returns None."""
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101], [102], [103]]
         sub_snodes = [101, 102, 103, 104]
 
-        result = iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        result = iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
         assert result is None
 
@@ -216,21 +217,21 @@ class TestSubStreamsFileBasic:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         sub_snodes = [101, 102, 103, 104]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             first_line = f.readline()
 
         assert '#4.2' in first_line
@@ -244,22 +245,22 @@ class TestSubStreamsFileHydrographs:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101]]
         # Only include stream nodes 101, 102
         sub_snodes = [101, 102]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             lines = f.readlines()
 
         # Find NOUTR line
@@ -274,22 +275,22 @@ class TestSubStreamsFileHydrographs:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         # Only include stream node 101
         sub_snodes = [101]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             lines = f.readlines()
 
         # Find NOUTR line
@@ -308,22 +309,22 @@ class TestSubStreamsFileBudgets:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101]]
         # Only include stream nodes 101, 103
         sub_snodes = [101, 103]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             lines = f.readlines()
 
         # Find NBUDR line
@@ -338,22 +339,22 @@ class TestSubStreamsFileBudgets:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         # Only include stream node 102
         sub_snodes = [102]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             lines = f.readlines()
 
         # Find NBUDR line
@@ -372,22 +373,22 @@ class TestSubStreamsFileStreambedParams:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101]]
         # Only include stream nodes 101, 102
         sub_snodes = [101, 102]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             lines = f.readlines()
 
         # Find streambed param section (after FACTW line)
@@ -416,19 +417,19 @@ class TestSubStreamsFileVerbose:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         sub_snodes = [101, 102, 103, 104]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=True)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes, verbose=True)
 
         captured = capsys.readouterr()
         assert 'Wrote stream main file' in captured.out
@@ -438,19 +439,19 @@ class TestSubStreamsFileVerbose:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         sub_snodes = [101, 102, 103, 104]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, verbose=False)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes, verbose=False)
 
         captured = capsys.readouterr()
         assert captured.out == ''
@@ -461,37 +462,37 @@ class TestSubStreamsFileNotFound:
 
     def test_missing_stream_file_raises_error(self, tmp_path):
         """Test that missing stream file raises SystemExit."""
-        sim_dict = {'stream_file': str(tmp_path / 'nonexistent.dat')}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(tmp_path / 'nonexistent.dat'))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         sub_snodes = [101]
 
         with pytest.raises(SystemExit):
-            iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+            iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
     def test_missing_stream_file_key_raises_error(self, tmp_path):
         """Test that missing stream_file key raises SystemExit."""
-        sim_dict = {}  # No stream_file key
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles()  # stream_file defaults to empty string
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         sub_snodes = [101]
 
         with pytest.raises(SystemExit):
-            iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+            iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
 
 class TestSubStreamsFileEdgeCases:
@@ -502,22 +503,22 @@ class TestSubStreamsFileEdgeCases:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         # No matching stream nodes
         sub_snodes = [999]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             lines = f.readlines()
 
         # NOUTR and NBUDR should be 0
@@ -534,22 +535,22 @@ class TestSubStreamsFileEdgeCases:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101], [102], [103]]
         # All stream nodes included
         sub_snodes = [101, 102, 103, 104]
 
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             lines = f.readlines()
 
         # NOUTR should be 4
@@ -564,22 +565,22 @@ class TestSubStreamsFileEdgeCases:
         streams_file = tmp_path / 'streams.dat'
         streams_file.write_text(create_streams_file_no_subfiles())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100]]
         sub_snodes = [101, 102, 103, 104]
 
         # Should not raise an error for blank file paths
-        iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes)
+        iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes)
 
-        assert os.path.exists(sim_dict_new['stream_file'])
+        assert os.path.exists(sim_files_new.stream_file)
 
 
 class TestSubStreamsFileWithSubfiles:
@@ -600,14 +601,14 @@ class TestSubStreamsFileWithSubfiles:
         bypass_file = streams_dir / 'BypassSpec.dat'
         bypass_file.write_text(create_bypass_file_content())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101]]
         sub_snodes = [101, 102, 103, 104]
@@ -616,7 +617,7 @@ class TestSubStreamsFileWithSubfiles:
              patch('iwfm.sub_st_bp_file') as mock_bp:
             mock_bp.return_value = 2
 
-            iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=tmp_path)
+            iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes, base_path=tmp_path)
 
             # sub_st_inflow_file should be called
             mock_inflow.assert_called_once()
@@ -635,14 +636,14 @@ class TestSubStreamsFileWithSubfiles:
         bypass_file = streams_dir / 'BypassSpec.dat'
         bypass_file.write_text(create_bypass_file_content())
 
-        sim_dict = {'stream_file': str(streams_file)}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=str(streams_file))
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101]]
         sub_snodes = [101, 102, 103, 104]
@@ -651,7 +652,7 @@ class TestSubStreamsFileWithSubfiles:
              patch('iwfm.sub_st_bp_file') as mock_bp:
             mock_bp.return_value = 2
 
-            iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=tmp_path)
+            iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes, base_path=tmp_path)
 
             # sub_st_bp_file should be called
             mock_bp.assert_called_once()
@@ -685,14 +686,14 @@ class TestSubStreamsFileWithRealFile:
 
     def test_with_real_file_mocked_subfiles(self, tmp_path, real_streams_file):
         """Test sub_streams_file with real streams file, mocking sub-file processing."""
-        sim_dict = {'stream_file': real_streams_file}
-        sim_dict_new = {
-            'stream_file': str(tmp_path / 'new_streams.dat'),
-            'stin_file': str(tmp_path / 'new_inflow'),
-            'divspec_file': str(tmp_path / 'new_divspec'),
-            'bp_file': str(tmp_path / 'new_bypass'),
-            'div_file': str(tmp_path / 'new_div'),
-        }
+        sim_files = SimulationFiles(stream_file=real_streams_file)
+        sim_files_new = SimulationFiles(
+            stream_file=str(tmp_path / 'new_streams.dat'),
+            stin_file=str(tmp_path / 'new_inflow'),
+            divspec_file=str(tmp_path / 'new_divspec'),
+            bp_file=str(tmp_path / 'new_bypass'),
+            div_file=str(tmp_path / 'new_div'),
+        )
 
         elem_list = [[100], [101], [102]]
         # Use some stream nodes from the file
@@ -705,11 +706,11 @@ class TestSubStreamsFileWithRealFile:
 
             from pathlib import Path
             base_path = Path('/Volumes/MinEx/Documents/Dropbox/work/Programing/repos/iwfm-py/iwfm-tests/C2VSimCG-2021/Simulation')
-            iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, base_path=base_path)
+            iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes, base_path=base_path)
 
-        assert os.path.exists(sim_dict_new['stream_file'])
+        assert os.path.exists(sim_files_new.stream_file)
 
-        with open(sim_dict_new['stream_file'], 'r') as f:
+        with open(sim_files_new.stream_file, 'r') as f:
             content = f.read()
 
         # Should have version tag

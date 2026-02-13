@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base_path=None, verbose=False):
+def sub_gw_bc_file(old_filename, sim_files_new, nodes, elems, bounding_poly, base_path=None, verbose=False):
     '''sub_gw_bc_file() - Read the original groundwater boundary conditions file,
         determine which boundary conditions are in the submodel, and write out a new
         file
@@ -28,7 +28,7 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
     old_filename : str
         name of existing model boundary condition file
 
-    sim_dict_new : str
+    sim_files_new : SimulationFiles
         new submodel file names
 
     nodes : list of ints
@@ -69,7 +69,7 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
         have_spfl = False
     else:
         spfl_file = spfl_file.replace('\\', ' ').split()[1]
-        bc_lines[line_index] = '   ' + sim_dict_new['spfl_file'] + '.dat		        / SPFLOWBCFL'
+        bc_lines[line_index] = '   ' + sim_files_new.spfl_file + '.dat		        / SPFLOWBCFL'
 
     # specified head conditions file
     sphd_file, line_index = read_next_line_value(bc_lines, line_index)
@@ -78,7 +78,7 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
         have_sphd = False
     else:
         sphd_file = sphd_file.replace('\\', ' ').split()[1]
-        bc_lines[line_index] = '   ' + sim_dict_new['sphd_file'] + '.dat		        / SPHEADBCFL'
+        bc_lines[line_index] = '   ' + sim_files_new.sphd_file + '.dat		        / SPHEADBCFL'
 
     # general head boundary conditions file
     ghd_file, line_index = read_next_line_value(bc_lines, line_index)
@@ -87,7 +87,7 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
         have_ghd = False
     else:
         ghd_file = ghd_file.replace('\\', ' ').split()[1]
-        bc_lines[line_index] = '   ' + sim_dict_new['ghd_file'] + '.dat		        / GHBCFL'
+        bc_lines[line_index] = '   ' + sim_files_new.ghd_file + '.dat		        / GHBCFL'
 
     # constrained general head boundary conditions file
     cghd_file, line_index = read_next_line_value(bc_lines, line_index)
@@ -99,7 +99,7 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
         # Resolve relative path from simulation base directory if provided
         if base_path is not None:
             cghd_file = str(base_path / cghd_file)
-        bc_lines[line_index] = '   ' + sim_dict_new['cghd_file'] + '.dat		        / CONGHBCFL'
+        bc_lines[line_index] = '   ' + sim_files_new.cghd_file + '.dat		        / CONGHBCFL'
 
     # time-series boundary conditions file
     tsbc_file, line_index = read_next_line_value(bc_lines, line_index)
@@ -108,7 +108,7 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
         have_tsbc = False
     else:
         tsbc_file = tsbc_file.replace('\\', ' ').split()[1]
-        bc_lines[line_index] = '   ' + sim_dict_new['tsbc_file'] + '.dat		        / TSBCFL'
+        bc_lines[line_index] = '   ' + sim_files_new.tsbc_file + '.dat		        / TSBCFL'
 
     # -- boundary flow node hydrographs --
     b_outnodes_str, line_index = read_next_line_value(bc_lines, line_index)
@@ -127,13 +127,13 @@ def sub_gw_bc_file(old_filename, sim_dict_new, nodes, elems, bounding_poly, base
 
     # --  constrained general head bc file  --
     if have_cghd:                  # process constrained general head bc file
-        iwfm.sub_gw_bc_cghd_file(cghd_file, sim_dict_new['cghd_file'], nodes, verbose)
+        iwfm.sub_gw_bc_cghd_file(cghd_file, sim_files_new.cghd_file, nodes, verbose)
 
-    with open(sim_dict_new['bc_file'], 'w') as outfile:
+    with open(sim_files_new.bc_file, 'w') as outfile:
         outfile.write('\n'.join(bc_lines))
 
     if verbose:
-        print(f'      Wrote boundary conditions file {sim_dict_new["bc_file"]}')
+        print(f'      Wrote boundary conditions file {sim_files_new.bc_file}')
         print(f"Leaving sub_gw_bc_file()")
 
     return

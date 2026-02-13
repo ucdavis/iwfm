@@ -60,10 +60,11 @@ class TestReadWells:
             assert 'WELL_002' in well_dict
             assert 'WELL_003' in well_dict
 
-            # Verify values: [column, x, y, layer, well_name_lower]
-            assert well_dict['WELL_001'] == [1, 100.0, 200.0, 1, 'well_001']
-            assert well_dict['WELL_002'] == [2, 150.0, 250.0, 2, 'well_002']
-            assert well_dict['WELL_003'] == [3, 200.0, 300.0, 1, 'well_003']
+            # Verify values: WellInfo(column, x, y, layer, name)
+            from iwfm.dataclasses import WellInfo
+            assert well_dict['WELL_001'] == WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well_001')
+            assert well_dict['WELL_002'] == WellInfo(column=2, x=150.0, y=250.0, layer=2, name='well_002')
+            assert well_dict['WELL_003'] == WellInfo(column=3, x=200.0, y=300.0, layer=1, name='well_003')
 
         finally:
             os.unlink(temp_file)
@@ -96,11 +97,11 @@ class TestReadWells:
             assert 'S_381150N1215899W001' in well_dict
 
             # Check values
-            assert well_dict['S_380313N1219426W001'][0] == 1  # column
-            assert well_dict['S_380313N1219426W001'][1] == 592798.7  # x
-            assert well_dict['S_380313N1219426W001'][2] == 4209815.4  # y
-            assert well_dict['S_380313N1219426W001'][3] == 1  # layer
-            assert well_dict['S_380313N1219426W001'][4] == 's_380313n1219426w001'  # lowercase name
+            assert well_dict['S_380313N1219426W001'].column == 1  # column
+            assert well_dict['S_380313N1219426W001'].x == 592798.7  # x
+            assert well_dict['S_380313N1219426W001'].y == 4209815.4  # y
+            assert well_dict['S_380313N1219426W001'].layer == 1  # layer
+            assert well_dict['S_380313N1219426W001'].name == 's_380313n1219426w001'  # lowercase name
 
         finally:
             os.unlink(temp_file)
@@ -131,8 +132,9 @@ class TestReadWells:
             well_dict = read_wells(temp_file)
 
             # Should read correctly despite comment lines
+            from iwfm.dataclasses import WellInfo
             assert 'TEST_WELL' in well_dict
-            assert well_dict['TEST_WELL'] == [1, 100.0, 200.0, 1, 'test_well']
+            assert well_dict['TEST_WELL'] == WellInfo(column=1, x=100.0, y=200.0, layer=1, name='test_well')
 
         finally:
             os.unlink(temp_file)
@@ -165,15 +167,15 @@ class TestReadWells:
             assert len(result) == 1
             assert 'WELL_A' in result
 
-            # Verify value structure: [column, x, y, layer, name_lower]
+            # Verify value structure: WellInfo(column, x, y, layer, name)
+            from iwfm.dataclasses import WellInfo
             values = result['WELL_A']
-            assert isinstance(values, list)
-            assert len(values) == 5
-            assert isinstance(values[0], int)   # column number
-            assert isinstance(values[1], float)  # x coord
-            assert isinstance(values[2], float)  # y coord
-            assert isinstance(values[3], int)    # layer
-            assert isinstance(values[4], str)    # lowercase name
+            assert isinstance(values, WellInfo)
+            assert isinstance(values.column, int)   # column number
+            assert isinstance(values.x, float)      # x coord
+            assert isinstance(values.y, float)      # y coord
+            assert isinstance(values.layer, int)     # layer
+            assert isinstance(values.name, str)      # lowercase name
 
         finally:
             os.unlink(temp_file)
@@ -207,13 +209,13 @@ class TestReadWells:
 
             assert len(well_dict) == 4
             # All at same x,y
-            assert well_dict['SITE_A_L1'][1] == 100.0
-            assert well_dict['SITE_A_L2'][1] == 100.0
+            assert well_dict['SITE_A_L1'].x == 100.0
+            assert well_dict['SITE_A_L2'].x == 100.0
             # But different layers
-            assert well_dict['SITE_A_L1'][3] == 1
-            assert well_dict['SITE_A_L2'][3] == 2
-            assert well_dict['SITE_A_L3'][3] == 3
-            assert well_dict['SITE_A_L4'][3] == 4
+            assert well_dict['SITE_A_L1'].layer == 1
+            assert well_dict['SITE_A_L2'].layer == 2
+            assert well_dict['SITE_A_L3'].layer == 3
+            assert well_dict['SITE_A_L4'].layer == 4
 
         finally:
             os.unlink(temp_file)
@@ -243,8 +245,8 @@ class TestReadWells:
             well_dict = read_wells(temp_file)
 
             assert len(well_dict) == 2
-            assert abs(well_dict['WELL_LARGE_1'][1] - 622426.423) < 0.01
-            assert abs(well_dict['WELL_LARGE_1'][2] - 4296803.182) < 0.01
+            assert abs(well_dict['WELL_LARGE_1'].x - 622426.423) < 0.01
+            assert abs(well_dict['WELL_LARGE_1'].y - 4296803.182) < 0.01
 
         finally:
             os.unlink(temp_file)
@@ -277,11 +279,11 @@ class TestReadWells:
             well_dict = read_wells(temp_file)
 
             # Column numbers from first field
-            assert well_dict['WELL_10'][0] == 10
-            assert well_dict['WELL_20'][0] == 20
-            assert well_dict['WELL_30'][0] == 30
-            assert well_dict['WELL_40'][0] == 40
-            assert well_dict['WELL_50'][0] == 50
+            assert well_dict['WELL_10'].column == 10
+            assert well_dict['WELL_20'].column == 20
+            assert well_dict['WELL_30'].column == 30
+            assert well_dict['WELL_40'].column == 40
+            assert well_dict['WELL_50'].column == 50
 
         finally:
             os.unlink(temp_file)
@@ -317,9 +319,9 @@ class TestReadWells:
             assert 'SITE_01' in well_dict
 
             # Lowercase names in values
-            assert well_dict['S_380313N1219426W001%1'][4] == 's_380313n1219426w001%1'
-            assert well_dict['WELL-123_ABC'][4] == 'well-123_abc'
-            assert well_dict['SITE_01'][4] == 'site_01'
+            assert well_dict['S_380313N1219426W001%1'].name == 's_380313n1219426w001%1'
+            assert well_dict['WELL-123_ABC'].name == 'well-123_abc'
+            assert well_dict['SITE_01'].name == 'site_01'
 
         finally:
             os.unlink(temp_file)
@@ -375,7 +377,8 @@ class TestReadWells:
 
             assert len(well_dict) == 1
             assert 'SINGLE_WELL' in well_dict
-            assert well_dict['SINGLE_WELL'] == [100, 555.5, 666.6, 3, 'single_well']
+            from iwfm.dataclasses import WellInfo
+            assert well_dict['SINGLE_WELL'] == WellInfo(column=100, x=555.5, y=666.6, layer=3, name='single_well')
 
         finally:
             os.unlink(temp_file)

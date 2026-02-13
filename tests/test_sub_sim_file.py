@@ -19,6 +19,7 @@
 import pytest
 import os
 import iwfm
+from iwfm.dataclasses import SimulationFiles
 
 
 def create_sim_file_content(has_lake=False):
@@ -53,18 +54,18 @@ C More content follows..."""
     return content
 
 
-def create_sim_dict_new(tmp_path, prefix='SubModel'):
-    """Create a dictionary of new submodel file names."""
-    return {
-        'sim_name': str(tmp_path / f'{prefix}.in'),
-        'preout': f'{prefix}_PreprocessorOut.bin',
-        'gw_file': f'Groundwater\\{prefix}_Groundwater.dat',
-        'stream_file': f'Streams\\{prefix}_Streams.dat',
-        'lake_file': f'Lake\\{prefix}_Lake.dat',
-        'root_file': f'RootZone\\{prefix}_RootZone.dat',
-        'swshed_file': f'{prefix}_SWatersheds.dat',
-        'unsat_file': f'{prefix}_Unsat.dat',
-    }
+def create_sim_files_new(tmp_path, prefix='SubModel'):
+    """Create a SimulationFiles instance of new submodel file names."""
+    return SimulationFiles(
+        sim_name=str(tmp_path / f'{prefix}.in'),
+        preout=f'{prefix}_PreprocessorOut.bin',
+        gw_file=f'Groundwater\\{prefix}_Groundwater.dat',
+        stream_file=f'Streams\\{prefix}_Streams.dat',
+        lake_file=f'Lake\\{prefix}_Lake.dat',
+        root_file=f'RootZone\\{prefix}_RootZone.dat',
+        swshed_file=f'{prefix}_SWatersheds.dat',
+        unsat_file=f'{prefix}_Unsat.dat',
+    )
 
 
 class TestSubSimFileBasic:
@@ -76,25 +77,25 @@ class TestSubSimFileBasic:
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        assert os.path.exists(sim_dict_new['sim_name'])
+        assert os.path.exists(sim_files_new.sim_name)
 
     def test_output_contains_new_preout(self, tmp_path):
         """Test that output file contains new preprocessor output filename."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['preout'] in content
+        assert sim_files_new.preout in content
         assert 'C2VSimCG_PreprocessorOut.bin' not in content
 
     def test_output_contains_new_gw_file(self, tmp_path):
@@ -102,81 +103,81 @@ class TestSubSimFileBasic:
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['gw_file'] in content
+        assert sim_files_new.gw_file in content
 
     def test_output_contains_new_stream_file(self, tmp_path):
         """Test that output file contains new stream filename."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['stream_file'] in content
+        assert sim_files_new.stream_file in content
 
     def test_output_contains_new_root_file(self, tmp_path):
         """Test that output file contains new rootzone filename."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['root_file'] in content
+        assert sim_files_new.root_file in content
 
     def test_output_contains_new_swshed_file(self, tmp_path):
         """Test that output file contains new small watersheds filename."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['swshed_file'] in content
+        assert sim_files_new.swshed_file in content
 
     def test_output_contains_new_unsat_file(self, tmp_path):
         """Test that output file contains new unsaturated zone filename."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['unsat_file'] in content
+        assert sim_files_new.unsat_file in content
 
     def test_preserves_comments(self, tmp_path):
         """Test that comments are preserved in output."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         assert 'C Main simulation input file' in content
@@ -186,11 +187,11 @@ class TestSubSimFileBasic:
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         assert 'Historical Simulation' in content
@@ -201,11 +202,11 @@ class TestSubSimFileBasic:
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         assert '1: BINARY INPUT GENERATED BY PRE-PROCESSOR' in content
@@ -220,49 +221,49 @@ class TestSubSimFileLake:
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content(has_lake=False))
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         # Lake line should remain blank/unchanged
-        assert sim_dict_new['lake_file'] not in content
+        assert sim_files_new.lake_file not in content
 
     def test_with_lake_updates_lake_line(self, tmp_path):
         """Test that lake line is updated when has_lake=True."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content(has_lake=True))
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=True)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=True)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['lake_file'] in content
+        assert sim_files_new.lake_file in content
 
     def test_with_lake_preserves_other_files(self, tmp_path):
         """Test that other files are still updated with has_lake=True."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content(has_lake=True))
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=True)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=True)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         # All files should be updated
-        assert sim_dict_new['preout'] in content
-        assert sim_dict_new['gw_file'] in content
-        assert sim_dict_new['stream_file'] in content
-        assert sim_dict_new['root_file'] in content
-        assert sim_dict_new['swshed_file'] in content
-        assert sim_dict_new['unsat_file'] in content
+        assert sim_files_new.preout in content
+        assert sim_files_new.gw_file in content
+        assert sim_files_new.stream_file in content
+        assert sim_files_new.root_file in content
+        assert sim_files_new.swshed_file in content
+        assert sim_files_new.unsat_file in content
 
 
 class TestSubSimFileNotFound:
@@ -270,10 +271,10 @@ class TestSubSimFileNotFound:
 
     def test_missing_input_file_raises_error(self, tmp_path):
         """Test that missing input file raises SystemExit."""
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
         with pytest.raises(SystemExit):  # file_test calls sys.exit() for missing files
-            iwfm.sub_sim_file(str(tmp_path / 'nonexistent.in'), sim_dict_new)
+            iwfm.sub_sim_file(str(tmp_path / 'nonexistent.in'), sim_files_new)
 
 
 class TestSubSimFileRealFormat:
@@ -300,27 +301,27 @@ C File section
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(content)
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             output = f.read()
 
         # All new filenames should be present
-        assert sim_dict_new['preout'] in output
-        assert sim_dict_new['gw_file'] in output
+        assert sim_files_new.preout in output
+        assert sim_files_new.gw_file in output
 
     def test_preserves_content_after_files(self, tmp_path):
         """Test that content after the 7 file lines is preserved."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         # Content after the 7 component files should be preserved
@@ -341,22 +342,22 @@ class TestSubSimFileWithRealFile:
 
     def test_with_real_file(self, tmp_path, real_sim_file):
         """Test sub_sim_file with real C2VSimCG.in file."""
-        sim_dict_new = create_sim_dict_new(tmp_path, prefix='TestSubModel')
+        sim_files_new = create_sim_files_new(tmp_path, prefix='TestSubModel')
 
-        iwfm.sub_sim_file(real_sim_file, sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(real_sim_file, sim_files_new, has_lake=False)
 
-        assert os.path.exists(sim_dict_new['sim_name'])
+        assert os.path.exists(sim_files_new.sim_name)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         # Verify new file names are in output
-        assert sim_dict_new['preout'] in content
-        assert sim_dict_new['gw_file'] in content
-        assert sim_dict_new['stream_file'] in content
-        assert sim_dict_new['root_file'] in content
-        assert sim_dict_new['swshed_file'] in content
-        assert sim_dict_new['unsat_file'] in content
+        assert sim_files_new.preout in content
+        assert sim_files_new.gw_file in content
+        assert sim_files_new.stream_file in content
+        assert sim_files_new.root_file in content
+        assert sim_files_new.swshed_file in content
+        assert sim_files_new.unsat_file in content
 
         # Verify old file names are NOT in output (for the 7 component files)
         assert 'C2VSimCG_PreprocessorOut.bin' not in content
@@ -385,48 +386,48 @@ class TestSubSimFileEdgeCases:
         input_file = tmp_path / 'minimal.in'
         input_file.write_text(content)
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        assert os.path.exists(sim_dict_new['sim_name'])
+        assert os.path.exists(sim_files_new.sim_name)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             output = f.read()
 
-        assert sim_dict_new['preout'] in output
+        assert sim_files_new.preout in output
 
     def test_handles_long_filenames(self, tmp_path):
         """Test with very long filenames in dictionary."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = {
-            'sim_name': str(tmp_path / 'output.in'),
-            'preout': 'VeryLongSubModelNameForTesting_PreprocessorOut.bin',
-            'gw_file': 'Groundwater\\VeryLongSubModelNameForTesting_Groundwater.dat',
-            'stream_file': 'Streams\\VeryLongSubModelNameForTesting_Streams.dat',
-            'lake_file': 'Lake\\VeryLongSubModelNameForTesting_Lake.dat',
-            'root_file': 'RootZone\\VeryLongSubModelNameForTesting_RootZone.dat',
-            'swshed_file': 'VeryLongSubModelNameForTesting_SWatersheds.dat',
-            'unsat_file': 'VeryLongSubModelNameForTesting_Unsat.dat',
-        }
+        sim_files_new = SimulationFiles(
+            sim_name=str(tmp_path / 'output.in'),
+            preout='VeryLongSubModelNameForTesting_PreprocessorOut.bin',
+            gw_file='Groundwater\\VeryLongSubModelNameForTesting_Groundwater.dat',
+            stream_file='Streams\\VeryLongSubModelNameForTesting_Streams.dat',
+            lake_file='Lake\\VeryLongSubModelNameForTesting_Lake.dat',
+            root_file='RootZone\\VeryLongSubModelNameForTesting_RootZone.dat',
+            swshed_file='VeryLongSubModelNameForTesting_SWatersheds.dat',
+            unsat_file='VeryLongSubModelNameForTesting_Unsat.dat',
+        )
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
-        assert sim_dict_new['preout'] in content
+        assert sim_files_new.preout in content
 
     def test_returns_none(self, tmp_path):
         """Test that function returns None."""
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        result = iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        result = iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
         assert result is None
 
@@ -435,11 +436,11 @@ class TestSubSimFileEdgeCases:
         input_file = tmp_path / 'old_sim.in'
         input_file.write_text(create_sim_file_content())
 
-        sim_dict_new = create_sim_dict_new(tmp_path)
+        sim_files_new = create_sim_files_new(tmp_path)
 
-        iwfm.sub_sim_file(str(input_file), sim_dict_new, has_lake=False)
+        iwfm.sub_sim_file(str(input_file), sim_files_new, has_lake=False)
 
-        with open(sim_dict_new['sim_name'], 'r') as f:
+        with open(sim_files_new.sim_name, 'r') as f:
             content = f.read()
 
         # Should end with newline (from appended blank line)

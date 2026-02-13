@@ -192,14 +192,14 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
-            # Verify dictionary
-            assert gw_dict['bc'] == 'BC.dat'
-            assert gw_dict['tiledrain'] == 'none'
-            assert gw_dict['pumping'] == 'Pump.dat'
-            assert gw_dict['subsidence'] == 'none'
-            assert gw_dict['headall'] == 'HeadAll.out'
+            # Verify GroundwaterFiles dataclass
+            assert gw_files.bc_file == 'BC.dat'
+            assert gw_files.drain_file == 'none'
+            assert gw_files.pump_file == 'Pump.dat'
+            assert gw_files.subs_file == 'none'
+            assert gw_files.headall == 'HeadAll.out'
 
             # Verify layer count
             assert layers == 1
@@ -279,7 +279,7 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Verify layer count
             assert layers == 3
@@ -343,7 +343,7 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Verify node count
             assert len(node_id) == 3
@@ -402,7 +402,7 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Verify structure
             assert len(node_id) == 3
@@ -452,15 +452,14 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Verify all file names
-            assert gw_dict['bc'] == 'Path/To/BC.dat'
-            assert gw_dict['tiledrain'] == 'Path/To/TileDrain.dat'
-            assert gw_dict['pumping'] == 'Path/To/Pumping.dat'
-            assert gw_dict['subsidence'] == 'Path/To/Subsidence.dat'
-            assert gw_dict['headall'] == 'Results/HeadAll.out'
-            assert gw_dict['gwhyd'] == 'Results/Hydrographs.out'
+            assert gw_files.bc_file == 'Path/To/BC.dat'
+            assert gw_files.drain_file == 'Path/To/TileDrain.dat'
+            assert gw_files.pump_file == 'Path/To/Pumping.dat'
+            assert gw_files.subs_file == 'Path/To/Subsidence.dat'
+            assert gw_files.headall == 'Results/HeadAll.out'
 
         finally:
             os.unlink(temp_file)
@@ -493,14 +492,14 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Verify all are 'none'
-            assert gw_dict['bc'] == 'none'
-            assert gw_dict['tiledrain'] == 'none'
-            assert gw_dict['pumping'] == 'none'
-            assert gw_dict['subsidence'] == 'none'
-            assert gw_dict['headall'] == 'none'
+            assert gw_files.bc_file == 'none'
+            assert gw_files.drain_file == 'none'
+            assert gw_files.pump_file == 'none'
+            assert gw_files.subs_file == 'none'
+            assert gw_files.headall == 'none'
 
         finally:
             os.unlink(temp_file)
@@ -537,7 +536,7 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Verify hydrographs (now a dict: {name: (order, layer, x, y)})
             assert len(hydrographs_out) == 3
@@ -579,7 +578,7 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Verify units
             assert units[0] == '1MON'
@@ -618,7 +617,7 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Should still read correctly
             assert len(node_id) == 3
@@ -660,7 +659,7 @@ class TestIwfmReadGw:
         try:
             from iwfm.iwfm_read_gw import iwfm_read_gw
 
-            gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
+            gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs_out, factxy_out = iwfm_read_gw(temp_file, verbose=False)
 
             # Should read correctly despite extra comments
             assert len(node_id) == 3

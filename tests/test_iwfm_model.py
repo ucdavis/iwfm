@@ -68,16 +68,16 @@ def test_iwfm_model_reads_preprocessor_correctly(model_files_exist):
     model = iwfm.iwfm_model(_path_to_backslash(PREPROCESSOR_FILE), str(SIMULATION_FILE), verbose=False)
 
     # Check that preprocessor files dictionary was populated
-    assert hasattr(model, 'pre_files_dict')
-    assert 'preout' in model.pre_files_dict
-    assert 'elem_file' in model.pre_files_dict
-    assert 'node_file' in model.pre_files_dict
-    assert 'strat_file' in model.pre_files_dict
+    assert hasattr(model, 'pre_files')
+    assert 'preout' in model.pre_files
+    assert 'elem_file' in model.pre_files
+    assert 'node_file' in model.pre_files
+    assert 'strat_file' in model.pre_files
 
     # Verify filenames are not empty
-    assert model.pre_files_dict['elem_file'] != ''
-    assert model.pre_files_dict['node_file'] != ''
-    assert model.pre_files_dict['strat_file'] != ''
+    assert model.pre_files['elem_file'] != ''
+    assert model.pre_files['node_file'] != ''
+    assert model.pre_files['strat_file'] != ''
 
 
 def test_iwfm_model_reads_nodes_correctly(model_files_exist):
@@ -123,18 +123,18 @@ def test_iwfm_model_reads_simulation_correctly(model_files_exist):
     """Test that simulation file is read correctly."""
     model = iwfm.iwfm_model(_path_to_backslash(PREPROCESSOR_FILE), str(SIMULATION_FILE), verbose=False)
 
-    # Check that simulation dictionary was populated
-    assert hasattr(model, 'sim_files_dict')
-    assert 'gw' in model.sim_files_dict
-    assert 'precip' in model.sim_files_dict
-    assert 'et' in model.sim_files_dict
-    assert 'start' in model.sim_files_dict
-    assert 'end' in model.sim_files_dict
+    # Check that simulation files were populated
+    assert hasattr(model, 'sim_files')
+    assert 'gw_file' in model.sim_files
+    assert 'precip' in model.sim_files
+    assert 'et' in model.sim_files
+    assert 'start' in model.sim_files
+    assert 'end' in model.sim_files
 
     # Verify some expected values
-    assert model.sim_files_dict['gw'] != ''
-    assert model.sim_files_dict['precip'] != ''
-    assert model.sim_files_dict['et'] != ''
+    assert model.sim_files['gw_file'] != ''
+    assert model.sim_files['precip'] != ''
+    assert model.sim_files['et'] != ''
 
 
 def test_iwfm_model_verbose_mode(model_files_exist, capsys):

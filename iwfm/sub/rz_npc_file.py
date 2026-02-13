@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=False):
+def sub_rz_npc_file(old_filename, sim_files_new, elems, base_path=None, verbose=False):
     '''sub_rz_npc_file() - Copy the rootzone non-ponded crops main file
        and replace the contents with those of the new submodel, write out
        the new file, and process the other non-ponded crop files
@@ -29,8 +29,8 @@ def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=F
     old_filename : str
         name of existing model non-ponded crops main file
 
-    sim_dict_new : str
-        new subnmodel file names
+    sim_files_new : SimulationFiles
+        new submodel file names
 
     elems : list of ints
         list of existing model elements in submodel
@@ -68,7 +68,7 @@ def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=F
     # Resolve relative path from simulation base directory if provided
     if base_path is not None:
         nparea_file = str(base_path / nparea_file)
-    npc_lines[line_index] = '   ' + sim_dict_new['npa_file'] + '.dat		        / LUFLNP'
+    npc_lines[line_index] = '   ' + sim_files_new.npa_file + '.dat		        / LUFLNP'
 
     # budget section
     _, line_index = read_next_line_value(npc_lines, line_index, column=0, skip_lines=0)  # skip comments
@@ -112,14 +112,14 @@ def sub_rz_npc_file(old_filename, sim_dict_new, elems, base_path=None, verbose=F
 
     npc_lines.append('')
 
-    with open(sim_dict_new['np_file'], 'w') as outfile:
+    with open(sim_files_new.np_file, 'w') as outfile:
         outfile.write('\n'.join(npc_lines))
     if verbose:
-        print(f'      Wrote non-ponded crop file {sim_dict_new["np_file"]}')
+        print(f'      Wrote non-ponded crop file {sim_files_new.np_file}')
 
 
     # -- non-ponded crop area file --
-    iwfm.sub_lu_file(nparea_file, sim_dict_new['npa_file'], elems, verbose=verbose)
+    iwfm.sub_lu_file(nparea_file, sim_files_new.npa_file, elems, verbose=verbose)
 
 
     return

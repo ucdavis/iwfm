@@ -17,6 +17,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+# -- dataclass definitions --------------------------------
+from iwfm.dataclasses import PreprocessorFiles, SimulationFiles, WellInfo
+from iwfm.dataclasses import RootzoneFiles, GroundwaterFiles
+
 # -- IWFM model class -------------------------------------
 from iwfm.iwfm_model import iwfm_model, IWFMModelError
 from iwfm.gw_well_lay_elev import gw_well_lay_elev
@@ -162,7 +166,6 @@ from iwfm.parse_iwfm_date import parse_iwfm_date
 
 # -- dictionary methods -----------------------------------
 from iwfm.file2dict import file2dict
-#from iwfm.file2dict_int import file2dict_int
 from iwfm.hyd_dict import hyd_dict
 
 # -- DBF methods ------------------------------------------
@@ -213,7 +216,8 @@ from iwfm.sub.pp_node_list import sub_pp_node_list
 from iwfm.sub.pp_lakes import sub_pp_lakes
 from iwfm.sub.pp_streams import sub_pp_streams
 from iwfm.get_stream_list_42 import get_stream_list_42
-from iwfm.new_pp_dict import new_pp_dict
+from iwfm.new_pp_files import new_pp_files
+new_pp_dict = new_pp_files  # backward compatibility
 
 from iwfm.iwfm_sub_sim import iwfm_sub_sim
 from iwfm.iwfm_read_sim_file import iwfm_read_sim_file
@@ -239,7 +243,8 @@ from iwfm.sub.rz_nv_file import sub_rz_nv_file
 from iwfm.sub.remove_items import sub_remove_items
 from iwfm.sub.lu_file import sub_lu_file
 
-from iwfm.new_sim_dict import new_sim_dict
+from iwfm.new_sim_files import new_sim_files
+new_sim_dict = new_sim_files  # backward compatibility
 
 # -- multiprocessing --------------------------------------
 from iwfm.multiproc import multiproc

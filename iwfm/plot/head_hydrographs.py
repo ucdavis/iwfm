@@ -38,7 +38,7 @@ def read_hyd_info(gw_file):
     """
     from iwfm.iwfm_read_gw import iwfm_read_gw
 
-    gw_dict, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, \
+    gw_files, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, \
         hydrographs, factxy = iwfm_read_gw(gw_file)
 
     return hydrographs

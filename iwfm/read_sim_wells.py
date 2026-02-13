@@ -33,14 +33,14 @@ def read_sim_wells(gw_file, verbose=False):
     Returns
     -------
     well_dict : dictionary
-        key = well name, values = well information (hydrograph file column,
-        x, y, model layer, well name)
+        key = well name, values = WellInfo instance
 
     well_list : list
         list of well names
 
     '''
     from iwfm.file_utils import read_next_line_value
+    from iwfm.dataclasses import WellInfo
 
     if verbose: print(f"Entered read_sim_wells() with {gw_file}")
 
@@ -56,28 +56,29 @@ def read_sim_wells(gw_file, verbose=False):
     _, line_index = read_next_line_value(gwhyd_info, line_index, skip_lines=2)
 
     for i in range(0, nouth):
-        items, line = [], gwhyd_info[line_index].split()
+        line = gwhyd_info[line_index].split()
         hydtyp = int(line[1])
         if hydtyp == 0:
             # IHYDTYP=0: ID  HYDTYP  LAYER  X  Y  NAME
             name = line[5].upper()
-            items.append(name)                 # state well number = key
-            items.append(int(line[0]))         # column number in hydrograph file
-            items.append(float(line[3]))       # x
-            items.append(float(line[4]))       # y
-            items.append(int(line[2]))         # model layer
-            items.append(line[5].lower())      # well name (state well number)
+            well_dict[name] = WellInfo(
+                column=int(line[0]),
+                x=float(line[3]),
+                y=float(line[4]),
+                layer=int(line[2]),
+                name=line[5].lower(),
+            )
         else:
             # IHYDTYP=1: ID  HYDTYP  LAYER  NODE_NO  NAME
             name = line[4].upper()
-            items.append(name)                 # state well number = key
-            items.append(int(line[0]))         # column number in hydrograph file
-            items.append(0.0)                  # x (not available)
-            items.append(0.0)                  # y (not available)
-            items.append(int(line[2]))         # model layer
-            items.append(line[4].lower())      # well name (state well number)
-        well_dict[items[0]] = items[1:]
-        well_list.append(items[0])
+            well_dict[name] = WellInfo(
+                column=int(line[0]),
+                x=0.0,
+                y=0.0,
+                layer=int(line[2]),
+                name=line[4].lower(),
+            )
+        well_list.append(name)
         line_index += 1
 
     if verbose: print(f"Leaving read_sim_wells()")

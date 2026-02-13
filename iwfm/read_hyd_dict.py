@@ -36,11 +36,12 @@ def read_hyd_dict(gw_dat_file, verbose=False):
     Returns
     -------
     well_dict : dictionary
-        key = well name (i.e. state well ID), value = well information
+        key = well name (i.e. state well ID), value = WellInfo instance
 
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
+    from iwfm.dataclasses import WellInfo
 
     logger.debug(f"Entered read_hyd_dict() with {gw_dat_file}")
 
@@ -57,15 +58,15 @@ def read_hyd_dict(gw_dat_file, verbose=False):
     _, line_index = read_next_line_value(gwhyd_info, line_index, skip_lines=2)
 
     for i in range(0, nouth):
-        items = []
         line = gwhyd_info[line_index].split()
-        items.append(line[5])          # well name = key
-        items.append(int(line[0]))     # column number in hydrograph file
-        items.append(float(line[3]))   # x
-        items.append(float(line[4]))   # y
-        items.append(int(line[2]))     # model layer
-        items.append(line[5].lower())  # well name
-        well_dict[items[0]] = items[1:]
+        key = line[5]                  # well name = key
+        well_dict[key] = WellInfo(
+            column=int(line[0]),
+            x=float(line[3]),
+            y=float(line[4]),
+            layer=int(line[2]),
+            name=line[5].lower(),
+        )
         line_index += 1
 
     logger.debug("Leaving read_hyd_dict()")

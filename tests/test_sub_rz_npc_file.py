@@ -22,6 +22,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import iwfm
+from iwfm.dataclasses import SimulationFiles
 
 
 def create_npc_file_content(ncrop, nelems, elem_ids, nbud=0,
@@ -229,17 +230,17 @@ class TestSubRzNpcFileBasic:
         new_file = tmp_path / "new_npc.dat"
         new_area_file = tmp_path / "new_npa"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_file)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_file)
+        )
 
         # Include all elements
         elems = elem_ids
 
         # Mock sub_lu_file since it processes the area file separately
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elems,
                                  base_path=tmp_path, verbose=False)
 
         # Verify output file was created
@@ -277,16 +278,16 @@ class TestSubRzNpcFileBasic:
         new_file = tmp_path / "new_npc.dat"
         new_area_file = tmp_path / "new_npa"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_file)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_file)
+        )
 
         # Include only subset of elements
         elems = [2, 4, 6, 8]
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elems,
                                  base_path=tmp_path, verbose=False)
 
         # Verify output file was created
@@ -327,16 +328,16 @@ class TestSubRzNpcFileBasic:
         new_file = tmp_path / "new_npc.dat"
         new_area_file = tmp_path / "new_npa"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_file)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_file)
+        )
 
         # Empty submodel - no elements
         elems = []
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elems,
                                  base_path=tmp_path, verbose=False)
 
         # Verify output file was created (even if empty of element data)
@@ -370,13 +371,13 @@ class TestSubRzNpcFileAreaFile:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "NewSubmodel_NPArea"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elem_ids,
                                  base_path=tmp_path, verbose=False)
 
         # Verify the output file contains the new area file name
@@ -408,15 +409,15 @@ class TestSubRzNpcFileAreaFile:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         elems = [1, 3]
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elems,
                                  base_path=tmp_path, verbose=False)
 
             # Verify sub_lu_file was called
@@ -454,13 +455,13 @@ class TestSubRzNpcFileVerbose:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elem_ids,
                                  base_path=tmp_path, verbose=True)
 
         captured = capsys.readouterr()
@@ -490,13 +491,13 @@ class TestSubRzNpcFileVerbose:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elem_ids,
                                  base_path=tmp_path, verbose=False)
 
         captured = capsys.readouterr()
@@ -531,13 +532,13 @@ class TestSubRzNpcFileEdgeCases:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elem_ids,
                                  base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -566,13 +567,13 @@ class TestSubRzNpcFileEdgeCases:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elem_ids,
                                  base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -601,13 +602,13 @@ class TestSubRzNpcFileEdgeCases:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elem_ids,
                                  base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -636,16 +637,16 @@ class TestSubRzNpcFileEdgeCases:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         # Include subset of non-sequential elements
         elems = [10, 100]
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elems,
                                  base_path=tmp_path, verbose=False)
 
         assert new_file.exists()
@@ -663,16 +664,16 @@ class TestSubRzNpcFileNotFound:
         """Test that SystemExit is raised for missing file."""
         nonexistent_file = str(tmp_path / "nonexistent_npc.dat")
 
-        sim_dict_new = {
-            'np_file': str(tmp_path / 'new_npc.dat'),
-            'npa_file': str(tmp_path / 'new_area')
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(tmp_path / 'new_npc.dat'),
+            npa_file=str(tmp_path / 'new_area')
+        )
 
         elems = [1, 2, 3]
 
         # The iwfm.file_test() function calls sys.exit() when file is not found
         with pytest.raises(SystemExit):
-            iwfm.sub_rz_npc_file(nonexistent_file, sim_dict_new, elems, verbose=False)
+            iwfm.sub_rz_npc_file(nonexistent_file, sim_files_new, elems, verbose=False)
 
 
 class TestSubRzNpcFilePathHandling:
@@ -704,13 +705,13 @@ class TestSubRzNpcFilePathHandling:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         with patch('iwfm.sub_lu_file') as mock_sub_lu:
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elem_ids,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elem_ids,
                                  base_path=tmp_path, verbose=False)
 
             # sub_lu_file should be called with forward-slash path
@@ -848,16 +849,16 @@ class TestSubRzNpcFileRealFormat:
         new_file = tmp_path / "new_npc.dat"
         new_area_base = tmp_path / "new_area"
 
-        sim_dict_new = {
-            'np_file': str(new_file),
-            'npa_file': str(new_area_base)
-        }
+        sim_files_new = SimulationFiles(
+            np_file=str(new_file),
+            npa_file=str(new_area_base)
+        )
 
         # Include only elements 2 and 4
         elems = [2, 4]
 
         with patch('iwfm.sub_lu_file'):
-            iwfm.sub_rz_npc_file(str(old_file), sim_dict_new, elems,
+            iwfm.sub_rz_npc_file(str(old_file), sim_files_new, elems,
                                  base_path=tmp_path, verbose=False)
 
         assert new_file.exists()

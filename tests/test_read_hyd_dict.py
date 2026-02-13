@@ -106,13 +106,14 @@ class TestReadHydDict:
         result = iwfm.read_hyd_dict(str(gw_file))
 
         values = result["TEST_WELL"]
-        # Values should be: [column_number, x, y, layer, well_name_lower]
-        assert len(values) == 5
-        assert values[0] == 1  # column number (ID)
-        assert values[1] == 592798.7048  # x coordinate
-        assert values[2] == 4209815.426  # y coordinate
-        assert values[3] == 1  # layer
-        assert values[4] == "test_well"  # well name lowercase
+        # Values should be a WellInfo instance
+        from iwfm.dataclasses import WellInfo
+        assert isinstance(values, WellInfo)
+        assert values.column == 1  # column number (ID)
+        assert values.x == 592798.7048  # x coordinate
+        assert values.y == 4209815.426  # y coordinate
+        assert values.layer == 1  # layer
+        assert values.name == "test_well"  # well name lowercase
 
     def test_x_y_coordinates_are_floats(self, tmp_path):
         """Test that X and Y coordinates are returned as floats."""
@@ -125,10 +126,10 @@ class TestReadHydDict:
         result = iwfm.read_hyd_dict(str(gw_file))
 
         values = result["TEST_WELL"]
-        assert isinstance(values[1], float)  # x
-        assert isinstance(values[2], float)  # y
-        assert values[1] == 123456.789
-        assert values[2] == 987654.321
+        assert isinstance(values.x, float)  # x
+        assert isinstance(values.y, float)  # y
+        assert values.x == 123456.789
+        assert values.y == 987654.321
 
     def test_column_number_is_int(self, tmp_path):
         """Test that column number is returned as integer."""
@@ -141,8 +142,8 @@ class TestReadHydDict:
         result = iwfm.read_hyd_dict(str(gw_file))
 
         values = result["TEST_WELL"]
-        assert isinstance(values[0], int)
-        assert values[0] == 42
+        assert isinstance(values.column, int)
+        assert values.column == 42
 
     def test_layer_is_int(self, tmp_path):
         """Test that layer number is returned as integer."""
@@ -155,8 +156,8 @@ class TestReadHydDict:
         result = iwfm.read_hyd_dict(str(gw_file))
 
         values = result["TEST_WELL"]
-        assert isinstance(values[3], int)
-        assert values[3] == 3
+        assert isinstance(values.layer, int)
+        assert values.layer == 3
 
     def test_well_name_lowercase_in_values(self, tmp_path):
         """Test that well name in values is lowercase."""
@@ -172,7 +173,7 @@ class TestReadHydDict:
         assert "UPPER_CASE_NAME" in result
         # Value should have lowercase version
         values = result["UPPER_CASE_NAME"]
-        assert values[4] == "upper_case_name"
+        assert values.name == "upper_case_name"
 
     def test_zero_hydrographs(self, tmp_path):
         """Test reading file with zero hydrographs."""
@@ -249,10 +250,10 @@ class TestReadHydDict:
 
         result = iwfm.read_hyd_dict(str(gw_file))
 
-        assert result["WELL_L1"][3] == 1
-        assert result["WELL_L2"][3] == 2
-        assert result["WELL_L3"][3] == 3
-        assert result["WELL_L4"][3] == 4
+        assert result["WELL_L1"].layer == 1
+        assert result["WELL_L2"].layer == 2
+        assert result["WELL_L3"].layer == 3
+        assert result["WELL_L4"].layer == 4
 
     def test_well_name_with_special_characters(self, tmp_path):
         """Test well names with special characters."""
@@ -304,11 +305,12 @@ class TestReadHydDictRealFile:
         assert len(result) > 0
 
         # Check structure of first entry
+        from iwfm.dataclasses import WellInfo
         first_key = next(iter(result))
         values = result[first_key]
-        assert len(values) == 5
-        assert isinstance(values[0], int)   # column number
-        assert isinstance(values[1], float)  # x
-        assert isinstance(values[2], float)  # y
-        assert isinstance(values[3], int)    # layer
-        assert isinstance(values[4], str)    # lowercase name
+        assert isinstance(values, WellInfo)
+        assert isinstance(values.column, int)   # column number
+        assert isinstance(values.x, float)      # x
+        assert isinstance(values.y, float)      # y
+        assert isinstance(values.layer, int)    # layer
+        assert isinstance(values.name, str)     # lowercase name

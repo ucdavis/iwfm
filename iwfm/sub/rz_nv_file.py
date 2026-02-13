@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 
-def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=False):
+def sub_rz_nv_file(old_filename, sim_files_new, elems, base_path=None, verbose=False):
     '''sub_rz_nv_file() - Copy the rootzone native and riparian main file
        and replace the contents with those of the new submodel, write out
        the new file, and process the other non-ponded crop files
@@ -29,8 +29,8 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
     old_filename : str
         name of existing model native and riparian main file
 
-    sim_dict_new : str
-        new subnmodel file names
+    sim_files_new : SimulationFiles
+        new submodel file names
 
     elems : list of ints
         list of existing model elements in submodel
@@ -66,7 +66,7 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
     # Resolve relative path from simulation base directory if provided
     if base_path is not None:
         nvarea_file = str(base_path / nvarea_file)
-    nv_lines[line_index] = '   ' + sim_dict_new['nva_file'] + '.dat		        / LUFLNVRV'
+    nv_lines[line_index] = '   ' + sim_files_new.nva_file + '.dat		        / LUFLNVRV'
 
     _, line_index = read_next_line_value(nv_lines, line_index, column=0, skip_lines=3)  # skip comments and three factors
 
@@ -90,14 +90,14 @@ def sub_rz_nv_file(old_filename, sim_dict_new, elems, base_path=None, verbose=Fa
 
     nv_lines.append('')
 
-    with open(sim_dict_new['nv_file'], 'w') as outfile:
+    with open(sim_files_new.nv_file, 'w') as outfile:
         outfile.write('\n'.join(nv_lines))
     if verbose:
-        print(f'      Wrote native and riparian file {sim_dict_new["nv_file"]}')
+        print(f'      Wrote native and riparian file {sim_files_new.nv_file}')
 
 
     # -- native and riparian area file --
-    iwfm.sub_lu_file(nvarea_file, sim_dict_new['nva_file'], elems, verbose=verbose)
+    iwfm.sub_lu_file(nvarea_file, sim_files_new.nva_file, elems, verbose=verbose)
 
 
     return

@@ -221,7 +221,7 @@ C Comment line 4
             os.unlink(temp_file)
 
     def test_return_type(self):
-        """Test that function returns a dictionary"""
+        """Test that function returns a RootzoneFiles dataclass"""
         content = """C Root zone main file
 C IWFM Version 2015
 C Comment line 3
@@ -244,10 +244,12 @@ C Comment line 4
             temp_file = f.name
 
         try:
+            from iwfm.dataclasses import RootzoneFiles
+
             result = iwfm.iwfm_read_rz(temp_file)
 
-            assert isinstance(result, dict), \
-                f"Expected dict, got {type(result)}"
+            assert isinstance(result, RootzoneFiles), \
+                f"Expected RootzoneFiles, got {type(result)}"
             assert len(result) == 7, \
                 f"Expected 7 entries, got {len(result)}"
 

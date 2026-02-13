@@ -416,10 +416,10 @@ class TestHeadall2ExcelWithRealData:
 
             # Get preprocessor info
             pre_path, _ = os.path.split(EXAMPLE_PRE_FILE)
-            pre_dict, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
+            pre_files, _ = iwfm.iwfm_read_preproc(EXAMPLE_PRE_FILE)
 
             # Read node coordinates
-            node_file = os.path.join(pre_path, pre_dict['node_file'])
+            node_file = os.path.join(pre_path, pre_files['node_file'])
             node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
             # Scale coordinates

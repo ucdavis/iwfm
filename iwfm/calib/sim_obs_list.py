@@ -49,7 +49,7 @@ def sim_obs_list(obs, well_dict, gwhyd_sim, dates):
     for i in range(0,len(obs)):              # move through the file
         obs_name, obs_date , obs_meas = obs[i][0], obs[i][1], obs[i][3]
         if obs_name in well_dict and obs_date >= dates[0] and obs_date <= dates[-1]:
-            col = well_dict.get(obs_name)[0]-1    # adjust col for zero index
+            col = well_dict.get(obs_name).column-1    # adjust col for zero index
 
             # index of date in dates before obs_date
             date_index = 0

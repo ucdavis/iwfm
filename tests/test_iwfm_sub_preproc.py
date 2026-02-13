@@ -19,6 +19,7 @@
 import polars as pl
 from pathlib import Path
 from unittest.mock import patch
+from iwfm.dataclasses import PreprocessorFiles
 
 
 def _load_iwfm_sub_preproc():
@@ -40,7 +41,7 @@ class TestIwfmSubPreproc:
     """Tests for the iwfm_sub_preproc function."""
 
     @patch('iwfm.iwfm_read_preproc')
-    @patch('iwfm.new_pp_dict')
+    @patch('iwfm.new_pp_files')
     @patch('iwfm.get_elem_list')
     @patch('iwfm.sub_pp_node_list')
     @patch('iwfm.iwfm_read_nodes')
@@ -57,22 +58,22 @@ class TestIwfmSubPreproc:
                               tmp_path):
         """Test basic execution of iwfm_sub_preproc."""
         # Setup mocks
-        mock_read_preproc.return_value = ({
-            'node_file': 'nodes.dat',
-            'elem_file': 'elems.dat',
-            'strat_file': 'strat.dat',
-            'stream_file': 'streams.dat',
-            'lake_file': 'none',
-        }, False)
+        mock_read_preproc.return_value = (PreprocessorFiles(
+            node_file='nodes.dat',
+            elem_file='elems.dat',
+            strat_file='strat.dat',
+            stream_file='streams.dat',
+            lake_file='none',
+        ), False)
 
-        mock_new_dict.return_value = {
-            'prename': 'sub_pre.dat',
-            'node_file': 'sub_nodes.dat',
-            'elem_file': 'sub_elems.dat',
-            'strat_file': 'sub_strat.dat',
-            'stream_file': 'sub_streams.dat',
-            'lake_file': 'none',
-        }
+        mock_new_dict.return_value = PreprocessorFiles(
+            prename='sub_pre.dat',
+            node_file='sub_nodes.dat',
+            elem_file='sub_elems.dat',
+            strat_file='sub_strat.dat',
+            stream_file='sub_streams.dat',
+            lake_file='none',
+        )
 
         mock_elem_list.return_value = ([1, 2, 3], [1], {1: 1, 2: 2, 3: 3}, {1: 1, 2: 2, 3: 3})
         mock_node_list.return_value = [1, 2, 3, 4]
@@ -91,10 +92,10 @@ class TestIwfmSubPreproc:
 
         # Verify return values
         assert result is not None
-        assert len(result) == 7  # pre_dict_new, sub_elem_list, new_srs, elem_dict, sub_node_list, snode_dict, lake_info
+        assert len(result) == 7  # pre_files_new, sub_elem_list, new_srs, elem_dict, sub_node_list, snode_dict, lake_info
 
     @patch('iwfm.iwfm_read_preproc')
-    @patch('iwfm.new_pp_dict')
+    @patch('iwfm.new_pp_files')
     @patch('iwfm.get_elem_list')
     @patch('iwfm.sub_pp_node_list')
     @patch('iwfm.iwfm_read_nodes')
@@ -110,22 +111,22 @@ class TestIwfmSubPreproc:
                                    mock_elem_list, mock_new_dict, mock_read_preproc,
                                    tmp_path):
         """Test that parquet file is created with node coordinates."""
-        mock_read_preproc.return_value = ({
-            'node_file': 'nodes.dat',
-            'elem_file': 'elems.dat',
-            'strat_file': 'strat.dat',
-            'stream_file': 'streams.dat',
-            'lake_file': 'none',
-        }, False)
+        mock_read_preproc.return_value = (PreprocessorFiles(
+            node_file='nodes.dat',
+            elem_file='elems.dat',
+            strat_file='strat.dat',
+            stream_file='streams.dat',
+            lake_file='none',
+        ), False)
 
-        mock_new_dict.return_value = {
-            'prename': 'sub_pre.dat',
-            'node_file': 'sub_nodes.dat',
-            'elem_file': 'sub_elems.dat',
-            'strat_file': 'sub_strat.dat',
-            'stream_file': 'sub_streams.dat',
-            'lake_file': 'none',
-        }
+        mock_new_dict.return_value = PreprocessorFiles(
+            prename='sub_pre.dat',
+            node_file='sub_nodes.dat',
+            elem_file='sub_elems.dat',
+            strat_file='sub_strat.dat',
+            stream_file='sub_streams.dat',
+            lake_file='none',
+        )
 
         mock_elem_list.return_value = ([1], [1], {1: 1}, {1: 1})
         mock_node_list.return_value = [1, 2]
@@ -156,7 +157,7 @@ class TestIwfmSubPreproc:
         assert 'northing' in df.columns
 
     @patch('iwfm.iwfm_read_preproc')
-    @patch('iwfm.new_pp_dict')
+    @patch('iwfm.new_pp_files')
     @patch('iwfm.get_elem_list')
     @patch('iwfm.sub_pp_node_list')
     @patch('iwfm.iwfm_read_nodes')
@@ -172,22 +173,22 @@ class TestIwfmSubPreproc:
                                    mock_elem_list, mock_new_dict, mock_read_preproc,
                                    tmp_path):
         """Test that pickle files are created."""
-        mock_read_preproc.return_value = ({
-            'node_file': 'nodes.dat',
-            'elem_file': 'elems.dat',
-            'strat_file': 'strat.dat',
-            'stream_file': 'streams.dat',
-            'lake_file': 'none',
-        }, False)
+        mock_read_preproc.return_value = (PreprocessorFiles(
+            node_file='nodes.dat',
+            elem_file='elems.dat',
+            strat_file='strat.dat',
+            stream_file='streams.dat',
+            lake_file='none',
+        ), False)
 
-        mock_new_dict.return_value = {
-            'prename': 'sub_pre.dat',
-            'node_file': 'sub_nodes.dat',
-            'elem_file': 'sub_elems.dat',
-            'strat_file': 'sub_strat.dat',
-            'stream_file': 'sub_streams.dat',
-            'lake_file': 'none',
-        }
+        mock_new_dict.return_value = PreprocessorFiles(
+            prename='sub_pre.dat',
+            node_file='sub_nodes.dat',
+            elem_file='sub_elems.dat',
+            strat_file='sub_strat.dat',
+            stream_file='sub_streams.dat',
+            lake_file='none',
+        )
 
         mock_elem_list.return_value = ([1, 2], [1], {1: 1, 2: 2}, {1: 1, 2: 2})
         mock_node_list.return_value = [1, 2, 3]
@@ -212,7 +213,7 @@ class TestIwfmSubPreproc:
         assert (tmp_path / "submodel_elemnodes.bin").exists()
 
     @patch('iwfm.iwfm_read_preproc')
-    @patch('iwfm.new_pp_dict')
+    @patch('iwfm.new_pp_files')
     @patch('iwfm.get_elem_list')
     @patch('iwfm.sub_pp_node_list')
     @patch('iwfm.iwfm_read_nodes')
@@ -230,22 +231,22 @@ class TestIwfmSubPreproc:
                         mock_node_list, mock_elem_list, mock_new_dict,
                         mock_read_preproc, tmp_path):
         """Test execution with lake support."""
-        mock_read_preproc.return_value = ({
-            'node_file': 'nodes.dat',
-            'elem_file': 'elems.dat',
-            'strat_file': 'strat.dat',
-            'stream_file': 'streams.dat',
-            'lake_file': 'lakes.dat',
-        }, True)
+        mock_read_preproc.return_value = (PreprocessorFiles(
+            node_file='nodes.dat',
+            elem_file='elems.dat',
+            strat_file='strat.dat',
+            stream_file='streams.dat',
+            lake_file='lakes.dat',
+        ), True)
 
-        mock_new_dict.return_value = {
-            'prename': 'sub_pre.dat',
-            'node_file': 'sub_nodes.dat',
-            'elem_file': 'sub_elems.dat',
-            'strat_file': 'sub_strat.dat',
-            'stream_file': 'sub_streams.dat',
-            'lake_file': 'sub_lakes.dat',
-        }
+        mock_new_dict.return_value = PreprocessorFiles(
+            prename='sub_pre.dat',
+            node_file='sub_nodes.dat',
+            elem_file='sub_elems.dat',
+            strat_file='sub_strat.dat',
+            stream_file='sub_streams.dat',
+            lake_file='sub_lakes.dat',
+        )
 
         mock_elem_list.return_value = ([1], [1], {1: 1}, {1: 1})
         mock_node_list.return_value = [1]
@@ -268,7 +269,7 @@ class TestIwfmSubPreproc:
         assert (tmp_path / "submodel_lakes.bin").exists()
 
     @patch('iwfm.iwfm_read_preproc')
-    @patch('iwfm.new_pp_dict')
+    @patch('iwfm.new_pp_files')
     @patch('iwfm.get_elem_list')
     @patch('iwfm.sub_pp_node_list')
     @patch('iwfm.iwfm_read_nodes')
@@ -284,22 +285,22 @@ class TestIwfmSubPreproc:
                             mock_elem_list, mock_new_dict, mock_read_preproc,
                             tmp_path, capsys):
         """Test verbose mode produces output."""
-        mock_read_preproc.return_value = ({
-            'node_file': 'nodes.dat',
-            'elem_file': 'elems.dat',
-            'strat_file': 'strat.dat',
-            'stream_file': 'streams.dat',
-            'lake_file': 'none',
-        }, False)
+        mock_read_preproc.return_value = (PreprocessorFiles(
+            node_file='nodes.dat',
+            elem_file='elems.dat',
+            strat_file='strat.dat',
+            stream_file='streams.dat',
+            lake_file='none',
+        ), False)
 
-        mock_new_dict.return_value = {
-            'prename': 'sub_pre.dat',
-            'node_file': 'sub_nodes.dat',
-            'elem_file': 'sub_elems.dat',
-            'strat_file': 'sub_strat.dat',
-            'stream_file': 'sub_streams.dat',
-            'lake_file': 'none',
-        }
+        mock_new_dict.return_value = PreprocessorFiles(
+            prename='sub_pre.dat',
+            node_file='sub_nodes.dat',
+            elem_file='sub_elems.dat',
+            strat_file='sub_strat.dat',
+            stream_file='sub_streams.dat',
+            lake_file='none',
+        )
 
         mock_elem_list.return_value = ([1], [1], {1: 1}, {1: 1})
         mock_node_list.return_value = [1]

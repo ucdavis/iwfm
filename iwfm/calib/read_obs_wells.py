@@ -19,7 +19,7 @@
 
 
 def read_obs_wells(gw_file):
-    ''' read_obs_wells() read observation well information from the Groundwater.dat file 
+    ''' read_obs_wells() read observation well information from the Groundwater.dat file
                 and return a dictionary of groundwater hydrograph info and gwhyd_sim columns
 
     Parameters
@@ -30,9 +30,10 @@ def read_obs_wells(gw_file):
     Returns
     -------
     well_dict : dict
-        dictionary of groundwater hydrograph info and gwhyd_sim columns
+        dictionary of groundwater hydrograph info, values are WellInfo instances
     '''
     import iwfm
+    from iwfm.dataclasses import WellInfo
 
     well_dict = {}
     iwfm.file_test(gw_file)
@@ -44,16 +45,15 @@ def read_obs_wells(gw_file):
 
     line_index = iwfm.skip_ahead(line_index,gwhyd_info,3)    # skip to first hydrograph
     for i in range(0,nouth):                                 # process each hydrograph
-        items = []
         line = gwhyd_info[line_index].split()
-        items.append(line[5])         # well name = key
-        items.append(int(line[0]))    # column number in hydrograph file
-        items.append(float(line[3]))  # x
-        items.append(float(line[4]))  # y
-        items.append(int(line[2]))    # model layer
-        items.append(line[5].lower()) # well name (state well number)
-        key, values = items[0], items[1:]
-        well_dict[key] = values
+        key = line[5]                 # well name = key
+        well_dict[key] = WellInfo(
+            column=int(line[0]),
+            x=float(line[3]),
+            y=float(line[4]),
+            layer=int(line[2]),
+            name=line[5].lower(),
+        )
         line_index = iwfm.skip_ahead(line_index,gwhyd_info,1)
     return well_dict
 

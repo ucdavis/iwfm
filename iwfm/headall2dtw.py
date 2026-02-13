@@ -1,7 +1,7 @@
 # headall2dtw.py
 # Read headall.out file and stratigraphy file and write depth to water with
 # one csv file for each model layer
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -47,12 +47,12 @@ def headall2dtw(heads_file, pre_file, output_root, verbose=False):
     import iwfm
 
     pre_path, pre_proc = os.path.split(pre_file)
-    pre_dict, _ = iwfm.iwfm_read_preproc(pre_file)
+    pre_files, _ = iwfm.iwfm_read_preproc(pre_file)
 
-    node_file = os.path.join(pre_path, pre_dict['node_file'])
+    node_file = os.path.join(pre_path, pre_files.node_file)
     node_coords, node_list, factor = iwfm.iwfm_read_nodes(node_file)
 
-    strat_file = os.path.join(pre_path, pre_dict['strat_file'])
+    strat_file = os.path.join(pre_path, pre_files.strat_file)
     strat, nlayers = iwfm.iwfm_read_strat(strat_file, node_coords)
 
     elevations = iwfm.iwfm_lse(strat)

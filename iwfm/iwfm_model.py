@@ -21,6 +21,7 @@ import re
 from pathlib import Path
 from shapely.geometry import Point, Polygon
 from iwfm.file_utils import read_next_line_value
+from iwfm.dataclasses import PreprocessorFiles, SimulationFiles
 
 
 class IWFMModelError(Exception):
@@ -80,19 +81,19 @@ class iwfm_model:
         self.read_preproc(currfile)
 
         # -- read preprocessor node file
-        currfile = self.pre_folder / self.pre_files_dict['node_file']
+        currfile = self.pre_folder / self.pre_files.node_file
         if verbose:
             print(f'    IWFM node file:          \t{currfile}')
         self.read_nodes(currfile)
 
         # -- read preprocessor element file
-        currfile = self.pre_folder / self.pre_files_dict['elem_file']
+        currfile = self.pre_folder / self.pre_files.elem_file
         if verbose:
             print(f'    IWFM elements file:      \t{currfile}')
         self.read_elements(currfile)
 
         # -- read preprocessor stratigraphy file
-        currfile = self.pre_folder / self.pre_files_dict['strat_file']
+        currfile = self.pre_folder / self.pre_files.strat_file
         if verbose:
             print(f'    IWFM stratigraphy file:  \t{currfile}')
         self.read_strat(currfile)
@@ -141,33 +142,40 @@ class iwfm_model:
 
         _, line_index = read_next_line_value(pre_lines, -1, column=0, skip_lines=3)  # skip comments
 
-        # -- read input file names and create a dictionary ------------------
-        self.pre_files_dict = {}
-        self.pre_files_dict['preout'] = _safe_get_filename(pre_lines[line_index], line_index, 'preout')
+        # -- read input file names and build PreprocessorFiles dataclass -----
+        preout = _safe_get_filename(pre_lines[line_index], line_index, 'preout')
 
         _, line_index = read_next_line_value(pre_lines, line_index, column=0)
-        self.pre_files_dict['elem_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'elem_file')
+        elem_file = _safe_get_filename(pre_lines[line_index], line_index, 'elem_file')
 
         _, line_index = read_next_line_value(pre_lines, line_index, column=0)
-        self.pre_files_dict['node_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'node_file')
+        node_file = _safe_get_filename(pre_lines[line_index], line_index, 'node_file')
 
         _, line_index = read_next_line_value(pre_lines, line_index, column=0)
-        self.pre_files_dict['strat_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'strat_file')
+        strat_file = _safe_get_filename(pre_lines[line_index], line_index, 'strat_file')
 
         _, line_index = read_next_line_value(pre_lines, line_index, column=0)
-        self.pre_files_dict['stream_file'] = _safe_get_filename(pre_lines[line_index], line_index, 'stream_file')
+        stream_file = _safe_get_filename(pre_lines[line_index], line_index, 'stream_file')
 
         _, line_index = read_next_line_value(pre_lines, line_index, column=0)
         lake_file = _safe_get_filename(pre_lines[line_index], line_index, 'lake_file')
         if lake_file[0] == '/':
             lake_file = ''
-        self.pre_files_dict['lake_file'] = lake_file
+
+        self.pre_files = PreprocessorFiles(
+            preout=preout,
+            elem_file=elem_file,
+            node_file=node_file,
+            strat_file=strat_file,
+            stream_file=stream_file,
+            lake_file=lake_file,
+        )
         return
 
 
     def read_sim(self, sim_file):
         ''' read_sim() - Read an IWFM Simulation main input file, and return
-            a dictionary with the files called and some settings.'''
+            a SimulationFiles dataclass with the files called and some settings.'''
 
         iwfm.file_test(sim_file)
         with open(sim_file) as f:
@@ -175,69 +183,71 @@ class iwfm_model:
 
         _, line_index = read_next_line_value(sim_lines, -1, column=0, skip_lines=3)  # skip comments
 
-        # -- read input file names and create a dictionary
-        self.sim_files_dict = {}
-        preout = Path(_safe_get_filename(sim_lines[line_index], line_index, 'preout'))  # convert to Path
-        self.sim_files_dict['preout'] = preout
+        # -- read input file names and build SimulationFiles dataclass
+        preout = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'preout')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        gw_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'gw'))  # convert to Path
-        self.sim_files_dict['gw'] = gw_file
+        gw_file = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'gw_file')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        stream_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'stream'))  # convert to Path
-        self.sim_files_dict['stream'] = stream_file
+        stream_file = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'stream_file')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        temp = _safe_get_filename(sim_lines[line_index], line_index, 'lake')
+        temp = _safe_get_filename(sim_lines[line_index], line_index, 'lake_file')
         if temp[0] == '/':
             lake_file = ''
         else:
-            lake_file = Path(temp)  # convert to Path
-        self.sim_files_dict['lake'] = lake_file
+            lake_file = str(Path(temp))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        rz_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'rootzone'))  # convert to Path
-        self.sim_files_dict['rootzone'] = rz_file
+        root_file = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'root_file')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        sw_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'smallwatershed'))  # convert to Path
-        self.sim_files_dict['smallwatershed'] = sw_file
+        swshed_file = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'swshed_file')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        us_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'unsat'))  # convert to Path
-        self.sim_files_dict['unsat'] = us_file
+        unsat_file = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'unsat_file')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        if_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'irrfrac'))  # convert to Path
-        self.sim_files_dict['irrfrac'] = if_file
+        irrfrac = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'irrfrac')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        sa_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'supplyadj'))  # convert to Path
-        self.sim_files_dict['supplyadj'] = sa_file
+        supplyadj = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'supplyadj')))
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        pc_file = _safe_get_filename(sim_lines[line_index], line_index, 'precip')
-        self.sim_files_dict['precip'] = pc_file
+        precip = _safe_get_filename(sim_lines[line_index], line_index, 'precip')
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        et_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'et'))  # convert to Path
-        self.sim_files_dict['et'] = et_file
+        et = str(Path(_safe_get_filename(sim_lines[line_index], line_index, 'et')))
 
         # -- starting date
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         start = _safe_get_filename(sim_lines[line_index], line_index, 'start')
-        self.sim_files_dict['start'] = start
 
         # -- time step
         _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=1)
         step = _safe_get_filename(sim_lines[line_index], line_index, 'step')
-        self.sim_files_dict['step'] = step
 
-        # -- endng date
+        # -- ending date
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
         end = _safe_get_filename(sim_lines[line_index], line_index, 'end')
-        self.sim_files_dict['end'] = end
+
+        self.sim_files = SimulationFiles(
+            preout=preout,
+            gw_file=gw_file,
+            stream_file=stream_file,
+            lake_file=lake_file,
+            root_file=root_file,
+            swshed_file=swshed_file,
+            unsat_file=unsat_file,
+            irrfrac=irrfrac,
+            supplyadj=supplyadj,
+            precip=precip,
+            et=et,
+            start=start,
+            step=step,
+            end=end,
+        )
         return
 
 

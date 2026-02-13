@@ -17,9 +17,13 @@
 # -----------------------------------------------------------------------------
 
 
+from iwfm.dataclasses import PreprocessorFiles
+
+
 def iwfm_read_preproc(pre_file):
     ''' iwfm_read_preproc() - Read an IWFM Preprocessor main input file,
-        and return a dictionary with file names and some settings
+        and return a PreprocessorFiles dataclass with file names and some
+        settings
 
     Parameters
     ----------
@@ -28,8 +32,8 @@ def iwfm_read_preproc(pre_file):
 
     Returns
     -------
-    pre_dict : dictionary
-        dictionary of preprocessor file names (resolved to absolute paths)
+    pre_files : PreprocessorFiles
+        PreprocessorFiles dataclass of preprocessor file names (resolved to absolute paths)
 
     have_lake : bool
         True = the existing model has a lake file
@@ -47,22 +51,20 @@ def iwfm_read_preproc(pre_file):
     # Get base path for resolving relative file paths
     pre_base_path = Path(pre_file).resolve().parent
 
-    pre_dict = {}
-
     preout, line_index = read_next_line_value(pre_lines, -1, skip_lines=3)  # preproc output file
-    pre_dict['preout'] = str(pre_base_path / preout.replace('\\', '/'))
+    preout = str(pre_base_path / preout.replace('\\', '/'))
 
     elem_file, line_index = read_next_line_value(pre_lines, line_index)     # element file
-    pre_dict['elem_file'] = str(pre_base_path / elem_file.replace('\\', '/'))
+    elem_file = str(pre_base_path / elem_file.replace('\\', '/'))
 
     node_file, line_index = read_next_line_value(pre_lines, line_index)     # node file
-    pre_dict['node_file'] = str(pre_base_path / node_file.replace('\\', '/'))
+    node_file = str(pre_base_path / node_file.replace('\\', '/'))
 
     strat_file, line_index = read_next_line_value(pre_lines, line_index)    # stratigraphy file
-    pre_dict['strat_file'] = str(pre_base_path / strat_file.replace('\\', '/'))
+    strat_file = str(pre_base_path / strat_file.replace('\\', '/'))
 
     stream_file, line_index = read_next_line_value(pre_lines, line_index)   # stream file
-    pre_dict['stream_file'] = str(pre_base_path / stream_file.replace('\\', '/'))
+    stream_file = str(pre_base_path / stream_file.replace('\\', '/'))
 
     lake_file, line_index = read_next_line_value(pre_lines, line_index)     # lake file
     # -- is there a lake file?
@@ -72,6 +74,14 @@ def iwfm_read_preproc(pre_file):
         have_lake = False
     else:
         lake_file = str(pre_base_path / lake_file.replace('\\', '/'))
-    pre_dict['lake_file'] = lake_file
 
-    return pre_dict, have_lake
+    pre_files = PreprocessorFiles(
+        preout=preout,
+        elem_file=elem_file,
+        node_file=node_file,
+        strat_file=strat_file,
+        stream_file=stream_file,
+        lake_file=lake_file,
+    )
+
+    return pre_files, have_lake

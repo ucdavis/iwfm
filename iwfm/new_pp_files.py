@@ -1,6 +1,6 @@
-# new_pp_dict.py
-# Creates and returns a dictionary of preprocessor file names from a basename
-# Copyright (C) 2020-2021 University of California
+# new_pp_files.py
+# Creates and returns a PreprocessorFiles dataclass of preprocessor file names from a basename
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,9 +17,12 @@
 # -----------------------------------------------------------------------------
 
 
-def new_pp_dict(out_base_name):
-    ''' new_pp_dict() - Create and return a dictionary of preprocessor file
-        names from a basename
+from iwfm.dataclasses import PreprocessorFiles
+
+
+def new_pp_files(out_base_name):
+    ''' new_pp_files() - Create and return a PreprocessorFiles dataclass of
+        preprocessor file names from a basename
 
     Parameters
     ----------
@@ -28,16 +31,17 @@ def new_pp_dict(out_base_name):
 
     Returns
     -------
-    pre_dict_new : dict
-        dictionary of submodel preprocessor file names
+    pre_files_new : PreprocessorFiles
+        PreprocessorFiles dataclass of submodel preprocessor file names
 
     '''
-    pre_dict_new = {}
-    pre_dict_new['prename'] = out_base_name + '_Preprocessor.in'
-    pre_dict_new['preout'] = out_base_name + '_Preprocessor.bin'
-    pre_dict_new['elem_file'] = out_base_name + '_Elements.dat'
-    pre_dict_new['node_file'] = out_base_name + '_Nodes.dat'
-    pre_dict_new['strat_file'] = out_base_name + '_Stratigraphy.dat'
-    pre_dict_new['stream_file'] = out_base_name + '_StreamSpec.dat'
-    pre_dict_new['lake_file'] = out_base_name + '_Lakes.dat'
-    return pre_dict_new
+    pre_files_new = PreprocessorFiles(
+        prename=out_base_name + '_Preprocessor.in',
+        preout=out_base_name + '_Preprocessor.bin',
+        elem_file=out_base_name + '_Elements.dat',
+        node_file=out_base_name + '_Nodes.dat',
+        strat_file=out_base_name + '_Stratigraphy.dat',
+        stream_file=out_base_name + '_StreamSpec.dat',
+        lake_file=out_base_name + '_Lakes.dat',
+    )
+    return pre_files_new

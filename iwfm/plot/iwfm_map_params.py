@@ -86,7 +86,7 @@ INPUT_DICT = {
     'pr'     : ['Precip',       'Precipitation values'],
 }
 
-# Maps category to sim_dict key for the file containing that data
+# Maps category to sim_files key for the file containing that data
 CATEGORY_TO_FILETYPE = {
     'Groundwater': 'gw_file',
     'Unsaturated': 'unsat_file',
@@ -137,7 +137,7 @@ CATEGORY_DISPATCH = {
                     'elements'),
 }
 
-# Maps rootzone sub-category to rz_dict key
+# Maps rootzone sub-category to rz_files key
 RZ_SUBFILE_MAP = {
     'Non-ponded': 'np_file',
     'Ponded':     'p_file',
@@ -394,24 +394,24 @@ if __name__ == "__main__":
     data_filetype = CATEGORY_TO_FILETYPE[category]
 
     # Get file names from preprocessor and simulation files
-    pre_dict, have_lake = iwfm.iwfm_read_preproc(pre_filename)
-    sim_dict, have_lake = iwfm.iwfm_read_sim_file(sim_filename)
+    pre_files, have_lake = iwfm.iwfm_read_preproc(pre_filename)
+    sim_files, have_lake = iwfm.iwfm_read_sim_file(sim_filename)
 
     sim_dir = Path(sim_filename).parent
     pre_dir = Path(pre_filename).parent
 
     # Resolve the data file path
     if data_filetype == 'root_file':
-        rz_filename = sim_dir / Path(sim_dict[data_filetype].replace('\\', '/'))
-        rz_dict = iwfm.iwfm_read_rz(rz_filename)
+        rz_filename = sim_dir / Path(sim_files[data_filetype].replace('\\', '/'))
+        rz_files = iwfm.iwfm_read_rz(rz_filename)
 
         if category in RZ_SUBFILE_MAP:
-            data_filename = rz_dict[RZ_SUBFILE_MAP[category]].replace('\\', '/')
+            data_filename = rz_files[RZ_SUBFILE_MAP[category]].replace('\\', '/')
         else:
             # 'Rootzone' category — the rootzone main file has the parameters
-            data_filename = sim_dict[data_filetype].replace('\\', '/')
+            data_filename = sim_files[data_filetype].replace('\\', '/')
     else:
-        data_filename = sim_dict[data_filetype].replace('\\', '/')
+        data_filename = sim_files[data_filetype].replace('\\', '/')
 
     data_filename = sim_dir / Path(data_filename)
     iwfm.file_test(data_filename)
@@ -421,11 +421,11 @@ if __name__ == "__main__":
                                    layer=layer, verbose=True)
 
     # Read nodal X,Y coordinates from node file
-    node_filename = pre_dir / Path(pre_dict['node_file'].replace('\\', '/'))
+    node_filename = pre_dir / Path(pre_files['node_file'].replace('\\', '/'))
     node_coord, node_list, factor = iwfm.iwfm_read_nodes(node_filename)
 
     # Read elements from elements file
-    elem_filename = pre_dir / Path(pre_dict['elem_file'].replace('\\', '/'))
+    elem_filename = pre_dir / Path(pre_files['elem_file'].replace('\\', '/'))
     elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(elem_filename)
 
     # Calculate element centroids

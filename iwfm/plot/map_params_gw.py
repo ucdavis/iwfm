@@ -202,15 +202,15 @@ if __name__ == "__main__":
 
     idb.exe_time()  # initialize timer
 
-# TODO: Put path into pre_dict, sim_dict and add to Preprocessor and Simulation file names when calling read functions
+# TODO: Put path into pre_files, sim_files and add to Preprocessor and Simulation file names when calling read functions
 
-    pre_dict, have_lake = iwfm.iwfm_read_preproc(pre_file)
+    pre_files, have_lake = iwfm.iwfm_read_preproc(pre_file)
 
-    node_coords, node_list, factor = iwfm.iwfm_read_nodes(pre_dict['node_file'])
+    node_coords, node_list, factor = iwfm.iwfm_read_nodes(pre_files['node_file'])
 
-    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(pre_dict['elem_file'])
+    elem_ids, elem_nodes, elem_sub = iwfm.iwfm_read_elements(pre_files['elem_file'])
 
-    strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
+    strat, nlayers = iwfm.iwfm_read_strat(pre_files['strat_file'], node_coords)
 
     bounding_poly = igis.get_boundary_coords(elem_nodes, node_coords)
 

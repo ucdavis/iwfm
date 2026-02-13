@@ -64,16 +64,16 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
     from pathlib import Path
 
     # -- get list of file names from preprocessor input file
-    sim_dict, have_lake = iwfm.iwfm_read_sim_file(in_sim_file)
+    sim_files, have_lake = iwfm.iwfm_read_sim_file(in_sim_file)
     if verbose:
         print(f'  Read simulation file {in_sim_file}')
 
-    # -- resolve relative paths in sim_dict to absolute paths
+    # -- resolve relative paths in sim_files to absolute paths
     sim_base_path = Path(in_sim_file).resolve().parent
-    for key in sim_dict:
-        if isinstance(sim_dict[key], str) and key.endswith('_file'):
+    for key in sim_files:
+        if isinstance(sim_files[key], str) and key.endswith('_file'):
             # Convert Windows backslashes and resolve relative to simulation file directory
-            sim_dict[key] = str(sim_base_path / sim_dict[key].replace('\\', '/'))
+            sim_files[key] = str(sim_base_path / sim_files[key].replace('\\', '/'))
 
     # -- verify that required input files exist
     import os
@@ -82,10 +82,10 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
     required_files = ['gw_file', 'swshed_file', 'unsat_file']
 
     for key in required_files:
-        if key not in sim_dict:
+        if key not in sim_files:
             missing_files.append(f'  - {key}: Not specified in simulation input file')
-        elif not os.path.exists(sim_dict[key]):
-            missing_files.append(f'  - {key}: {sim_dict[key]}')
+        elif not os.path.exists(sim_files[key]):
+            missing_files.append(f'  - {key}: {sim_files[key]}')
 
     if missing_files:
         missing_list = '\n'.join(missing_files)
@@ -101,7 +101,7 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
         raise FileNotFoundError(message)
 
     # -- create list of new file names
-    sim_dict_new = iwfm.new_sim_dict(out_base_name)
+    sim_files_new = iwfm.new_sim_files(out_base_name)
 
     # ** TODO: test for pickle files, read info from source if not present, error if no source
     # Check that required pickle files exist
@@ -203,19 +203,19 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
     bounding_poly = gis.elem2boundingpoly(elem_nodes, node_coords)
 
     # -- create submodel Small Watersheds file
-    iwfm.sub_swhed_file(sim_dict['swshed_file'], sim_dict_new['swshed_file'], node_list, snode_dict, verbose)
+    iwfm.sub_swhed_file(sim_files.swshed_file, sim_files_new.swshed_file, node_list, snode_dict, verbose)
 
     # -- create submodel Unsaturated Zone file
-    iwfm.sub_unsat_file(sim_dict['unsat_file'], sim_dict_new['unsat_file'], elem_list, verbose)
+    iwfm.sub_unsat_file(sim_files.unsat_file, sim_files_new.unsat_file, elem_list, verbose)
 
     # -- process submodel Groundwater files
-    iwfm.sub_gw_file(sim_dict, sim_dict_new, node_list, elem_list, bounding_poly, sim_base_path, verbose=verbose)
+    iwfm.sub_gw_file(sim_files, sim_files_new, node_list, elem_list, bounding_poly, sim_base_path, verbose=verbose)
 
     # -- process submodel Streams file
-    iwfm.sub_streams_file(sim_dict, sim_dict_new, elem_list, sub_snodes, sim_base_path, verbose)
+    iwfm.sub_streams_file(sim_files, sim_files_new, elem_list, sub_snodes, sim_base_path, verbose)
 
     # -- process submodel Rootzone file
-    iwfm.sub_rootzone_file(sim_dict, sim_dict_new, elem_list, sub_snodes, sim_base_path, verbose)
+    iwfm.sub_rootzone_file(sim_files, sim_files_new, elem_list, sub_snodes, sim_base_path, verbose)
 
     # -- process submodel Lake file
     if have_lake:
@@ -226,9 +226,9 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
 
 
     # -- write new simulation main input file
-    iwfm.sub_sim_file(in_sim_file, sim_dict_new, have_lake)
+    iwfm.sub_sim_file(in_sim_file, sim_files_new, have_lake)
     if verbose:
-        print(f'  Wrote submodel simulation file {sim_dict_new["sim_name"]}')
+        print(f'  Wrote submodel simulation file {sim_files_new.sim_name}')
 
     return  # ================================================================
     return

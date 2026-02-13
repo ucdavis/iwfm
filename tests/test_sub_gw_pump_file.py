@@ -21,6 +21,7 @@ import pytest
 import tempfile
 import os
 from pathlib import Path
+from iwfm.dataclasses import SimulationFiles
 
 
 def create_pump_file(well_file, epump_file, prate_file, pumpout_file=''):
@@ -171,24 +172,24 @@ class TestSubGwPumpFile:
             with open(old_file, 'w') as f:
                 f.write(content)
 
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2, 3], bounding_poly)
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2, 3], bounding_poly)
 
             # Verify output file was created
-            assert os.path.exists(sim_dict_new['pump_file'])
+            assert os.path.exists(sim_files_new.pump_file)
 
-            with open(sim_dict_new['pump_file']) as f:
+            with open(sim_files_new.pump_file) as f:
                 new_content = f.read()
 
             # All file references should still be blank
@@ -222,12 +223,12 @@ class TestSubGwPumpFile:
                 f.write(content)
 
             new_well_file = os.path.join(tmpdir, 'new_well')
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': new_well_file,
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=new_well_file,
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
@@ -237,12 +238,12 @@ class TestSubGwPumpFile:
 
             # Only elements 1, 2 in submodel (not element 10)
             # Pass base_path to resolve relative file paths
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2], bounding_poly, base_path=Path(tmpdir))
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2], bounding_poly, base_path=Path(tmpdir))
 
             # Verify main pump file was created
-            assert os.path.exists(sim_dict_new['pump_file'])
+            assert os.path.exists(sim_files_new.pump_file)
 
-            with open(sim_dict_new['pump_file']) as f:
+            with open(sim_files_new.pump_file) as f:
                 new_content = f.read()
 
             # Well file reference should be updated
@@ -275,12 +276,12 @@ class TestSubGwPumpFile:
                 f.write(content)
 
             new_epump_file = os.path.join(tmpdir, 'new_epump')
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': new_epump_file,
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=new_epump_file,
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
@@ -289,12 +290,12 @@ class TestSubGwPumpFile:
 
             # Only elements 1, 2, 3 in submodel (not element 10)
             # Pass base_path to resolve relative file paths
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2, 3], bounding_poly, base_path=Path(tmpdir))
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2, 3], bounding_poly, base_path=Path(tmpdir))
 
             # Verify main pump file was created
-            assert os.path.exists(sim_dict_new['pump_file'])
+            assert os.path.exists(sim_files_new.pump_file)
 
-            with open(sim_dict_new['pump_file']) as f:
+            with open(sim_files_new.pump_file) as f:
                 new_content = f.read()
 
             # Element pump file reference should be updated
@@ -309,12 +310,12 @@ class TestSubGwPumpFile:
             with open(old_file, 'w') as f:
                 f.write(content)
 
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
@@ -322,9 +323,9 @@ class TestSubGwPumpFile:
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
             # Should not raise an error with verbose=True
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2], bounding_poly, verbose=True)
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2], bounding_poly, verbose=True)
 
-            assert os.path.exists(sim_dict_new['pump_file'])
+            assert os.path.exists(sim_files_new.pump_file)
 
     def test_returns_none(self):
         """Test that function returns None"""
@@ -335,19 +336,19 @@ class TestSubGwPumpFile:
             with open(old_file, 'w') as f:
                 f.write(content)
 
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            result = sub_gw_pump_file(old_file, sim_dict_new, [1, 2], bounding_poly)
+            result = sub_gw_pump_file(old_file, sim_files_new, [1, 2], bounding_poly)
 
             assert result is None
 
@@ -360,21 +361,21 @@ class TestSubGwPumpFile:
             with open(old_file, 'w') as f:
                 f.write(content)
 
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2], bounding_poly)
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2], bounding_poly)
 
-            with open(sim_dict_new['pump_file']) as f:
+            with open(sim_files_new.pump_file) as f:
                 new_content = f.read()
 
             # Check header is preserved
@@ -389,21 +390,21 @@ class TestSubGwPumpFile:
             with open(old_file, 'w') as f:
                 f.write(content)
 
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2], bounding_poly)
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2], bounding_poly)
 
-            with open(sim_dict_new['pump_file']) as f:
+            with open(sim_files_new.pump_file) as f:
                 new_content = f.read()
 
             # Pumping rates file reference should be updated
@@ -419,21 +420,21 @@ class TestSubGwPumpFile:
             with open(old_file, 'w') as f:
                 f.write(content)
 
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
 
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2], bounding_poly)
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2], bounding_poly)
 
-            assert os.path.exists(sim_dict_new['pump_file'])
+            assert os.path.exists(sim_files_new.pump_file)
 
     def test_no_wells_sets_blank_reference(self):
         """Test that well file reference is set blank when no wells in submodel"""
@@ -459,12 +460,12 @@ class TestSubGwPumpFile:
             with open(old_file, 'w') as f:
                 f.write(content)
 
-            sim_dict_new = {
-                'pump_file': os.path.join(tmpdir, 'new_pump.dat'),
-                'well_file': os.path.join(tmpdir, 'new_well'),
-                'epump_file': os.path.join(tmpdir, 'new_epump'),
-                'prate_file': os.path.join(tmpdir, 'new_prate')
-            }
+            sim_files_new = SimulationFiles(
+                pump_file=os.path.join(tmpdir, 'new_pump.dat'),
+                well_file=os.path.join(tmpdir, 'new_well'),
+                epump_file=os.path.join(tmpdir, 'new_epump'),
+                prate_file=os.path.join(tmpdir, 'new_prate')
+            )
 
             from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
@@ -474,9 +475,9 @@ class TestSubGwPumpFile:
 
             # Elements 1, 2, 3 in submodel but wells are in elements 100, 200
             # Pass base_path to resolve relative file paths
-            sub_gw_pump_file(old_file, sim_dict_new, [1, 2, 3], bounding_poly, base_path=Path(tmpdir))
+            sub_gw_pump_file(old_file, sim_files_new, [1, 2, 3], bounding_poly, base_path=Path(tmpdir))
 
-            with open(sim_dict_new['pump_file']) as f:
+            with open(sim_files_new.pump_file) as f:
                 new_content = f.read()
 
             # When no wells remain, file reference should be blank

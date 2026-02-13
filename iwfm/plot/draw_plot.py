@@ -98,7 +98,7 @@ def draw_plot( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name, well_info,
     # 'r-' = red line, 'bo' = blue dots, 'r--' = red dashes, 
     # 'r:' = red dotted line, 'bs' = blue squares, 'g^' = green triangles, etc
 
-    col = well_info[0]  # gather information
+    col = well_info.column  # gather information
 
     # each hydrograph in gwhyd_obs has dates in the first column
     # convert the observed values and each set of simulated values to a pair of
@@ -149,7 +149,7 @@ def draw_plot( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name, well_info,
         plt.xlabel('Date')
         plt.ylabel('Head (ft msl)')
         plt.title(
-            title_words + ': ' + well_name.upper() + ' Layer ' + str(well_info[3])
+            title_words + ': ' + well_name.upper() + ' Layer ' + str(well_info.layer)
         )
         plt.plot(meas_dates, meas, 'bo', label='Observed')
 

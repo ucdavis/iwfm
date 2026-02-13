@@ -19,7 +19,7 @@
 
 def iwfm_read_sim(sim_file, verbose=False):
     ''' iwfm_read_sim() - Read an IWFM Simulation main input file, and
-        return a dictionary with the files called and some settings
+        return a SimulationFiles dataclass with the files called and some settings
 
     Parameters
     ----------
@@ -31,69 +31,70 @@ def iwfm_read_sim(sim_file, verbose=False):
 
     Returns
     -------
-    sim_dict : dictionary
-        Dictionary with fixed keys, file names for corresponding values
-          Keys            Refers to
-          ----            ----------
-          preout          Preprocessor output file name
-          gw              Groundwater main file name
-          stream          Stream main file name
-          lake            Lake main file name
-          rootzone        Rootzone main file name
-          smallwatershed  Small Watershed file name
-          unsat           Unsaturated Zone file name
-          irrfrac         Irrigation Fractions file name
-          supplyadj       Supply Adjustment file name
-          precip          Precipitation file name
-          et              Evapotranspiration file name
-          start           Starting date (DSS format)
-          step            Time step (IWFM fixed set)
-          end             Ending date (DSS format)
+    sim_files : SimulationFiles
+        SimulationFiles dataclass with file names and settings.
+        Field names: preout, gw_file, stream_file, lake_file, root_file,
+        swshed_file, unsat_file, irrfrac, supplyadj, precip, et,
+        start, step, end.
 
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
+    from iwfm.dataclasses import SimulationFiles
 
     if verbose: print(f"Entered iwfm_read_sim() with {sim_file}")
 
-    sim_dict = {}
     iwfm.file_test(sim_file)
     with open(sim_file) as f:
         sim_lines = f.read().splitlines()
 
-    sim_dict['preout'], line_index = read_next_line_value(sim_lines, -1, skip_lines=3)
+    preout, line_index = read_next_line_value(sim_lines, -1, skip_lines=3)
 
-    sim_dict['gw'], line_index = read_next_line_value(sim_lines, line_index)
+    gw_file, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['stream'], line_index = read_next_line_value(sim_lines, line_index)
+    stream_file, line_index = read_next_line_value(sim_lines, line_index)
 
     temp, line_index = read_next_line_value(sim_lines, line_index)
     if temp[0] == '/':   # check for presence of lake file
         lake_file = ''
     else:
         lake_file = temp
-    sim_dict['lake'] = lake_file
 
-    sim_dict['rootzone'], line_index = read_next_line_value(sim_lines, line_index)
+    root_file, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['smallwatershed'], line_index = read_next_line_value(sim_lines, line_index)
+    swshed_file, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['unsat'], line_index = read_next_line_value(sim_lines, line_index)
+    unsat_file, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['irrfrac'], line_index = read_next_line_value(sim_lines, line_index)
+    irrfrac, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['supplyadj'], line_index = read_next_line_value(sim_lines, line_index)
+    supplyadj, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['precip'], line_index = read_next_line_value(sim_lines, line_index)
+    precip, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['et'], line_index = read_next_line_value(sim_lines, line_index)
+    et, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['start'], line_index = read_next_line_value(sim_lines, line_index)
+    start, line_index = read_next_line_value(sim_lines, line_index)
 
-    sim_dict['step'], line_index = read_next_line_value(sim_lines, line_index, skip_lines=1)
+    step, line_index = read_next_line_value(sim_lines, line_index, skip_lines=1)
 
-    sim_dict['end'], line_index = read_next_line_value(sim_lines, line_index)
+    end, line_index = read_next_line_value(sim_lines, line_index)
 
     if verbose: print(f"Leaving iwfm_read_sim()")
 
-    return sim_dict
+    return SimulationFiles(
+        preout=preout,
+        gw_file=gw_file,
+        stream_file=stream_file,
+        lake_file=lake_file,
+        root_file=root_file,
+        swshed_file=swshed_file,
+        unsat_file=unsat_file,
+        irrfrac=irrfrac,
+        supplyadj=supplyadj,
+        precip=precip,
+        et=et,
+        start=start,
+        step=step,
+        end=end,
+    )
