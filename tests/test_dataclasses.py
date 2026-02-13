@@ -19,7 +19,7 @@
 import pytest
 from dataclasses import fields
 
-from iwfm.dataclasses import (
+from iwfm.iwfm_dataclasses import (
     _DictAccessMixin,
     PreprocessorFiles,
     SimulationFiles,
@@ -453,8 +453,8 @@ class TestDataclassImports:
 
     def test_import_from_dataclasses_module(self):
         '''Test direct import from iwfm.dataclasses.'''
-        from iwfm.dataclasses import PreprocessorFiles, SimulationFiles
-        from iwfm.dataclasses import WellInfo, RootzoneFiles, GroundwaterFiles
+        from iwfm.iwfm_dataclasses import PreprocessorFiles, SimulationFiles
+        from iwfm.iwfm_dataclasses import WellInfo, RootzoneFiles, GroundwaterFiles
         assert PreprocessorFiles is not None
         assert SimulationFiles is not None
         assert WellInfo is not None
@@ -473,5 +473,5 @@ class TestDataclassImports:
 
     def test_import_mixin(self):
         '''Test that the mixin is importable (for advanced use cases).'''
-        from iwfm.dataclasses import _DictAccessMixin
+        from iwfm.iwfm_dataclasses import _DictAccessMixin
         assert _DictAccessMixin is not None

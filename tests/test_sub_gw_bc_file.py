@@ -21,7 +21,7 @@ import pytest
 import tempfile
 import os
 from pathlib import Path
-from iwfm.dataclasses import SimulationFiles
+from iwfm.iwfm_dataclasses import SimulationFiles
 
 
 def create_bc_file(spfl_file, sphd_file, ghd_file, cghd_file, tsbc_file, noutb=0, bhydoutfl=''):

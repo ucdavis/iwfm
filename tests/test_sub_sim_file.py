@@ -19,7 +19,7 @@
 import pytest
 import os
 import iwfm
-from iwfm.dataclasses import SimulationFiles
+from iwfm.iwfm_dataclasses import SimulationFiles
 
 
 def create_sim_file_content(has_lake=False):

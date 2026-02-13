@@ -45,7 +45,7 @@ def test_iwfm_read_sim_loads_successfully(sim_file_exists):
     sim_files = iwfm.iwfm_read_sim(str(SIMULATION_FILE))
 
     # Verify a SimulationFiles instance was returned
-    from iwfm.dataclasses import SimulationFiles
+    from iwfm.iwfm_dataclasses import SimulationFiles
     assert sim_files is not None
     assert isinstance(sim_files, SimulationFiles)
 

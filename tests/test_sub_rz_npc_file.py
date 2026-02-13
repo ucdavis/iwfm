@@ -22,7 +22,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import iwfm
-from iwfm.dataclasses import SimulationFiles
+from iwfm.iwfm_dataclasses import SimulationFiles
 
 
 def create_npc_file_content(ncrop, nelems, elem_ids, nbud=0,

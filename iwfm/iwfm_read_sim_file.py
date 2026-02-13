@@ -40,7 +40,7 @@ def iwfm_read_sim_file(sim_file, verbose=False):
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
-    from iwfm.dataclasses import SimulationFiles
+    from iwfm.iwfm_dataclasses import SimulationFiles
 
     if verbose: print(f"Entered iwfm_read_sim_file() with {sim_file}")
 

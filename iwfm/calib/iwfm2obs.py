@@ -61,13 +61,13 @@ def iwfm2obs(verbose=False):
     time_step  = time_step.lower()
 
     sim_file_d = iwfm.iwfm_read_sim(sim_file)                                # get package file names from simulation file
-    gw_file_d, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy = iwfm.iwfm_read_gw(sim_file_d['gw'])                          # get groundwater file names from groundwater file
+    gw_file_d, node_id, layers, Kh, Ss, Sy, Kq, Kv, init_cond, units, hydrographs, factxy = iwfm.iwfm_read_gw(sim_file_d['gw_file'])                          # get groundwater file names from groundwater file
 
     # check for existence of subprocess file names
     file_dict = {   # 0                              1             2             3             4             5    6     7       8     9
         # name/type     main_file                smp_obs       smp_out       ins_out       pcf_out       proc wrins rthresh colid skips
-        'Streams':     [sim_file_d['stream']   ,'st_obs.smp','st_temp.smp','st_temp.ins','st_temp.pcf',True,True, 0,      1,    [ 6,6]],
-        'Groundwater': [sim_file_d['gw']       ,'gw_obs.smp','gw_temp.smp','gw_temp.ins','gw_temp.pcf',True,True, 0,      5,    [20,2]],
+        'Streams':     [sim_file_d['stream_file'],'st_obs.smp','st_temp.smp','st_temp.ins','st_temp.pcf',True,True, 0,      1,    [ 6,6]],
+        'Groundwater': [sim_file_d['gw_file']  ,'gw_obs.smp','gw_temp.smp','gw_temp.ins','gw_temp.pcf',True,True, 0,      5,    [20,2]],
         'Subsidence':  [gw_file_d.subs_file    ,'sb_obs.smp','sb_temp.smp','sb_temp.ins','sb_temp.pcf',True,True, 0,      5,    [ 5,2]],
         'Tile drains': [gw_file_d.drain_file   ,'td_obs.smp','td_temp.smp','td_temp.ins','td_temp.pcf',True,True, 0,      2,    [-1,3]]
     }

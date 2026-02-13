@@ -221,7 +221,7 @@ class TestReadObsWells:
             result = read_obs_wells(temp_file)
 
             # Verify structure: WellInfo(column, x, y, layer, name)
-            from iwfm.dataclasses import WellInfo
+            from iwfm.iwfm_dataclasses import WellInfo
             well = result['TEST_WELL']
             assert isinstance(well, WellInfo)
 
@@ -269,7 +269,7 @@ class TestReadObsWells:
             assert well.name == 's_380313n1219426w001%1'  # lowercase
 
         # Check that dictionary structure is correct
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         for key, value in result.items():
             assert isinstance(key, str)
             assert isinstance(value, WellInfo)

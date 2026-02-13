@@ -20,7 +20,7 @@ import numpy as np
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 from scipy.interpolate import interp1d
-from iwfm.dataclasses import GroundwaterFiles
+from iwfm.iwfm_dataclasses import GroundwaterFiles
 
 
 def _load_iwfm2obs():

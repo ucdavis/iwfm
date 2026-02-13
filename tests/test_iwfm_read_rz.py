@@ -244,7 +244,7 @@ C Comment line 4
             temp_file = f.name
 
         try:
-            from iwfm.dataclasses import RootzoneFiles
+            from iwfm.iwfm_dataclasses import RootzoneFiles
 
             result = iwfm.iwfm_read_rz(temp_file)
 

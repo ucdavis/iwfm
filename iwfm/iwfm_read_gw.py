@@ -98,7 +98,7 @@ def iwfm_read_gw(gw_file, verbose=False):
     import numpy as np
     import re
     from iwfm.file_utils import read_next_line_value
-    from iwfm.dataclasses import GroundwaterFiles
+    from iwfm.iwfm_dataclasses import GroundwaterFiles
 
     iwfm.file_test(gw_file)
 

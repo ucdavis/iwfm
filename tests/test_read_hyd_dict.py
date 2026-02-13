@@ -107,7 +107,7 @@ class TestReadHydDict:
 
         values = result["TEST_WELL"]
         # Values should be a WellInfo instance
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         assert isinstance(values, WellInfo)
         assert values.column == 1  # column number (ID)
         assert values.x == 592798.7048  # x coordinate
@@ -305,7 +305,7 @@ class TestReadHydDictRealFile:
         assert len(result) > 0
 
         # Check structure of first entry
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         first_key = next(iter(result))
         values = result[first_key]
         assert isinstance(values, WellInfo)

@@ -40,7 +40,7 @@ def read_sim_wells(gw_file, verbose=False):
 
     '''
     from iwfm.file_utils import read_next_line_value
-    from iwfm.dataclasses import WellInfo
+    from iwfm.iwfm_dataclasses import WellInfo
 
     if verbose: print(f"Entered read_sim_wells() with {gw_file}")
 

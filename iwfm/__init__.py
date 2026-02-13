@@ -18,8 +18,8 @@
 # -----------------------------------------------------------------------------
 
 # -- dataclass definitions --------------------------------
-from iwfm.dataclasses import PreprocessorFiles, SimulationFiles, WellInfo
-from iwfm.dataclasses import RootzoneFiles, GroundwaterFiles
+from iwfm.iwfm_dataclasses import PreprocessorFiles, SimulationFiles, WellInfo
+from iwfm.iwfm_dataclasses import RootzoneFiles, GroundwaterFiles
 
 # -- IWFM model class -------------------------------------
 from iwfm.iwfm_model import iwfm_model, IWFMModelError

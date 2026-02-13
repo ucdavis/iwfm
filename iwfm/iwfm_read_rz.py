@@ -37,7 +37,7 @@ def iwfm_read_rz(rz_file, verbose=False):
 
     import iwfm
     from iwfm.file_utils import read_next_line_value
-    from iwfm.dataclasses import RootzoneFiles
+    from iwfm.iwfm_dataclasses import RootzoneFiles
 
     if verbose: print(f"Entered iwfm_read_rz() with {rz_file}")
 

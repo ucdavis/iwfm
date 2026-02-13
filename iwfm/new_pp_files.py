@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-from iwfm.dataclasses import PreprocessorFiles
+from iwfm.iwfm_dataclasses import PreprocessorFiles
 
 
 def new_pp_files(out_base_name):

@@ -41,7 +41,7 @@ def read_hyd_dict(gw_dat_file, verbose=False):
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
-    from iwfm.dataclasses import WellInfo
+    from iwfm.iwfm_dataclasses import WellInfo
 
     logger.debug(f"Entered read_hyd_dict() with {gw_dat_file}")
 

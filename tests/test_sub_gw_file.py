@@ -20,7 +20,7 @@
 import pytest
 import tempfile
 import os
-from iwfm.dataclasses import SimulationFiles
+from iwfm.iwfm_dataclasses import SimulationFiles
 
 
 def create_gw_file(bc_file, td_file, pump_file, subs_file, nouth, hydrographs,

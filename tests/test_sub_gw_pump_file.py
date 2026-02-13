@@ -21,7 +21,7 @@ import pytest
 import tempfile
 import os
 from pathlib import Path
-from iwfm.dataclasses import SimulationFiles
+from iwfm.iwfm_dataclasses import SimulationFiles
 
 
 def create_pump_file(well_file, epump_file, prate_file, pumpout_file=''):

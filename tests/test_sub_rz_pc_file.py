@@ -22,7 +22,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import iwfm
-from iwfm.dataclasses import SimulationFiles
+from iwfm.iwfm_dataclasses import SimulationFiles
 
 
 # Number of ponded crop types (rice and refuge) - fixed at 5 in IWFM

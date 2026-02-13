@@ -28,7 +28,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         well_names = ['WELL001']
         rmse = [5.0]
@@ -44,7 +44,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         well_names = ['WELL001']
         rmse = [5.0]
@@ -70,7 +70,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=123.45, y=678.90, layer=2, name='well001')}
         well_names = ['WELL001']
         rmse = [5.5]
@@ -94,7 +94,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {
             'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001'),
             'WELL002': WellInfo(column=2, x=150.0, y=250.0, layer=2, name='well002'),
@@ -118,7 +118,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {
             'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001'),
             # WELL002 is missing from dict
@@ -141,7 +141,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         well_names = ['WELL001']
         rmse = [5.0]
@@ -160,7 +160,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.123456, y=200.654321, layer=1, name='well001')}
         well_names = ['WELL001']
         rmse = [5.12345]
@@ -182,7 +182,7 @@ class TestWriteRmseBias:
         from iwfm.calib.write_rmse_bias import write_rmse_bias
 
         output_file = str(tmp_path / 'stats.txt')
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {
             'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001'),
             'WELL002': WellInfo(column=2, x=150.0, y=250.0, layer=2, name='well002'),

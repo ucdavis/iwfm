@@ -33,7 +33,7 @@ def read_obs_wells(gw_file):
         dictionary of groundwater hydrograph info, values are WellInfo instances
     '''
     import iwfm
-    from iwfm.dataclasses import WellInfo
+    from iwfm.iwfm_dataclasses import WellInfo
 
     well_dict = {}
     iwfm.file_test(gw_file)

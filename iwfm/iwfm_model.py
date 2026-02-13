@@ -21,7 +21,7 @@ import re
 from pathlib import Path
 from shapely.geometry import Point, Polygon
 from iwfm.file_utils import read_next_line_value
-from iwfm.dataclasses import PreprocessorFiles, SimulationFiles
+from iwfm.iwfm_dataclasses import PreprocessorFiles, SimulationFiles
 
 
 class IWFMModelError(Exception):

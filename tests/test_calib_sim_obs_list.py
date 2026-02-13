@@ -30,7 +30,7 @@ class TestSimObsList:
         obs = [
             ['WELL001', datetime(2020, 1, 15), '0:00:00', 100.0],
         ]
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         gwhyd_sim = [
             [95.0, 105.0],   # values at first date
@@ -49,7 +49,7 @@ class TestSimObsList:
         obs = [
             ['WELL001', datetime(2020, 1, 15), '0:00:00', 100.0],
         ]
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         gwhyd_sim = [
             [90.0],   # value at 1/10
@@ -71,7 +71,7 @@ class TestSimObsList:
         obs = [
             ['WELL001', datetime(2020, 1, 15), '0:00:00', 105.0],
         ]
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         gwhyd_sim = [
             [100.0],
@@ -92,7 +92,7 @@ class TestSimObsList:
             ['WELL001', datetime(2020, 1, 15), '0:00:00', 100.0],
             ['WELL002', datetime(2020, 1, 15), '0:00:00', 200.0],  # Not in dict
         ]
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         gwhyd_sim = [
             [95.0],
@@ -115,7 +115,7 @@ class TestSimObsList:
             ['WELL001', datetime(2019, 1, 15), '0:00:00', 90.0],   # Before range
             ['WELL001', datetime(2021, 1, 15), '0:00:00', 110.0],  # After range
         ]
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         gwhyd_sim = [
             [95.0],
@@ -137,7 +137,7 @@ class TestSimObsList:
             ['WELL001', datetime(2020, 1, 15), '0:00:00', 102.0],
             ['WELL001', datetime(2020, 1, 18), '0:00:00', 104.0],
         ]
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         gwhyd_sim = [
             [90.0],
@@ -156,7 +156,7 @@ class TestSimObsList:
         obs = [
             ['WELL001', datetime(2020, 1, 15), '0:00:00', 100.0],
         ]
-        from iwfm.dataclasses import WellInfo
+        from iwfm.iwfm_dataclasses import WellInfo
         well_dict = {'WELL001': WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well001')}
         gwhyd_sim = [
             [95.0],

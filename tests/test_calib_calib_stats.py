@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 from datetime import datetime
 
-from iwfm.dataclasses import WellInfo
+from iwfm.iwfm_dataclasses import WellInfo
 
 
 def test_calib_stats_imports():

@@ -61,7 +61,7 @@ class TestReadWells:
             assert 'WELL_003' in well_dict
 
             # Verify values: WellInfo(column, x, y, layer, name)
-            from iwfm.dataclasses import WellInfo
+            from iwfm.iwfm_dataclasses import WellInfo
             assert well_dict['WELL_001'] == WellInfo(column=1, x=100.0, y=200.0, layer=1, name='well_001')
             assert well_dict['WELL_002'] == WellInfo(column=2, x=150.0, y=250.0, layer=2, name='well_002')
             assert well_dict['WELL_003'] == WellInfo(column=3, x=200.0, y=300.0, layer=1, name='well_003')
@@ -132,7 +132,7 @@ class TestReadWells:
             well_dict = read_wells(temp_file)
 
             # Should read correctly despite comment lines
-            from iwfm.dataclasses import WellInfo
+            from iwfm.iwfm_dataclasses import WellInfo
             assert 'TEST_WELL' in well_dict
             assert well_dict['TEST_WELL'] == WellInfo(column=1, x=100.0, y=200.0, layer=1, name='test_well')
 
@@ -168,7 +168,7 @@ class TestReadWells:
             assert 'WELL_A' in result
 
             # Verify value structure: WellInfo(column, x, y, layer, name)
-            from iwfm.dataclasses import WellInfo
+            from iwfm.iwfm_dataclasses import WellInfo
             values = result['WELL_A']
             assert isinstance(values, WellInfo)
             assert isinstance(values.column, int)   # column number
@@ -377,7 +377,7 @@ class TestReadWells:
 
             assert len(well_dict) == 1
             assert 'SINGLE_WELL' in well_dict
-            from iwfm.dataclasses import WellInfo
+            from iwfm.iwfm_dataclasses import WellInfo
             assert well_dict['SINGLE_WELL'] == WellInfo(column=100, x=555.5, y=666.6, layer=3, name='single_well')
 
         finally:

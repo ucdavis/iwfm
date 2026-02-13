@@ -20,7 +20,7 @@
 import pytest
 import tempfile
 import os
-from iwfm.dataclasses import PreprocessorFiles
+from iwfm.iwfm_dataclasses import PreprocessorFiles
 
 
 def create_pp_file(preout, elem_file, node_file, strat_file, stream_file, lake_file=''):

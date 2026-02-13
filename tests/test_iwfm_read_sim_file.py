@@ -56,7 +56,7 @@ class TestIwfmReadSimFile:
             sim_files, have_lake = iwfm_read_sim_file(temp_file)
 
             # Verify return type
-            from iwfm.dataclasses import SimulationFiles
+            from iwfm.iwfm_dataclasses import SimulationFiles
             assert isinstance(sim_files, SimulationFiles)
             assert isinstance(have_lake, bool)
 
@@ -163,7 +163,7 @@ class TestIwfmReadSimFile:
             sim_files, have_lake = result
 
             # Verify types
-            from iwfm.dataclasses import SimulationFiles
+            from iwfm.iwfm_dataclasses import SimulationFiles
             assert isinstance(sim_files, SimulationFiles)
             assert isinstance(have_lake, bool)
 

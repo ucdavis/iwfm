@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 
-from iwfm.dataclasses import PreprocessorFiles
+from iwfm.iwfm_dataclasses import PreprocessorFiles
 
 
 def iwfm_read_preproc(pre_file):

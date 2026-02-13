@@ -38,7 +38,7 @@ def read_wells(infile, verbose=False):
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
-    from iwfm.dataclasses import WellInfo
+    from iwfm.iwfm_dataclasses import WellInfo
 
     if verbose: print(f"Entered read_wells() with {infile}")
 

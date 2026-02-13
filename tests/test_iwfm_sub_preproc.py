@@ -19,7 +19,7 @@
 import polars as pl
 from pathlib import Path
 from unittest.mock import patch
-from iwfm.dataclasses import PreprocessorFiles
+from iwfm.iwfm_dataclasses import PreprocessorFiles
 
 
 def _load_iwfm_sub_preproc():
