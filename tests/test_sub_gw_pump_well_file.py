@@ -89,7 +89,7 @@ class TestSubGwPumpWellFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+        from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
         from shapely.geometry import Polygon
 
         bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -118,7 +118,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             # Small bounding polygon that excludes all wells
@@ -161,7 +161,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             # Bounding polygon includes all wells
@@ -201,7 +201,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -244,7 +244,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -286,7 +286,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -321,7 +321,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -350,7 +350,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -377,7 +377,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -410,7 +410,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -449,7 +449,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -493,7 +493,7 @@ class TestSubGwPumpWellFile:
 
             new_file = os.path.join(tmpdir, 'new_well.dat')
 
-            from iwfm.sub_gw_pump_well_file import sub_gw_pump_well_file
+            from iwfm.sub.gw_pump_well_file import sub_gw_pump_well_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])

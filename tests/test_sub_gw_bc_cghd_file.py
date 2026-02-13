@@ -85,7 +85,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             # All nodes are in submodel
             nodes = [123, 124, 134, 200, 300]
@@ -131,7 +131,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             # Only nodes 123, 134, and 550 are in submodel
             nodes = [123, 134, 550]
@@ -186,7 +186,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             # No nodes are in submodel
             nodes = [999, 1000, 2000]
@@ -224,7 +224,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             # Node 100 is in submodel
             nodes = [100]
@@ -252,7 +252,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             nodes = [100]
             sub_gw_bc_cghd_file(old_file, new_file, nodes)
@@ -288,7 +288,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             # Only node 100 is in submodel (both layers)
             nodes = [100]
@@ -317,7 +317,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             nodes = [100]
             # Should not raise an error with verbose=True
@@ -356,7 +356,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             nodes = [100, 300]
             new_ngb = sub_gw_bc_cghd_file(old_file, new_file, nodes)
@@ -391,7 +391,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             # Submodel includes Black Butte Lake and Thermalito nodes
             nodes = [123, 124, 134, 160, 176]
@@ -407,7 +407,7 @@ class TestSubGwBcCghdFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+        from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
         with pytest.raises(SystemExit):
             sub_gw_bc_cghd_file('nonexistent_file.dat', 'output.dat', [1, 2, 3])
@@ -428,7 +428,7 @@ class TestSubGwBcCghdFile:
         new_file = old_file.replace('.dat', '_new.dat')
 
         try:
-            from iwfm.sub_gw_bc_cghd_file import sub_gw_bc_cghd_file
+            from iwfm.sub.gw_bc_cghd_file import sub_gw_bc_cghd_file
 
             nodes = [100]
             new_ngb = sub_gw_bc_cghd_file(old_file, new_file, nodes)

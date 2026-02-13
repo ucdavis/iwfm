@@ -83,7 +83,7 @@ class TestSubGwPumpEpumpFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+        from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
         with pytest.raises(SystemExit):
             sub_gw_pump_epump_file('nonexistent_file.dat', 'new_file.dat', [1, 2, 3])
@@ -108,7 +108,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Only keep elements 1, 3, 5
             result = sub_gw_pump_epump_file(old_file, new_file, [1, 3, 5])
@@ -139,7 +139,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Elements 10, 20, 30 are not in the file
             result = sub_gw_pump_epump_file(old_file, new_file, [10, 20, 30])
@@ -177,7 +177,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Only elements 1, 2, 4 are in submodel
             result = sub_gw_pump_epump_file(old_file, new_file, [1, 2, 4])
@@ -212,7 +212,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Only elements 1, 2 are in submodel (group 2 completely filtered)
             result = sub_gw_pump_epump_file(old_file, new_file, [1, 2])
@@ -242,7 +242,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             result = sub_gw_pump_epump_file(old_file, new_file, [1, 2])
 
@@ -270,7 +270,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Should not raise an error with verbose=True
             result = sub_gw_pump_epump_file(old_file, new_file, [1, 2], verbose=True)
@@ -293,7 +293,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             result = sub_gw_pump_epump_file(old_file, new_file, [1])
 
@@ -314,7 +314,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Element 100 is not in the file
             result = sub_gw_pump_epump_file(old_file, new_file, [100])
@@ -336,7 +336,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             sub_gw_pump_epump_file(old_file, new_file, [1])
 
@@ -369,7 +369,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Only elements 1336, 1358 in submodel
             result = sub_gw_pump_epump_file(old_file, new_file, [1336, 1358])
@@ -412,7 +412,7 @@ class TestSubGwPumpEpumpFile:
 
             new_file = os.path.join(tmpdir, 'new_epump.dat')
 
-            from iwfm.sub_gw_pump_epump_file import sub_gw_pump_epump_file
+            from iwfm.sub.gw_pump_epump_file import sub_gw_pump_epump_file
 
             # Submodel elements
             result = sub_gw_pump_epump_file(old_file, new_file, [1, 3, 5, 6])

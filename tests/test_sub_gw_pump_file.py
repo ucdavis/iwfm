@@ -154,7 +154,7 @@ class TestSubGwPumpFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_gw_pump_file import sub_gw_pump_file
+        from iwfm.sub.gw_pump_file import sub_gw_pump_file
         from shapely.geometry import Polygon
 
         bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -178,7 +178,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -229,7 +229,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             # Bounding polygon includes wells at (50,50) and (25,75), but not (200,200)
@@ -282,7 +282,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -316,7 +316,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -342,7 +342,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -367,7 +367,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -396,7 +396,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -426,7 +426,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -466,7 +466,7 @@ class TestSubGwPumpFile:
                 'prate_file': os.path.join(tmpdir, 'new_prate')
             }
 
-            from iwfm.sub_gw_pump_file import sub_gw_pump_file
+            from iwfm.sub.gw_pump_file import sub_gw_pump_file
             from shapely.geometry import Polygon
 
             # Small bounding polygon that excludes all wells

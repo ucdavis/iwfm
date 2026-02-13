@@ -89,7 +89,7 @@ class TestSubPpFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_pp_file import sub_pp_file
+        from iwfm.sub.pp_file import sub_pp_file
 
         pre_dict = {'lake_file': ''}
         pre_dict_new = {'prename': 'new.in', 'preout': 'out.bin', 'elem_file': 'elem.dat',
@@ -128,7 +128,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             sub_pp_file(in_file, pre_dict, pre_dict_new)
 
@@ -173,7 +173,7 @@ class TestSubPpFile:
                 'lake_file': 'new_lake.dat'
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             sub_pp_file(in_file, pre_dict, pre_dict_new, has_lake=True)
 
@@ -214,7 +214,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             # has_lake=False means the lake file line should be blanked
             sub_pp_file(in_file, pre_dict, pre_dict_new, has_lake=False)
@@ -257,7 +257,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             sub_pp_file(in_file, pre_dict, pre_dict_new)
 
@@ -296,7 +296,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             sub_pp_file(in_file, pre_dict, pre_dict_new)
 
@@ -336,7 +336,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             result = sub_pp_file(in_file, pre_dict, pre_dict_new)
 
@@ -371,7 +371,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             sub_pp_file(in_file, pre_dict, pre_dict_new)
 
@@ -415,7 +415,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             sub_pp_file(in_file, pre_dict, pre_dict_new)
 
@@ -456,7 +456,7 @@ class TestSubPpFile:
                 'lake_file': ''
             }
 
-            from iwfm.sub_pp_file import sub_pp_file
+            from iwfm.sub.pp_file import sub_pp_file
 
             sub_pp_file(in_file, pre_dict, pre_dict_new)
 

@@ -94,7 +94,7 @@ class TestSubGwTdFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_gw_td_file import sub_gw_td_file
+        from iwfm.sub.gw_td_file import sub_gw_td_file
 
         with pytest.raises(SystemExit):
             sub_gw_td_file('nonexistent_file.dat', 'output.dat', [1, 2, 3])
@@ -110,7 +110,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             result = sub_gw_td_file(old_file, new_file, [1, 2, 3])
 
@@ -149,7 +149,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             # All nodes in submodel
             result = sub_gw_td_file(old_file, new_file, [100, 200, 300])
@@ -186,7 +186,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             # Only nodes 100 and 200 in submodel
             result = sub_gw_td_file(old_file, new_file, [100, 200])
@@ -221,7 +221,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             # No matching nodes in submodel
             result = sub_gw_td_file(old_file, new_file, [500, 600, 700])
@@ -260,7 +260,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             # Only nodes 100 and 200 in submodel
             result = sub_gw_td_file(old_file, new_file, [100, 200])
@@ -303,7 +303,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             # Node 100 in submodel, 999 not in submodel
             result = sub_gw_td_file(old_file, new_file, [100])
@@ -344,7 +344,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             # Should not raise an error with verbose=True
             result = sub_gw_td_file(old_file, new_file, [100], verbose=True)
@@ -370,7 +370,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             result = sub_gw_td_file(old_file, new_file, [100])
 
@@ -394,7 +394,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             sub_gw_td_file(old_file, new_file, [100])
 
@@ -422,7 +422,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             sub_gw_td_file(old_file, new_file, [100])
 
@@ -454,7 +454,7 @@ class TestSubGwTdFile:
 
             new_file = os.path.join(tmpdir, 'new_td.dat')
 
-            from iwfm.sub_gw_td_file import sub_gw_td_file
+            from iwfm.sub.gw_td_file import sub_gw_td_file
 
             result = sub_gw_td_file(old_file, new_file, [100, 200])
 

@@ -130,7 +130,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'new_tsbc'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
 
             # Create dummy bounding polygon
             from shapely.geometry import Polygon
@@ -187,7 +187,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'new_tsbc'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -245,7 +245,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'NewModel_TSBC'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -281,7 +281,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'new_tsbc'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -314,7 +314,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'new_tsbc'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -356,7 +356,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'new_tsbc'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -414,7 +414,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'NewModel_TSBC'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (1000, 0), (1000, 1000), (0, 1000)])
@@ -429,7 +429,7 @@ class TestSubGwBcFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_gw_bc_file import sub_gw_bc_file
+        from iwfm.sub.gw_bc_file import sub_gw_bc_file
         from shapely.geometry import Polygon
 
         bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -464,7 +464,7 @@ class TestSubGwBcFile:
                 'tsbc_file': 'new_tsbc'
             }
 
-            from iwfm.sub_gw_bc_file import sub_gw_bc_file
+            from iwfm.sub.gw_bc_file import sub_gw_bc_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])

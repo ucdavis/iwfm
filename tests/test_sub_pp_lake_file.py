@@ -68,7 +68,7 @@ class TestSubPpLakeFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_pp_lake_file import sub_pp_lake_file
+        from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
         with pytest.raises(SystemExit):
             sub_pp_lake_file('nonexistent_file.dat', 'output.dat', [])
@@ -88,7 +88,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             # lake_info format: [ID, TYPDST, DST, NELAKE, lake_name, [elements]]
             lake_info = [
@@ -125,7 +125,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             lake_info = [
                 ['1', '0', '0', '2', 'Lake One', [100, 101]],
@@ -161,7 +161,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             # Empty lake_info - no lakes in submodel
             lake_info = []
@@ -196,7 +196,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             # Only one lake in submodel
             lake_info = [
@@ -230,7 +230,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             lake_info = [
                 ['1', '0', '0', '2', 'Test Lake', [100, 101]]
@@ -259,7 +259,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             lake_info = [
                 ['1', '0', '0', '2', 'Test Lake', [100, 101]]
@@ -284,7 +284,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             lake_info = [
                 ['1', '0', '0', '10', 'Big Lake', list(range(100, 110))]
@@ -316,7 +316,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             lake_info = [
                 ['1', '1', '25', '2', 'Stream Lake', [100, 101]]
@@ -348,7 +348,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             lake_info = [
                 ['1', '3', '2', '2', 'Upper Lake', [100, 101]],
@@ -381,7 +381,7 @@ class TestSubPpLakeFile:
 
             new_file = os.path.join(tmpdir, 'new_lake.dat')
 
-            from iwfm.sub_pp_lake_file import sub_pp_lake_file
+            from iwfm.sub.pp_lake_file import sub_pp_lake_file
 
             lake_info = [
                 ['1', '0', '0', '2', 'Black Butte Lake', [100, 101]]

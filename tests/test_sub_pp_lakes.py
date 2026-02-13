@@ -68,7 +68,7 @@ class TestSubPpLakes:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_pp_lakes import sub_pp_lakes
+        from iwfm.sub.pp_lakes import sub_pp_lakes
 
         with pytest.raises(SystemExit):
             sub_pp_lakes('nonexistent_file.dat', [[1], [2], [3]])
@@ -86,7 +86,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             # elem_list format: list of [elem_id, ...] where elem_id is extracted
             elem_list = [[100], [101], [102], [200], [201]]
@@ -112,7 +112,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             # Only elements 100, 102 are in submodel
             elem_list = [[100], [102], [200], [201]]
@@ -137,7 +137,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             # No lake elements in submodel
             elem_list = [[200], [201], [202]]
@@ -161,7 +161,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             # All lake elements in submodel
             elem_list = [[100], [101], [200], [201], [202], [300]]
@@ -187,7 +187,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             # Only lake 2 elements in submodel
             elem_list = [[200], [201], [202], [300]]
@@ -213,7 +213,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             # No lake elements in submodel
             elem_list = [[300], [301], [302]]
@@ -236,7 +236,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             elem_list = [[100], [101]]
 
@@ -265,7 +265,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             elem_list = [[100], [101]]
 
@@ -289,7 +289,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             elem_list = [[100], [101], [200], [201]]
 
@@ -311,7 +311,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             elem_list = [[100], [101]]
 
@@ -333,7 +333,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             elem_list = [[100], [101]]
 
@@ -354,7 +354,7 @@ class TestSubPpLakes:
             with open(lake_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_lakes import sub_pp_lakes
+            from iwfm.sub.pp_lakes import sub_pp_lakes
 
             # elem_list with extra data beyond elem_id
             elem_list = [[100, 1, 2, 3, 4, 5], [101, 1, 2, 3, 4, 5], [200, 1, 2, 3, 4, 5]]

@@ -187,7 +187,7 @@ class TestSubGwFile:
 
     def test_missing_gw_file_key(self):
         """Test error when gw_file key is missing from sim_dict"""
-        from iwfm.sub_gw_file import sub_gw_file
+        from iwfm.sub.gw_file import sub_gw_file
         from shapely.geometry import Polygon
 
         sim_dict = {}  # Missing 'gw_file' key
@@ -199,7 +199,7 @@ class TestSubGwFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent groundwater file"""
-        from iwfm.sub_gw_file import sub_gw_file
+        from iwfm.sub.gw_file import sub_gw_file
         from shapely.geometry import Polygon
 
         sim_dict = {'gw_file': 'nonexistent_file.dat'}
@@ -253,7 +253,7 @@ class TestSubGwFile:
                 'sub_file': os.path.join(tmpdir, 'new_sub')
             }
 
-            from iwfm.sub_gw_file import sub_gw_file
+            from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             # Bounding polygon includes all hydrographs
@@ -307,7 +307,7 @@ class TestSubGwFile:
                 'sub_file': os.path.join(tmpdir, 'new_sub')
             }
 
-            from iwfm.sub_gw_file import sub_gw_file
+            from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             # Bounding polygon only includes wells at (25,25) and (40,40)
@@ -369,7 +369,7 @@ class TestSubGwFile:
                 'sub_file': os.path.join(tmpdir, 'new_sub')
             }
 
-            from iwfm.sub_gw_file import sub_gw_file
+            from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -425,7 +425,7 @@ class TestSubGwFile:
                 'sub_file': os.path.join(tmpdir, 'new_sub')
             }
 
-            from iwfm.sub_gw_file import sub_gw_file
+            from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -475,7 +475,7 @@ class TestSubGwFile:
                 'sub_file': os.path.join(tmpdir, 'new_sub')
             }
 
-            from iwfm.sub_gw_file import sub_gw_file
+            from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -517,7 +517,7 @@ class TestSubGwFile:
                 'sub_file': os.path.join(tmpdir, 'new_sub')
             }
 
-            from iwfm.sub_gw_file import sub_gw_file
+            from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -558,7 +558,7 @@ class TestSubGwFile:
                 'sub_file': os.path.join(tmpdir, 'NewModel_Sub')
             }
 
-            from iwfm.sub_gw_file import sub_gw_file
+            from iwfm.sub.gw_file import sub_gw_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])

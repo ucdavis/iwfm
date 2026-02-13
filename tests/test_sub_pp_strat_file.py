@@ -77,7 +77,7 @@ class TestSubPpStratFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_pp_strat_file import sub_pp_strat_file
+        from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
         with pytest.raises(SystemExit):
             sub_pp_strat_file('nonexistent_file.dat', 'output.dat', [1, 2, 3])
@@ -101,7 +101,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             # Only keep nodes 1, 3, 5
             node_list = [1, 3, 5]
@@ -139,7 +139,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             # Keep all nodes
             node_list = [1, 2, 3]
@@ -172,7 +172,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             node_list = [1, 2]
 
@@ -204,7 +204,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             node_list = [1]
 
@@ -234,7 +234,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             node_list = [1, 2]
 
@@ -261,7 +261,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             # Only keep nodes 1, 3, 5
             node_list = [1, 3, 5]
@@ -297,7 +297,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             # Only keep node 2
             node_list = [2]
@@ -331,7 +331,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             node_list = [1, 2]
 
@@ -362,7 +362,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             node_list = [1, 2]
 
@@ -393,7 +393,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             node_list = [1]
 
@@ -424,7 +424,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             # Keep nodes 5, 3, 1
             node_list = [5, 3, 1]
@@ -455,7 +455,7 @@ class TestSubPpStratFile:
 
             new_file = os.path.join(tmpdir, 'new_strat.dat')
 
-            from iwfm.sub_pp_strat_file import sub_pp_strat_file
+            from iwfm.sub.pp_strat_file import sub_pp_strat_file
 
             node_list = [1, 2]
 

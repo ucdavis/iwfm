@@ -73,7 +73,7 @@ class TestSubPpElemFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_pp_elem_file import sub_pp_elem_file
+        from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
         with pytest.raises(SystemExit):
             sub_pp_elem_file('nonexistent_file.dat', 'output.dat', [[1]], [1])
@@ -101,7 +101,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             # elem_list format: list of [elem_id, ...] where elem_id is extracted
             elem_list = [[1], [2], [3]]  # Only elements 1, 2, 3
@@ -137,7 +137,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             elem_list = [[1], [2], [3]]
             new_srs = [1]
@@ -173,7 +173,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             elem_list = [[1], [3]]  # Only triangular elements
             new_srs = [1]
@@ -209,7 +209,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             elem_list = [[1], [2]]  # Elements 1, 2
             new_srs = [1, 2]  # Subregions 1, 2
@@ -246,7 +246,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             elem_list = [[1], [2]]
             new_srs = [1]
@@ -282,7 +282,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             elem_list = [[1]]
             new_srs = [1]
@@ -318,7 +318,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             # Only keep 2 elements
             elem_list = [[1], [3]]
@@ -355,7 +355,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             elem_list = [[1], [2]]
             new_srs = [1, 2]  # Only subregions 1 and 2
@@ -389,7 +389,7 @@ class TestSubPpElemFile:
 
             new_file = os.path.join(tmpdir, 'new_elem.dat')
 
-            from iwfm.sub_pp_elem_file import sub_pp_elem_file
+            from iwfm.sub.pp_elem_file import sub_pp_elem_file
 
             elem_list = [[1]]
             new_srs = [1]

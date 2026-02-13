@@ -89,7 +89,7 @@ class TestSubPpStreamFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_pp_stream_file import sub_pp_stream_file
+        from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
         snode_dict = {1: 100, 2: 200}
         reach_info = [(1, 2, 0, 'TestReach', [1, 2])]
@@ -117,7 +117,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             # Prepare input data structures
             snode_dict = {1: 100, 2: 200, 3: 300}
@@ -164,7 +164,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100, 2: 200, 17: 300, 18: 400, 19: 500}
             reach_info = [
@@ -209,7 +209,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100, 2: 200}
             reach_info = [(1, 2, 0, 'Test Creek', [1, 2])]
@@ -240,7 +240,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100, 2: 200}
             reach_info = [(1, 2, 0, 'Test Creek', [1, 2])]
@@ -275,7 +275,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100, 2: 200}
             reach_info = [(1, 2, 0, 'Test Creek', [1, 2])]
@@ -313,7 +313,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100, 2: 200}
             reach_info = [(1, 2, 0, 'Test Creek', [1, 2])]
@@ -354,7 +354,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100}
             reach_info = [(1, 1, 0, 'Small Creek', [1])]
@@ -390,7 +390,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100, 2: 200, 38: 300, 39: 400}
             reach_info = [
@@ -436,7 +436,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100}
             reach_info = [(1, 1, 0, 'Test Creek', [1])]
@@ -466,7 +466,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100}
             reach_info = [(1, 1, 0, 'Test Creek', [1])]
@@ -493,7 +493,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100, 2: 200}
             reach_info = [(1, 2, 0, 'Test Creek', [1, 2])]
@@ -524,7 +524,7 @@ class TestSubPpStreamFile:
 
             new_file = os.path.join(tmpdir, 'new_stream.dat')
 
-            from iwfm.sub_pp_stream_file import sub_pp_stream_file
+            from iwfm.sub.pp_stream_file import sub_pp_stream_file
 
             snode_dict = {1: 100}
             reach_info = [(1, 1, 0, 'Test Creek', [1])]

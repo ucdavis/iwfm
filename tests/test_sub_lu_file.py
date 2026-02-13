@@ -73,7 +73,7 @@ class TestSubLuFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_lu_file import sub_lu_file
+        from iwfm.sub.lu_file import sub_lu_file
 
         with pytest.raises(SystemExit):
             sub_lu_file('nonexistent_file.dat', 'output.dat', [1, 2, 3])
@@ -96,7 +96,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             # All elements in submodel
             sub_lu_file(in_file, out_file, [1, 2, 3])
@@ -131,7 +131,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             # Only elements 1, 2, 3 in submodel (not 4, 5)
             sub_lu_file(in_file, out_file, [1, 2, 3])
@@ -171,7 +171,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             # No matching elements in submodel - function cannot handle this case
             # and raises IndexError (edge case - submodel must have at least one element)
@@ -196,7 +196,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             # Only elements 1, 2 in submodel
             sub_lu_file(in_file, out_file, [1, 2])
@@ -228,7 +228,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             # Should not raise an error with verbose=True
             sub_lu_file(in_file, out_file, [1, 2], verbose=True)
@@ -252,7 +252,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             result = sub_lu_file(in_file, out_file, [1, 2])
 
@@ -275,7 +275,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             sub_lu_file(in_file, out_file, [1, 2])
 
@@ -302,7 +302,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             sub_lu_file(in_file, out_file, [1, 2])
 
@@ -331,7 +331,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             sub_lu_file(in_file, out_file, [1])
 
@@ -360,7 +360,7 @@ class TestSubLuFile:
 
             out_file = os.path.join(tmpdir, 'new_lu.dat')
 
-            from iwfm.sub_lu_file import sub_lu_file
+            from iwfm.sub.lu_file import sub_lu_file
 
             sub_lu_file(in_file, out_file, [1, 2])
 

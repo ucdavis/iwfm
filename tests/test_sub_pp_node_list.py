@@ -89,7 +89,7 @@ class TestSubPpNodeList:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_pp_node_list import sub_pp_node_list
+        from iwfm.sub.pp_node_list import sub_pp_node_list
 
         with pytest.raises(SystemExit):
             sub_pp_node_list('nonexistent_file.dat', [[1], [2], [3]])
@@ -112,7 +112,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             # elem_list format: list of [elem_id, ...] where elem_id is extracted
             elem_list = [[1], [2], [3]]
@@ -146,7 +146,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             # Only elements 1, 2
             elem_list = [[1], [2]]
@@ -177,7 +177,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             elem_list = [[1], [2], [3]]
 
@@ -209,7 +209,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             elem_list = [[1], [2], [3]]
 
@@ -239,7 +239,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             elem_list = [[1], [2]]
 
@@ -267,7 +267,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             elem_list = [[1], [2], [3]]
 
@@ -297,7 +297,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             elem_list = [[1]]
 
@@ -327,7 +327,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             # Elements 1, 2, 3
             elem_list = [[1], [2], [3]]
@@ -358,7 +358,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             # elem_list with extra data beyond elem_id
             elem_list = [[1, 'extra', 'data'], [2, 'more', 'data'], [3, 'yet', 'more']]
@@ -388,7 +388,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             elem_list = [[1], [2]]
 
@@ -416,7 +416,7 @@ class TestSubPpNodeList:
             with open(elem_file, 'w') as f:
                 f.write(content)
 
-            from iwfm.sub_pp_node_list import sub_pp_node_list
+            from iwfm.sub.pp_node_list import sub_pp_node_list
 
             # Elements 100, 200 don't exist
             elem_list = [[100], [200]]

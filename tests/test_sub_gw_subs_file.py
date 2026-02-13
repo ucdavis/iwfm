@@ -107,7 +107,7 @@ class TestSubGwSubsFile:
 
     def test_file_not_found(self):
         """Test error handling for non-existent file"""
-        from iwfm.sub_gw_subs_file import sub_gw_subs_file
+        from iwfm.sub.gw_subs_file import sub_gw_subs_file
         from shapely.geometry import Polygon
 
         bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -138,7 +138,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -181,7 +181,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -223,7 +223,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -270,7 +270,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -312,7 +312,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -349,7 +349,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -381,7 +381,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -412,7 +412,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -452,7 +452,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
@@ -507,7 +507,7 @@ class TestSubGwSubsFile:
 
             new_file = os.path.join(tmpdir, 'new_subs.dat')
 
-            from iwfm.sub_gw_subs_file import sub_gw_subs_file
+            from iwfm.sub.gw_subs_file import sub_gw_subs_file
             from shapely.geometry import Polygon
 
             bounding_poly = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
