@@ -87,8 +87,8 @@ def fac2iwfm(pp_file_name, param_file_name, save_name, rlow=0.0, rhigh=1000000.0
             for i in range(0, na):
                 pp, factor = int(item[4 + i * 2]), float(item[4 + i * 2 + 1])
                 pval += float(pp_params[pp][0]) * factor
-            pval_str = iwfm.pad_back(str(round(pval,3)),n=8,t='0')
-            f.write(f' node:      {iwfm.pad_front(node,n=6)} value:  {pval_str}\n')
+            pval_str = str(round(pval,3)).ljust(8, '0')  # left-justify to 8 chars
+            f.write(f' node:      {str(node).rjust(6)} value:  {pval_str}\n')  # right-justify to 6 chars
     if verbose: print(f' Wrote nodal parameter values to {save_name}')
 
 

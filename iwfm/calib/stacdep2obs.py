@@ -168,13 +168,13 @@ def stacdep2obs(budget_table, dates, reaches, nwidth=20):
     smp_dates, ins_dates = [], []
     for date in dates:       # convert date from text m/d/yy to mm/dd/yyyy
         temp = [int(i) for i in date.split('/')]
-        smp_dates.append(iwfm.date2text(temp[1],temp[0],temp[2]))
+        smp_dates.append(f'{temp[0]:02d}/{temp[1]:02d}/{temp[2]}')  # format as MM/DD/YYYY
         temp = date.split('/')
         ins_dates.append(f'{temp[0]}{temp[2]}') 
 
     stacdep, ins = [], []
     for reach in reaches:
-        reach_name = iwfm.pad_back(reach[0],nwidth)   # first field
+        reach_name = reach[0].ljust(nwidth)   # left-justify to nwidth chars
         reach_nums = reach[1]
 
         # sum the reach values

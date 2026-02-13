@@ -1,6 +1,6 @@
 # dss_date.py
 # Convert datetime object to DSS-format straing
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -35,11 +35,11 @@ def dss_date(date):
     '''
     import iwfm
 
-    mo = iwfm.pad_front(date.month, 2, '0')  # expand to 2-digits
-    dy = iwfm.pad_front(date.day, 2, '0')  # expand to 2-digits
+    mo = str(date.month).rjust(2, '0')  # right-justify to 2 chars
+    dy = str(date.day).rjust(2, '0')  # right-justify to 2 chars
     hour = date.hour
     if hour == 0:  # if midnight then put in DSS value
         hour = 24
-    hr = iwfm.pad_front(hour, 2, '0')  # expand to 2-digits
-    mn = iwfm.pad_front(date.minute, 2, '0')  # expand to 2-digits
+    hr = str(hour).rjust(2, '0')  # right-justify to 2 chars
+    mn = str(date.minute).rjust(2, '0')  # right-justify to 2 chars
     return f'{mo}/{dy}/{str(date.year)}_{hr}:{mn}'

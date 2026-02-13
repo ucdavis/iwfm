@@ -41,9 +41,8 @@ def headall2table(heads_file, output_file, out_date):
     import polars as pl
     import iwfm
 
-    out_mon = iwfm.month(out_date)
-    out_day = iwfm.day(out_date)
-    out_year = iwfm.year(out_date)
+    date_parts = out_date.split('/')  # parse date components
+    out_mon, out_day, out_year = int(date_parts[0]), int(date_parts[1]), int(date_parts[2])
 
     with open(heads_file) as f:
         file_lines = f.read().splitlines()  # open and read input file
@@ -75,9 +74,8 @@ def headall2table(heads_file, output_file, out_date):
             header.append('Layer ' + str(layer))
             line += 1
         # now check the date
-        m = iwfm.month(end_date[0:10])
-        d = iwfm.day(end_date[0:10])
-        y = iwfm.year(end_date[0:10])
+        date_parts2 = end_date[0:10].split('/')  # parse date components
+        m, d, y = int(date_parts2[0]), int(date_parts2[1]), int(date_parts2[2])
         if m == out_mon and d == out_day and y == out_year:
             out_table = np.transpose(np.asarray(data))
             df = pl.DataFrame(out_table, schema=header, orient='row')

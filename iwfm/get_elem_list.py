@@ -52,12 +52,12 @@ def get_elem_list(elem_pairs_file):
     for line in elem_pairs:  # cycle through the lines
         # -- add try-except to gracefully fail with error statement if file is not tab-delimited --
         elem_list.append([int(x) for x in  re.split(r';|,|\*| |\t',line)])
-    elem_dict = iwfm.list2dict(elem_list)  # dictionary old elem -> new elem
+    elem_dict = {row[0]: row[1:] for row in elem_list}  # dictionary old elem -> new elem
 
     # also create a reverse dictionary new elem -> old elem
     for i in range(0, len(elem_list)):  # switch the new and old elem nos
         elem_list[i][0], elem_list[i][1] = elem_list[i][1], elem_list[i][0]
-    rev_elem_dict = iwfm.list2dict(elem_list)  # dictionary new elem -> old elem
+    rev_elem_dict = {row[0]: row[1:] for row in elem_list}  # dictionary new elem -> old elem
 
     # make a list of the subregions in the submodel
     new_srs = []

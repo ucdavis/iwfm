@@ -80,6 +80,7 @@ def pdf2csv(input_file, output_file, verbose=False, log_file='pdf2csv.log'):
 if __name__ == '__main__':
     ' Run pdf2csv() from command line '
     import sys
+    import os
     import iwfm.debug as idb
     import iwfm
     from iwfm.debug import parse_cli_flags
@@ -93,7 +94,7 @@ if __name__ == '__main__':
 
     iwfm.file_test(input_file)
 
-    output_file = iwfm.filename_base(input_file) + '.csv'
+    output_file = os.path.splitext(input_file)[0] + '.csv'  # filename without extension
 
     idb.exe_time()  # initialize timer
     pdf2csv(input_file, output_file, verbose=verbose)  

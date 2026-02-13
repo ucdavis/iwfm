@@ -38,14 +38,14 @@ def nearest_node(point, node_set):
         number of nearest node
     
     '''
-    import iwfm
+    import math
 
     dist, nearest = 9.9e30, -1
     for j in range(0, len(node_set)):
         line = node_set[j]
         pt = [line[1], line[2]]
         # Compute distance between each pair of the two collections of inputs.
-        new_dist = iwfm.distance(point, pt)
+        new_dist = math.hypot(point[0] - pt[0], point[1] - pt[1])  # Euclidean distance
         if dist > new_dist:
             dist, nearest = new_dist, line[0]
     return nearest

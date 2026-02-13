@@ -87,9 +87,9 @@ def sub_swhed_file(old_filename, new_filename, node_list, snode_list, verbose=Fa
                 del swshwd_lines[line_index]
 
     # replace NSW
-    swshwd_lines[nsw_line] = iwfm.pad_both(str(len(sw_list)), f=6, b=50) + ' '.join(
+    swshwd_lines[nsw_line] = (' ' * 6 + str(len(sw_list))).ljust(50) + ' '.join(
         swshwd_lines[nsw_line].split()[1:]
-    )
+    )  # indent 6 chars, pad to 50
 
     _, line_index = read_next_line_value(swshwd_lines, line_index - 1, column=0, skip_lines=6)
 

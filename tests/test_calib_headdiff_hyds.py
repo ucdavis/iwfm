@@ -20,14 +20,14 @@
 
 def test_headdiff_hyds_imports():
     '''Test that headdiff_hyds imports required functions (verifies fixes).'''
-    # This verifies the fixes: added imports for ceil, dts2days, to_smp_ins
+    # This verifies the fixes: added imports for ceil; dts2days replaced with inline datetime arithmetic
     from iwfm.calib.headdiff_hyds import ceil
     from iwfm.calib import headdiff_hyds
     import inspect
 
     assert ceil is not None
     source = inspect.getsource(headdiff_hyds)
-    assert 'from iwfm import dts2days, to_smp_ins' in source or 'dts2days' in source
+    assert 'import iwfm.calib as icalib' in source
 
 
 def test_headdiff_hyds_function_exists():

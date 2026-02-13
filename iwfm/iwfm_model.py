@@ -177,15 +177,15 @@ class iwfm_model:
 
         # -- read input file names and create a dictionary
         self.sim_files_dict = {}
-        preout = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'preout'))
+        preout = Path(_safe_get_filename(sim_lines[line_index], line_index, 'preout'))  # convert to Path
         self.sim_files_dict['preout'] = preout
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        gw_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'gw'))
+        gw_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'gw'))  # convert to Path
         self.sim_files_dict['gw'] = gw_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        stream_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'stream'))
+        stream_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'stream'))  # convert to Path
         self.sim_files_dict['stream'] = stream_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
@@ -193,27 +193,27 @@ class iwfm_model:
         if temp[0] == '/':
             lake_file = ''
         else:
-            lake_file = iwfm.file_get_path(temp)
+            lake_file = Path(temp)  # convert to Path
         self.sim_files_dict['lake'] = lake_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        rz_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'rootzone'))
+        rz_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'rootzone'))  # convert to Path
         self.sim_files_dict['rootzone'] = rz_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        sw_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'smallwatershed'))
+        sw_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'smallwatershed'))  # convert to Path
         self.sim_files_dict['smallwatershed'] = sw_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        us_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'unsat'))
+        us_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'unsat'))  # convert to Path
         self.sim_files_dict['unsat'] = us_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        if_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'irrfrac'))
+        if_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'irrfrac'))  # convert to Path
         self.sim_files_dict['irrfrac'] = if_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        sa_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'supplyadj'))
+        sa_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'supplyadj'))  # convert to Path
         self.sim_files_dict['supplyadj'] = sa_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
@@ -221,7 +221,7 @@ class iwfm_model:
         self.sim_files_dict['precip'] = pc_file
 
         _, line_index = read_next_line_value(sim_lines, line_index, column=0)
-        et_file = iwfm.file_get_path(_safe_get_filename(sim_lines[line_index], line_index, 'et'))
+        et_file = Path(_safe_get_filename(sim_lines[line_index], line_index, 'et'))  # convert to Path
         self.sim_files_dict['et'] = et_file
 
         # -- starting date

@@ -108,13 +108,9 @@ def test_write_smp_single_observation(tmp_path):
     assert '123.456' in content
 
 
-def test_write_smp_uses_filename_ext():
-    '''Test that write_smp imports and uses filename_ext function.'''
-    # This test verifies the fix: added 'from iwfm import filename_ext'
-    from iwfm.write_smp import filename_ext
-
-    result = filename_ext('test', 'smp')
-    assert result == 'test.smp'
-
-    result = filename_ext('test.smp', 'smp')
-    assert result == 'test.smp'
+def test_write_smp_uses_inline_extension_logic():
+    '''Test that write_smp uses inline .smp extension logic.'''
+    import inspect
+    from iwfm import write_smp as write_smp_module
+    source = inspect.getsource(write_smp_module)
+    assert "endswith('.smp')" in source  # inline extension check

@@ -67,14 +67,14 @@ def sub_pp_stream_file(stream_file, new_stream_file, snode_dict, reach_info,
 
     # -- number of stream reaches
     sub_stream_lines.append(
-        iwfm.pad_both(str(len(reach_info)), f=4, b=35)
+        (' ' * 4 + str(len(reach_info))).ljust(35)  # indent 4 chars, pad to 35
         + ' '.join(stream_lines[line_index].split()[1:])
     )
 
     # -- number of points in each rating table
     rattab_sns = [*rattab_dict]
     sub_stream_lines.append(
-        iwfm.pad_both(str(len(rattab_dict[rattab_sns[0]])), f=4, b=35)
+        (' ' * 4 + str(len(rattab_dict[rattab_sns[0]]))).ljust(35)  # indent 4 chars, pad to 35
         + ' '.join(stream_lines[line_index].split()[1:])
     )
 

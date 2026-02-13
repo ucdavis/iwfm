@@ -149,25 +149,11 @@ from iwfm.write_2_csv import write_2_csv
 from iwfm.write_2_surfer import write_2_surfer
 from iwfm.skip_ahead import skip_ahead
 from iwfm.file_utils import read_next_line_value, read_multiple_line_values, read_line_values_to_dict
-from iwfm.pad_front import pad_front
-from iwfm.pad_back import pad_back
-from iwfm.pad_both import pad_both
-from iwfm.print_to_string import print_to_string
-from iwfm.file_2_list import file_2_list
 
 # -- date and time methods --------------------------------
 from iwfm.dss_date import dss_date
-from iwfm.month import month
-from iwfm.day import day
-from iwfm.year import year
-from iwfm.text_date import text_date
-from iwfm.date2text import date2text
 from iwfm.index_date import index_date
 from iwfm.date_index import date_index
-from iwfm.str2datetime import str2datetime
-from iwfm.dts2days import dts2days
-from iwfm.dates_diff import dates_diff
-from iwfm.secs_between import secs_between
 from iwfm.date_util import validate_date_format, safe_parse_date, validate_dss_date_format
 from iwfm.Unbuffered import Unbuffered
 from iwfm.generate_timesteps import generate_timesteps
@@ -178,8 +164,6 @@ from iwfm.parse_iwfm_date import parse_iwfm_date
 from iwfm.file2dict import file2dict
 #from iwfm.file2dict_int import file2dict_int
 from iwfm.hyd_dict import hyd_dict
-from iwfm.inverse_dict import inverse_dict
-from iwfm.list2dict import list2dict
 
 # -- DBF methods ------------------------------------------
 from iwfm.dbf_open import dbf_open
@@ -199,21 +183,15 @@ from iwfm.file_test import file_test
 from iwfm.file_missing import file_missing
 from iwfm.file_delete import file_delete
 from iwfm.file_rename import file_rename
-from iwfm.filename_ext import filename_ext
-from iwfm.filename_base import filename_base
-from iwfm.file_dir import file_dir
 from iwfm.file_2_bak import file_2_bak
 from iwfm.file_type_error import file_type_error
-from iwfm.file_get_path import file_get_path
 from iwfm.file_validate_path import file_validate_path
 
 # -- unit conversion --------------------------------------
 from iwfm.cfs2afd import cfs2afd
 
 # -- math -------------------------------------------------
-from iwfm.distance import distance
 from iwfm.logtrans import logtrans
-from iwfm.column_sum import column_sum
 
 # -- data file methods ------------------------------------
 from iwfm.cdec2monthly import cdec2monthly

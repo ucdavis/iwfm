@@ -36,7 +36,7 @@ def wdl_meas_stats(input_file, verbose=False):
 
     '''
     import statistics
-    from iwfm import text_date
+    from datetime import datetime
 
     output_file = input_file[0 : input_file.find('.')] + '_stats.out'
 
@@ -59,8 +59,11 @@ def wdl_meas_stats(input_file, verbose=False):
                         stdev = int(statistics.stdev(wl) * 100) / 100
                     else:
                         stdev = -99.9
-                    outfile.write(f'{first_well_id}\t{text_date(start_date)}'+
-                        f'\t{text_date(last_date)}\t{count}'+
+                    # normalize date format
+                    norm_start = datetime.strptime(start_date, '%m/%d/%Y').strftime('%m/%d/%Y')
+                    norm_last = datetime.strptime(last_date, '%m/%d/%Y').strftime('%m/%d/%Y')
+                    outfile.write(f'{first_well_id}\t{norm_start}'+
+                        f'\t{norm_last}\t{count}'+
                         f'\t{int(statistics.mean(wl) * 100) / 100}'+
                         f'\t{max(wl)}\t{min(wl)}\t{stdev}\n')
                     lines_out = lines_out + 1

@@ -45,9 +45,8 @@ def get_heads_4_date(heads_file, out_date, start=5):
         List of header labels (Node + Layer labels)
 
     '''
-    out_mon = iwfm.month(out_date)
-    out_day = iwfm.day(out_date)
-    out_year = iwfm.year(out_date)
+    date_parts = out_date.split('/')  # parse date components
+    out_mon, out_day, out_year = int(date_parts[0]), int(date_parts[1]), int(date_parts[2])
 
     iwfm.file_test(heads_file)
     with open(heads_file) as f:
@@ -80,9 +79,8 @@ def get_heads_4_date(heads_file, out_date, start=5):
             line_index += 1
 
         # now check the date
-        m = iwfm.month(end_date[0:10])
-        d = iwfm.day(end_date[0:10])
-        y = iwfm.year(end_date[0:10])
+        date_parts2 = end_date[0:10].split('/')  # parse date components
+        m, d, y = int(date_parts2[0]), int(date_parts2[1]), int(date_parts2[2])
         if m == out_mon and d == out_day and y == out_year:
             out_table = np.asarray(data)
             return out_table, nodes, header

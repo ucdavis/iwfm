@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
-from iwfm.filename_ext import filename_ext
 from iwfm.debug.logger_setup import logger
 
 
@@ -38,7 +37,8 @@ def write_smp(output_filename, lines):
         number of items written to the smp file
 
     '''
-    output_filename = filename_ext(output_filename, 'smp')
+    if not output_filename.endswith('.smp'):  # ensure .smp extension
+        output_filename = output_filename.rstrip('.') + '.smp'
     try:
         with open(output_filename, 'w') as output_file:
             for i in range(0, len(lines)):

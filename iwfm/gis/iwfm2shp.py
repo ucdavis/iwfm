@@ -1,6 +1,6 @@
 # iwfm2shp.py
 # Create shapefiles for an IWFM model
-# Copyright (C) 2020-2025 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ def iwfm2shp(main_file, shape_name, epsg=26910, verbose=False):
     if verbose:
         print(f'  Read coordinates of {len(node_coords):,} nodes from {pre_dict["node_file"]}')
 
-    node_coord_dict = iwfm.list2dict(node_coords)    # Put node_coords into a dictionary
+    node_coord_dict = {row[0]: row[1:] for row in node_coords}  # list to dictionary
 
     node_strat, nlayers = iwfm.iwfm_read_strat(pre_dict['strat_file'], node_coords)
     if verbose:

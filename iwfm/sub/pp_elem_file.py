@@ -58,23 +58,21 @@ def sub_pp_elem_file(elem_file, new_elem_file, elem_list, new_srs):
 
     # Skip comments and read NE line
     _, line_index = read_next_line_value(elem_lines, -1, column=0, skip_lines=0)
-    elem_lines[line_index] = iwfm.pad_both(str(len(elem_list)), f=4, b=35) + ' '.join(
+    elem_lines[line_index] = (' ' * 4 + str(len(elem_list))).ljust(35) + ' '.join(
         elem_lines[line_index].split()[1:]
-    )
+    )  # indent 4 chars, pad to 35
 
     # Skip to NREGN line
     _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
-    elem_lines[line_index] = iwfm.pad_both(str(len(new_srs)), f=4, b=35) + ' '.join(
+    elem_lines[line_index] = (' ' * 4 + str(len(new_srs))).ljust(35) + ' '.join(
         elem_lines[line_index].split()[1:]
-    )
+    )  # indent 4 chars, pad to 35
 
     # Skip to first subregion line
     _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
 
     for sr in range(0, len(new_srs)):
-        elem_lines[line_index] = iwfm.pad_both(
-            'Subregion ' + str(new_srs[sr]), f=4, b=25
-        ) + ' '.join(elem_lines[line_index].split()[2:])
+        elem_lines[line_index] = (' ' * 4 + 'Subregion ' + str(new_srs[sr])).ljust(25) + ' '.join(elem_lines[line_index].split()[2:])  # indent 4 chars, pad to 25
         # Skip to next subregion line
         _, line_index = read_next_line_value(elem_lines, line_index, column=0, skip_lines=0)
     # remove the remaining 'Subregion' lines

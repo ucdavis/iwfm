@@ -49,12 +49,12 @@ def smp_format( infile, nwidth=20, verbose=False):
     out_lines = []
     for line in smp_lines:
         items = line.split()
-        name = iwfm.pad_back(items[0],nwidth)   # first field
+        name = items[0].ljust(nwidth)   # left-justify to nwidth chars
         date = items[1].split('/')
         for i in range(len(date)):
             date[i] = int(date[i])
-        date = iwfm.date2text(date[1],date[0],date[2])        # convert date from text m/d/yy to mm/dd/yyyy
-        smp_out = str(f'{iwfm.pad_back(items[0],nwidth)} {date}  0:00:00 {items[3]}')
+        date = f'{date[0]:02d}/{date[1]:02d}/{date[2]}'  # format as MM/DD/YYYY
+        smp_out = str(f'{items[0].ljust(nwidth)} {date}  0:00:00 {items[3]}')  # left-justify to nwidth chars
         out_lines.append(smp_out)
 
     return out_lines

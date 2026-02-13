@@ -28,12 +28,12 @@
 def iwfm2obs(verbose=False):
     ''' iwfm2obs() interpolates model output to match the times and
         locations of calibration observations and puts them into a PEST-compatible
-        smp-formatted output file.  
+        smp-formatted output file.
 
     Parameters
     ----------
     nothing
-    
+
     Returns
     -------
     nothing
@@ -46,6 +46,7 @@ def iwfm2obs(verbose=False):
     from math import ceil
     from scipy.interpolate import interp1d
     from itertools import islice
+    from datetime import datetime
 
     # == Get main simulation file name via prompt -----------------------------------
     sim_file    = input('IWFM Simulation main file: ')
@@ -54,9 +55,9 @@ def iwfm2obs(verbose=False):
     start_date, end_date, time_step = iwfm.sim_info(sim_file)
     if verbose: print(f'\n  Read Simulation Main File {sim_file}')
 
-    start_date = iwfm.str2datetime(start_date[0:10])                         # starting data as datetime
-    end_date   = iwfm.str2datetime(end_date[0:10])                           # ending date as datetime
-    no_days    = iwfm.dts2days(end_date,start_date)                          # number of days between start and end
+    start_date = datetime.strptime(start_date[0:10], '%m/%d/%Y')  # string to datetime
+    end_date = datetime.strptime(end_date[0:10], '%m/%d/%Y')  # string to datetime
+    no_days = (end_date - start_date).days  # days between start and end
     time_step  = time_step.lower()
 
     sim_file_d = iwfm.iwfm_read_sim(sim_file)                                # get package file names from simulation file

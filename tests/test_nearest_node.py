@@ -105,11 +105,11 @@ def test_nearest_node_negative_coordinates():
 
 
 def test_nearest_node_import_iwfm():
-    '''Test that nearest_node imports iwfm correctly (verifies redundant import fix).'''
-    # This verifies the fix: changed 'import iwfm as iwfm' to 'import iwfm'
+    '''Test that nearest_node uses math.hypot for distance (verifies built-in replacement).'''
+    # This verifies the fix: replaced iwfm.distance() with math.hypot()
     from iwfm import nearest_node
     import inspect
 
     source = inspect.getsource(nearest_node)
-    # Should contain 'import iwfm' not 'import iwfm as iwfm'
-    assert 'import iwfm' in source
+    # Should contain 'import math' not 'import iwfm'
+    assert 'import math' in source

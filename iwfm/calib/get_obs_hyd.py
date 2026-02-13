@@ -1,6 +1,6 @@
 # get_obs_hyd.py
 # Extract one column from a VIC file to another file
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 
 def get_obs_hyd(obs_file,start_date):
-    ''' get_obs_hyd - reads an observation sample bore (smp) file, and returns a list 
-        of observation sites and a list of observation data as [site_id, days since 
+    ''' get_obs_hyd - reads an observation sample bore (smp) file, and returns a list
+        of observation sites and a list of observation data as [site_id, days since
         start, date as datetime object]
 
     Parameters
@@ -41,7 +41,7 @@ def get_obs_hyd(obs_file,start_date):
 
     '''
 
-    import iwfm
+    from datetime import datetime
 
     with open(obs_file) as f:
         obs_lines = f.read().splitlines()                         # obs_lines has observations to match
@@ -59,8 +59,9 @@ def get_obs_hyd(obs_file,start_date):
         if item[0] not in obs_sites:
             obs_sites.append(item[0])
 
-        days = iwfm.dts2days(iwfm.str2datetime(item[1]), start_date)       # days since start_date
-        obs_data.append([item[0],days,iwfm.str2datetime(item[1])])         # site, days since start, date as datetime object
+        date_obj = datetime.strptime(item[1], '%m/%d/%Y')  # string to datetime
+        days = (date_obj - start_date).days  # days since start date
+        obs_data.append([item[0], days, date_obj])  # site, days since start, date as datetime object
 
     obs_data.sort( key = lambda l: (l[0], l[1]))
     obs_sites.sort( key = lambda l: (l[0]))

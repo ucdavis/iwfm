@@ -1,6 +1,6 @@
 # snodes2shp.py
 # Create stream node shapefiles for an IWFM model
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ def snodes2shp(nsnodes, snodes_list, node_coords, shape_name, epsg=26910, verbos
 
     shapename = f'{shape_name}_StreamNodes'  # remove .shp extension
 
-    node_coords_dict = iwfm.list2dict(node_coords)
+    node_coords_dict = {row[0]: row[1:] for row in node_coords}  # list to dictionary
 
     # Convert snodes_list to list if it's a dictionary
     # Dictionary format: key = snode_id, values = [gw_node, subregion, reach, bottom]

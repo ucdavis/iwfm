@@ -47,9 +47,9 @@ def sub_pp_lake_file(lake_file, new_lake_file, lake_info):
 
     # Skip comments and read NLAKE line
     _, line_index = read_next_line_value(lake_lines, -1, column=0, skip_lines=0)
-    lake_lines[line_index] = iwfm.pad_both(str(len(lake_info)), f=4, b=35) + ' '.join(
+    lake_lines[line_index] = (' ' * 4 + str(len(lake_info))).ljust(35) + ' '.join(
         lake_lines[line_index].split()[1:]
-    )
+    )  # indent 4 chars, pad to 35
 
     # Skip to lake data section
     _, line_index = read_next_line_value(lake_lines, line_index, column=0, skip_lines=0)

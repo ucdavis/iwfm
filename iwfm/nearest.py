@@ -1,6 +1,6 @@
 # nearest.py
 # Return nearest IWFM node to an (x,y) location
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,14 +37,14 @@ def nearest(d_nodes, x, y):
         node ID of node closest to (x,y)
     
     '''
-    import iwfm
+    import math
 
     point = [x, y]
     dist = 9.9e30
     nearest = -1
     for key in d_nodes:
         pt = d_nodes[key]
-        new_dist = iwfm.distance(point, pt)
+        new_dist = math.hypot(point[0] - pt[0], point[1] - pt[1])  # Euclidean distance
         if dist > new_dist:
             dist = new_dist
             nearest = key

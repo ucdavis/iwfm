@@ -47,8 +47,8 @@ def sub_pp_node_file(node_file, new_node_file, node_list):
 
     # Skip comments and read ND line
     _, line_index = read_next_line_value(node_lines, -1, column=0, skip_lines=0)
-    node_lines[line_index] = iwfm.pad_both(str(len(node_list)), f=4, b=35) + ' '.join(
-        node_lines[line_index].split()[1:])
+    node_lines[line_index] = (' ' * 4 + str(len(node_list))).ljust(35) + ' '.join(
+        node_lines[line_index].split()[1:])  # indent 4 chars, pad to 35
 
     # Skip FACT line and comments to node data section
     _, line_index = read_next_line_value(node_lines, line_index, column=0, skip_lines=1)

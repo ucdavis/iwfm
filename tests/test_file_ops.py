@@ -108,13 +108,6 @@ def test_file_type_error_exits_and_prints(capsys):
     assert "must be a ABC file" in out
 
 
-def test_file_get_path_returns_path_object_and_preserves_string():
-    raw = "folder\\sub/leaf.txt"
-    p = iwfm.file_get_path(raw)
-    assert isinstance(p, Path)
-    assert str(p) == raw
-
-
 def test_file_validate_path_creates_parent_dirs(tmp_path):
     out = tmp_path / "nested" / "path" / "out.txt"
     iwfm.file_validate_path(str(out))

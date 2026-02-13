@@ -82,7 +82,7 @@ def ltbud(budget_file, output_file, zero_offset=2.0, neg_val=1.0e-7):
             for item in items[1:]:                                    # skip the date
                 val = float(item)                                     # convert string to float
                 outval = round(iwfm.logtrans(val,zero_offset,neg_val),3)   # log-transform
-                strval = iwfm.print_to_string(outval)[:-1]                 # convert float to string
+                strval = str(outval)  # convert to string
                 while len(strval) < width:
                     strval = ' ' + strval                              # pad with leading spaces
                 outstr += strval                                       # add to outstr

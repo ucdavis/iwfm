@@ -138,7 +138,7 @@ def draw_plot( well_name, date, meas, no_hyds, gwhyd_obs, gwhyd_name, well_info,
     yearsFmt = mdates.DateFormatter('%Y')
 
     # plot simulated vs sim_dates as line, and meas vs specific dates as points, on one plot
-    with PdfPages(well_name + '_' + iwfm.pad_front(col, 4, '0') + '.pdf') as pdf:
+    with PdfPages(well_name + '_' + str(col).rjust(4, '0') + '.pdf') as pdf:  # right-justify to 4 chars
         fig = plt.figure(figsize=(10, 7.5))
         ax = plt.subplot(111)
         ax.xaxis_date()

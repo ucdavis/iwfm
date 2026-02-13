@@ -110,8 +110,6 @@ class TestIwfm2obsWithMocks:
 
     @patch('builtins.input')
     @patch('iwfm.sim_info')
-    @patch('iwfm.str2datetime')
-    @patch('iwfm.dts2days')
     @patch('iwfm.iwfm_read_sim')
     @patch('iwfm.iwfm_read_gw')
     @patch('iwfm.file_test')
@@ -127,7 +125,6 @@ class TestIwfm2obsWithMocks:
                                           mock_get_obs, mock_get_sim,
                                           mock_get_hyd, mock_file_test,
                                           mock_read_gw, mock_read_sim,
-                                          mock_dts2days, mock_str2dt,
                                           mock_sim_info, mock_input):
         """Test iwfm2obs exits gracefully when no hydrographs to process."""
         # Setup input mock to provide simulation file name
@@ -141,8 +138,6 @@ class TestIwfm2obsWithMocks:
 
         # Setup other mocks
         mock_sim_info.return_value = ('01/01/2020', '12/31/2020', '1MON')
-        mock_str2dt.return_value = MagicMock()
-        mock_dts2days.return_value = 365
         mock_read_sim.return_value = {
             'stream': 'none',
             'gw': 'gw.dat',

@@ -20,11 +20,6 @@ from datetime import datetime
 import iwfm
 
 
-def test_text_date_formats():
-    assert iwfm.text_date("1/2/20") == "01/02/2020"
-    assert iwfm.text_date("09/07/1999") == "09/07/1999"
-
-
 def test_dss_date_regular_hour():
     dt = datetime(2020, 1, 2, 15, 7)
     assert iwfm.dss_date(dt) == "01/02/2020_15:07"

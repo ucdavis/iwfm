@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 from math import ceil
-from iwfm import dts2days
+from datetime import datetime
 
 
 def headdiff_hyds(hdiff_pairs, hdiff_data, rthresh, ts_func, start_date, verbose=False):
@@ -82,7 +82,7 @@ def headdiff_hyds(hdiff_pairs, hdiff_data, rthresh, ts_func, start_date, verbose
                 d_left, d_right = data[left_col][i][0],data[right_col][i][0]
                 if abs((d_left - d_right).days) <= rthresh:
                     obs_val = data[left_col][i][1] - data[right_col][i][1]
-                    ts = ceil(float(ts_func(dts2days(d_left, start_date))))     # date to time step w/interpolation function
+                    ts = ceil(float(ts_func((d_left - start_date).days)))  # date to time step w/interpolation function
                     smp, ins = icalib.to_smp_ins(site,d_left,obs_val,ts)        # put into smp and ins strings
 
                     smp_out.append(smp)                                           # add smp string to smp_out list

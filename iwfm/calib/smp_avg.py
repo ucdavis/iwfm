@@ -70,7 +70,7 @@ def smp_avg( smp_file, verbose=False):
         # get average for this site
         average = sites[index[0]][2]/sites[index[0]][3]
 
-        smp_out = str(f'{iwfm.pad_back(items[0],20)} {items[1]}  0:00:00 {iwfm.pad_front(round(average,4),22)}')
+        smp_out = str(f'{items[0].ljust(20)} {items[1]}  0:00:00 {str(round(average,4)).rjust(22)}')  # left-justify to 20 chars, right-justify to 22 chars
         averages.append(smp_out)
 
     return averages

@@ -49,48 +49,36 @@ def sub_sim_file(in_sim_file, sim_dict_new, has_lake=False):
     _, line_index = read_next_line_value(sim_lines, -1, column=0, skip_lines=3)  # skip comments and three header lines
 
     # -- preprocessor output file
-    sim_lines[line_index] = iwfm.pad_both(sim_dict_new['preout'], f=4, b=53) + ' '.join(
+    sim_lines[line_index] = (' ' * 4 + sim_dict_new['preout']).ljust(53) + ' '.join(
         sim_lines[line_index].split()[1:]
-    )
+    )  # indent 4 chars, pad to 53
 
     # -- groundwater file
     _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
-    sim_lines[line_index] = iwfm.pad_both(
-        sim_dict_new['gw_file'], f=4, b=53
-    ) + ' '.join(sim_lines[line_index].split()[1:])
+    sim_lines[line_index] = (' ' * 4 + sim_dict_new['gw_file']).ljust(53) + ' '.join(sim_lines[line_index].split()[1:])  # indent 4 chars, pad to 53
 
     # -- stream file
     _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
-    sim_lines[line_index] = iwfm.pad_both(
-        sim_dict_new['stream_file'], f=4, b=53
-    ) + ' '.join(sim_lines[line_index].split()[1:])
+    sim_lines[line_index] = (' ' * 4 + sim_dict_new['stream_file']).ljust(53) + ' '.join(sim_lines[line_index].split()[1:])  # indent 4 chars, pad to 53
 
     # -- lake file
     if has_lake:
         _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
-        sim_lines[line_index] = iwfm.pad_both(
-            sim_dict_new['lake_file'], f=4, b=53
-        ) + ' '.join(sim_lines[line_index].split()[1:])
+        sim_lines[line_index] = (' ' * 4 + sim_dict_new['lake_file']).ljust(53) + ' '.join(sim_lines[line_index].split()[1:])  # indent 4 chars, pad to 53
     else:
         line_index += 1
 
     # -- rootzone file
     _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
-    sim_lines[line_index] = iwfm.pad_both(
-        sim_dict_new['root_file'], f=4, b=53
-    ) + ' '.join(sim_lines[line_index].split()[1:])
+    sim_lines[line_index] = (' ' * 4 + sim_dict_new['root_file']).ljust(53) + ' '.join(sim_lines[line_index].split()[1:])  # indent 4 chars, pad to 53
 
     # -- small watersheds file
     _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
-    sim_lines[line_index] = iwfm.pad_both(
-        sim_dict_new['swshed_file'], f=4, b=53
-    ) + ' '.join(sim_lines[line_index].split()[1:])
+    sim_lines[line_index] = (' ' * 4 + sim_dict_new['swshed_file']).ljust(53) + ' '.join(sim_lines[line_index].split()[1:])  # indent 4 chars, pad to 53
 
     # -- unsaturated file
     _, line_index = read_next_line_value(sim_lines, line_index, column=0, skip_lines=0)
-    sim_lines[line_index] = iwfm.pad_both(
-        sim_dict_new['unsat_file'], f=4, b=53
-    ) + ' '.join(sim_lines[line_index].split()[1:])
+    sim_lines[line_index] = (' ' * 4 + sim_dict_new['unsat_file']).ljust(53) + ' '.join(sim_lines[line_index].split()[1:])  # indent 4 chars, pad to 53
 
     sim_lines.append('')
 

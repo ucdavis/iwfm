@@ -77,7 +77,7 @@ def hyd_diff(gwhyd_file_1, gwhyd_file_2, outname):
       temp2 = gwhyd_lines_2[i].split()
       as_str = temp1[0] + '           '
       for j in range(1,len(temp1)):
-        as_str += iwfm.pad_back(round(float(temp1[j]) - float(temp2[j]),4),16)
+        as_str += str(round(float(temp1[j]) - float(temp2[j]),4)).ljust(16)  # left-justify to 16 chars
       gwhyd_lines_out.append(as_str)
 
     try:

@@ -157,21 +157,21 @@ def write_factors(factors_outfile, pp_file, pp_list, node_list, ppoints, weights
 
     with open(factors_outfile, 'w') as f:
         f.write(f'{pp_file}\n')
-        f.write(f'{iwfm.pad_front(len(node_list),n=12)}\n')
-        f.write(f'{iwfm.pad_front(len(pp_list),n=12)}\n')
+        f.write(f'{str(len(node_list)).rjust(12)}\n')  # right-justify to 12 chars
+        f.write(f'{str(len(pp_list)).rjust(12)}\n')  # right-justify to 12 chars
         for i in range(len(pp_list)):
             f.write(f'{pp_list[i]}\n')
 
         for i in range(len(node_list)):
-            node = f'{iwfm.pad_front(node_list[i],n=12)}'
+            node = f'{str(node_list[i]).rjust(12)}'  # right-justify to 12 chars
 
-            pp1  = f'{iwfm.pad_front(ppoints[i][0]+1,n=11)}'
-            pp2  = f'{iwfm.pad_front(ppoints[i][1]+1,n=11)}'
-            pp3  = f'{iwfm.pad_front(ppoints[i][2]+1,n=11)}'
+            pp1  = f'{str(ppoints[i][0]+1).rjust(11)}'  # right-justify to 11 chars
+            pp2  = f'{str(ppoints[i][1]+1).rjust(11)}'  # right-justify to 11 chars
+            pp3  = f'{str(ppoints[i][2]+1).rjust(11)}'  # right-justify to 11 chars
 
-            w1   = f'{iwfm.pad_front(weights[i][0],n=11)}'
-            w2   = f'{iwfm.pad_front(weights[i][1],n=11)}'
-            w3   = f'{iwfm.pad_front(weights[i][2],n=11)}'
+            w1   = f'{str(weights[i][0]).rjust(11)}'  # right-justify to 11 chars
+            w2   = f'{str(weights[i][1]).rjust(11)}'  # right-justify to 11 chars
+            w3   = f'{str(weights[i][2]).rjust(11)}'  # right-justify to 11 chars
 
             f.write(f'{node}           1           3  0.0000000E+00{pp1} {w1}\n{pp2} {w2} {pp3} {w3}\n')
             

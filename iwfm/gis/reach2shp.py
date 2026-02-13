@@ -1,6 +1,6 @@
 # reach2shp.py
 # Create stream reach shapefile for an IWFM model
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ def reach2shp(reach_list, stnodes_dict, node_coords, shape_name, epsg=26910,
     w.field('reach_id', 'N', 10, 0)
     w.field('flows_to', 'N', 10, 0)
 
-    node_coords_dict = iwfm.list2dict(node_coords)
+    node_coords_dict = {row[0]: row[1:] for row in node_coords}  # list to dictionary
 
     # Write features
     for i in range(len(reach_list)):

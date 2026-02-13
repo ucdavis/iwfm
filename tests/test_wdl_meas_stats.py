@@ -133,15 +133,14 @@ def test_wdl_meas_stats_statistics_calculation(tmp_path):
     assert len(lines) == 2
 
 
-def test_wdl_meas_stats_uses_text_date():
-    '''Test that wdl_meas_stats uses text_date function (verifies fix).'''
-    # text_date is imported inside the function, not at module level,
-    # so verify it's used via the function's source code
+def test_wdl_meas_stats_uses_datetime():
+    '''Test that wdl_meas_stats uses datetime for date formatting (verifies built-in replacement).'''
+    # text_date was replaced with datetime.strptime().strftime()
     import inspect
     import importlib
     module = importlib.import_module('iwfm.wdl_meas_stats')
     source = inspect.getsource(module)
-    assert 'text_date' in source
+    assert 'datetime.strptime' in source
 
 
 def test_wdl_meas_stats_verbose_output(tmp_path, capsys):

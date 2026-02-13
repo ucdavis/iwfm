@@ -96,10 +96,10 @@ def date_index(inval, start_date):
             f"inval must be non-negative, got {months_to_add}"
         )
 
-    # Extract date components
-    y = iwfm.year(start_date)
-    m = iwfm.month(start_date)
-    d = iwfm.day(start_date)
+    # Extract date components - use already-parsed date components
+    y = year_val
+    m = month_val
+    d = day_val
 
     # Add months (inval is the number of months to add)
     for i in range(months_to_add):
@@ -109,7 +109,7 @@ def date_index(inval, start_date):
         else:
             m += 1
 
-    return iwfm.date2text(d, m, y)
+    return f'{m:02d}/{d:02d}/{y}'  # format as MM/DD/YYYY
 
 
 if __name__ == "__main__":

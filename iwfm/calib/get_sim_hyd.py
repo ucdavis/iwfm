@@ -1,6 +1,6 @@
 # get_sim_hyd.py
 # Get simulated hydrograph values
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ def get_sim_hyd(nt,file_name,start_date):
         simulation hydrograph file name
 
     start_date : datetime object
-        start date in 
+        start date in
 
     Returns
     -------
@@ -42,7 +42,7 @@ def get_sim_hyd(nt,file_name,start_date):
         days since start date for each row of sim_hyd
 
     '''
-    import iwfm
+    from datetime import datetime
     import numpy as np
 
     with open(file_name) as f:
@@ -54,7 +54,8 @@ def get_sim_hyd(nt,file_name,start_date):
 
     while hyd_index < len(hyd_lines) and hyd_lines[hyd_index][0].isdigit() == True:   # get the dates
         temp = hyd_lines[hyd_index].split()
-        dates.append(iwfm.dts2days(iwfm.str2datetime(temp[0][:10]), start_date))    # days since start_date
+        date_obj = datetime.strptime(temp[0][:10], '%m/%d/%Y')  # string to datetime
+        dates.append((date_obj - start_date).days)  # days since start date
 
         arr = []
         for i in range(1,len(temp)):
