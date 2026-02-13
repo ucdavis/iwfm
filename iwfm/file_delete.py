@@ -1,6 +1,6 @@
 # file_delete
 # Delete file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
+from iwfm.debug.logger_setup import logger
+
 def file_delete(filename):
     ''' file_delete() - Delete a file
 
@@ -32,6 +34,12 @@ def file_delete(filename):
     import os
 
     if os.path.isfile(filename):  # if file exists
-        os.remove(filename)  # delete it
-    # else ... add functionality for file not present, in use, etc?
+        try:
+            os.remove(filename)  # delete it
+        except (PermissionError, OSError) as e:
+            logger.error(f'file_delete: failed to delete {filename}: {e}')
+            raise
+        logger.debug(f'file_delete: deleted {filename}')
+    else:
+        logger.debug(f'file_delete: file {filename} does not exist, no action taken')
 

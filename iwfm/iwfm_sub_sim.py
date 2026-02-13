@@ -88,15 +88,17 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
             missing_files.append(f'  - {key}: {sim_dict[key]}')
 
     if missing_files:
-        print('\n*** ERROR: Required input file(s) not found:')
-        for msg in missing_files:
-            print(msg)
-        print('\nPlease check:')
-        print('  1. The simulation input file contains correct file paths')
-        print('  2. All referenced files exist at the specified locations')
-        print('  3. File paths are correct relative to the simulation input file location')
-        print(f'\nSimulation file location: {sim_base_path}')
-        sys.exit(1)
+        missing_list = '\n'.join(missing_files)
+        message = (
+            f'Required input file(s) not found:\n{missing_list}\n'
+            f'Please check:\n'
+            f'  1. The simulation input file contains correct file paths\n'
+            f'  2. All referenced files exist at the specified locations\n'
+            f'  3. File paths are correct relative to the simulation input file location\n'
+            f'Simulation file location: {sim_base_path}'
+        )
+        logger.error(message)
+        raise FileNotFoundError(message)
 
     # -- create list of new file names
     sim_dict_new = iwfm.new_sim_dict(out_base_name)
@@ -123,34 +125,77 @@ def iwfm_sub_sim(in_sim_file, elem_pairs_file, out_base_name, verbose=False, deb
             missing_pickle_files.append(f'  - lake information: {lake_file}')
 
     if missing_pickle_files:
-        print('\n*** ERROR: Required preprocessed data file(s) not found:')
-        for msg in missing_pickle_files:
-            print(msg)
-        print('\nThese binary files contain preprocessed model data and must be')
-        print('generated before running this script. Please run the preprocessing')
-        print('step that creates these files first.')
-        print(f'\nExpected base name: {out_base_name}')
-        sys.exit(1)
+        missing_list = '\n'.join(missing_pickle_files)
+        message = (
+            f'Required preprocessed data file(s) not found:\n{missing_list}\n'
+            f'These binary files contain preprocessed model data and must be\n'
+            f'generated before running this script. Please run the preprocessing\n'
+            f'step that creates these files first.\n'
+            f'Expected base name: {out_base_name}'
+        )
+        logger.error(message)
+        raise FileNotFoundError(message)
 
     # read information from previous dump
-    with open(out_base_name + '_elems.bin', 'rb') as f:
-        elem_list = pickle.load(f)
-    with open(out_base_name + '_nodes.bin', 'rb') as f:
-        node_list = pickle.load(f)
-    with open(out_base_name + '_elemnodes.bin', 'rb') as f:
-        elem_nodes = pickle.load(f)
-    with open(out_base_name + '_node_coords.bin', 'rb') as f:
-        node_coords = pickle.load(f)
-    with open(out_base_name + '_snodes.bin', 'rb') as f:
-        snode_dict = pickle.load(f)
-    with open(out_base_name + '_sub_snodes.bin', 'rb') as f:
-        sub_snodes = pickle.load(f)
+    try:
+        with open(out_base_name + '_elems.bin', 'rb') as f:
+            elem_list = pickle.load(f)
+    except (pickle.UnpicklingError, OSError) as e:
+        logger.error(f'Failed to load pickle file {out_base_name}_elems.bin: {e}')
+        raise
+    logger.debug(f'Loaded pickle file {out_base_name}_elems.bin')
+
+    try:
+        with open(out_base_name + '_nodes.bin', 'rb') as f:
+            node_list = pickle.load(f)
+    except (pickle.UnpicklingError, OSError) as e:
+        logger.error(f'Failed to load pickle file {out_base_name}_nodes.bin: {e}')
+        raise
+    logger.debug(f'Loaded pickle file {out_base_name}_nodes.bin')
+
+    try:
+        with open(out_base_name + '_elemnodes.bin', 'rb') as f:
+            elem_nodes = pickle.load(f)
+    except (pickle.UnpicklingError, OSError) as e:
+        logger.error(f'Failed to load pickle file {out_base_name}_elemnodes.bin: {e}')
+        raise
+    logger.debug(f'Loaded pickle file {out_base_name}_elemnodes.bin')
+
+    try:
+        with open(out_base_name + '_node_coords.bin', 'rb') as f:
+            node_coords = pickle.load(f)
+    except (pickle.UnpicklingError, OSError) as e:
+        logger.error(f'Failed to load pickle file {out_base_name}_node_coords.bin: {e}')
+        raise
+    logger.debug(f'Loaded pickle file {out_base_name}_node_coords.bin')
+
+    try:
+        with open(out_base_name + '_snodes.bin', 'rb') as f:
+            snode_dict = pickle.load(f)
+    except (pickle.UnpicklingError, OSError) as e:
+        logger.error(f'Failed to load pickle file {out_base_name}_snodes.bin: {e}')
+        raise
+    logger.debug(f'Loaded pickle file {out_base_name}_snodes.bin')
+
+    try:
+        with open(out_base_name + '_sub_snodes.bin', 'rb') as f:
+            sub_snodes = pickle.load(f)
+    except (pickle.UnpicklingError, OSError) as e:
+        logger.error(f'Failed to load pickle file {out_base_name}_sub_snodes.bin: {e}')
+        raise
+    logger.debug(f'Loaded pickle file {out_base_name}_sub_snodes.bin')
+
     if verbose:
         print('  Read model elements, nodes, node coordinates and stream nodes')
 
     if have_lake:
-        with open(out_base_name + '_lakes.bin', 'rb') as f:
-            lake_info = pickle.load(f)
+        try:
+            with open(out_base_name + '_lakes.bin', 'rb') as f:
+                lake_info = pickle.load(f)
+        except (pickle.UnpicklingError, OSError) as e:
+            logger.error(f'Failed to load pickle file {out_base_name}_lakes.bin: {e}')
+            raise
+        logger.debug(f'Loaded pickle file {out_base_name}_lakes.bin')
         if verbose:
             print('  Read model lakes')
 

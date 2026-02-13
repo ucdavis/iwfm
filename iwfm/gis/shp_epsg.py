@@ -1,6 +1,6 @@
 # shp_epsg.py
 # Read the projection file of a shapefile and return EPSG value
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -32,12 +32,34 @@ def shp_epsg(filename):
     '''
     from urllib.parse import urlencode
     from urllib.request import urlopen
+    import urllib.error
     import json
+    from iwfm.debug.logger_setup import logger
 
     if filename[-4:] != '.prj':
         filename = f'{filename}.prj'
-    with open(filename, 'r') as f:
-        q = urlencode({'exact': True, 'error': True, 'mode': 'wkt', 'terms': f.read()})
+
+    try:
+        with open(filename, 'r') as f:
+            prj_text = f.read()
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        logger.error(f'Failed to read projection file {filename}: {e}')
+        raise
+
+    q = urlencode({'exact': True, 'error': True, 'mode': 'wkt', 'terms': prj_text})
+
+    try:
         r = urlopen('http://prj2epsg.org/search.json', q.encode())
+    except urllib.error.URLError as e:
+        logger.error(f'Failed to query prj2epsg.org for {filename}: {e}')
+        raise
+
+    try:
         j = json.loads(r.read().decode())
-    return int(j['codes'][0]['code'])
+        epsg = int(j['codes'][0]['code'])
+    except (json.JSONDecodeError, KeyError) as e:
+        logger.error(f'Failed to parse EPSG response for {filename}: {e}')
+        raise
+
+    logger.debug(f'Determined EPSG {epsg} for {filename}')
+    return epsg

@@ -1,6 +1,6 @@
 # file_rename.py
 # Rename file
-# Copyright (C) 2020-2023 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # -----------------------------------------------------------------------------
 
 
+from iwfm.debug.logger_setup import logger
+
 def file_rename(filename, newname, force=0):
     ''' file_rename() - Rename a file
 
@@ -24,29 +26,40 @@ def file_rename(filename, newname, force=0):
     ----------
     filename : str
         name of existing file
-    
+
     newname : str
         new name for existing file
-    
+
     force : int, default=0
-        0 = don't force overwrite if another file named newname 
+        0 = don't force overwrite if another file named newname
                 already exists
-        1 = force overwrite if another file named newname 
+        1 = force overwrite if another file named newname
                 already exists
 
     Returns
     -------
     nothing
-    
+
     '''
     import os, sys
 
     if os.path.isfile(newname):  # if file newname already exists
         if force:  # if force>0 then remove
-            os.remove(newname)
+            try:
+                os.remove(newname)
+            except (PermissionError, OSError) as e:
+                logger.error(f'file_rename: failed to remove existing {newname}: {e}')
+                raise
+            logger.debug(f'file_rename: removed existing {newname} (force mode)')
         else:
+            logger.error(f'file_rename: cannot rename {filename} to {newname}, destination already exists')
             print(f'  *   Error: Can\'t rename {filename} to {newname}.\n')
             print(f'  *   Destination file already exists.\n')
             print('  *   Quitting.')
             sys.exit()
-    os.rename(filename, newname)
+    try:
+        os.rename(filename, newname)
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        logger.error(f'file_rename: failed to rename {filename} to {newname}: {e}')
+        raise
+    logger.debug(f'file_rename: renamed {filename} to {newname}')

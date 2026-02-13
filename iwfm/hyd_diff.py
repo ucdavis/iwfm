@@ -38,14 +38,37 @@ def hyd_diff(gwhyd_file_1, gwhyd_file_2, outname):
     '''
 
     import iwfm
+    from iwfm.debug.logger_setup import logger
 
     iwfm.file_test(gwhyd_file_1)
-    with open(gwhyd_file_1) as f:
-        gwhyd_lines_1 = (f.read().splitlines())
+    try:
+        with open(gwhyd_file_1) as f:
+            gwhyd_lines_1 = (f.read().splitlines())
+    except FileNotFoundError:
+        logger.error(f'File not found: {gwhyd_file_1}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied reading file: {gwhyd_file_1}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error reading file {gwhyd_file_1}: {e}')
+        raise
+    logger.debug(f'Read {len(gwhyd_lines_1)} lines from {gwhyd_file_1}')
 
     iwfm.file_test(gwhyd_file_2)
-    with open(gwhyd_file_2) as f:
-        gwhyd_lines_2 = (f.read().splitlines())
+    try:
+        with open(gwhyd_file_2) as f:
+            gwhyd_lines_2 = (f.read().splitlines())
+    except FileNotFoundError:
+        logger.error(f'File not found: {gwhyd_file_2}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied reading file: {gwhyd_file_2}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error reading file {gwhyd_file_2}: {e}')
+        raise
+    logger.debug(f'Read {len(gwhyd_lines_2)} lines from {gwhyd_file_2}')
 
     gwhyd_lines_out = gwhyd_lines_1[0:9]
 
@@ -57,9 +80,17 @@ def hyd_diff(gwhyd_file_1, gwhyd_file_2, outname):
         as_str += iwfm.pad_back(round(float(temp1[j]) - float(temp2[j]),4),16)
       gwhyd_lines_out.append(as_str)
 
-    with open(outname, 'w') as f:
-      for line in gwhyd_lines_out:
-        f.write("%s\n" % line )
+    try:
+        with open(outname, 'w') as f:
+          for line in gwhyd_lines_out:
+            f.write("%s\n" % line )
+    except PermissionError:
+        logger.error(f'Permission denied writing file: {outname}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error writing file {outname}: {e}')
+        raise
+    logger.debug(f'Wrote {len(gwhyd_lines_out)} lines to {outname}')
 
     return
 

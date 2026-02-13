@@ -1,6 +1,6 @@
 # wdl_ts_4_wells.py
 # Write well data as time series
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
     
     '''
     import csv
+    from iwfm.debug.logger_setup import logger
 
     station_file_base = station_file[0 : station_file.find('.')]  # basename
     station_file_ext = station_file[
@@ -45,8 +46,19 @@ def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
     output_file = station_file_base + '_TS.out'
 
     # -- read stations into a dictionary
-    with open(station_file) as f:
-        file_lines = f.read().splitlines() 
+    try:
+        with open(station_file) as f:
+            file_lines = f.read().splitlines()
+    except FileNotFoundError:
+        logger.error(f'File not found: {station_file}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied reading file: {station_file}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error reading file {station_file}: {e}')
+        raise
+    logger.debug(f'Read {len(file_lines)} lines from {station_file}')
     if verbose:
         print(f'Read {len(file_lines):,} stations from {station_file}')
 
@@ -56,18 +68,29 @@ def wdl_ts_4_wells(station_file, waterlevel_file, verbose=False):
     }
 
     lines_in, lines_out = 0, 0
-    with open(waterlevel_file, 'r') as infile, open(output_file, 'w') as outfile:
-        outfile.write(
-            'STN_ID,SITE_CODE,WLM_ID,MSMT_DATE,WLM_RPE,WLM_GSE,RDNG_WS,RDNG_RP,WSE,RPE_GSE,GSE_WSE,WLM_QA_DESC,WLM_DESC,WLM_ACC_DESC,WLM_ORG_ID,WLM_ORG_NAME,MSMT_CMT,COOP_AGENCY_ORG_ID,COOP_ORG_NAME\n'
-        )
-        for line in infile:
-            lines_in = lines_in + 1
-            items = line.split()
-            if len(line) > 10:
-                value = mydict.get(items[0][0 : line.find(',')])
-                if value is not None:
-                    outfile.write(line)
-                    lines_out = lines_out + 1
+    try:
+        with open(waterlevel_file, 'r') as infile, open(output_file, 'w') as outfile:
+            outfile.write(
+                'STN_ID,SITE_CODE,WLM_ID,MSMT_DATE,WLM_RPE,WLM_GSE,RDNG_WS,RDNG_RP,WSE,RPE_GSE,GSE_WSE,WLM_QA_DESC,WLM_DESC,WLM_ACC_DESC,WLM_ORG_ID,WLM_ORG_NAME,MSMT_CMT,COOP_AGENCY_ORG_ID,COOP_ORG_NAME\n'
+            )
+            for line in infile:
+                lines_in = lines_in + 1
+                items = line.split()
+                if len(line) > 10:
+                    value = mydict.get(items[0][0 : line.find(',')])
+                    if value is not None:
+                        outfile.write(line)
+                        lines_out = lines_out + 1
+    except FileNotFoundError:
+        logger.error(f'File not found: {waterlevel_file}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied on file: {waterlevel_file} or {output_file}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error processing files {waterlevel_file} / {output_file}: {e}')
+        raise
+    logger.debug(f'Processed {lines_in} lines from {waterlevel_file}, wrote {lines_out} lines to {output_file}')
     if verbose:
         print(f'Processed {lines_in:,} lines from {waterlevel_file}')
         print(f'Wrote {lines_out:,} lines to {output_file}')

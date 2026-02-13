@@ -1,6 +1,6 @@
 # vic_2_table.py
 # Extract one column from a VIC file to another file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -42,10 +42,22 @@ def vic_2_table(factorsFileName, outFileName, col, verbose=False):
 
     '''
     import iwfm
+    from iwfm.debug.logger_setup import logger
 
     iwfm.file_test(factorsFileName)
-    with open(factorsFileName) as f:
-        factors = f.read().splitlines()  # get climate thance gactors
+    try:
+        with open(factorsFileName) as f:
+            factors = f.read().splitlines()  # get climate thance gactors
+    except FileNotFoundError:
+        logger.error(f'File not found: {factorsFileName}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied reading file: {factorsFileName}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error reading file {factorsFileName}: {e}')
+        raise
+    logger.debug(f'Read {len(factors)} lines from {factorsFileName}')
     if verbose:
         print(f'  Read {len(factors):,} lines from {factorsFileName}')
 
@@ -93,22 +105,30 @@ def vic_2_table(factorsFileName, outFileName, col, verbose=False):
         factor_array.append(temp)  
     factors = []  # clear memory
 
-    with open(outFileName, 'w') as out_file:  
-        if verbose:
-            print(f'  Opened {outFileName} for output')
+    try:
+        with open(outFileName, 'w') as out_file:
+            if verbose:
+                print(f'  Opened {outFileName} for output')
 
-        header = 'Date'  
-        for i in range(1, max(VIC_dict, key=int)):
-            header = header + ',' + str(i)
-        out_file.write(f'{header}\n')
+            header = 'Date'
+            for i in range(1, max(VIC_dict, key=int)):
+                header = header + ',' + str(i)
+            out_file.write(f'{header}\n')
 
-        for i in range(0, VIC_Step):  
-            data = dates[i]
-            for j in range(1, max(VIC_dict, key=int)): 
-                data = (data + ',' + factor_array[VIC_dict[j] - 1][i])
-            out_file.write(f'{data}\n')
+            for i in range(0, VIC_Step):
+                data = dates[i]
+                for j in range(1, max(VIC_dict, key=int)):
+                    data = (data + ',' + factor_array[VIC_dict[j] - 1][i])
+                out_file.write(f'{data}\n')
 
-        out_file.write('\n')
+            out_file.write('\n')
+    except PermissionError:
+        logger.error(f'Permission denied writing file: {outFileName}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error writing file {outFileName}: {e}')
+        raise
+    logger.debug(f'Wrote {VIC_Step} rows to {outFileName}')
 
     if verbose:
         print(f'  Wrote results to {outFileName}\n')

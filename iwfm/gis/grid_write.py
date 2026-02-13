@@ -1,6 +1,6 @@
 # grid_write.py
 # Writes an ASCII Grid file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ def grid_write(outfile, array, xllcorner=277750.0, yllcorner=6122250.0,
     
     '''
     import numpy as np
+    from iwfm.debug.logger_setup import logger
 
     header =  f'ncols {array.shape[1]}\n'
     header += f'nrows {array.shape[0]}\n'
@@ -53,7 +54,12 @@ def grid_write(outfile, array, xllcorner=277750.0, yllcorner=6122250.0,
     header += f'yllcorner {round(yllcorner, 1)}\n'
     header += f'cellsize {round(cellsize, 1)}\n'
     header += f'NODATA_value {nodata}\n'
-    with open(outfile, 'w') as f:
-        f.write(header)
-        np.savetxt(f, array, fmt='%1.2f')
+    try:
+        with open(outfile, 'w') as f:
+            f.write(header)
+            np.savetxt(f, array, fmt='%1.2f')
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write grid file {outfile}: {e}')
+        raise
+    logger.debug(f'Wrote grid file {outfile}')
     return

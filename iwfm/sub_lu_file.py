@@ -18,6 +18,8 @@
 # -----------------------------------------------------------------------------
 
 
+from iwfm.debug.logger_setup import logger
+
 def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     ''' sub_lu_file() - Copy original land use input file,
         remove the elements that are not in the submodel,
@@ -48,8 +50,15 @@ def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     iwfm.file_test(in_filename)
 
     # -- read the land use file into array lu_lines
-    with open(in_filename) as f:
-        lu_lines = f.read().splitlines()  # open and read input file
+    try:
+        with open(in_filename) as f:
+            lu_lines = f.read().splitlines()  # open and read input file
+    except FileNotFoundError as e:
+        logger.error(f'sub_lu_file: file not found {in_filename}: {e}')
+        raise
+    except (PermissionError, OSError) as e:
+        logger.error(f'sub_lu_file: failed to read {in_filename}: {e}')
+        raise
 
     # Skip comments and spec lines (4 data lines) to reach land use data
     # read_next_line_value skips skip_lines, then reads the next line
@@ -88,10 +97,16 @@ def sub_lu_file(in_filename, out_filename, elems, verbose=False):
     lu_lines.append('')
 
     # -- write new preprocessor input file
-    with open(out_filename, 'w') as outfile:
-        outfile.write('\n'.join(lu_lines))
+    try:
+        with open(out_filename, 'w') as outfile:
+            outfile.write('\n'.join(lu_lines))
+    except (PermissionError, OSError) as e:
+        logger.error(f'sub_lu_file: failed to write {out_filename}: {e}')
+        raise
 
-    if verbose:                
+    logger.debug(f'sub_lu_file: wrote submodel land use file {out_filename} with {len(elems)} elements')
+
+    if verbose:
         print(f'      Wrote submodel land use area file {out_filename}')
 
     return

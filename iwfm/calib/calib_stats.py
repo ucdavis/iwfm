@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 from iwfm.read_sim_hyd import read_sim_hyd
+from iwfm.debug.logger_setup import logger
 
 
 def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
@@ -54,14 +55,26 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
         print(f'  gwhyd_file:   \t{gwhyd_file}\n')
     
     # == read pest observation file into array obs
-    with open(pest_smp_file) as f:
-        head_obs = f.read().splitlines()
+    try:
+        with open(pest_smp_file) as f:
+            head_obs = f.read().splitlines()
+    except FileNotFoundError:
+        logger.error(f'File not found: {pest_smp_file}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied reading file: {pest_smp_file}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error reading file {pest_smp_file}: {e}')
+        raise
+    logger.debug(f'Read {len(head_obs)} lines from {pest_smp_file}')
     for i in range(0,len(head_obs)):
         head_obs[i] = head_obs[i].split()
         date_str = head_obs[i][1]
         try:
             head_obs[i][1] = iwfm.safe_parse_date(date_str, f'{pest_smp_file} line {i+1}')
         except ValueError as e:
+            logger.error(f'Error parsing date on line {i+1} of {pest_smp_file}: {e}')
             raise ValueError(f"Error reading {pest_smp_file} line {i+1}: {str(e)}") from e
         head_obs[i][3] = float(head_obs[i][3])
     if verbose:
@@ -164,10 +177,18 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
 
     # write all simulated and measured values to a file
     out_file = gwhyd_file.replace('.out','_sim_obs.txt')
-    with open(out_file,'w') as of:
-        of.write('Well Name\tDate\tSimulated\tObserved\n')
-        for i in range(0,len(sim_all)):
-            of.write(f'{names_all[i]}\t{dates_all[i].strftime("%m/%d/%y")}\t{sim_all[i]}\t{meas_all[i]}\n')
+    try:
+        with open(out_file,'w') as of:
+            of.write('Well Name\tDate\tSimulated\tObserved\n')
+            for i in range(0,len(sim_all)):
+                of.write(f'{names_all[i]}\t{dates_all[i].strftime("%m/%d/%y")}\t{sim_all[i]}\t{meas_all[i]}\n')
+    except PermissionError:
+        logger.error(f'Permission denied writing file: {out_file}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error writing file {out_file}: {e}')
+        raise
+    logger.debug(f'Wrote {len(sim_all)} simulated/observed values to {out_file}')
     print(f'\n  Wrote all simulated and observed values to {out_file}')
 
     # write out results for each well
@@ -178,11 +199,19 @@ def calib_stats(pest_smp_file, gwhyd_info_file, gwhyd_file, verbose=False):
 
     # write out results for all wells
     out_file = gwhyd_file.replace('.out','_rmse_all.txt')
-    with open(out_file,'w') as of:
-        of.write(f'Filename\tRMSE\tBIAS\n')
-        rmse_all = round(ical.rmse_calc(sim_all,meas_all),2)
-        bias_all = round(ical.bias_calc(sim_all,meas_all),2)
-        of.write(f'{gwhyd_file}\t{rmse_all}\t{bias_all}\n')
+    try:
+        with open(out_file,'w') as of:
+            of.write(f'Filename\tRMSE\tBIAS\n')
+            rmse_all = round(ical.rmse_calc(sim_all,meas_all),2)
+            bias_all = round(ical.bias_calc(sim_all,meas_all),2)
+            of.write(f'{gwhyd_file}\t{rmse_all}\t{bias_all}\n')
+    except PermissionError:
+        logger.error(f'Permission denied writing file: {out_file}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error writing file {out_file}: {e}')
+        raise
+    logger.debug(f'Wrote overall RMSE={rmse_all} and BIAS={bias_all} to {out_file}')
     print(f'  Wrote results for all wells to {out_file}')
     
     return

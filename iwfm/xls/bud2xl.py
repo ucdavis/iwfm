@@ -37,12 +37,18 @@ def bud2xl(budget_file, excel_file, verbose=False, row=6):
     '''
     import os
     from iwfm.xls import open_workbook, save_workbook, get_worksheet, write_cells, add_worksheet, close_workbook
+    from iwfm.debug.logger_setup import logger
 
     cwd = os.getcwd()
 
     # Read the Budget file into array file_lines
-    with open(budget_file) as f:
-        file_lines = f.read().splitlines()
+    try:
+        with open(budget_file) as f:
+            file_lines = f.read().splitlines()
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        logger.error(f'Failed to read budget file {budget_file}: {e}')
+        raise
+    logger.debug(f'Read budget file {budget_file}')
     file_lines = [word.replace('_24:00', ' ') for word in file_lines]
 
     # Get the Budget file header and footer info
@@ -69,7 +75,12 @@ def bud2xl(budget_file, excel_file, verbose=False, row=6):
 
     # Open the excel workbook
     excel_path = os.path.join(cwd, excel_file)
-    wb = open_workbook(excel_path)
+    try:
+        wb = open_workbook(excel_path)
+    except Exception as e:
+        logger.error(f'Failed to open Excel workbook {excel_path}: {e}')
+        raise
+    logger.debug(f'Opened Excel workbook {excel_path}')
 
     if verbose:
         print(f'  Opened {excel_file}')
@@ -99,8 +110,19 @@ def bud2xl(budget_file, excel_file, verbose=False, row=6):
         write_cells(ws, budget_data, start_row=row, start_col=1)
         budget_data.clear()
 
-    save_workbook(wb, excel_path)
-    close_workbook(wb)
+    try:
+        save_workbook(wb, excel_path)
+    except Exception as e:
+        logger.error(f'Failed to save Excel workbook {excel_path}: {e}')
+        raise
+    logger.debug(f'Saved Excel workbook {excel_path}')
+
+    try:
+        close_workbook(wb)
+    except Exception as e:
+        logger.error(f'Failed to close Excel workbook {excel_path}: {e}')
+        raise
+    logger.debug(f'Closed Excel workbook {excel_path}')
 
     if verbose:
         print(f'  Closed {excel_file}')

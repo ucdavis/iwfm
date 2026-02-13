@@ -42,6 +42,7 @@ def shp_reproject(srcName, tgtName, epsg=26910):
     import shutil
     from osgeo import osr
     from osgeo import ogr
+    from iwfm.debug.logger_setup import logger
 
     # Set target spatial reference
     tgt_spatRef = osr.SpatialReference()
@@ -75,12 +76,23 @@ def shp_reproject(srcName, tgtName, epsg=26910):
     tgt.Destroy()
     # Create the prj file
     tgt_spatRef.MorphToESRI()  # Convert geometry to ESRI WKT format
-    with open(f'{lyrName}.prj', 'w') as prj:
-        prj.write(tgt_spatRef.ExportToWkt())
+    try:
+        with open(f'{lyrName}.prj', 'w') as prj:
+            prj.write(tgt_spatRef.ExportToWkt())
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write projection file {lyrName}.prj: {e}')
+        raise
+    logger.debug(f'Wrote projection file {lyrName}.prj')
+
     # Just copy dbf contents over rather than rebuild the dbf using the
     # ogr API since we're not changing anything.
     srcDbf = f'{os.path.splitext(srcName)[0]}.dbf'
     tgtDbf = f'{lyrName}.dbf'
-    shutil.copyfile(srcDbf, tgtDbf)
+    try:
+        shutil.copyfile(srcDbf, tgtDbf)
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        logger.error(f'Failed to copy dbf file {srcDbf} to {tgtDbf}: {e}')
+        raise
+    logger.debug(f'Copied dbf file {srcDbf} to {tgtDbf}')
 
     return

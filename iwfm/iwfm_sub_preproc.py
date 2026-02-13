@@ -67,6 +67,7 @@ def iwfm_sub_preproc(
     import iwfm
     import pickle
     import polars as pl
+    from iwfm.debug.logger_setup import logger
 
     # -- get list of file names from preprocessor input file
     pre_dict, have_lake = iwfm.iwfm_read_preproc(in_pp_file)
@@ -78,15 +79,25 @@ def iwfm_sub_preproc(
 
     # -- read submodel elements
     sub_elem_list, new_srs, elem_dict, rev_elem_dict = iwfm.get_elem_list(elem_pairs_file)
-    with open(out_base_name + '_elems.bin', 'wb') as f:
-        pickle.dump(sub_elem_list, f)  # dump sub_elem_list to file
+    try:
+        with open(out_base_name + '_elems.bin', 'wb') as f:
+            pickle.dump(sub_elem_list, f)  # dump sub_elem_list to file
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write pickle file {out_base_name}_elems.bin: {e}')
+        raise
+    logger.debug(f'Wrote pickle file {out_base_name}_elems.bin')
     if verbose:
         print(f'  Read submodel element pairs file {elem_pairs_file}')
 
     # -- determine submodel nodes
     sub_node_list = iwfm.sub_pp_node_list(pre_dict['elem_file'], sub_elem_list)
-    with open(out_base_name + '_nodes.bin', 'wb') as f:
-        pickle.dump(sub_node_list, f)  # dump sub_node_list to file
+    try:
+        with open(out_base_name + '_nodes.bin', 'wb') as f:
+            pickle.dump(sub_node_list, f)  # dump sub_node_list to file
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write pickle file {out_base_name}_nodes.bin: {e}')
+        raise
+    logger.debug(f'Wrote pickle file {out_base_name}_nodes.bin')
     if verbose:
         print('  Compiled list of submodel nodes')
 
@@ -100,8 +111,13 @@ def iwfm_sub_preproc(
         else:
             i += 1
 
-    with open(out_base_name + '_node_coords.bin', 'wb') as f:
-        pickle.dump(node_coord, f)  # dump node_coords to file
+    try:
+        with open(out_base_name + '_node_coords.bin', 'wb') as f:
+            pickle.dump(node_coord, f)  # dump node_coords to file
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write pickle file {out_base_name}_node_coords.bin: {e}')
+        raise
+    logger.debug(f'Wrote pickle file {out_base_name}_node_coords.bin')
     if verbose:
         print('  Compiled list of submodel nodal coordinates')
 
@@ -111,12 +127,22 @@ def iwfm_sub_preproc(
     )
 
     # dump sub_nodes to file
-    with open(out_base_name + '_sub_snodes.bin', 'wb') as f:
-        pickle.dump(sub_snodes, f)
+    try:
+        with open(out_base_name + '_sub_snodes.bin', 'wb') as f:
+            pickle.dump(sub_snodes, f)
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write pickle file {out_base_name}_sub_snodes.bin: {e}')
+        raise
+    logger.debug(f'Wrote pickle file {out_base_name}_sub_snodes.bin')
 
     # dump snode_dict to file
-    with open(out_base_name + '_snodes.bin', 'wb') as f:
-        pickle.dump(snode_dict, f)  
+    try:
+        with open(out_base_name + '_snodes.bin', 'wb') as f:
+            pickle.dump(snode_dict, f)
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write pickle file {out_base_name}_snodes.bin: {e}')
+        raise
+    logger.debug(f'Wrote pickle file {out_base_name}_snodes.bin')
 
     if verbose:
         print('  Compiled list of submodel stream nodes')
@@ -125,8 +151,13 @@ def iwfm_sub_preproc(
     if have_lake:
         lake_info, have_lake = iwfm.sub_pp_lakes(pre_dict['lake_file'], sub_elem_list)
         # dump lake_info to file
-        with open(out_base_name + '_lakes.bin', 'wb') as f:
-            pickle.dump(lake_info, f)
+        try:
+            with open(out_base_name + '_lakes.bin', 'wb') as f:
+                pickle.dump(lake_info, f)
+        except (PermissionError, OSError) as e:
+            logger.error(f'Failed to write pickle file {out_base_name}_lakes.bin: {e}')
+            raise
+        logger.debug(f'Wrote pickle file {out_base_name}_lakes.bin')
         if have_lake and verbose:
             print('  Compiled list of submodel lakes')
 
@@ -138,7 +169,12 @@ def iwfm_sub_preproc(
             'northing': [row[2] for row in node_coord],
         }
     )
-    df.write_parquet(out_base_name + '_df.parquet')
+    try:
+        df.write_parquet(out_base_name + '_df.parquet')
+    except OSError as e:
+        logger.error(f'Failed to write parquet file {out_base_name}_df.parquet: {e}')
+        raise
+    logger.debug(f'Wrote parquet file {out_base_name}_df.parquet')
 
     if verbose:
         print(' ')
@@ -152,8 +188,13 @@ def iwfm_sub_preproc(
     elem_nodes = iwfm.sub_pp_elem_file(
         pre_dict['elem_file'], pre_dict_new['elem_file'], sub_elem_list, new_srs
     )
-    with open(out_base_name + '_elemnodes.bin', 'wb') as f:
-        pickle.dump(elem_nodes, f)
+    try:
+        with open(out_base_name + '_elemnodes.bin', 'wb') as f:
+            pickle.dump(elem_nodes, f)
+    except (PermissionError, OSError) as e:
+        logger.error(f'Failed to write pickle file {out_base_name}_elemnodes.bin: {e}')
+        raise
+    logger.debug(f'Wrote pickle file {out_base_name}_elemnodes.bin')
     if verbose:
         print(f'  Wrote submodel element file {pre_dict_new["elem_file"]}')
 
@@ -194,6 +235,7 @@ def iwfm_sub_preproc(
 
     if have_lake == False:
         lake_info=[]
+    logger.info(f'Completed submodel preprocessing for {out_base_name}')
     return pre_dict_new, sub_elem_list, new_srs, elem_dict, sub_node_list, snode_dict, lake_info
     
 

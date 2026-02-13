@@ -64,10 +64,22 @@ def iwfm_read_elempump(elempump_file_name, elem_ids, ag=1, ur=2, comment=0, verb
     '''
     import iwfm
     from iwfm.file_utils import read_next_line_value
+    from iwfm.debug.logger_setup import logger
 
     iwfm.file_test(elempump_file_name)
-    with open(elempump_file_name) as f:
-        elempump_lines = f.read().splitlines()
+    try:
+        with open(elempump_file_name) as f:
+            elempump_lines = f.read().splitlines()
+    except FileNotFoundError:
+        logger.error(f'File not found: {elempump_file_name}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied reading file: {elempump_file_name}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error reading file {elempump_file_name}: {e}')
+        raise
+    logger.debug(f'Read {len(elempump_lines)} lines from {elempump_file_name}')
 
     pump_lines, line_index = read_next_line_value(elempump_lines, -1, column=0)
     pump_lines = int(pump_lines)  # number of lines of pumping data
@@ -123,10 +135,10 @@ def iwfm_read_elempump(elempump_file_name, elem_ids, ag=1, ur=2, comment=0, verb
             else:
                 elempump_other[elem_id] = params
         except (ValueError, IndexError) as e:
-            print(f'\n*** Error on line {line_index + i + 1} of {elempump_file_name}:')
-            print(f'*** Line content: {elempump_lines[line_index + i]}')
-            print(f'*** Error: {e}')
-            print(f'*** Parsed fields: {l}')
+            logger.error(f'Error on line {line_index + i + 1} of {elempump_file_name}:')
+            logger.error(f'Line content: {elempump_lines[line_index + i]}')
+            logger.error(f'Error: {e}')
+            logger.error(f'Parsed fields: {l}')
             raise
 
     return elempump_ag, elempump_ur, elempump_other, header

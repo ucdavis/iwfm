@@ -52,8 +52,19 @@ def headall_read(input_file, skip=5, verbose=False):
 
     '''
 
-    with open(input_file) as f:
-        file_lines = f.read().splitlines() 
+    try:
+        with open(input_file) as f:
+            file_lines = f.read().splitlines()
+    except FileNotFoundError:
+        logger.error(f'File not found: {input_file}')
+        raise
+    except PermissionError:
+        logger.error(f'Permission denied reading file: {input_file}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error reading file {input_file}: {e}')
+        raise
+    logger.debug(f'Read {len(file_lines)} lines from {input_file}')
 
     line = skip
     nodes = file_lines[line].split()  

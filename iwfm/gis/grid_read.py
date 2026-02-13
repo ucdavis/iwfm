@@ -1,6 +1,6 @@
 # grid_read.py
 # Reads an ASCII Grid file
-# Copyright (C) 2020-2021 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -34,11 +34,23 @@ def grid_read(infile):
 
     '''
     import numpy as np
+    from iwfm.debug.logger_setup import logger
 
     skiprows = 6
     header = ''
-    with open(infile, 'r') as f:
-        for _ in range(skiprows):
-            header += f.readline()
-    myArray = np.loadtxt(infile, skiprows=skiprows)
+    try:
+        with open(infile, 'r') as f:
+            for _ in range(skiprows):
+                header += f.readline()
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        logger.error(f'Failed to read header from grid file {infile}: {e}')
+        raise
+
+    try:
+        myArray = np.loadtxt(infile, skiprows=skiprows)
+    except (ValueError, OSError) as e:
+        logger.error(f'Failed to load grid data from {infile}: {e}')
+        raise
+
+    logger.debug(f'Read grid file {infile}, array shape {myArray.shape}')
     return header, myArray

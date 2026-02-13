@@ -183,7 +183,7 @@ class TestLu2tables:
         input_file = tmp_path / "test_empty.dat"
         input_file.write_text("C Comment only\nC Another comment\n")
 
-        with pytest.raises(SystemExit):
+        with pytest.raises(ValueError):
             iwfm.lu2tables(str(input_file), 'dat')
 
     def test_no_data_lines_error(self, tmp_path):
@@ -199,7 +199,7 @@ C Comment
 """
         input_file.write_text(content)
 
-        with pytest.raises(SystemExit):
+        with pytest.raises(ValueError):
             iwfm.lu2tables(str(input_file), 'dat')
 
     def test_default_output_type_is_dat(self, tmp_path):

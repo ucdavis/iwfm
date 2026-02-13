@@ -17,6 +17,7 @@
 # -----------------------------------------------------------------------------
 
 from iwfm.filename_ext import filename_ext
+from iwfm.debug.logger_setup import logger
 
 
 def write_smp(output_filename, lines):
@@ -27,7 +28,7 @@ def write_smp(output_filename, lines):
     ----------
     output_filename : str
         name of smp output file
-    
+
     lines : list
         data as [obslicationid, date, time, value]
 
@@ -38,7 +39,15 @@ def write_smp(output_filename, lines):
 
     '''
     output_filename = filename_ext(output_filename, 'smp')
-    with open(output_filename, 'w') as output_file:
-        for i in range(0, len(lines)):
-            output_file.write(f'{lines[i][0]}\t{lines[i][1]}\t{lines[i][2]}\t{lines[i][3]}\n')
+    try:
+        with open(output_filename, 'w') as output_file:
+            for i in range(0, len(lines)):
+                output_file.write(f'{lines[i][0]}\t{lines[i][1]}\t{lines[i][2]}\t{lines[i][3]}\n')
+    except PermissionError:
+        logger.error(f'Permission denied writing file: {output_filename}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error writing file {output_filename}: {e}')
+        raise
+    logger.debug(f'Wrote {len(lines)} lines to {output_filename}')
     return len(lines)

@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
 
+from iwfm.debug.logger_setup import logger
+
 def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
     '''lu2tables() - Read an IWFM land use file and write contents to a 
        separate file for each land use type
@@ -65,8 +67,15 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
     if verbose:
         print(f'  Creating land use area tables from {land_use_file}')  
 
-    with open(land_use_file) as f:
-        file_lines = f.read().splitlines()  # open input file
+    try:
+        with open(land_use_file) as f:
+            file_lines = f.read().splitlines()  # open input file
+    except FileNotFoundError as e:
+        logger.error(f'lu2tables: file not found {land_use_file}: {e}')
+        raise
+    except (PermissionError, OSError) as e:
+        logger.error(f'lu2tables: failed to read {land_use_file}: {e}')
+        raise
 
     # determine how many data lines per time step
     # Check lines starting at the bottom, find first line with length > 5
@@ -78,10 +87,9 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
 
     # Check if we found a valid data line
     if i <= 0:
-        print(f'\n*** ERROR: Could not find data lines in land use file')
-        print(f'    File: {land_use_file}')
-        print(f'    All lines appear to be empty or too short (< 5 characters)')
-        sys.exit(1)
+        msg = f'Could not find data lines in land use file {land_use_file}: all lines appear to be empty or too short (< 5 characters)'
+        logger.error(f'lu2tables: {msg}')
+        raise ValueError(msg)
 
     # the first item on this line is the largest element number
     last_data_line_no = i
@@ -100,11 +108,9 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
 
     # Check if we found a valid date line
     if i <= 0:
-        print(f'\n*** ERROR: Could not find a date line in land use file')
-        print(f'    File: {land_use_file}')
-        print(f'    Searched from line {last_data_line_no} to line {i}')
-        print(f'    Expected to find a line with a date field (MM/DD/YYYY)')
-        sys.exit(1)
+        msg = f'Could not find a date line in land use file {land_use_file}, searched from line {last_data_line_no} to line {i}'
+        logger.error(f'lu2tables: {msg}')
+        raise ValueError(msg)
 
     # determine number of time steps and crops
     # Find the first data line by searching for a line that starts with a date (MM/DD/YYYY_HH:MM)
@@ -122,10 +128,9 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
         line_index += 1
 
     if line_index >= len(file_lines):
-        print(f'\n*** ERROR: Could not find the start of data in land use file')
-        print(f'    File: {land_use_file}')
-        print(f'    Expected to find a line starting with a date (MM/DD/YYYY_HH:MM)')
-        sys.exit(1)
+        msg = f'Could not find the start of data in land use file {land_use_file}: expected a line starting with a date (MM/DD/YYYY_HH:MM)'
+        logger.error(f'lu2tables: {msg}')
+        raise ValueError(msg)
 
     no_time_steps = int((last_data_line_no - line_index)/no_elems + 1)
     no_crops = (len(file_lines[line_index].split()) - 2)  # number of crops/land use types (subtract date and element number)
@@ -193,6 +198,8 @@ def lu2tables(land_use_file, output_file_type, verbose=False, debug=1):
     # write_2_excel(land_use_file_base,data,crops,max_elem,time_steps,dates)
     # if verbose:
     #  print('  Wrote land use area tables to {}.xlsx'.format(land_use_file_base))
+
+    logger.debug(f'lu2tables: processed {land_use_file} with {no_crops} crops, {no_elems} elements, {no_time_steps} time steps')
 
     return
 

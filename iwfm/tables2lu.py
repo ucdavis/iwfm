@@ -1,7 +1,7 @@
 # tables2lu.py
 # Read individual tables of elemental land use data and write 
 # to a single IWFM land use file
-# Copyright (C) 2020-2024 University of California
+# Copyright (C) 2020-2026 University of California
 # -----------------------------------------------------------------------------
 # This information is free; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
 # For a copy of the GNU General Public License, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 # -----------------------------------------------------------------------------
+
+from iwfm.debug.logger_setup import logger
 
 def tables2lu(header, template_lines, initial_acreage, factor_tables, output_file_name, start_date, elems):
     '''tables2lu() - Read an IWFM land use file and write contents to a 
@@ -55,32 +57,42 @@ def tables2lu(header, template_lines, initial_acreage, factor_tables, output_fil
     start_year = int(start_date[6:10])
 
     # open output_file_name for writing inside with loop
-    with open(output_file_name, 'w') as fp:
+    line_count = 0
+    try:
+        with open(output_file_name, 'w') as fp:
 
-        # write the header to the output file
-        for line in header:
-            fp.write(f'{line}\n')
-
-        # if template_lines contain data, write the template lines to the output file
-        if len(template_lines) > 0:
-            for line in template_lines:
+            # write the header to the output file
+            for line in header:
                 fp.write(f'{line}\n')
+                line_count += 1
 
-        for i in range(len(factor_tables)):
-            year = start_year + i + 1               # calculate the year from start_year
-            if year != start_year:                  # skip because we already wrote the initial acreage
-                date = month_day + '/' + str(year) + '_24:00'
+            # if template_lines contain data, write the template lines to the output file
+            if len(template_lines) > 0:
+                for line in template_lines:
+                    fp.write(f'{line}\n')
+                    line_count += 1
 
-                # multiply initial_acreage by factor_tables[i]
-                new_acreage = []
-                for row in range(0, len(initial_acreage)):
-                    new_acreage.append([round(initial_acreage[row][j] * factor_tables[i][row][j],2) for j in range(0,len(initial_acreage[row]))])
+            for i in range(len(factor_tables)):
+                year = start_year + i + 1               # calculate the year from start_year
+                if year != start_year:                  # skip because we already wrote the initial acreage
+                    date = month_day + '/' + str(year) + '_24:00'
 
-                for j in range(0, len(new_acreage)):
-                    if j == 0:
-                        fp.write(f'{date}\t{elems[j]}\t' + '\t'.join([str(x) for x in new_acreage[j]]) + '\n')
-                    else:
-                        fp.write(f'\t{elems[j]}\t' + '\t'.join([str(x) for x in new_acreage[j]]) + '\n')
+                    # multiply initial_acreage by factor_tables[i]
+                    new_acreage = []
+                    for row in range(0, len(initial_acreage)):
+                        new_acreage.append([round(initial_acreage[row][j] * factor_tables[i][row][j],2) for j in range(0,len(initial_acreage[row]))])
+
+                    for j in range(0, len(new_acreage)):
+                        if j == 0:
+                            fp.write(f'{date}\t{elems[j]}\t' + '\t'.join([str(x) for x in new_acreage[j]]) + '\n')
+                        else:
+                            fp.write(f'\t{elems[j]}\t' + '\t'.join([str(x) for x in new_acreage[j]]) + '\n')
+                        line_count += 1
+    except (PermissionError, OSError) as e:
+        logger.error(f'tables2lu: failed to write {output_file_name}: {e}')
+        raise
+
+    logger.debug(f'tables2lu: wrote {line_count} lines to {output_file_name}')
 
     return
 

@@ -40,6 +40,7 @@ def pdf_combine(start_dir, save_dir, save_name):
 
     '''
     import os, PyPDF2
+    from iwfm.debug.logger_setup import logger
 
     count = 0
     mergelist = []
@@ -52,15 +53,34 @@ def pdf_combine(start_dir, save_dir, save_name):
     # loop through all PDFs
     for filepath in mergelist:
         count += 1
-        with open(filepath, 'rb') as pdfFileObj:
-            pdfReader = PyPDF2.PdfReader(pdfFileObj)
-            for pageNum in range(len(pdfReader.pages)):
-                pageObj = pdfReader.pages[pageNum]
-                pdfWriter.add_page(pageObj)
+        try:
+            with open(filepath, 'rb') as pdfFileObj:
+                pdfReader = PyPDF2.PdfReader(pdfFileObj)
+                for pageNum in range(len(pdfReader.pages)):
+                    pageObj = pdfReader.pages[pageNum]
+                    pdfWriter.add_page(pageObj)
+        except FileNotFoundError:
+            logger.error(f'PDF file not found: {filepath}')
+            raise
+        except PermissionError:
+            logger.error(f'Permission denied reading PDF file: {filepath}')
+            raise
+        except OSError as e:
+            logger.error(f'OS error reading PDF file {filepath}: {e}')
+            raise
+        logger.debug(f'Processed PDF {count}: {filepath}')
 
     output_path = os.path.join(start_dir, save_name)
-    with open(output_path, 'wb') as pdfOutput:
-        pdfWriter.write(pdfOutput)
+    try:
+        with open(output_path, 'wb') as pdfOutput:
+            pdfWriter.write(pdfOutput)
+    except PermissionError:
+        logger.error(f'Permission denied writing combined PDF: {output_path}')
+        raise
+    except OSError as e:
+        logger.error(f'OS error writing combined PDF {output_path}: {e}')
+        raise
+    logger.debug(f'Combined {count} PDFs into {output_path}')
     return count
 
 if __name__ == "__main__":
